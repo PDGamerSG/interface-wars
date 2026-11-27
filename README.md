@@ -155,6 +155,24 @@ The follow-up is deliberately planned separately because the first experiment's 
 approval record must remain read-only. Its execution needs a matched-case runner and a fresh Flagsmith experiment.
 See [the manifest design](docs/EXPERIMENT_MANIFESTS.md) and [the frozen guide](guides/mcp-guidance-v1.md).
 
+## Query the evidence
+
+Build a redacted, read-only SQLite projection of the archived trial records. It gives cross-trial answers about tool
+errors, recoveries and specific Flagsmith failures while preserving a source file, SHA-256 digest and JSON pointer
+for every trace row.
+
+```bash
+npm run evidence -- build main
+npm run evidence -- matrix main
+npm run evidence -- schema-failures main
+npm run evidence -- recoveries main
+npm run evidence -- explain main-0117 main
+```
+
+The database is reproducible and ignored by Git. Named recipes open it read-only. The matrix shows 197 clean passes,
+32 recovered passes, 19 failed trials after a tool error and 7 failures without one. See
+[the evidence index guide](docs/EVIDENCE_INDEX.md).
+
 ## Setup
 
 With Node.js 26 you can replay the published evidence locally. Install the locked dependencies once.
