@@ -51,7 +51,7 @@ export async function readOpsFlags(): Promise<OpsFlags> {
     const lab = readLab();
     const res = await fetch(`${FLAGSMITH_URL}/api/v1/flags/`, { headers: { 'X-Environment-Key': lab.control.serverKey } });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const flags: any[] = await res.json();
+    const flags = (await res.json()) as any[];
     const get = (name: string) => flags.find((f) => f.feature?.name === name);
     const kill = get(KILL_SWITCH);
     const cap = get(SPEND_CAP);
