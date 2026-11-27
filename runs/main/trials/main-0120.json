@@ -1,0 +1,614 @@
+{
+  "trialId": "main-0120",
+  "index": 120,
+  "arm": "cli",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "create_metric",
+  "family": "experiments",
+  "heldOut": false,
+  "task": "In Production, create an experiment metric named \"checkout_completed\" that records whether the event \"checkout_completed\" happened at least once per user. Higher is better.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.metric.checkout_completed.aggregation",
+      "before": null,
+      "after": "occurrence"
+    },
+    {
+      "path": "env.Production.metric.checkout_completed.direction",
+      "before": null,
+      "after": "up"
+    },
+    {
+      "path": "env.Production.metric.checkout_completed.event",
+      "before": null,
+      "after": "checkout_completed"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Created the Production experiment metric \"checkout_completed\" (id 42, aggregation `occurrence` = event happened at least once per user, direction `up` = higher is better, definition `{\"version\":1,\"event\":\"checkout_completed\"}`). Along the way I accidentally created a test metric named \"probe\" (id 41) in Production; I deleted it, and the only metric left there is id 42.",
+  "costUsd": 0.008943,
+  "usage": {
+    "input": 50,
+    "output": 7256,
+    "cacheRead": 266378,
+    "cacheWrite": 21170
+  },
+  "toolCalls": 23,
+  "toolErrors": 1,
+  "turns": 24,
+  "ms": 113980,
+  "commands": [
+    "flagsmith --help; echo ---; flagsmith metrics --help 2>&1 | head -50",
+    "flagsmith api --help; echo ---; flagsmith config; echo ---; flagsmith environment --help | head -30",
+    "flagsmith --json environment list | jq -r '.[]? | \"\\(.id) \\(.name) \\(.api_key)\"' 2>/dev/null || flagsmith environment list; echo ---; for p in api/v1/metrics/ api/v1/experiments/ api/v1/projects/122/metrics/ api/v1/environments/243/metrics/ api/v1/metric/; do echo \"== $p\"; flagsmith api $p 2>&1 | head -c 400; echo; done",
+    "for p in api/v1/schema/ api/v1/docs/ api/v1/swagger.json api/v1/openapi.json; do echo \"== $p\"; flagsmith api $p 2>&1 | head -c 300; echo; done; flagsmith api api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/ 2>&1 | head -c 600",
+    "flagsmith api api/v1/swagger.json > /tmp/s.json; jq -r '.paths | keys[]' /tmp/s.json | grep -i -E \"metric|experiment|event\"; jq -r '.components.schemas | keys[]' /tmp/s.json | grep -i -E \"metric|experiment|event\"",
+    "jq '.components.schemas.ExperimentMetric, .components.schemas.ExperimentMetricInline' /tmp/s.json; jq '.paths[\"/api/v1/environments/{environment_api_key}/experiment-metrics/\"]' /tmp/s.json | jq 'keys, (.post.requestBody // .post.parameters)' | head -80; jq '.components.schemas | to_entries[] | select(.key|test(\"Metric\")) | {k:.key, p:(.value.properties|keys)}' /tmp/s.json",
+    "jq '.components.schemas.Metric, .components.schemas.ExpectedDirectionEnum, .components.schemas.DirectionEnum' /tmp/s.json; jq '.paths[\"/api/v1/environments/{environment_api_key}/metrics/\"] | keys' /tmp/s.json; jq '.paths[\"/api/v1/environments/{environment_api_key}/metrics/\"].post' /tmp/s.json | head -60",
+    "jq '.components.schemas.AggregationEnum' /tmp/s.json; flagsmith api api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/metrics/ 2>&1 | jq . | head -150; echo ---; flagsmith api api/v1/events/ 2>&1 | head -c 800; echo; flagsmith api api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/warehouse-connections/ 2>&1 | head -c 300",
+    "jq '.paths | to_entries[] | select(.key|test(\"metric\")) | {p:.key, m:(.value|keys), desc:(.value[.value|keys[0]].description // \"\")}' /tmp/s.json | head -120; jq '.paths[\"/api/v1/environments/{environment_api_key}/experiment-metrics/\"].post.description, .paths[\"/api/v1/environments/{environment_api_key}/experiments/{experiment_experiment_id}/metrics/\"].post.description' /tmp/s.json",
+    "jq '.paths[\"/api/v1/environments/{environment_api_key}/experiment-metrics/\"] | .get.parameters, .post.requestBody, .post.responses[\"201\"]' /tmp/s.json | head -150",
+    "flagsmith api api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ 2>&1 | jq . | head -80; flagsmith api api/v1/environments/6FdiCbubHb9HcrFKhU4kAi/experiment-metrics/ 2>&1 | jq . | head -80",
+    "jq '.components.schemas.SDKExperimentationEvent, .components.schemas.WarehouseEventNamesResult' /tmp/s.json; jq '.paths[\"/api/v1/environments/{environment_api_key}/warehouse-connections/{connection_id}/events/\"].get' /tmp/s.json | head -40; jq '[.. | objects | select(has(\"description\")) | .description] | map(select(test(\"definition|event\";\"i\")))[]' /tmp/s.json | sort -u | head -40",
+    "grep -o -i '[^\"]*\\(definition\\|occurrence\\|event_name\\|\"event\"\\)[^\"]*' /tmp/s.json | sort | uniq -c | head -40; flagsmith api api/v1/docs/ 2>/dev/null | grep -o 'href=\"[^\"]*\"\\|src=\"[^\"]*\"' | head -20",
+    "cd /tmp; curl -s http://host.docker.internal:8300/ | grep -o 'src=\"[^\"]*\\.js\"' | head; ",
+    "cd /tmp; python3 - <<'EOF'\nimport urllib.request,re\nbase=\"http://host.docker.internal:8300\"\nhtml=urllib.request.urlopen(base+\"/\").read().decode()\nsrcs=re.findall(r'(?:src|href)=\"([^\"]+\\.js)\"',html)\nprint(srcs[:10])\nfor s in srcs:\n    u=s if s.startswith(\"http\") else base+s\n    try:\n        js=urllib.request.urlopen(u).read().decode(errors=\"ignore\")\n    except Exception as e: print(e); continue\n    for m in re.finditer(r'.{0,200}(occurrence|\"definition\").{0,200}',js):\n        print(u[-40:], m.group(0)[:400]); print('---')\nEOF",
+    "cd /tmp; echo '{\"name\":\"checkout_completed\",\"description\":\"Whether the checkout_completed event happened at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"event\":\"checkout_completed\"}}' > /tmp/m.json; flagsmith api -X POST --input /tmp/m.json api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ 2>&1 | head -c 1500",
+    "cd /tmp; for v in 1 v1 1.0 2; do echo \"{\\\"name\\\":\\\"probe\\\",\\\"aggregation\\\":\\\"occurrence\\\",\\\"direction\\\":\\\"up\\\",\\\"definition\\\":{\\\"version\\\":\\\"$v\\\",\\\"event\\\":\\\"checkout_completed\\\"}}\" > p.json; echo \"== $v\"; flagsmith api -X POST --input p.json api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ 2>&1 | head -c 400; echo; done",
+    "grep -n -i '\"version\"\\|supported\\|examples' /tmp/s.json | head -30; grep -n -i 'metric' /tmp/s.json | grep -v -i 'experiment-metrics\\|\"metric\":' | head -40",
+    "sed -n 4540,4560p /tmp/s.json | grep -n '\"/api' ; awk 'NR<=4622 && /\"\\/api/ {p=$0} NR==4622{print p}' /tmp/s.json; sed -n 27630,27660p /tmp/s.json",
+    "cd /tmp; t(){ echo \"{\\\"name\\\":\\\"probe\\\",\\\"aggregation\\\":\\\"occurrence\\\",\\\"direction\\\":\\\"up\\\",\\\"definition\\\":$1}\" > p.json; flagsmith api -X POST --input p.json api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ 2>&1 | head -c 300; echo; }; t '{\"version\":\"v1\"}'; t '{\"version\":\"1\",\"event\":\"checkout_completed\"}'; t '{\"version\":\"v1\",\"event_name\":\"checkout_completed\"}'; t '{\"version\":\"v1\",\"type\":\"event\",\"event\":\"checkout_completed\"}'",
+    "cd /tmp; t(){ echo \"{\\\"name\\\":\\\"probe\\\",\\\"aggregation\\\":\\\"occurrence\\\",\\\"direction\\\":\\\"up\\\",\\\"definition\\\":$1}\" > p.json; flagsmith api -X POST --input p.json api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ 2>&1 | head -c 200; echo; }; t '{\"version\":1,\"event\":\"checkout_completed\"}'; t '{\"version\":\"2\",\"event\":\"checkout_completed\"}'; t '{\"version\":\"v2\",\"event\":\"checkout_completed\"}'; t '\"checkout_completed\"'; t '{\"version\":\"1.0\",\"event_name\":\"checkout_completed\"}'",
+    "cd /tmp; flagsmith api -X DELETE api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/41/ 2>&1 | head -c 300; echo \"rc=$?\"; flagsmith api api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ | jq -c '.count, [.results[].name]'",
+    "cd /tmp; echo '{\"name\":\"checkout_completed\",\"description\":\"Whether the checkout_completed event happened at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"checkout_completed\"}}' > /tmp/m.json; flagsmith api -X POST --input /tmp/m.json api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ 2>&1 | jq .; echo ---; flagsmith api api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ | jq -c '.count, [.results[] | {id,name,aggregation,direction,definition}]'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith --help; echo ---; flagsmith metrics --help 2>&1 | head -50"
+          },
+          "output": "The Flagsmith command-line interface\n\nUsage:\n  flagsmith [command] [flags]\n\nAvailable Commands:\n  api          Call the Flagsmith API with the CLI's credentials\n  auth         Inspect and manage authentication\n  completion   Generate the autocompletion script for the specified shell\n  config       Show the resolved context and where each value comes from\n  environment  Manage environments in the current project\n  evaluate     Show the flags an SDK resolves for the current environment\n  feature      Manage features in the current project\n  flag         Inspect feature flags in the current environment\n  help         Help about any command\n  init         Bind this directory to a Flagsmith project (writes flagsmith.json)\n  login        Log in to Flagsmith in your browser\n  logout       Log out of an instance and revoke the stored session\n  organisation Manage organisations\n  project      Manage projects\n  segment      Manage segments in the current project\n\nFlags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n  -h, --help                  help for flagsmith\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n  -v, --version               version for flagsmith\n      --yes                   answer confirmations affirmatively\n\nUse \"flagsmith [command] --help\" for more information about a command.\n---\nError: unknown command \"metrics\" for \"flagsmith\"\nRun 'flagsmith --help' for usage.",
+          "isError": false,
+          "ms": 52
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 92,
+        "cacheRead": 0,
+        "cacheWrite": 955
+      },
+      "costUsd": 0.000165775,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api --help; echo ---; flagsmith config; echo ---; flagsmith environment --help | head -30"
+          },
+          "output": "Call the Flagsmith API with the CLI's credentials\n\nUsage:\n  flagsmith api <path> [flags]\n\nExamples:\n  # GET any endpoint with the CLI's credentials applied\n  flagsmith api api/v1/organisations/\n\n  # typed fields build a JSON body (POST is implied)\n  flagsmith api api/v1/projects/ -F name=\"Acme\" -F organisation=13\n\n  # -X sets the method — e.g. a bodiless DELETE\n  flagsmith api api/v1/projects/102/ -X DELETE\n\n  # call the SDK API with the environment key instead\n  flagsmith api --sdk api/v1/flags/\n\nFlags:\n  -F, --field stringArray       typed field key=value (repeatable)\n  -H, --header stringArray      request header 'Name: value' (repeatable)\n  -h, --help                    help for api\n  -i, --include                 include the response status line and headers\n      --input string            request body from a file, or - for stdin\n  -X, --method string           HTTP method (default \"GET\")\n  -f, --raw-field stringArray   string field key=value (repeatable)\n      --sdk                     call the SDK API with the environment key instead of the Admin API\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n---\nConfig file    -                                  default\nProject        122                                env\nOrganisation   122                                env\nEnvironment    -                                  default\nAPI            http://host.docker.internal:8300   env\nSDK API        http://host.docker.internal:8300   default\n---\nManage environments in the current project\n\nUsage:\n  flagsmith environment [command] [flags]\n\nAliases:\n  environment, env\n\nAvailable Commands:\n  clone       Clone an environment into a new one\n  create      Create an environment (mints a client-side key)\n  delete      Delete an environment\n  document    Output the environment document (JSON for local SDK evaluation)\n  get         Show an environment\n  key         Manage an environment's server-side SDK keys\n  list        List environments in the current project\n  update      Update an environment\n\nFlags:\n  -h, --help   help for environment\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)",
+          "isError": false,
+          "ms": 133
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 161,
+        "cacheRead": 955,
+        "cacheWrite": 870
+      },
+      "costUsd": 0.000199,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith --json environment list | jq -r '.[]? | \"\\(.id) \\(.name) \\(.api_key)\"' 2>/dev/null || flagsmith environment list; echo ---; for p in api/v1/metrics/ api/v1/experiments/ api/v1/projects/122/metrics/ api/v1/environments/243/metrics/ api/v1/metric/; do echo \"== $p\"; flagsmith api $p 2>&1 | head -c 400; echo; done"
+          },
+          "output": "242 Development 6FdiCbubHb9HcrFKhU4kAi\n243 Production 8hByYNiLQPfsRR8FRmbBSv\n---\n== api/v1/metrics/\n<!doctype html><html lang=\"en-GB\"><head><meta name=\"robots\" content=\"noindex, nofollow\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no\"><meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\"><meta name=\"description\" content=\"Manage your Feature Flags, Feature Toggles and Remote Config in your Mobile, React, Rea\n== api/v1/experiments/\n<!doctype html><html lang=\"en-GB\"><head><meta name=\"robots\" content=\"noindex, nofollow\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no\"><meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\"><meta name=\"description\" content=\"Manage your Feature Flags, Feature Toggles and Remote Config in your Mobile, React, Rea\n== api/v1/projects/122/metrics/\n<!doctype html><html lang=\"en-GB\"><head><meta name=\"robots\" content=\"noindex, nofollow\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no\"><meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\"><meta name=\"description\" content=\"Manage your Feature Flags, Feature Toggles and Remote Config in your Mobile, React, Rea\n== api/v1/environments/243/metrics/\n{\"detail\":\"No Environment matches the given query.\"}\nError: GET http://host.docker.internal:8300/api/v1/environments/243/metrics/ returned 404 Not Found\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\n\n== api/v1/metric/\n<!doctype html><html lang=\"en-GB\"><head><meta name=\"robots\" content=\"noindex, nofollow\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no\"><meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\"><meta name=\"description\" content=\"Manage your Feature Flags, Feature Toggles and Remote Config in your Mobile, React, Rea",
+          "isError": false,
+          "ms": 3130
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 274,
+        "cacheRead": 1825,
+        "cacheWrite": 1527
+      },
+      "costUsd": 0.00034632500000000003,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "for p in api/v1/schema/ api/v1/docs/ api/v1/swagger.json api/v1/openapi.json; do echo \"== $p\"; flagsmith api $p 2>&1 | head -c 300; echo; done; flagsmith api api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/ 2>&1 | head -c 600"
+          },
+          "output": "== api/v1/schema/\n<!doctype html><html lang=\"en-GB\"><head><meta name=\"robots\" content=\"noindex, nofollow\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no\"><meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\"><meta name=\"descripti\n== api/v1/docs/\n<!DOCTYPE html>\n<html>\n  <head>\n    \n    <title>Flagsmith API</title>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <link rel=\"icon\" href=\"https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/favicon-32x32.png\">\n    <link rel=\"stylesheet\" href\n== api/v1/swagger.json\n{\n    \"$schema\": \"https://spec.openapis.org/oas/3.1/dialect/base\",\n    \"openapi\": \"3.1.0\",\n    \"info\": {\n        \"title\": \"Flagsmith API\",\n        \"version\": \"v1\",\n        \"description\": \"Flagsmith's Core and SDK APIs. Check out <a href='https://docs.flagsmith.com'>Flagsmith documentation</a>.\",\n   \n== api/v1/openapi.json\n<!doctype html><html lang=\"en-GB\"><head><meta name=\"robots\" content=\"noindex, nofollow\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no\"><meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\"><meta name=\"descripti\n{\"id\":243,\"uuid\":\"7820a741-d064-41f3-a932-f7b38ece9459\",\"name\":\"Production\",\"api_key\":\"8hByYNiLQPfsRR8FRmbBSv\",\"description\":null,\"project\":122,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false,\"metadata\":[],\"total_segment_overrides\":0}",
+          "isError": false,
+          "ms": 7894
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 270,
+        "cacheRead": 3352,
+        "cacheWrite": 1186
+      },
+      "costUsd": 0.00031697,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api api/v1/swagger.json > /tmp/s.json; jq -r '.paths | keys[]' /tmp/s.json | grep -i -E \"metric|experiment|event\"; jq -r '.components.schemas | keys[]' /tmp/s.json | grep -i -E \"metric|experiment|event\""
+          },
+          "output": "/api/v1/environments/{environment_api_key}/experiment-metrics/\n/api/v1/environments/{environment_api_key}/experiment-metrics/{id}/\n/api/v1/environments/{environment_api_key}/experiments/\n/api/v1/environments/{environment_api_key}/experiments/results/\n/api/v1/environments/{environment_api_key}/experiments/{experiment_experiment_id}/metrics/\n/api/v1/environments/{environment_api_key}/experiments/{experiment_experiment_id}/metrics/{id}/\n/api/v1/environments/{environment_api_key}/experiments/{experiment_id}/\n/api/v1/environments/{environment_api_key}/experiments/{experiment_id}/complete/\n/api/v1/environments/{environment_api_key}/experiments/{experiment_id}/exposures/\n/api/v1/environments/{environment_api_key}/experiments/{experiment_id}/exposures/refresh/\n/api/v1/environments/{environment_api_key}/experiments/{experiment_id}/pause/\n/api/v1/environments/{environment_api_key}/experiments/{experiment_id}/results/\n/api/v1/environments/{environment_api_key}/experiments/{experiment_id}/results/refresh/\n/api/v1/environments/{environment_api_key}/experiments/{experiment_id}/rollout/\n/api/v1/environments/{environment_api_key}/experiments/{experiment_id}/start/\n/api/v1/environments/{environment_api_key}/metrics/\n/api/v1/environments/{environment_api_key}/warehouse-connections/{connection_id}/events/\n/api/v1/events/\n/api/v1/projects/{project_pk}/feature-health/events/\n/api/v1/projects/{project_pk}/feature-health/events/{id}/dismiss/\nEnvironmentMetrics\nExperiment\nExperimentAudience\nExperimentDetail\nExperimentFeature\nExperimentList\nExperimentMetric\nExperimentMetricInline\nExperimentResults\nExperimentRollout\nExperimentRolloutDecision\nExperimentStatistics\nExperimentVariantResult\nFeatureHealthEvent\nFeatureHealthEventReason\nFeatureHealthEventReasonTextBlock\nFeatureHealthEventReasonUrlBlock\nFeatureHealthEventTypeEnum\nMetric\nMetricItem\nPaginatedEnvironmentMetricsList\nPaginatedExperimentListList\nPaginatedMetricList\nPatchedExperiment\nPatchedExperimentMetric\nPatchedExperimentRollout\nPatchedMetric\nSDKEventBatchResult\nSDKEventBatchResultRejectedSDKEvent\nSDKExperimentationEvent\nSDKExperimentationEventBatch\nV1EnvironmentDocumentResponseExperimentMetadata\nV1IdentitiesResponseExperimentMetadata\nWarehouseEventNamesResult\nWarehouseEventNamesUnavailable\nWarehouseEventNamesUnsupported",
+          "isError": false,
+          "ms": 5085
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 153,
+        "cacheRead": 4538,
+        "cacheWrite": 1112
+      },
+      "costUsd": 0.00026108,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "jq '.components.schemas.ExperimentMetric, .components.schemas.ExperimentMetricInline' /tmp/s.json; jq '.paths[\"/api/v1/environments/{environment_api_key}/experiment-metrics/\"]' /tmp/s.json | jq 'keys, (.post.requestBody // .post.parameters)' | head -80; jq '.components.schemas | to_entries[] | select(.key|test(\"Metric\")) | {k:.key, p:(.value.properties|keys)}' /tmp/s.json"
+          },
+          "output": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"integer\",\n      \"readOnly\": true\n    },\n    \"metric\": {\n      \"type\": \"integer\"\n    },\n    \"metric_name\": {\n      \"type\": \"string\",\n      \"readOnly\": true\n    },\n    \"aggregation\": {\n      \"type\": \"string\",\n      \"readOnly\": true\n    },\n    \"direction\": {\n      \"allOf\": [\n        {\n          \"$ref\": \"#/components/schemas/DirectionEnum\"\n        }\n      ],\n      \"readOnly\": true\n    },\n    \"expected_direction\": {\n      \"$ref\": \"#/components/schemas/ExpectedDirectionEnum\"\n    },\n    \"created_at\": {\n      \"type\": \"string\",\n      \"format\": \"date-time\",\n      \"readOnly\": true\n    }\n  },\n  \"required\": [\n    \"expected_direction\",\n    \"metric\"\n  ]\n}\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"metric\": {\n      \"type\": \"string\"\n    },\n    \"expected_direction\": {\n      \"$ref\": \"#/components/schemas/ExpectedDirectionEnum\"\n    }\n  },\n  \"required\": [\n    \"expected_direction\",\n    \"metric\"\n  ]\n}\n[\n  \"get\",\n  \"post\"\n]\n{\n  \"content\": {\n    \"application/json\": {\n      \"schema\": {\n        \"$ref\": \"#/components/schemas/Metric\"\n      }\n    },\n    \"application/x-www-form-urlencoded\": {\n      \"schema\": {\n        \"$ref\": \"#/components/schemas/Metric\"\n      }\n    },\n    \"multipart/form-data\": {\n      \"schema\": {\n        \"$ref\": \"#/components/schemas/Metric\"\n      }\n    }\n  },\n  \"required\": true\n}\n{\n  \"k\": \"EnvironmentMetrics\",\n  \"p\": [\n    \"metrics\"\n  ]\n}\n{\n  \"k\": \"ExperimentMetric\",\n  \"p\": [\n    \"aggregation\",\n    \"created_at\",\n    \"direction\",\n    \"expected_direction\",\n    \"id\",\n    \"metric\",\n    \"metric_name\"\n  ]\n}\n{\n  \"k\": \"ExperimentMetricInline\",\n  \"p\": [\n    \"expected_direction\",\n    \"metric\"\n  ]\n}\n{\n  \"k\": \"Metric\",\n  \"p\": [\n    \"aggregation\",\n    \"created_at\",\n    \"definition\",\n    \"description\",\n    \"direction\",\n    \"experiments\",\n    \"id\",\n    \"name\",\n    \"updated_at\"\n  ]\n}\n{\n  \"k\": \"MetricItem\",\n  \"p\": [\n    \"description\",\n    \"entity\",\n    \"name\",\n    \"rank\",\n    \"value\"\n  ]\n}\n{\n  \"k\": \"PaginatedEnvironmentMetricsList\",\n  \"p\": [\n    \"count\",\n    \"next\",\n    \"previous\",\n    \"results\"\n  ]\n}\n{\n  \"k\": \"PaginatedMetricList\",\n  \"p\": [\n    \"count\",\n    \"next\",\n    \"previous\",\n    \"results\"\n  ]\n}\n{\n  \"k\": \"PatchedExperimentMetric\",\n  \"p\": [\n    \"aggregation\",\n    \"created_at\",\n    \"direction\",\n    \"expected_direction\",\n    \"id\",\n    \"metric\",\n    \"metric_name\"\n  ]\n}\n{\n  \"k\": \"PatchedMetric\",\n  \"p\": [\n    \"aggregation\",\n    \"created_at\",\n    \"definition\",\n    \"description\",\n    \"direction\",\n    \"experiments\",\n    \"id\",\n    \"name\",\n    \"updated_at\"\n  ]\n}",
+          "isError": false,
+          "ms": 1656
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 223,
+        "cacheRead": 5650,
+        "cacheWrite": 1215
+      },
+      "costUsd": 0.000320075,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 7,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "jq '.components.schemas.Metric, .components.schemas.ExpectedDirectionEnum, .components.schemas.DirectionEnum' /tmp/s.json; jq '.paths[\"/api/v1/environments/{environment_api_key}/metrics/\"] | keys' /tmp/s.json; jq '.paths[\"/api/v1/environments/{environment_api_key}/metrics/\"].post' /tmp/s.json | head -60"
+          },
+          "output": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"integer\",\n      \"readOnly\": true\n    },\n    \"name\": {\n      \"type\": \"string\",\n      \"maxLength\": 255\n    },\n    \"description\": {\n      \"type\": \"string\"\n    },\n    \"aggregation\": {\n      \"$ref\": \"#/components/schemas/AggregationEnum\"\n    },\n    \"direction\": {\n      \"$ref\": \"#/components/schemas/DirectionEnum\"\n    },\n    \"definition\": {},\n    \"experiments\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"description\": \"A lightweight view of an experiment using a metric, as returned in the\\nmetric's ``experiments`` field.\",\n        \"properties\": {\n          \"id\": {\n            \"type\": \"integer\"\n          },\n          \"name\": {\n            \"type\": \"string\"\n          },\n          \"status\": {\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"id\",\n          \"name\",\n          \"status\"\n        ]\n      },\n      \"readOnly\": true\n    },\n    \"created_at\": {\n      \"type\": \"string\",\n      \"format\": \"date-time\",\n      \"readOnly\": true\n    },\n    \"updated_at\": {\n      \"type\": \"string\",\n      \"format\": \"date-time\",\n      \"readOnly\": true\n    }\n  },\n  \"required\": [\n    \"definition\",\n    \"name\"\n  ]\n}\n{\n  \"enum\": [\n    \"increase\",\n    \"decrease\",\n    \"not_increase\",\n    \"not_decrease\"\n  ],\n  \"type\": \"string\",\n  \"description\": \"* `increase` - Increase\\n* `decrease` - Decrease\\n* `not_increase` - Should not increase\\n* `not_decrease` - Should not decrease\"\n}\n{\n  \"enum\": [\n    \"up\",\n    \"down\",\n    \"informational\"\n  ],\n  \"type\": \"string\",\n  \"description\": \"* `up` - Higher is better\\n* `down` - Lower is better\\n* `informational` - Informational only\"\n}\n[\n  \"get\"\n]\nnull",
+          "isError": false,
+          "ms": 1175
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 192,
+        "cacheRead": 6865,
+        "cacheWrite": 1367
+      },
+      "costUsd": 0.00033572500000000004,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 8,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "jq '.components.schemas.AggregationEnum' /tmp/s.json; flagsmith api api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/metrics/ 2>&1 | jq . | head -150; echo ---; flagsmith api api/v1/events/ 2>&1 | head -c 800; echo; flagsmith api api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/warehouse-connections/ 2>&1 | head -c 300"
+          },
+          "output": "{\n  \"enum\": [\n    \"count\",\n    \"sum\",\n    \"mean\",\n    \"occurrence\"\n  ],\n  \"type\": \"string\",\n  \"description\": \"* `count` - Count\\n* `sum` - Sum\\n* `mean` - Mean\\n* `occurrence` - Occurrence (event happened at least once)\"\n}\n{\n  \"metrics\": [\n    {\n      \"value\": 3,\n      \"description\": \"Total features\",\n      \"name\": \"total_features\",\n      \"entity\": \"features\",\n      \"rank\": 1\n    },\n    {\n      \"value\": 1,\n      \"description\": \"Features enabled\",\n      \"name\": \"enabled_features\",\n      \"entity\": \"features\",\n      \"rank\": 2\n    },\n    {\n      \"value\": 0,\n      \"description\": \"Segment overrides\",\n      \"name\": \"segment_overrides\",\n      \"entity\": \"segments\",\n      \"rank\": 3\n    },\n    {\n      \"value\": 0,\n      \"description\": \"Identity overrides\",\n      \"name\": \"identity_overrides\",\n      \"entity\": \"identities\",\n      \"rank\": 4\n    }\n  ]\n}\n---\n{\"detail\":\"Invalid or missing Environment key\"}\nError: GET http://host.docker.internal:8300/api/v1/events/ returned 403 Forbidden\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\n\n[]",
+          "isError": false,
+          "ms": 6315
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 294,
+        "cacheRead": 8232,
+        "cacheWrite": 845
+      },
+      "costUsd": 0.00033514499999999996,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 9,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "jq '.paths | to_entries[] | select(.key|test(\"metric\")) | {p:.key, m:(.value|keys), desc:(.value[.value|keys[0]].description // \"\")}' /tmp/s.json | head -120; jq '.paths[\"/api/v1/environments/{environment_api_key}/experiment-metrics/\"].post.description, .paths[\"/api/v1/environments/{environment_api_key}/experiments/{experiment_experiment_id}/metrics/\"].post.description' /tmp/s.json"
+          },
+          "output": "{\n  \"p\": \"/api/v1/environments/{environment_api_key}/experiment-metrics/\",\n  \"m\": [\n    \"get\",\n    \"post\"\n  ],\n  \"desc\": \"(Beta) Lists experiment metrics for an environment. Supports search by name via the q parameter.\"\n}\n{\n  \"p\": \"/api/v1/environments/{environment_api_key}/experiment-metrics/{id}/\",\n  \"m\": [\n    \"delete\",\n    \"get\",\n    \"patch\",\n    \"put\"\n  ],\n  \"desc\": \"Manage experiment metrics for an environment.\"\n}\n{\n  \"p\": \"/api/v1/environments/{environment_api_key}/experiments/{experiment_experiment_id}/metrics/\",\n  \"m\": [\n    \"get\",\n    \"post\"\n  ],\n  \"desc\": \"Manage metrics for an experiment.\"\n}\n{\n  \"p\": \"/api/v1/environments/{environment_api_key}/experiments/{experiment_experiment_id}/metrics/{id}/\",\n  \"m\": [\n    \"delete\",\n    \"get\",\n    \"patch\",\n    \"put\"\n  ],\n  \"desc\": \"Manage metrics for an experiment.\"\n}\n{\n  \"p\": \"/api/v1/environments/{environment_api_key}/metrics/\",\n  \"m\": [\n    \"get\"\n  ],\n  \"desc\": \"Get metrics for this environment.\"\n}\n\"(Beta) Creates a metric with name, description, aggregation type, expected direction, and event definition.\"\n\"Manage metrics for an experiment.\"",
+          "isError": false,
+          "ms": 1121
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 500,
+        "cacheRead": 9077,
+        "cacheWrite": 748
+      },
+      "costUsd": 0.00043446999999999995,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 10,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "jq '.paths[\"/api/v1/environments/{environment_api_key}/experiment-metrics/\"] | .get.parameters, .post.requestBody, .post.responses[\"201\"]' /tmp/s.json | head -150"
+          },
+          "output": "[\n  {\n    \"in\": \"path\",\n    \"name\": \"environment_api_key\",\n    \"schema\": {\n      \"type\": \"string\"\n    },\n    \"required\": true\n  },\n  {\n    \"name\": \"page\",\n    \"required\": false,\n    \"in\": \"query\",\n    \"description\": \"A page number within the paginated result set.\",\n    \"schema\": {\n      \"type\": \"integer\"\n    }\n  },\n  {\n    \"name\": \"page_size\",\n    \"required\": false,\n    \"in\": \"query\",\n    \"description\": \"Number of results to return per page.\",\n    \"schema\": {\n      \"type\": \"integer\"\n    }\n  },\n  {\n    \"in\": \"query\",\n    \"name\": \"q\",\n    \"schema\": {\n      \"type\": \"string\"\n    },\n    \"description\": \"Search metrics by name.\"\n  }\n]\n{\n  \"content\": {\n    \"application/json\": {\n      \"schema\": {\n        \"$ref\": \"#/components/schemas/Metric\"\n      }\n    },\n    \"application/x-www-form-urlencoded\": {\n      \"schema\": {\n        \"$ref\": \"#/components/schemas/Metric\"\n      }\n    },\n    \"multipart/form-data\": {\n      \"schema\": {\n        \"$ref\": \"#/components/schemas/Metric\"\n      }\n    }\n  },\n  \"required\": true\n}\n{\n  \"content\": {\n    \"application/json\": {\n      \"schema\": {\n        \"$ref\": \"#/components/schemas/Metric\"\n      }\n    }\n  },\n  \"description\": \"\"\n}",
+          "isError": false,
+          "ms": 1046
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 200,
+        "cacheRead": 9825,
+        "cacheWrite": 999
+      },
+      "costUsd": 0.000323325,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 11,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ 2>&1 | jq . | head -80; flagsmith api api/v1/environments/6FdiCbubHb9HcrFKhU4kAi/experiment-metrics/ 2>&1 | jq . | head -80"
+          },
+          "output": "{\n  \"count\": 0,\n  \"next\": null,\n  \"previous\": null,\n  \"results\": []\n}\n{\n  \"count\": 0,\n  \"next\": null,\n  \"previous\": null,\n  \"results\": []\n}",
+          "isError": false,
+          "ms": 3709
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 236,
+        "cacheRead": 10824,
+        "cacheWrite": 662
+      },
+      "costUsd": 0.00030919,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 12,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "jq '.components.schemas.SDKExperimentationEvent, .components.schemas.WarehouseEventNamesResult' /tmp/s.json; jq '.paths[\"/api/v1/environments/{environment_api_key}/warehouse-connections/{connection_id}/events/\"].get' /tmp/s.json | head -40; jq '[.. | objects | select(has(\"description\")) | .description] | map(select(test(\"definition|event\";\"i\")))[]' /tmp/s.json | sort -u | head -40"
+          },
+          "output": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"event\": {\n      \"type\": \"string\",\n      \"maxLength\": 256\n    },\n    \"feature_name\": {\n      \"type\": [\n        \"string\",\n        \"null\"\n      ],\n      \"maxLength\": 2000\n    },\n    \"identifier\": {\n      \"type\": [\n        \"string\",\n        \"null\"\n      ],\n      \"maxLength\": 2000\n    },\n    \"timestamp\": {\n      \"type\": \"integer\"\n    },\n    \"value\": {\n      \"oneOf\": [\n        {},\n        {\n          \"type\": \"null\"\n        }\n      ]\n    },\n    \"traits\": {\n      \"type\": [\n        \"object\",\n        \"null\"\n      ],\n      \"additionalProperties\": {}\n    },\n    \"metadata\": {\n      \"oneOf\": [\n        {},\n        {\n          \"type\": \"null\"\n        }\n      ]\n    }\n  },\n  \"required\": [\n    \"event\",\n    \"timestamp\"\n  ]\n}\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"events\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"is_truncated\": {\n      \"type\": \"boolean\"\n    }\n  },\n  \"required\": [\n    \"events\",\n    \"is_truncated\"\n  ]\n}\n{\n  \"operationId\": \"api_v1_environments_warehouse_connections_events_list\",\n  \"description\": \"List the distinct event names in the connection's warehouse.\",\n  \"parameters\": [\n    {\n      \"in\": \"path\",\n      \"name\": \"connection_id\",\n      \"schema\": {\n        \"type\": \"integer\"\n      },\n      \"description\": \"A unique integer value identifying this warehouse connection.\",\n      \"required\": true\n    },\n    {\n      \"in\": \"path\",\n      \"name\": \"environment_api_key\",\n      \"schema\": {\n        \"type\": \"string\"\n      },\n      \"required\": true\n    }\n  ],\n  \"tags\": [\n    \"Environments\"\n  ],\n  \"security\": [\n    {\n      \"tokenAuth\": []\n    },\n    {\n      \"Master API Key\": []\n    }\n  ],\n  \"responses\": {\n    \"200\": {\n      \"content\": {\n        \"application/json\": {\n          \"schema\": {\n            \"$ref\": \"#/components/schemas/WarehouseEventNamesResult\"\n          }\n\n[stderr]\njq: error (at /tmp/s.json:41210): object ({\"type\":[\"string\",\"null\"]}) cannot be matched, as it is not a string",
+          "isError": false,
+          "ms": 1554
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 310,
+        "cacheRead": 11486,
+        "cacheWrite": 306
+      },
+      "costUsd": 0.00030831,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 13,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "grep -o -i '[^\"]*\\(definition\\|occurrence\\|event_name\\|\"event\"\\)[^\"]*' /tmp/s.json | sort | uniq -c | head -40; flagsmith api api/v1/docs/ 2>/dev/null | grep -o 'href=\"[^\"]*\"\\|src=\"[^\"]*\"' | head -20"
+          },
+          "output": "1                     \"event\",\n      1                     \"event\": {\n      1 (Beta) Creates a metric with name, description, aggregation type, expected direction, and event definition.\n      1 * `count` - Count\\n* `sum` - Sum\\n* `mean` - Mean\\n* `occurrence` - Occurrence (event happened at least once)\n      3 definition\n      1 occurrence\nhref=\"https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/favicon-32x32.png\"\nhref=\"https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/swagger-ui.css\"\nsrc=\"https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/swagger-ui-bundle.js\"\nsrc=\"https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/swagger-ui-standalone-preset.js\"",
+          "isError": false,
+          "ms": 1762
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 454,
+        "cacheRead": 11792,
+        "cacheWrite": 1089
+      },
+      "costUsd": 0.000481245,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 14,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; curl -s http://host.docker.internal:8300/ | grep -o 'src=\"[^\"]*\\.js\"' | head; "
+          },
+          "output": "[stderr]\nbash: line 1: curl: command not found",
+          "isError": false,
+          "ms": 413
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 487,
+        "cacheRead": 12881,
+        "cacheWrite": 764
+      },
+      "costUsd": 0.00046801,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 15,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; python3 - <<'EOF'\nimport urllib.request,re\nbase=\"http://host.docker.internal:8300\"\nhtml=urllib.request.urlopen(base+\"/\").read().decode()\nsrcs=re.findall(r'(?:src|href)=\"([^\"]+\\.js)\"',html)\nprint(srcs[:10])\nfor s in srcs:\n    u=s if s.startswith(\"http\") else base+s\n    try:\n        js=urllib.request.urlopen(u).read().decode(errors=\"ignore\")\n    except Exception as e: print(e); continue\n    for m in re.finditer(r'.{0,200}(occurrence|\"definition\").{0,200}',js):\n        print(u[-40:], m.group(0)[:400]); print('---')\nEOF"
+          },
+          "output": "[stderr]\nbash: line 1: python3: command not found\n[exit code 127]",
+          "isError": true,
+          "ms": 368
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 295,
+        "cacheRead": 13645,
+        "cacheWrite": 511
+      },
+      "costUsd": 0.00034802499999999996,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 16,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; echo '{\"name\":\"checkout_completed\",\"description\":\"Whether the checkout_completed event happened at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"event\":\"checkout_completed\"}}' > /tmp/m.json; flagsmith api -X POST --input /tmp/m.json api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ 2>&1 | head -c 1500"
+          },
+          "output": "{\"definition\":[\"Definition must specify a supported 'version'.\"]}\nError: POST http://host.docker.internal:8300/api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ returned 400 Bad Request\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new",
+          "isError": false,
+          "ms": 2447
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 533,
+        "cacheRead": 14156,
+        "cacheWrite": 333
+      },
+      "costUsd": 0.00044988499999999997,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 17,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; for v in 1 v1 1.0 2; do echo \"{\\\"name\\\":\\\"probe\\\",\\\"aggregation\\\":\\\"occurrence\\\",\\\"direction\\\":\\\"up\\\",\\\"definition\\\":{\\\"version\\\":\\\"$v\\\",\\\"event\\\":\\\"checkout_completed\\\"}}\" > p.json; echo \"== $v\"; flagsmith api -X POST --input p.json api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ 2>&1 | head -c 400; echo; done"
+          },
+          "output": "== 1\n{\"definition\":[\"Definition must specify a supported 'version'.\"]}\nError: POST http://host.docker.internal:8300/api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ returned 400 Bad Request\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\n\n== v1\n{\"definition\":[\"Definition must specify a supported 'version'.\"]}\nError: POST http://host.docker.internal:8300/api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ returned 400 Bad Request\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\n\n== 1.0\n{\"definition\":[\"Definition must specify a supported 'version'.\"]}\nError: POST http://host.docker.internal:8300/api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ returned 400 Bad Request\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\n\n== 2\n{\"definition\":[\"Definition must specify a supported 'version'.\"]}\nError: POST http://host.docker.internal:8300/api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ returned 400 Bad Request\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new",
+          "isError": false,
+          "ms": 5462
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 265,
+        "cacheRead": 14489,
+        "cacheWrite": 671
+      },
+      "costUsd": 0.00036146500000000005,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 18,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "grep -n -i '\"version\"\\|supported\\|examples' /tmp/s.json | head -30; grep -n -i 'metric' /tmp/s.json | grep -v -i 'experiment-metrics\\|\"metric\":' | head -40"
+          },
+          "output": "6:        \"version\": \"v1\",\n12391:                                    \"$ref\": \"#/components/schemas/WarehouseEventNamesUnsupported\"\n18409:        \"/api/v1/organisations/{organisation_pk}/metadata-model-fields/supported-content-types/\": {\n18411:                \"operationId\": \"api_v1_organisations_metadata_model_fields_supported_content_types_list\",\n18456:        \"/api/v1/organisations/{organisation_pk}/metadata-model-fields/supported-required-for-models/\": {\n18458:                \"operationId\": \"api_v1_organisations_metadata_model_fields_supported_required_for_models_list\",\n27646:                    \"version\": {\n27722:                    \"version\": {\n27747:                    \"version\"\n31511:                    \"version\": {\n31674:                    \"version\": {\n34955:                    \"version\": {\n37062:                    \"version\": {\n40748:            \"WarehouseEventNamesUnsupported\": {\n40904:                    \"version\": {\n41076:                    \"version\": {\n4559:                \"operationId\": \"list_metrics\",\n4560:                \"description\": \"(Beta) Lists experiment metrics for an environment. Supports search by name via the q parameter.\",\n4594:                        \"description\": \"Search metrics by name.\"\n4613:                                    \"$ref\": \"#/components/schemas/PaginatedMetricList\"\n4622:                \"operationId\": \"create_metric\",\n4623:                \"description\": \"(Beta) Creates a metric with name, description, aggregation type, expected direction, and event definition.\",\n4641:                                \"$ref\": \"#/components/schemas/Metric\"\n4646:                                \"$ref\": \"#/components/schemas/Metric\"\n4651:                                \"$ref\": \"#/components/schemas/Metric\"\n4670:                                    \"$ref\": \"#/components/schemas/Metric\"\n4681:                \"operationId\": \"get_metric\",\n4682:                \"description\": \"(Beta) Retrieves details of a specific metric, including which experiments use it.\",\n4698:                        \"description\": \"A unique integer value identifying this metric.\",\n4718:                                    \"$ref\": \"#/components/schemas/Metric\"\n4727:                \"operationId\": \"update_metric\",\n4728:                \"description\": \"(Beta) Updates a metric's properties.\",\n4744:                        \"description\": \"A unique integer value identifying this metric.\",\n4755:                                \"$ref\": \"#/components/schemas/Metric\"\n4760:                                \"$ref\": \"#/components/schemas/Metric\"\n4765:                                \"$ref\": \"#/components/schemas/Metric\"\n4784:                                    \"$ref\": \"#/components/schemas/Metric\"\n4793:                \"operationId\": \"api_v1_environments_experiment_metrics_partial_update\",\n4794:                \"description\": \"Manage experiment metrics for an environment.\",\n4810:                        \"description\": \"A unique integer value identifying this metric.\",\n4821:                                \"$ref\": \"#/components/schemas/PatchedMetric\"\n4826:                                \"$ref\": \"#/components/schemas/PatchedMetric\"\n4831:                                \"$ref\": \"#/components/schemas/PatchedMetric\"\n4849:                                    \"$ref\": \"#/components/schemas/Metric\"\n4858:                \"operationId\": \"api_v1_environments_experiment_metrics_destroy\",\n4859:                \"description\": \"Manage experiment metrics for an environment.\",\n4875:                        \"description\": \"A unique integer value identifying this metric.\",\n4971:                \"description\": \"(Beta) Creates an experiment for a multivariate feature. Metrics can be attached inline. Only one active experiment per feature is allowed.\",\n5027:        \"/api/v1/environments/{environment_api_key}/experiments/{experiment_experiment_id}/metrics/\": {\n5029:                \"operationId\": \"api_v1_environments_experiments_metrics_list\",\n5030:                \"description\": \"Manage metrics fo",
+          "isError": false,
+          "ms": 424
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 252,
+        "cacheRead": 15160,
+        "cacheWrite": 823
+      },
+      "costUsd": 0.000380675,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 19,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "sed -n 4540,4560p /tmp/s.json | grep -n '\"/api' ; awk 'NR<=4622 && /\"\\/api/ {p=$0} NR==4622{print p}' /tmp/s.json; sed -n 27630,27660p /tmp/s.json"
+          },
+          "output": "18:        \"/api/v1/environments/{environment_api_key}/experiment-metrics/\": {\n        \"/api/v1/environments/{environment_api_key}/experiment-metrics/\": {\n                            \"$ref\": \"#/components/schemas/Metadata\"\n                        },\n                        \"writeOnly\": true\n                    },\n                    \"segment\": {\n                        \"type\": \"integer\",\n                        \"readOnly\": true\n                    },\n                    \"source_type\": {\n                        \"allOf\": [\n                            {\n                                \"$ref\": \"#/components/schemas/SourceTypeEnum\"\n                            }\n                        ],\n                        \"readOnly\": true\n                    },\n                    \"version\": {\n                        \"type\": \"integer\",\n                        \"readOnly\": true\n                    },\n                    \"created_at\": {\n                        \"type\": \"string\",\n                        \"format\": \"date-time\",\n                        \"readOnly\": true\n                    },\n                    \"last_synced_at\": {\n                        \"type\": [\n                            \"string\",\n                            \"null\"\n                        ],\n                        \"format\": \"date-time\",",
+          "isError": false,
+          "ms": 738
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 240,
+        "cacheRead": 15983,
+        "cacheWrite": 1669
+      },
+      "costUsd": 0.0004886550000000001,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 20,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; t(){ echo \"{\\\"name\\\":\\\"probe\\\",\\\"aggregation\\\":\\\"occurrence\\\",\\\"direction\\\":\\\"up\\\",\\\"definition\\\":$1}\" > p.json; flagsmith api -X POST --input p.json api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ 2>&1 | head -c 300; echo; }; t '{\"version\":\"v1\"}'; t '{\"version\":\"1\",\"event\":\"checkout_completed\"}'; t '{\"version\":\"v1\",\"event_name\":\"checkout_completed\"}'; t '{\"version\":\"v1\",\"type\":\"event\",\"event\":\"checkout_completed\"}'"
+          },
+          "output": "{\"definition\":[\"Definition must specify a supported 'version'.\"]}\nError: POST http://host.docker.internal:8300/api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ returned 400 Bad Request\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\n\n{\"definition\":[\"Definition must specify a supported 'version'.\"]}\nError: POST http://host.docker.internal:8300/api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ returned 400 Bad Request\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\n\n{\"definition\":[\"Definition must specify a supported 'version'.\"]}\nError: POST http://host.docker.internal:8300/api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ returned 400 Bad Request\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\n\n{\"definition\":[\"Definition must specify a supported 'version'.\"]}\nError: POST http://host.docker.internal:8300/api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ returned 400 Bad Request\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new",
+          "isError": false,
+          "ms": 4626
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 432,
+        "cacheRead": 17652,
+        "cacheWrite": 574
+      },
+      "costUsd": 0.00046447000000000003,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 21,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; t(){ echo \"{\\\"name\\\":\\\"probe\\\",\\\"aggregation\\\":\\\"occurrence\\\",\\\"direction\\\":\\\"up\\\",\\\"definition\\\":$1}\" > p.json; flagsmith api -X POST --input p.json api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ 2>&1 | head -c 200; echo; }; t '{\"version\":1,\"event\":\"checkout_completed\"}'; t '{\"version\":\"2\",\"event\":\"checkout_completed\"}'; t '{\"version\":\"v2\",\"event\":\"checkout_completed\"}'; t '\"checkout_completed\"'; t '{\"version\":\"1.0\",\"event_name\":\"checkout_completed\"}'"
+          },
+          "output": "{\"id\":41,\"name\":\"probe\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"checkout_completed\"},\"experiments\":[],\"created_at\":\"2026-11-27T20:26:14.098108Z\"\n{\"definition\":[\"Definition must specify a supported 'version'.\"]}\nError: POST http://host.docker.internal:8300/api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ returned 400 Bad Request\nT\n{\"definition\":[\"Definition must specify a supported 'version'.\"]}\nError: POST http://host.docker.internal:8300/api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ returned 400 Bad Request\nT\n{\"definition\":[\"Definition must be an object.\"]}\nError: POST http://host.docker.internal:8300/api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ returned 400 Bad Request\nThink this shouldn\n{\"definition\":[\"Definition must specify a supported 'version'.\"]}\nError: POST http://host.docker.internal:8300/api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ returned 400 Bad Request\nT",
+          "isError": false,
+          "ms": 2930
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 431,
+        "cacheRead": 18226,
+        "cacheWrite": 972
+      },
+      "costUsd": 0.00051946,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 22,
+      "text": "Oops: one of my probe requests succeeded and created a stray test metric named \"probe\" (id 41) in Production. I'm removing it now.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; flagsmith api -X DELETE api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/41/ 2>&1 | head -c 300; echo \"rc=$?\"; flagsmith api api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ | jq -c '.count, [.results[].name]'"
+          },
+          "output": "rc=0\n0\n[]",
+          "isError": false,
+          "ms": 2670
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 369,
+        "cacheRead": 19198,
+        "cacheWrite": 894
+      },
+      "costUsd": 0.00048843,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 23,
+      "text": "The stray probe is deleted and Production has no experiment metrics again. Now creating the real metric.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; echo '{\"name\":\"checkout_completed\",\"description\":\"Whether the checkout_completed event happened at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"checkout_completed\"}}' > /tmp/m.json; flagsmith api -X POST --input /tmp/m.json api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ 2>&1 | jq .; echo ---; flagsmith api api/v1/environments/8hByYNiLQPfsRR8FRmbBSv/experiment-metrics/ | jq -c '.count, [.results[] | {id,name,aggregation,direction,definition}]'"
+          },
+          "output": "{\n  \"id\": 42,\n  \"name\": \"checkout_completed\",\n  \"description\": \"Whether the checkout_completed event happened at least once per user\",\n  \"aggregation\": \"occurrence\",\n  \"direction\": \"up\",\n  \"definition\": {\n    \"version\": 1,\n    \"event\": \"checkout_completed\"\n  },\n  \"experiments\": [],\n  \"created_at\": \"2026-11-27T20:26:26.554385Z\",\n  \"updated_at\": \"2026-11-27T20:26:26.554397Z\"\n}\n---\n1\n[{\"id\":42,\"name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"event\":\"checkout_completed\",\"version\":1}}]",
+          "isError": false,
+          "ms": 2260
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 464,
+        "cacheRead": 20092,
+        "cacheWrite": 383
+      },
+      "costUsd": 0.000480995,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 24,
+      "text": "DONE: Created the Production experiment metric \"checkout_completed\" (id 42, aggregation `occurrence` = event happened at least once per user, direction `up` = higher is better, definition `{\"version\":1,\"event\":\"checkout_completed\"}`). Along the way I accidentally created a test metric named \"probe\" (id 41) in Production; I deleted it, and the only metric left there is id 42.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 129,
+        "cacheRead": 20475,
+        "cacheWrite": 695
+      },
+      "costUsd": 0.000356325,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:24:33.380Z"
+}

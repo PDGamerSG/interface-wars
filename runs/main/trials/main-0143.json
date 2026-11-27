@@ -1,0 +1,190 @@
+{
+  "trialId": "main-0143",
+  "index": 143,
+  "arm": "mcp",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "remove_segment_override",
+  "family": "repair",
+  "heldOut": true,
+  "task": "Remove the \"internal_staff\" segment override of the flag \"store_locator\" in Production. Keep the same override in Development.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.override.store_locator.internal_staff.enabled",
+      "before": true,
+      "after": null
+    },
+    {
+      "path": "env.Production.override.store_locator.internal_staff.value",
+      "before": "segment_copy",
+      "after": null
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Removed the \"internal_staff\" segment override (ID 54) for \"store_locator\" in Production (env 289), which now has no segment overrides. The Development override (ID 55) is still in place.",
+  "costUsd": 0.005561,
+  "usage": {
+    "input": 12,
+    "output": 780,
+    "cacheRead": 122352,
+    "cacheWrite": 31569
+  },
+  "toolCalls": 7,
+  "toolErrors": 0,
+  "turns": 5,
+  "ms": 37929,
+  "commands": [
+    "list_project_features {\"project_pk\":145,\"search\":\"store_locator\",\"environment\":289}",
+    "list_project_segments {\"project_pk\":145,\"q\":\"internal_staff\"}",
+    "list_feature_segments {\"environment\":289,\"feature\":565}",
+    "list_feature_segments {\"environment\":288,\"feature\":565}",
+    "delete_feature_segment {\"id\":54}",
+    "list_feature_segments {\"environment\":289,\"feature\":565}",
+    "list_feature_segments {\"environment\":288,\"feature\":565}"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 145,
+            "search": "store_locator",
+            "environment": 289
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":565,\"name\":\"store_locator\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"base\",\"created_date\":\"2026-11-27T20:28:00.852974Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"a2c14a69-1af2-4015-847d-cc786cd54814\"}],\"group_owners\":[],\"uuid\":\"dec3536d-8ed4-4e62-8caa-0ea8759fa776\",\"project\":145,\"environment_feature_state\":{\"id\":1182,\"feature_state_value\":\"base\",\"environment\":289,\"identity\":null,\"feature_segment\":null,\"enabled\":false},\"segment_feature_state\":null,\"num_segment_overrides\":1,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 316
+        },
+        {
+          "name": "list_project_segments",
+          "input": {
+            "project_pk": 145,
+            "q": "internal_staff"
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":64,\"uuid\":\"2e3bea8d-977e-487b-bb92-59ef123ea039\",\"created_at\":\"2026-11-27T20:28:01.665958Z\",\"updated_at\":\"2026-11-27T20:28:01.668932Z\",\"name\":\"internal_staff\",\"description\":null,\"project\":145,\"feature\":null,\"version_of\":64,\"rules\":[{\"id\":94,\"type\":\"ALL\",\"rules\":[{\"id\":95,\"type\":\"ANY\",\"conditions\":[{\"id\":64,\"operator\":\"EQUAL\",\"property\":\"email_domain\",\"value\":\"shop.example\",\"description\":null}]}],\"conditions\":[]}],\"metadata\":[],\"membership_counts\":[],\"managed_by\":\"\",\"cohort\":null,\"has_overrides\":true}]}",
+          "isError": false,
+          "ms": 304
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 233,
+        "cacheRead": 0,
+        "cacheWrite": 29562
+      },
+      "costUsd": 0.0038121500000000007,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "Now I'll list the segment overrides for the flag in both environments.",
+      "calls": [
+        {
+          "name": "list_feature_segments",
+          "input": {
+            "environment": 289,
+            "feature": 565
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":54,\"uuid\":\"32cb68ce-c9ea-45e2-8f30-b5f09a247c5b\",\"segment\":64,\"priority\":0,\"environment\":289,\"segment_name\":\"internal_staff\",\"is_feature_specific\":false,\"is_system_segment\":false,\"segment_managed_by\":\"\"}]}",
+          "isError": false,
+          "ms": 256
+        },
+        {
+          "name": "list_feature_segments",
+          "input": {
+            "environment": 288,
+            "feature": 565
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":55,\"uuid\":\"2191e5b7-8c24-45c6-ae7f-bb0eca3e4be3\",\"segment\":64,\"priority\":0,\"environment\":288,\"segment_name\":\"internal_staff\",\"is_feature_specific\":false,\"is_system_segment\":false,\"segment_managed_by\":\"\"}]}",
+          "isError": false,
+          "ms": 256
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 167,
+        "cacheRead": 29562,
+        "cacheWrite": 986
+      },
+      "costUsd": 0.00050257,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "The Production override is ID 54 (segment 64, internal_staff). Development's override (ID 55) stays as it is. Deleting the Production override now.",
+      "calls": [
+        {
+          "name": "delete_feature_segment",
+          "input": {
+            "id": 54
+          },
+          "output": "(no output)",
+          "isError": false,
+          "ms": 296
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 169,
+        "cacheRead": 30548,
+        "cacheWrite": 484
+      },
+      "costUsd": 0.00045068,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_feature_segments",
+          "input": {
+            "environment": 289,
+            "feature": 565
+          },
+          "output": "{\"count\":0,\"next\":null,\"previous\":null,\"results\":[]}",
+          "isError": false,
+          "ms": 263
+        },
+        {
+          "name": "list_feature_segments",
+          "input": {
+            "environment": 288,
+            "feature": 565
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":55,\"uuid\":\"2191e5b7-8c24-45c6-ae7f-bb0eca3e4be3\",\"segment\":64,\"priority\":0,\"environment\":288,\"segment_name\":\"internal_staff\",\"is_feature_specific\":false,\"is_system_segment\":false,\"segment_managed_by\":\"\"}]}",
+          "isError": false,
+          "ms": 258
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 145,
+        "cacheRead": 31032,
+        "cacheWrite": 178
+      },
+      "costUsd": 0.00040527,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "DONE: Removed the \"internal_staff\" segment override (ID 54) for \"store_locator\" in Production (env 289), which now has no segment overrides. The Development override (ID 55) is still in place.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 66,
+        "cacheRead": 31210,
+        "cacheWrite": 359
+      },
+      "costUsd": 0.00039017500000000004,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:28:00.487Z"
+}

@@ -1,0 +1,12 @@
+{
+  "run": "main",
+  "approvedArm": "cli_skill",
+  "suggested": "cli_skill",
+  "approver": "Pallab Das",
+  "at": "2026-11-27T20:54:28.363Z",
+  "experiment": {
+    "id": 1,
+    "status": "completed",
+    "rollout_decision": "variant"
+  }
+}

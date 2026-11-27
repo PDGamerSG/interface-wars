@@ -1,0 +1,306 @@
+{
+  "trialId": "main-0217",
+  "index": 217,
+  "arm": "mcp",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "create_experiment",
+  "family": "experiments",
+  "heldOut": false,
+  "task": "In Production, set up (but do not start) an experiment named \"one_click_buy_copy test\" on the multivariate flag \"one_click_buy_copy\". Hypothesis: \"Try it free\" increases signup completed versus \"Start free trial\". The primary metric \"signup_completed\" should increase, and \"support_ticket_opened\" is a guardrail that should not increase. Split users evenly between the control and the variation.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.experiment.one_click_buy_copy test.feature",
+      "before": null,
+      "after": "one_click_buy_copy"
+    },
+    {
+      "path": "env.Production.experiment.one_click_buy_copy test.hypothesis",
+      "before": null,
+      "after": "\"Try it free\" increases signup completed versus \"Start free trial\"."
+    },
+    {
+      "path": "env.Production.experiment.one_click_buy_copy test.metric.signup_completed",
+      "before": null,
+      "after": "increase"
+    },
+    {
+      "path": "env.Production.experiment.one_click_buy_copy test.metric.support_ticket_opened",
+      "before": null,
+      "after": "not_increase"
+    },
+    {
+      "path": "env.Production.experiment.one_click_buy_copy test.status",
+      "before": null,
+      "after": "created"
+    },
+    {
+      "path": "env.Production.override.one_click_buy_copy.experiment-42-rollout.enabled",
+      "before": null,
+      "after": false
+    },
+    {
+      "path": "env.Production.override.one_click_buy_copy.experiment-42-rollout.value",
+      "before": null,
+      "after": "Try it free"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Created experiment \"one_click_buy_copy test\" (id 42) in Production on the `one_click_buy_copy` flag, left in status \"created\" (not started). Primary metric `signup_completed` is set to increase, and guardrail `support_ticket_opened` is set to not increase. The variant \"Try it free\" gets 50% allocation. The \"Start free trial\" control is the flag's existing Production value, and I didn't change it. Rollout is disabled (`enabled: false`) and no audience segment is set.",
+  "costUsd": 0.00749,
+  "usage": {
+    "input": 14,
+    "output": 3022,
+    "cacheRead": 160968,
+    "cacheWrite": 34943
+  },
+  "toolCalls": 9,
+  "toolErrors": 1,
+  "turns": 6,
+  "ms": 22093,
+  "commands": [
+    "list_project_features {\"project_pk\":219,\"search\":\"one_click_buy_copy\",\"environment\":437}",
+    "list_metrics {\"environment_api_key\":\"3GLqDUiqjaLUmuoqipU4WC\",\"q\":\"signup_completed\"}",
+    "list_metrics {\"environment_api_key\":\"3GLqDUiqjaLUmuoqipU4WC\",\"q\":\"support_ticket_opened\"}",
+    "list_experiments {\"environment_api_key\":\"3GLqDUiqjaLUmuoqipU4WC\",\"q\":\"one_click_buy_copy\"}",
+    "list_feature_multivariate_options {\"feature_pk\":855,\"project_pk\":\"219\"}",
+    "get_feature_flag {\"id\":855,\"project_pk\":219}",
+    "create_experiment {\"environment_api_key\":\"3GLqDUiqjaLUmuoqipU4WC\",\"feature\":855,\"name\":\"one_click_buy_copy test\",\"hypothesis\":\"\\\"Try it free\\\" increases signup completed versus \\\"Start free trial\\\".\",\"status\":\"created\",\"metrics\":[{\"metric\":\"signup_completed\",\"expected_direction\":\"increase\"},{\"metric\":\"support_ticket_opened\",\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":false,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Try it free\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":84,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
+    "create_experiment {\"environment_api_key\":\"3GLqDUiqjaLUmuoqipU4WC\",\"feature\":855,\"name\":\"one_click_buy_copy test\",\"hypothesis\":\"\\\"Try it free\\\" increases signup completed versus \\\"Start free trial\\\".\",\"status\":\"created\",\"metrics\":[{\"metric\":65,\"expected_direction\":\"increase\"},{\"metric\":66,\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":false,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Try it free\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":84,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
+    "get_experiment {\"environment_api_key\":\"3GLqDUiqjaLUmuoqipU4WC\",\"experiment_id\":42}"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 219,
+            "search": "one_click_buy_copy",
+            "environment": 437
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":855,\"name\":\"one_click_buy_copy\",\"type\":\"MULTIVARIATE\",\"default_enabled\":true,\"initial_value\":\"Start free trial\",\"created_date\":\"2026-11-27T20:33:10.464640Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[{\"id\":84,\"uuid\":\"1f074b9e-19af-470f-ad96-35afb0a64f90\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Try it free\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"a2c14a69-1af2-4015-847d-cc786cd54814\"}],\"group_owners\":[],\"uuid\":\"dab0f70e-d403-4f4a-b46a-eb03662f425b\",\"project\":219,\"environment_feature_state\":{\"id\":1787,\"feature_state_value\":\"Start free trial\",\"environment\":437,\"identity\":null,\"feature_segment\":null,\"enabled\":true},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 299
+        },
+        {
+          "name": "list_metrics",
+          "input": {
+            "environment_api_key": "3GLqDUiqjaLUmuoqipU4WC",
+            "q": "signup_completed"
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":65,\"name\":\"signup_completed\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"event\":\"signup_completed\",\"version\":1},\"experiments\":[],\"created_at\":\"2026-11-27T20:33:10.789961Z\",\"updated_at\":\"2026-11-27T20:33:10.789969Z\"}]}",
+          "isError": false,
+          "ms": 350
+        },
+        {
+          "name": "list_metrics",
+          "input": {
+            "environment_api_key": "3GLqDUiqjaLUmuoqipU4WC",
+            "q": "support_ticket_opened"
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":66,\"name\":\"support_ticket_opened\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"down\",\"definition\":{\"event\":\"support_ticket_opened\",\"version\":1},\"experiments\":[],\"created_at\":\"2026-11-27T20:33:10.806747Z\",\"updated_at\":\"2026-11-27T20:33:10.806756Z\"}]}",
+          "isError": false,
+          "ms": 254
+        },
+        {
+          "name": "list_experiments",
+          "input": {
+            "environment_api_key": "3GLqDUiqjaLUmuoqipU4WC",
+            "q": "one_click_buy_copy"
+          },
+          "output": "{\"count\":0,\"next\":null,\"previous\":null,\"results\":[],\"status_counts\":{\"created\":0,\"running\":0,\"paused\":0,\"completed\":0}}",
+          "isError": false,
+          "ms": 253
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 506,
+        "cacheRead": 0,
+        "cacheWrite": 29656
+      },
+      "costUsd": 0.0039604,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_feature_multivariate_options",
+          "input": {
+            "feature_pk": 855,
+            "project_pk": "219"
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":84,\"uuid\":\"1f074b9e-19af-470f-ad96-35afb0a64f90\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Try it free\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\",\"feature\":855}]}",
+          "isError": false,
+          "ms": 248
+        },
+        {
+          "name": "get_feature_flag",
+          "input": {
+            "id": 855,
+            "project_pk": 219
+          },
+          "output": "{\"id\":855,\"name\":\"one_click_buy_copy\",\"type\":\"MULTIVARIATE\",\"default_enabled\":true,\"initial_value\":\"Start free trial\",\"created_date\":\"2026-11-27T20:33:10.464640Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[{\"id\":84,\"uuid\":\"1f074b9e-19af-470f-ad96-35afb0a64f90\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Try it free\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"a2c14a69-1af2-4015-847d-cc786cd54814\"}],\"group_owners\":[],\"uuid\":\"dab0f70e-d403-4f4a-b46a-eb03662f425b\",\"project\":219,\"environment_feature_state\":null,\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[]}",
+          "isError": false,
+          "ms": 258
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 428,
+        "cacheRead": 29656,
+        "cacheWrite": 1478
+      },
+      "costUsd": 0.00069551,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "create_experiment",
+          "input": {
+            "environment_api_key": "3GLqDUiqjaLUmuoqipU4WC",
+            "feature": 855,
+            "name": "one_click_buy_copy test",
+            "hypothesis": "\"Try it free\" increases signup completed versus \"Start free trial\".",
+            "status": "created",
+            "metrics": [
+              {
+                "metric": "signup_completed",
+                "expected_direction": "increase"
+              },
+              {
+                "metric": "support_ticket_opened",
+                "expected_direction": "not_increase"
+              }
+            ],
+            "experiment_rollout": {
+              "enabled": false,
+              "feature_state_value": {
+                "type": "string",
+                "value": "Try it free"
+              },
+              "multivariate_feature_state_values": [
+                {
+                  "multivariate_feature_option": 84,
+                  "percentage_allocation": 50
+                }
+              ],
+              "rollout_percentage": 100
+            }
+          },
+          "output": "Error calling tool 'create_experiment': HTTP error 400: Bad Request - {'metrics': [{'metric': ['Incorrect type. Expected pk value, received str.']}, {'metric': ['Incorrect type. Expected pk value, received str.']}]}",
+          "isError": true,
+          "ms": 254
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 1414,
+        "cacheRead": 31134,
+        "cacheWrite": 1063
+      },
+      "costUsd": 0.001151415,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "The metrics need numeric IDs, so I'll retry with the metric IDs (65 and 66).",
+      "calls": [
+        {
+          "name": "create_experiment",
+          "input": {
+            "environment_api_key": "3GLqDUiqjaLUmuoqipU4WC",
+            "feature": 855,
+            "name": "one_click_buy_copy test",
+            "hypothesis": "\"Try it free\" increases signup completed versus \"Start free trial\".",
+            "status": "created",
+            "metrics": [
+              {
+                "metric": 65,
+                "expected_direction": "increase"
+              },
+              {
+                "metric": 66,
+                "expected_direction": "not_increase"
+              }
+            ],
+            "experiment_rollout": {
+              "enabled": false,
+              "feature_state_value": {
+                "type": "string",
+                "value": "Try it free"
+              },
+              "multivariate_feature_state_values": [
+                {
+                  "multivariate_feature_option": 84,
+                  "percentage_allocation": 50
+                }
+              ],
+              "rollout_percentage": 100
+            }
+          },
+          "output": "{\"id\":42,\"feature\":855,\"name\":\"one_click_buy_copy test\",\"hypothesis\":\"\\\"Try it free\\\" increases signup completed versus \\\"Start free trial\\\".\",\"status\":\"created\",\"created_at\":\"2026-11-27T20:33:29.885646Z\",\"updated_at\":\"2026-11-27T20:33:29.894683Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
+          "isError": false,
+          "ms": 369
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 406,
+        "cacheRead": 32197,
+        "cacheWrite": 1515
+      },
+      "costUsd": 0.000714545,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "get_experiment",
+          "input": {
+            "environment_api_key": "3GLqDUiqjaLUmuoqipU4WC",
+            "experiment_id": 42
+          },
+          "output": "{\"id\":42,\"feature\":{\"id\":855,\"name\":\"one_click_buy_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Start free trial\",\"multivariate_options\":[{\"id\":84,\"uuid\":\"1f074b9e-19af-470f-ad96-35afb0a64f90\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Try it free\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"one_click_buy_copy test\",\"hypothesis\":\"\\\"Try it free\\\" increases signup completed versus \\\"Start free trial\\\".\",\"status\":\"created\",\"metrics\":[{\"id\":56,\"metric\":65,\"metric_name\":\"signup_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:33:29.886176Z\"},{\"id\":57,\"metric\":66,\"metric_name\":\"support_ticket_opened\",\"aggregation\":\"occurrence\",\"direction\":\"down\",\"expected_direction\":\"not_increase\",\"created_at\":\"2026-11-27T20:33:29.886183Z\"}],\"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":100.0,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Try it free\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":84,\"percentage_allocation\":50.0}],\"audience\":{\"match\":\"any\",\"segments\":[]}},\"created_at\":\"2026-11-27T20:33:29.885646Z\",\"updated_at\":\"2026-11-27T20:33:29.894683Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
+          "isError": false,
+          "ms": 266
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 99,
+        "cacheRead": 33712,
+        "cacheWrite": 557
+      },
+      "costUsd": 0.000456445,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "DONE: Created experiment \"one_click_buy_copy test\" (id 42) in Production on the `one_click_buy_copy` flag, left in status \"created\" (not started). Primary metric `signup_completed` is set to increase, and guardrail `support_ticket_opened` is set to not increase. The variant \"Try it free\" gets 50% allocation. The \"Start free trial\" control is the flag's existing Production value, and I didn't change it. Rollout is disabled (`enabled: false`) and no audience segment is set.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 169,
+        "cacheRead": 34269,
+        "cacheWrite": 674
+      },
+      "costUsd": 0.00051164,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:33:10.075Z"
+}

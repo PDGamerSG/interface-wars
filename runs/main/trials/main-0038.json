@@ -1,0 +1,115 @@
+{
+  "trialId": "main-0038",
+  "index": 38,
+  "arm": "mcp",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "create_segment",
+  "family": "targeting",
+  "heldOut": false,
+  "task": "Create a segment named \"enterprise_accounts\" that matches users whose trait \"tier\" equals \"enterprise\".",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "segment.enterprise_accounts",
+      "before": null,
+      "after": "[{\"type\":\"ALL\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"tier\",\"value\":\"enterprise\"}],\"rules\":[]}]"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Created segment \"enterprise_accounts\" (id 18) in project 40 with one rule: trait \"tier\" EQUAL \"enterprise\". I re-fetched it and the rule is stored as specified.",
+  "costUsd": 0.004768,
+  "usage": {
+    "input": 8,
+    "output": 679,
+    "cacheRead": 59873,
+    "cacheWrite": 30633
+  },
+  "toolCalls": 2,
+  "toolErrors": 0,
+  "turns": 3,
+  "ms": 8586,
+  "commands": [
+    "create_project_segment {\"project_pk\":40,\"name\":\"enterprise_accounts\",\"rules\":[{\"type\":\"ALL\",\"conditions\":[{\"property\":\"tier\",\"operator\":\"EQUAL\",\"value\":\"enterprise\"}],\"rules\":[]}]}",
+    "get_project_segment {\"id\":18,\"project_pk\":40}"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "create_project_segment",
+          "input": {
+            "project_pk": 40,
+            "name": "enterprise_accounts",
+            "rules": [
+              {
+                "type": "ALL",
+                "conditions": [
+                  {
+                    "property": "tier",
+                    "operator": "EQUAL",
+                    "value": "enterprise"
+                  }
+                ],
+                "rules": []
+              }
+            ]
+          },
+          "output": "{\"id\":18,\"uuid\":\"0becc2e0-f03e-4a58-8029-8557bf773a65\",\"created_at\":\"2026-11-27T20:19:27.314511Z\",\"updated_at\":\"2026-11-27T20:19:27.317386Z\",\"name\":\"enterprise_accounts\",\"description\":null,\"project\":40,\"feature\":null,\"version_of\":18,\"rules\":[{\"id\":26,\"type\":\"ALL\",\"rules\":[],\"conditions\":[{\"id\":18,\"operator\":\"EQUAL\",\"property\":\"tier\",\"value\":\"enterprise\",\"description\":null}]}],\"metadata\":[],\"membership_counts\":[],\"managed_by\":\"\",\"cohort\":null,\"has_overrides\":false}",
+          "isError": false,
+          "ms": 547
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 520,
+        "cacheRead": 0,
+        "cacheWrite": 29560
+      },
+      "costUsd": 0.0039554,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "get_project_segment",
+          "input": {
+            "id": 18,
+            "project_pk": 40
+          },
+          "output": "{\"id\":18,\"uuid\":\"0becc2e0-f03e-4a58-8029-8557bf773a65\",\"created_at\":\"2026-11-27T20:19:27.314511Z\",\"updated_at\":\"2026-11-27T20:19:27.317386Z\",\"name\":\"enterprise_accounts\",\"description\":null,\"project\":40,\"feature\":null,\"version_of\":18,\"rules\":[{\"id\":26,\"type\":\"ALL\",\"rules\":[],\"conditions\":[{\"id\":18,\"operator\":\"EQUAL\",\"property\":\"tier\",\"value\":\"enterprise\",\"description\":null}]}],\"metadata\":[],\"membership_counts\":[],\"managed_by\":\"\",\"cohort\":null,\"has_overrides\":false}",
+          "isError": false,
+          "ms": 517
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 89,
+        "cacheRead": 29560,
+        "cacheWrite": 753
+      },
+      "costUsd": 0.000434425,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "DONE: Created segment \"enterprise_accounts\" (id 18) in project 40 with one rule: trait \"tier\" EQUAL \"enterprise\". I re-fetched it and the rule is stored as specified.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 70,
+        "cacheRead": 30313,
+        "cacheWrite": 320
+      },
+      "costUsd": 0.00037832999999999996,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:19:19.901Z"
+}

@@ -6,3 +6,4 @@ runs/tmp/
 runs/dryrun/
 runs/ci/
 runs/main.local.log
+*.local.log

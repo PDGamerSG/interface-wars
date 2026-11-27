@@ -1,0 +1,189 @@
+{
+  "trialId": "main-0119",
+  "index": 119,
+  "arm": "mcp",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "segment_override",
+  "family": "targeting",
+  "heldOut": true,
+  "task": "In Production, turn on the flag \"review_photos\" for the \"enterprise_accounts\" segment only, serving the value \"v2\". Everyone else in Production keeps the current setting, and Development is not changed.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.override.review_photos.enterprise_accounts.enabled",
+      "before": null,
+      "after": true
+    },
+    {
+      "path": "env.Production.override.review_photos.enterprise_accounts.value",
+      "before": null,
+      "after": "v2"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: In Production, \"review_photos\" now has an enabled segment override for \"enterprise_accounts\" (segment 51) serving \"v2\" (override id 1001). The base Production state is still off, and Development was not changed.",
+  "costUsd": 0.005902,
+  "usage": {
+    "input": 12,
+    "output": 1139,
+    "cacheRead": 123498,
+    "cacheWrite": 32770
+  },
+  "toolCalls": 6,
+  "toolErrors": 0,
+  "turns": 5,
+  "ms": 19321,
+  "commands": [
+    "list_project_features {\"project_pk\":121,\"search\":\"review_photos\",\"environment\":241}",
+    "list_project_segments {\"project_pk\":121,\"q\":\"enterprise_accounts\"}",
+    "list_project_environments {\"id\":121}",
+    "create_segment_override {\"environment_api_key\":\"58VPWaXjxgGp79ozCMpRHP\",\"feature_pk\":470,\"feature\":470,\"enabled\":true,\"feature_segment\":{\"segment\":51},\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"v2\"}}",
+    "list_feature_segments {\"environment\":241,\"feature\":470}",
+    "list_project_features {\"project_pk\":121,\"search\":\"review_photos\",\"environment\":241}"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 121,
+            "search": "review_photos",
+            "environment": 241
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":470,\"name\":\"review_photos\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"off_copy\",\"created_date\":\"2026-11-27T20:24:30.673317Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"a2c14a69-1af2-4015-847d-cc786cd54814\"}],\"group_owners\":[],\"uuid\":\"31be5a82-07df-4a19-8dda-770fb853c5c0\",\"project\":121,\"environment_feature_state\":{\"id\":982,\"feature_state_value\":\"off_copy\",\"environment\":241,\"identity\":null,\"feature_segment\":null,\"enabled\":false},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 395
+        },
+        {
+          "name": "list_project_segments",
+          "input": {
+            "project_pk": 121,
+            "q": "enterprise_accounts"
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":51,\"uuid\":\"32c46358-c2fb-4cf0-896d-3c57f8fa0dc5\",\"created_at\":\"2026-11-27T20:24:31.954705Z\",\"updated_at\":\"2026-11-27T20:24:31.957233Z\",\"name\":\"enterprise_accounts\",\"description\":null,\"project\":121,\"feature\":null,\"version_of\":51,\"rules\":[{\"id\":74,\"type\":\"ALL\",\"rules\":[{\"id\":75,\"type\":\"ANY\",\"conditions\":[{\"id\":51,\"operator\":\"EQUAL\",\"property\":\"tier\",\"value\":\"enterprise\",\"description\":null}]}],\"conditions\":[]}],\"metadata\":[],\"membership_counts\":[],\"managed_by\":\"\",\"cohort\":null,\"has_overrides\":false}]}",
+          "isError": false,
+          "ms": 277
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 257,
+        "cacheRead": 0,
+        "cacheWrite": 29589
+      },
+      "costUsd": 0.003827525,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_project_environments",
+          "input": {
+            "id": 121
+          },
+          "output": "{\"result\":[{\"id\":240,\"uuid\":\"88cf3df0-6bd7-42db-8745-7fabe9924631\",\"name\":\"Development\",\"api_key\":\"nA6n4yjUJm3fR2W6mNKNKU\",\"description\":null,\"project\":121,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false},{\"id\":241,\"uuid\":\"fe97a986-61ab-4a0c-adc8-83fe2aa89036\",\"name\":\"Production\",\"api_key\":\"58VPWaXjxgGp79ozCMpRHP\",\"description\":null,\"project\":121,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false}]}",
+          "isError": false,
+          "ms": 331
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 250,
+        "cacheRead": 29589,
+        "cacheWrite": 1018
+      },
+      "costUsd": 0.00054834,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "Production uses v1 versioning, so I'll add a segment override for the enterprise_accounts segment (id 51) on review_photos (id 470). The base Production state stays off.",
+      "calls": [
+        {
+          "name": "create_segment_override",
+          "input": {
+            "environment_api_key": "58VPWaXjxgGp79ozCMpRHP",
+            "feature_pk": 470,
+            "feature": 470,
+            "enabled": true,
+            "feature_segment": {
+              "segment": 51
+            },
+            "feature_state_value": {
+              "type": "unicode",
+              "string_value": "v2"
+            }
+          },
+          "output": "{\"id\":1001,\"feature\":470,\"enabled\":true,\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"v2\",\"integer_value\":null,\"boolean_value\":null},\"feature_segment\":{\"id\":44,\"segment\":51,\"priority\":0,\"uuid\":\"1a6c5fc8-a792-46d0-ba9c-627a44aa401b\"},\"deleted_at\":null,\"uuid\":\"4242f7d5-2c66-49e7-b84f-19993ec87f24\",\"created_at\":\"2026-11-27T20:24:45.299830Z\",\"updated_at\":\"2026-11-27T20:24:45.299845Z\",\"live_from\":\"2026-11-27T20:24:45.244217Z\",\"environment\":241,\"identity\":null,\"change_request\":null,\"multivariate_feature_state_values\":[]}",
+          "isError": false,
+          "ms": 2396
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 383,
+        "cacheRead": 30607,
+        "cacheWrite": 716
+      },
+      "costUsd": 0.00058727,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "Verifying the result.",
+      "calls": [
+        {
+          "name": "list_feature_segments",
+          "input": {
+            "environment": 241,
+            "feature": 470
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":44,\"uuid\":\"1a6c5fc8-a792-46d0-ba9c-627a44aa401b\",\"segment\":51,\"priority\":0,\"environment\":241,\"segment_name\":\"enterprise_accounts\",\"is_feature_specific\":false,\"is_system_segment\":false,\"segment_managed_by\":\"\"}]}",
+          "isError": false,
+          "ms": 1352
+        },
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 121,
+            "search": "review_photos",
+            "environment": 241
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":470,\"name\":\"review_photos\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"off_copy\",\"created_date\":\"2026-11-27T20:24:30.673317Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"a2c14a69-1af2-4015-847d-cc786cd54814\"}],\"group_owners\":[],\"uuid\":\"31be5a82-07df-4a19-8dda-770fb853c5c0\",\"project\":121,\"environment_feature_state\":{\"id\":982,\"feature_state_value\":\"off_copy\",\"environment\":241,\"identity\":null,\"feature_segment\":null,\"enabled\":false},\"segment_feature_state\":null,\"num_segment_overrides\":1,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 1130
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 177,
+        "cacheRead": 31323,
+        "cacheWrite": 656
+      },
+      "costUsd": 0.00048393,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "DONE: In Production, \"review_photos\" now has an enabled segment override for \"enterprise_accounts\" (segment 51) serving \"v2\" (override id 1001). The base Production state is still off, and Development was not changed.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 72,
+        "cacheRead": 31979,
+        "cacheWrite": 791
+      },
+      "costUsd": 0.000454865,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:24:30.069Z"
+}

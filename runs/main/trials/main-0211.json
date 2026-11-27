@@ -1,0 +1,136 @@
+{
+  "trialId": "main-0211",
+  "index": 211,
+  "arm": "mcp",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "kill_switch",
+  "family": "flags",
+  "heldOut": true,
+  "task": "Incident: the flag \"smart_reorder\" is causing checkout errors in Production. Turn it off in Production right now. Do not touch any other flag or environment.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.flag.smart_reorder.enabled",
+      "before": true,
+      "after": false
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: \"smart_reorder\" is now disabled in Production (environment 425). Its feature state (id 1742) went from enabled to disabled and the value \"compact\" is unchanged. I re-read the flag and confirmed it shows enabled: false. Development and all other flags were not touched.",
+  "costUsd": 0.005256,
+  "usage": {
+    "input": 10,
+    "output": 843,
+    "cacheRead": 90626,
+    "cacheWrite": 31421
+  },
+  "toolCalls": 3,
+  "toolErrors": 0,
+  "turns": 4,
+  "ms": 10043,
+  "commands": [
+    "list_project_features {\"project_pk\":213,\"search\":\"smart_reorder\",\"environment\":425}",
+    "update_feature_state {\"id__path\":1742,\"id\":1742,\"environment\":425,\"feature\":833,\"enabled\":false,\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"compact\"}}",
+    "list_project_features {\"project_pk\":213,\"search\":\"smart_reorder\",\"environment\":425}"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 213,
+            "search": "smart_reorder",
+            "environment": 425
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":833,\"name\":\"smart_reorder\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"compact\",\"created_date\":\"2026-11-27T20:32:56.679561Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"a2c14a69-1af2-4015-847d-cc786cd54814\"}],\"group_owners\":[],\"uuid\":\"3539b647-cab3-4e20-a5e6-6ebc75060fa3\",\"project\":213,\"environment_feature_state\":{\"id\":1742,\"feature_state_value\":\"compact\",\"environment\":425,\"identity\":null,\"feature_segment\":null,\"enabled\":true},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 295
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 157,
+        "cacheRead": 0,
+        "cacheWrite": 29577
+      },
+      "costUsd": 0.0037760250000000006,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "update_feature_state",
+          "input": {
+            "id__path": 1742,
+            "id": 1742,
+            "environment": 425,
+            "feature": 833,
+            "enabled": false,
+            "feature_state_value": {
+              "type": "unicode",
+              "string_value": "compact"
+            }
+          },
+          "output": "{\"id\":1742,\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"compact\",\"integer_value\":null,\"boolean_value\":null},\"multivariate_feature_state_values\":[],\"deleted_at\":null,\"uuid\":\"ae38870a-b433-4996-b221-a825e8a61e61\",\"enabled\":false,\"created_at\":\"2026-11-27T20:32:56.690966Z\",\"updated_at\":\"2026-11-27T20:33:02.287758Z\",\"live_from\":\"2026-11-27T20:32:56.690379Z\",\"version\":1,\"feature\":833,\"environment\":425,\"identity\":null,\"feature_segment\":null,\"change_request\":null,\"environment_feature_version\":null}",
+          "isError": false,
+          "ms": 322
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 484,
+        "cacheRead": 29577,
+        "cacheWrite": 589
+      },
+      "costUsd": 0.000611595,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "Verifying the result.",
+      "calls": [
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 213,
+            "search": "smart_reorder",
+            "environment": 425
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":833,\"name\":\"smart_reorder\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"compact\",\"created_date\":\"2026-11-27T20:32:56.679561Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"a2c14a69-1af2-4015-847d-cc786cd54814\"}],\"group_owners\":[],\"uuid\":\"3539b647-cab3-4e20-a5e6-6ebc75060fa3\",\"project\":213,\"environment_feature_state\":{\"id\":1742,\"feature_state_value\":\"compact\",\"environment\":425,\"identity\":null,\"feature_segment\":null,\"enabled\":false},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 273
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 108,
+        "cacheRead": 30166,
+        "cacheWrite": 717
+      },
+      "costUsd": 0.000445485,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "DONE: \"smart_reorder\" is now disabled in Production (environment 425). Its feature state (id 1742) went from enabled to disabled and the value \"compact\" is unchanged. I re-read the flag and confirmed it shows enabled: false. Development and all other flags were not touched.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 94,
+        "cacheRead": 30883,
+        "cacheWrite": 538
+      },
+      "costUsd": 0.00042328,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:32:56.351Z"
+}

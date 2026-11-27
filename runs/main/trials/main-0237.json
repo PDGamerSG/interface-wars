@@ -1,0 +1,172 @@
+{
+  "trialId": "main-0237",
+  "index": 237,
+  "arm": "cli",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "find_maintenance_flag",
+  "family": "repair",
+  "heldOut": false,
+  "task": "One flag in Production is enabled and serving the value \"maintenance\". Find it and turn it off in Production. Leave every other flag alone.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.flag.bulk_discounts.enabled",
+      "before": true,
+      "after": false
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: In Production, I disabled `bulk_discounts`, the only flag that was enabled and serving \"maintenance\". Its value is unchanged, and the other five flags are still in their previous state (`dark_mode` was already off).",
+  "costUsd": 0.001337,
+  "usage": {
+    "input": 14,
+    "output": 868,
+    "cacheRead": 16180,
+    "cacheWrite": 5920
+  },
+  "toolCalls": 5,
+  "toolErrors": 0,
+  "turns": 6,
+  "ms": 14173,
+  "commands": [
+    "flagsmith --help; echo ---; flagsmith features --help 2>&1 | head -50",
+    "flagsmith feature --help; echo ---; flagsmith flag --help; echo ---; flagsmith environment --help",
+    "flagsmith flag list -e ChjeukHTJwdKxL6wfAe2GF --json | jq '.' | head -100",
+    "flagsmith environment list --json | jq -c '.[] | {id,name,api_key}' 2>/dev/null || flagsmith environment list; echo ---; flagsmith flag get bulk_discounts -e ChjeukHTJwdKxL6wfAe2GF; echo ---; flagsmith flag disable --help",
+    "flagsmith flag disable bulk_discounts -e ChjeukHTJwdKxL6wfAe2GF --no-input --yes; echo ---; flagsmith flag list -e ChjeukHTJwdKxL6wfAe2GF --json | jq -c '.[] | {feature,enabled,value}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith --help; echo ---; flagsmith features --help 2>&1 | head -50"
+          },
+          "output": "The Flagsmith command-line interface\n\nUsage:\n  flagsmith [command] [flags]\n\nAvailable Commands:\n  api          Call the Flagsmith API with the CLI's credentials\n  auth         Inspect and manage authentication\n  completion   Generate the autocompletion script for the specified shell\n  config       Show the resolved context and where each value comes from\n  environment  Manage environments in the current project\n  evaluate     Show the flags an SDK resolves for the current environment\n  feature      Manage features in the current project\n  flag         Inspect feature flags in the current environment\n  help         Help about any command\n  init         Bind this directory to a Flagsmith project (writes flagsmith.json)\n  login        Log in to Flagsmith in your browser\n  logout       Log out of an instance and revoke the stored session\n  organisation Manage organisations\n  project      Manage projects\n  segment      Manage segments in the current project\n\nFlags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n  -h, --help                  help for flagsmith\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n  -v, --version               version for flagsmith\n      --yes                   answer confirmations affirmatively\n\nUse \"flagsmith [command] --help\" for more information about a command.\n---\nError: unknown command \"features\" for \"flagsmith\"\n\nDid you mean this?\n\tfeature\n\nRun 'flagsmith --help' for usage.",
+          "isError": false,
+          "ms": 54
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 76,
+        "cacheRead": 0,
+        "cacheWrite": 948
+      },
+      "costUsd": 0.00015690000000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith feature --help; echo ---; flagsmith flag --help; echo ---; flagsmith environment --help"
+          },
+          "output": "Manage features in the current project\n\nUsage:\n  flagsmith feature [command] [flags]\n\nAvailable Commands:\n  create      Create a feature\n  delete      Delete a feature\n  get         Show a feature and its variants\n  list        List features in the current project\n  update      Update a feature's description or archive state\n  variant     Manage a multivariate feature's variants\n\nFlags:\n  -h, --help   help for feature\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n\nUse \"flagsmith feature [command] --help\" for more information about a command.\n---\nInspect feature flags in the current environment\n\nUsage:\n  flagsmith flag [command] [flags]\n\nAvailable Commands:\n  delete      Delete a flag's segment override in the current environment\n  disable     Disable a flag (shorthand for `flag update --disable`)\n  enable      Enable a flag (shorthand for `flag update --enable`)\n  get         Show a single flag's state in the current environment\n  list        List every flag in the current environment\n  reorder     Re-permute a feature's segment override priorities\n  update      Change a flag's state in the current environment\n\nFlags:\n  -h, --help   help for flag\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n\nUse \"flagsmith flag [command] --help\" for more information about a command.\n---\nManage environments in the current project\n\nUsage:\n  flagsmith environment [command] [flags]\n\nAliases:\n  environment, env\n\nAvailable Commands:\n  clone       Clone an environment into a new one\n  create      Create an environment (mints a client-side key)\n  delete      Delete an environment\n  document    Output the environment document (JSON for local SDK evaluation)\n  get         Show an environment\n  key         Manage an environment's server-side SDK keys\n  list        List environments in the current project\n  update      Update an environment\n\nFlags:\n  -h, --help   help for environment\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n    ",
+          "isError": false,
+          "ms": 60
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 84,
+        "cacheRead": 948,
+        "cacheWrite": 864
+      },
+      "costUsd": 0.00015968000000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag list -e ChjeukHTJwdKxL6wfAe2GF --json | jq '.' | head -100"
+          },
+          "output": "[\n  {\n    \"feature\": \"bulk_discounts\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"maintenance\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"dark_mode\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": false,\n    \"value\": \"maintenance\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"review_photos\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"fast_lane\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"size_guide\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"tiered\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"guest_checkout\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"compact\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"order_tracking_v2\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"eu_west\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  }\n]",
+          "isError": false,
+          "ms": 703
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 88,
+        "cacheRead": 1812,
+        "cacheWrite": 1830
+      },
+      "costUsd": 0.00029107,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "Only `bulk_discounts` is both enabled and serving \"maintenance\" (`dark_mode` has the same value but is disabled). Before changing anything, I'll confirm the environment I'm targeting is Production.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith environment list --json | jq -c '.[] | {id,name,api_key}' 2>/dev/null || flagsmith environment list; echo ---; flagsmith flag get bulk_discounts -e ChjeukHTJwdKxL6wfAe2GF; echo ---; flagsmith flag disable --help"
+          },
+          "output": "{\"id\":476,\"name\":\"Development\",\"api_key\":\"jD2JaZw9QDUG4CmPToMJnf\"}\n{\"id\":477,\"name\":\"Production\",\"api_key\":\"ChjeukHTJwdKxL6wfAe2GF\"}\n---\nFeature              bulk_discounts\nDescription          \nType                 standard\nState                on\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nDisable a flag (shorthand for `flag update --disable`)\n\nUsage:\n  flagsmith flag disable <feature> [flags]\n\nExamples:\n  flagsmith flag disable onboarding\n  flagsmith flag disable onboarding --segment 12\n\nFlags:\n  -h, --help                help for disable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively",
+          "isError": false,
+          "ms": 1211
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 327,
+        "cacheRead": 3642,
+        "cacheWrite": 734
+      },
+      "costUsd": 0.00029187,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "Confirmed: the key `ChjeukHTJwdKxL6wfAe2GF` is Production, and `bulk_discounts` is the target. Disabling it now, with no segment or identity override.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag disable bulk_discounts -e ChjeukHTJwdKxL6wfAe2GF --no-input --yes; echo ---; flagsmith flag list -e ChjeukHTJwdKxL6wfAe2GF --json | jq -c '.[] | {feature,enabled,value}'"
+          },
+          "output": "Feature              bulk_discounts\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\n{\"feature\":\"bulk_discounts\",\"enabled\":false,\"value\":\"maintenance\"}\n{\"feature\":\"dark_mode\",\"enabled\":false,\"value\":\"maintenance\"}\n{\"feature\":\"review_photos\",\"enabled\":true,\"value\":\"fast_lane\"}\n{\"feature\":\"size_guide\",\"enabled\":true,\"value\":\"tiered\"}\n{\"feature\":\"guest_checkout\",\"enabled\":true,\"value\":\"compact\"}\n{\"feature\":\"order_tracking_v2\",\"enabled\":true,\"value\":\"eu_west\"}\n\n[stderr]\n✓ Disabled bulk_discounts in environment Production (ChjeukHTJwdKxL6wfAe2GF)",
+          "isError": false,
+          "ms": 1404
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 217,
+        "cacheRead": 4376,
+        "cacheWrite": 1026
+      },
+      "costUsd": 0.00028071000000000004,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "DONE: In Production, I disabled `bulk_discounts`, the only flag that was enabled and serving \"maintenance\". Its value is unchanged, and the other five flags are still in their previous state (`dark_mode` was already off).",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 76,
+        "cacheRead": 5402,
+        "cacheWrite": 518
+      },
+      "costUsd": 0.00015697,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:34:01.303Z"
+}

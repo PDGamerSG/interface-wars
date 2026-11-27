@@ -1,0 +1,172 @@
+{
+  "trialId": "main-0125",
+  "index": 125,
+  "arm": "cli",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "find_maintenance_flag",
+  "family": "repair",
+  "heldOut": false,
+  "task": "One flag in Production is enabled and serving the value \"maintenance\". Find it and turn it off in Production. Leave every other flag alone.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.flag.review_photos.enabled",
+      "before": true,
+      "after": false
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: In Production, `review_photos` was the only enabled flag serving \"maintenance\"; I turned it off (its value is still \"maintenance\"), and the other five flags are unchanged.",
+  "costUsd": 0.001189,
+  "usage": {
+    "input": 14,
+    "output": 789,
+    "cacheRead": 14277,
+    "cacheWrite": 5202
+  },
+  "toolCalls": 5,
+  "toolErrors": 1,
+  "turns": 6,
+  "ms": 22887,
+  "commands": [
+    "flagsmith --help; flagsmith features --help 2>/dev/null | head -50",
+    "flagsmith flag --help; flagsmith feature --help; flagsmith config",
+    "flagsmith flag list -e hXQiUuKh5wah6Mk24BMhSZ --json | jq '.' | head -100",
+    "flagsmith flag disable review_photos -e hXQiUuKh5wah6Mk24BMhSZ && flagsmith flag list -e hXQiUuKh5wah6Mk24BMhSZ --json | jq '.[] | {feature, enabled, value}'",
+    "flagsmith flag disable review_photos -e hXQiUuKh5wah6Mk24BMhSZ --yes && flagsmith flag list -e hXQiUuKh5wah6Mk24BMhSZ --json | jq '.[] | {feature, enabled, value}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith --help; flagsmith features --help 2>/dev/null | head -50"
+          },
+          "output": "The Flagsmith command-line interface\n\nUsage:\n  flagsmith [command] [flags]\n\nAvailable Commands:\n  api          Call the Flagsmith API with the CLI's credentials\n  auth         Inspect and manage authentication\n  completion   Generate the autocompletion script for the specified shell\n  config       Show the resolved context and where each value comes from\n  environment  Manage environments in the current project\n  evaluate     Show the flags an SDK resolves for the current environment\n  feature      Manage features in the current project\n  flag         Inspect feature flags in the current environment\n  help         Help about any command\n  init         Bind this directory to a Flagsmith project (writes flagsmith.json)\n  login        Log in to Flagsmith in your browser\n  logout       Log out of an instance and revoke the stored session\n  organisation Manage organisations\n  project      Manage projects\n  segment      Manage segments in the current project\n\nFlags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n  -h, --help                  help for flagsmith\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n  -v, --version               version for flagsmith\n      --yes                   answer confirmations affirmatively\n\nUse \"flagsmith [command] --help\" for more information about a command.",
+          "isError": false,
+          "ms": 1113
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 89,
+        "cacheRead": 0,
+        "cacheWrite": 948
+      },
+      "costUsd": 0.00016340000000000001,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag --help; flagsmith feature --help; flagsmith config"
+          },
+          "output": "Inspect feature flags in the current environment\n\nUsage:\n  flagsmith flag [command] [flags]\n\nAvailable Commands:\n  delete      Delete a flag's segment override in the current environment\n  disable     Disable a flag (shorthand for `flag update --disable`)\n  enable      Enable a flag (shorthand for `flag update --enable`)\n  get         Show a single flag's state in the current environment\n  list        List every flag in the current environment\n  reorder     Re-permute a feature's segment override priorities\n  update      Change a flag's state in the current environment\n\nFlags:\n  -h, --help   help for flag\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n\nUse \"flagsmith flag [command] --help\" for more information about a command.\nManage features in the current project\n\nUsage:\n  flagsmith feature [command] [flags]\n\nAvailable Commands:\n  create      Create a feature\n  delete      Delete a feature\n  get         Show a feature and its variants\n  list        List features in the current project\n  update      Update a feature's description or archive state\n  variant     Manage a multivariate feature's variants\n\nFlags:\n  -h, --help   help for feature\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n\nUse \"flagsmith feature [command] --help\" for more information about a command.\nConfig file    -                                  default\nProject        127                                env\nOrganisation   127                                env\nEnvironment    -                                  default\nAPI            http://host.docker.internal:8300   env\nSDK API        http://host.docker.internal:8300   default",
+          "isError": false,
+          "ms": 982
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 71,
+        "cacheRead": 948,
+        "cacheWrite": 827
+      },
+      "costUsd": 0.000148555,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag list -e hXQiUuKh5wah6Mk24BMhSZ --json | jq '.' | head -100"
+          },
+          "output": "[\n  {\n    \"feature\": \"review_photos\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"maintenance\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"price_alerts\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": false,\n    \"value\": \"maintenance\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"live_chat\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"compact\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"search_v2\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"blue\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"apple_pay\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"tiered\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"promo_banner\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"max_10\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  }\n]",
+          "isError": false,
+          "ms": 2875
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 89,
+        "cacheRead": 1775,
+        "cacheWrite": 1296
+      },
+      "costUsd": 0.00022444999999999998,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "The only flag that is enabled and serves \"maintenance\" in Production is `review_photos`. `price_alerts` also serves \"maintenance\" but is disabled, so I'll leave it alone. I'll disable `review_photos` in Production.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag disable review_photos -e hXQiUuKh5wah6Mk24BMhSZ && flagsmith flag list -e hXQiUuKh5wah6Mk24BMhSZ --json | jq '.[] | {feature, enabled, value}'"
+          },
+          "output": "[stderr]\nError: pass --yes to confirm \"Update review_photos in environment Production (hXQiUuKh5wah6Mk24BMhSZ)?\" without an interactive terminal\nUsage:\n  flagsmith flag disable <feature> [flags]\n\nExamples:\n  flagsmith flag disable onboarding\n  flagsmith flag disable onboarding --segment 12\n\nFlags:\n  -h, --help                help for disable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n[exit code 2]",
+          "isError": true,
+          "ms": 3005
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 295,
+        "cacheRead": 3071,
+        "cacheWrite": 724
+      },
+      "costUsd": 0.00026890999999999997,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "The CLI asked for confirmation. The prompt names the target as Production (hXQi...), so I'll confirm with `--yes`.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag disable review_photos -e hXQiUuKh5wah6Mk24BMhSZ --yes && flagsmith flag list -e hXQiUuKh5wah6Mk24BMhSZ --json | jq '.[] | {feature, enabled, value}'"
+          },
+          "output": "Feature              review_photos\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\n  \"feature\": \"review_photos\",\n  \"enabled\": false,\n  \"value\": \"maintenance\"\n}\n{\n  \"feature\": \"price_alerts\",\n  \"enabled\": false,\n  \"value\": \"maintenance\"\n}\n{\n  \"feature\": \"live_chat\",\n  \"enabled\": true,\n  \"value\": \"compact\"\n}\n{\n  \"feature\": \"search_v2\",\n  \"enabled\": true,\n  \"value\": \"blue\"\n}\n{\n  \"feature\": \"apple_pay\",\n  \"enabled\": true,\n  \"value\": \"tiered\"\n}\n{\n  \"feature\": \"promo_banner\",\n  \"enabled\": true,\n  \"value\": \"max_10\"\n}\n\n[stderr]\n✓ Disabled review_photos in environment Production (hXQiUuKh5wah6Mk24BMhSZ)",
+          "isError": false,
+          "ms": 6892
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 183,
+        "cacheRead": 3795,
+        "cacheWrite": 893
+      },
+      "costUsd": 0.00024127500000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "DONE: In Production, `review_photos` was the only enabled flag serving \"maintenance\"; I turned it off (its value is still \"maintenance\"), and the other five flags are unchanged.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 62,
+        "cacheRead": 4688,
+        "cacheWrite": 514
+      },
+      "costUsd": 0.00014232999999999997,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:25:03.524Z"
+}

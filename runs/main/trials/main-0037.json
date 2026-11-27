@@ -1,0 +1,124 @@
+{
+  "trialId": "main-0037",
+  "index": 37,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "change_split_in_production",
+  "family": "targeting",
+  "heldOut": false,
+  "task": "In Production only, change the traffic split of the multivariate flag \"price_alerts_copy\" so the \"Create account\" variation gets 70% of users and the rest stay on the control value. Development keeps its current split.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.flag.price_alerts_copy.split.Create account",
+      "before": 50,
+      "after": 70
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: In Production, \"Create account\" on price_alerts_copy is now at 70% (control \"Sign up\" keeps the remaining 30%), verified by read-back. Development is still at its existing 50% split and was not touched.",
+  "costUsd": 0.001081,
+  "usage": {
+    "input": 10,
+    "output": 752,
+    "cacheRead": 9225,
+    "cacheWrite": 4891
+  },
+  "toolCalls": 3,
+  "toolErrors": 0,
+  "turns": 4,
+  "ms": 18551,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "P=Xo2EaFgrmyvU3d9mVcEYvd; flagsmith flag get price_alerts_copy -e $P --json --jq '{enabled,value,variants}'; flagsmith feature variant list price_alerts_copy --json; flagsmith flag get price_alerts_copy -e Q7EBMQtegx7jYe57fU42Pp --json --jq '{enabled,value,variants}'",
+    "P=Xo2EaFgrmyvU3d9mVcEYvd; flagsmith flag update price_alerts_copy -e $P --weight b=70 --yes && flagsmith flag get price_alerts_copy -e $P --json --jq '{enabled,value,variants}'; flagsmith flag get price_alerts_copy -e Q7EBMQtegx7jYe57fU42Pp --json --jq '{enabled,value,variants}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 1032
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 89,
+        "cacheRead": 0,
+        "cacheWrite": 1112
+      },
+      "costUsd": 0.0001839,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=Xo2EaFgrmyvU3d9mVcEYvd; flagsmith flag get price_alerts_copy -e $P --json --jq '{enabled,value,variants}'; flagsmith feature variant list price_alerts_copy --json; flagsmith flag get price_alerts_copy -e Q7EBMQtegx7jYe57fU42Pp --json --jq '{enabled,value,variants}'"
+          },
+          "output": "{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":15,\"key\":\"b\",\"value\":\"Create account\",\"weight\":50}]}\n[\n  {\n    \"id\": 15,\n    \"value\": \"Create account\",\n    \"weight\": 50,\n    \"key\": \"b\"\n  }\n]\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":15,\"key\":\"b\",\"value\":\"Create account\",\"weight\":50}]}",
+          "isError": false,
+          "ms": 4240
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 186,
+        "cacheRead": 1112,
+        "cacheWrite": 2779
+      },
+      "costUsd": 0.00045169500000000006,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "Production currently has \"Create account\" (variant b) at 50%, with control \"Sign up\" on the remainder. Dev is also at 50%, and I'll leave it alone. Applying the change to Production only.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=Xo2EaFgrmyvU3d9mVcEYvd; flagsmith flag update price_alerts_copy -e $P --weight b=70 --yes && flagsmith flag get price_alerts_copy -e $P --json --jq '{enabled,value,variants}'; flagsmith flag get price_alerts_copy -e Q7EBMQtegx7jYe57fU42Pp --json --jq '{enabled,value,variants}'"
+          },
+          "output": "Feature              price_alerts_copy\nDescription          \nType                 multivariate\nState                on\nValue                Sign up\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n\nVariants\n  VALUE           WEIGHT  KEY  ID\n  Create account  70%     b    15\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":15,\"key\":\"b\",\"value\":\"Create account\",\"weight\":70}]}\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":15,\"key\":\"b\",\"value\":\"Create account\",\"weight\":50}]}\n\n[stderr]\n✓ Set price_alerts_copy weights to b=70 in environment Production (Xo2EaFgrmyvU3d9mVcEYvd)",
+          "isError": false,
+          "ms": 3794
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 403,
+        "cacheRead": 3891,
+        "cacheWrite": 331
+      },
+      "costUsd": 0.000281985,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "DONE: In Production, \"Create account\" on price_alerts_copy is now at 70% (control \"Sign up\" keeps the remaining 30%), verified by read-back. Development is still at its existing 50% split and was not touched.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 74,
+        "cacheRead": 4222,
+        "cacheWrite": 669
+      },
+      "costUsd": 0.000163045,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:19:19.729Z"
+}

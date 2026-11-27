@@ -1,0 +1,175 @@
+{
+  "trialId": "main-0071",
+  "index": 71,
+  "arm": "mcp",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "segment_override",
+  "family": "targeting",
+  "heldOut": true,
+  "task": "In Production, turn on the flag \"gift_wrap\" for the \"beta_testers\" segment only, serving the value \"beta_copy\". Everyone else in Production keeps the current setting, and Development is not changed.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.override.gift_wrap.beta_testers.enabled",
+      "before": null,
+      "after": true
+    },
+    {
+      "path": "env.Production.override.gift_wrap.beta_testers.value",
+      "before": null,
+      "after": "beta_copy"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: In Production, \"gift_wrap\" now has an enabled segment override for \"beta_testers\" serving \"beta_copy\" (override id 609). The Production default stays off with \"off_copy\", and Development was not touched.",
+  "costUsd": 0.005516,
+  "usage": {
+    "input": 10,
+    "output": 1003,
+    "cacheRead": 92648,
+    "cacheWrite": 32699
+  },
+  "toolCalls": 6,
+  "toolErrors": 0,
+  "turns": 4,
+  "ms": 11935,
+  "commands": [
+    "list_project_features {\"project_pk\":73,\"search\":\"gift_wrap\",\"environment\":145}",
+    "list_project_segments {\"project_pk\":73,\"q\":\"beta_testers\"}",
+    "list_environments {\"project\":73}",
+    "create_segment_override {\"environment_api_key\":\"GHuufgv6CcVtLgPaMFhSdS\",\"feature\":281,\"feature_pk\":281,\"enabled\":true,\"feature_segment\":{\"segment\":30},\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"beta_copy\"}}",
+    "list_feature_segments {\"environment\":145,\"feature\":281}",
+    "list_project_features {\"project_pk\":73,\"search\":\"gift_wrap\",\"environment\":145}"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 73,
+            "search": "gift_wrap",
+            "environment": 145
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":281,\"name\":\"gift_wrap\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"off_copy\",\"created_date\":\"2026-11-27T20:21:25.538672Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"a2c14a69-1af2-4015-847d-cc786cd54814\"}],\"group_owners\":[],\"uuid\":\"a7758d14-7938-4f4b-8eaa-ad1b22a6fa12\",\"project\":73,\"environment_feature_state\":{\"id\":586,\"feature_state_value\":\"off_copy\",\"environment\":145,\"identity\":null,\"feature_segment\":null,\"enabled\":false},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 935
+        },
+        {
+          "name": "list_project_segments",
+          "input": {
+            "project_pk": 73,
+            "q": "beta_testers"
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":30,\"uuid\":\"25468a9c-6575-477c-b80a-868eec971cae\",\"created_at\":\"2026-11-27T20:21:26.938494Z\",\"updated_at\":\"2026-11-27T20:21:26.941740Z\",\"name\":\"beta_testers\",\"description\":null,\"project\":73,\"feature\":null,\"version_of\":30,\"rules\":[{\"id\":43,\"type\":\"ALL\",\"rules\":[{\"id\":44,\"type\":\"ANY\",\"conditions\":[{\"id\":30,\"operator\":\"EQUAL\",\"property\":\"plan\",\"value\":\"beta\",\"description\":null}]}],\"conditions\":[]}],\"metadata\":[],\"membership_counts\":[],\"managed_by\":\"\",\"cohort\":null,\"has_overrides\":false}]}",
+          "isError": false,
+          "ms": 509
+        },
+        {
+          "name": "list_environments",
+          "input": {
+            "project": 73
+          },
+          "output": "{\"count\":2,\"next\":null,\"previous\":null,\"results\":[{\"id\":144,\"uuid\":\"1bb3590d-2d4d-45e6-8ee1-7feabc4cf421\",\"name\":\"Development\",\"api_key\":\"JwsXVAkzGWu9CSE8ZWSBS9\",\"description\":null,\"project\":73,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false,\"metadata\":[]},{\"id\":145,\"uuid\":\"0ec46d23-6dc4-45f9-aac9-7a8b5cf5afa7\",\"name\":\"Production\",\"api_key\":\"GHuufgv6CcVtLgPaMFhSdS\",\"description\":null,\"project\":73,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false,\"metadata\":[]}]}",
+          "isError": false,
+          "ms": 259
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 288,
+        "cacheRead": 0,
+        "cacheWrite": 29592
+      },
+      "costUsd": 0.0038434000000000007,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "create_segment_override",
+          "input": {
+            "environment_api_key": "GHuufgv6CcVtLgPaMFhSdS",
+            "feature": 281,
+            "feature_pk": 281,
+            "enabled": true,
+            "feature_segment": {
+              "segment": 30
+            },
+            "feature_state_value": {
+              "type": "unicode",
+              "string_value": "beta_copy"
+            }
+          },
+          "output": "{\"id\":609,\"feature\":281,\"enabled\":true,\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"beta_copy\",\"integer_value\":null,\"boolean_value\":null},\"feature_segment\":{\"id\":26,\"segment\":30,\"priority\":0,\"uuid\":\"463d5e5a-d0ab-43ad-8716-48942b43ea1d\"},\"deleted_at\":null,\"uuid\":\"ba375521-4f21-4e25-a77e-1f9e8c3fd26b\",\"created_at\":\"2026-11-27T20:21:34.927531Z\",\"updated_at\":\"2026-11-27T20:21:34.927540Z\",\"live_from\":\"2026-11-27T20:21:34.926162Z\",\"environment\":145,\"identity\":null,\"change_request\":null,\"multivariate_feature_state_values\":[]}",
+          "isError": false,
+          "ms": 498
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 452,
+        "cacheRead": 29592,
+        "cacheWrite": 1572
+      },
+      "costUsd": 0.00071862,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "Verifying the result and confirming the base state is unchanged.",
+      "calls": [
+        {
+          "name": "list_feature_segments",
+          "input": {
+            "environment": 145,
+            "feature": 281
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":26,\"uuid\":\"463d5e5a-d0ab-43ad-8716-48942b43ea1d\",\"segment\":30,\"priority\":0,\"environment\":145,\"segment_name\":\"beta_testers\",\"is_feature_specific\":false,\"is_system_segment\":false,\"segment_managed_by\":\"\"}]}",
+          "isError": false,
+          "ms": 283
+        },
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 73,
+            "search": "gift_wrap",
+            "environment": 145
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":281,\"name\":\"gift_wrap\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"off_copy\",\"created_date\":\"2026-11-27T20:21:25.538672Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"a2c14a69-1af2-4015-847d-cc786cd54814\"}],\"group_owners\":[],\"uuid\":\"a7758d14-7938-4f4b-8eaa-ad1b22a6fa12\",\"project\":73,\"environment_feature_state\":{\"id\":586,\"feature_state_value\":\"off_copy\",\"environment\":145,\"identity\":null,\"feature_segment\":null,\"enabled\":false},\"segment_feature_state\":null,\"num_segment_overrides\":1,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 393
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 191,
+        "cacheRead": 31164,
+        "cacheWrite": 728
+      },
+      "costUsd": 0.00049834,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "DONE: In Production, \"gift_wrap\" now has an enabled segment override for \"beta_testers\" serving \"beta_copy\" (override id 609). The Production default stays off with \"off_copy\", and Development was not touched.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 72,
+        "cacheRead": 31892,
+        "cacheWrite": 807
+      },
+      "costUsd": 0.000455995,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:21:25.065Z"
+}

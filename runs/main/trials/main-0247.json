@@ -1,0 +1,200 @@
+{
+  "trialId": "main-0247",
+  "index": 247,
+  "arm": "mcp",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "segment_override",
+  "family": "targeting",
+  "heldOut": true,
+  "task": "In Production, turn on the flag \"promo_banner\" for the \"mobile_app_users\" segment only, serving the value \"rounded\". Everyone else in Production keeps the current setting, and Development is not changed.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.override.promo_banner.mobile_app_users.enabled",
+      "before": null,
+      "after": true
+    },
+    {
+      "path": "env.Production.override.promo_banner.mobile_app_users.value",
+      "before": null,
+      "after": "rounded"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: In Production, `promo_banner` now has a segment override for `mobile_app_users` that is enabled and serves \"rounded\". The Production default is unchanged (still off, \"off_copy\"), and Development was not touched.",
+  "costUsd": 0.006009,
+  "usage": {
+    "input": 12,
+    "output": 1284,
+    "cacheRead": 123884,
+    "cacheWrite": 33015
+  },
+  "toolCalls": 7,
+  "toolErrors": 0,
+  "turns": 5,
+  "ms": 12882,
+  "commands": [
+    "list_project_features {\"project_pk\":249,\"search\":\"promo_banner\",\"environment\":498}",
+    "list_project_segments {\"project_pk\":249,\"q\":\"mobile_app_users\"}",
+    "list_feature_segments {\"environment\":498,\"feature\":974}",
+    "list_environments {\"project\":249}",
+    "create_segment_override {\"environment_api_key\":\"Rt8xpLWBF4hXAoJo6CLUwt\",\"feature_pk\":974,\"feature\":974,\"enabled\":true,\"feature_segment\":{\"segment\":106},\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"rounded\"}}",
+    "list_feature_segments {\"environment\":498,\"feature\":974}",
+    "list_project_features {\"project_pk\":249,\"search\":\"promo_banner\",\"environment\":498}"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 249,
+            "search": "promo_banner",
+            "environment": 498
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":974,\"name\":\"promo_banner\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"off_copy\",\"created_date\":\"2026-11-27T20:34:33.880611Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"a2c14a69-1af2-4015-847d-cc786cd54814\"}],\"group_owners\":[],\"uuid\":\"f7182f2a-0a40-4f83-a5f3-3694791af05c\",\"project\":249,\"environment_feature_state\":{\"id\":2038,\"feature_state_value\":\"off_copy\",\"environment\":498,\"identity\":null,\"feature_segment\":null,\"enabled\":false},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 291
+        },
+        {
+          "name": "list_project_segments",
+          "input": {
+            "project_pk": 249,
+            "q": "mobile_app_users"
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":106,\"uuid\":\"98976a30-4fc1-4048-a763-0a233de47230\",\"created_at\":\"2026-11-27T20:34:34.627891Z\",\"updated_at\":\"2026-11-27T20:34:34.631558Z\",\"name\":\"mobile_app_users\",\"description\":null,\"project\":249,\"feature\":null,\"version_of\":106,\"rules\":[{\"id\":156,\"type\":\"ALL\",\"rules\":[{\"id\":157,\"type\":\"ANY\",\"conditions\":[{\"id\":106,\"operator\":\"EQUAL\",\"property\":\"client\",\"value\":\"ios\",\"description\":null}]}],\"conditions\":[]}],\"metadata\":[],\"membership_counts\":[],\"managed_by\":\"\",\"cohort\":null,\"has_overrides\":false}]}",
+          "isError": false,
+          "ms": 269
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 292,
+        "cacheRead": 0,
+        "cacheWrite": 29589
+      },
+      "costUsd": 0.003845025,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_feature_segments",
+          "input": {
+            "environment": 498,
+            "feature": 974
+          },
+          "output": "{\"count\":0,\"next\":null,\"previous\":null,\"results\":[]}",
+          "isError": false,
+          "ms": 319
+        },
+        {
+          "name": "list_environments",
+          "input": {
+            "project": 249
+          },
+          "output": "{\"count\":2,\"next\":null,\"previous\":null,\"results\":[{\"id\":496,\"uuid\":\"cf3294e5-409c-495c-a6cd-f76eb6574522\",\"name\":\"Development\",\"api_key\":\"jhBJf842iCJvBREkmGBZQW\",\"description\":null,\"project\":249,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false,\"metadata\":[]},{\"id\":498,\"uuid\":\"e9330003-001a-45d4-b8be-7f229a286e7b\",\"name\":\"Production\",\"api_key\":\"Rt8xpLWBF4hXAoJo6CLUwt\",\"description\":null,\"project\":249,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false,\"metadata\":[]}]}",
+          "isError": false,
+          "ms": 254
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 245,
+        "cacheRead": 29589,
+        "cacheWrite": 1045
+      },
+      "costUsd": 0.0005492149999999999,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "Production uses v1 feature versioning, so I'll create a segment override on the feature in that environment. The environment default stays off.",
+      "calls": [
+        {
+          "name": "create_segment_override",
+          "input": {
+            "environment_api_key": "Rt8xpLWBF4hXAoJo6CLUwt",
+            "feature_pk": 974,
+            "feature": 974,
+            "enabled": true,
+            "feature_segment": {
+              "segment": 106
+            },
+            "feature_state_value": {
+              "type": "unicode",
+              "string_value": "rounded"
+            }
+          },
+          "output": "{\"id\":2070,\"feature\":974,\"enabled\":true,\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"rounded\",\"integer_value\":null,\"boolean_value\":null},\"feature_segment\":{\"id\":93,\"segment\":106,\"priority\":0,\"uuid\":\"c9eddeb8-27ed-4b10-9456-fef9e4ccde88\"},\"deleted_at\":null,\"uuid\":\"22932050-0dc3-4723-945c-b39f5a5fe94c\",\"created_at\":\"2026-11-27T20:34:44.791374Z\",\"updated_at\":\"2026-11-27T20:34:44.791379Z\",\"live_from\":\"2026-11-27T20:34:44.790755Z\",\"environment\":498,\"identity\":null,\"change_request\":null,\"multivariate_feature_state_values\":[]}",
+          "isError": false,
+          "ms": 286
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 482,
+        "cacheRead": 30634,
+        "cacheWrite": 819
+      },
+      "costUsd": 0.0006499149999999999,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "Verifying the result and confirming the Production default is unchanged.",
+      "calls": [
+        {
+          "name": "list_feature_segments",
+          "input": {
+            "environment": 498,
+            "feature": 974
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":93,\"uuid\":\"c9eddeb8-27ed-4b10-9456-fef9e4ccde88\",\"segment\":106,\"priority\":0,\"environment\":498,\"segment_name\":\"mobile_app_users\",\"is_feature_specific\":false,\"is_system_segment\":false,\"segment_managed_by\":\"\"}]}",
+          "isError": false,
+          "ms": 252
+        },
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 249,
+            "search": "promo_banner",
+            "environment": 498
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":974,\"name\":\"promo_banner\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"off_copy\",\"created_date\":\"2026-11-27T20:34:33.880611Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"a2c14a69-1af2-4015-847d-cc786cd54814\"}],\"group_owners\":[],\"uuid\":\"f7182f2a-0a40-4f83-a5f3-3694791af05c\",\"project\":249,\"environment_feature_state\":{\"id\":2038,\"feature_state_value\":\"off_copy\",\"environment\":498,\"identity\":null,\"feature_segment\":null,\"enabled\":false},\"segment_feature_state\":null,\"num_segment_overrides\":1,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 269
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 191,
+        "cacheRead": 31453,
+        "cacheWrite": 755
+      },
+      "costUsd": 0.000504605,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "DONE: In Production, `promo_banner` now has a segment override for `mobile_app_users` that is enabled and serves \"rounded\". The Production default is unchanged (still off, \"off_copy\"), and Development was not touched.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 74,
+        "cacheRead": 32208,
+        "cacheWrite": 807
+      },
+      "costUsd": 0.00046015499999999996,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:34:33.526Z"
+}

@@ -1,0 +1,206 @@
+{
+  "trialId": "main-0138",
+  "index": 138,
+  "arm": "mcp",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "start_experiment",
+  "family": "experiments",
+  "heldOut": false,
+  "task": "The experiment \"apple_pay_copy test\" in Production is set up but not running. Start it.",
+  "correct": false,
+  "reasons": [
+    "running: expected \"running\", got \"created\""
+  ],
+  "collateral": [],
+  "changes": [],
+  "outcome": "failed",
+  "finalText": "FAILED: I could not start the \"apple_pay_copy test\" experiment (id 26) in Production. The experiment is still in status \"created\" with nothing changed.\n\nThe only status-changing call available is `update_experiment`, and the API rejects every update that includes the `feature` field with \"Cannot change the feature of an existing experiment.\" The call is required by the schema, so I could not send a status-only update. Starting the experiment needs either a status-only update endpoint or a fix to that validation in the tool or API.",
+  "costUsd": 0.006432,
+  "usage": {
+    "input": 14,
+    "output": 1653,
+    "cacheRead": 153746,
+    "cacheWrite": 32536
+  },
+  "toolCalls": 5,
+  "toolErrors": 2,
+  "turns": 6,
+  "ms": 58781,
+  "commands": [
+    "list_experiments {\"environment_api_key\":\"P4GoJMG3gBhyneTnj6PxUv\",\"q\":\"apple_pay_copy\"}",
+    "get_experiment {\"environment_api_key\":\"P4GoJMG3gBhyneTnj6PxUv\",\"experiment_id\":26}",
+    "update_experiment {\"environment_api_key\":\"P4GoJMG3gBhyneTnj6PxUv\",\"experiment_id\":26,\"feature\":543,\"hypothesis\":\"Create account wins\",\"name\":\"apple_pay_copy test\",\"status\":\"running\",\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":55,\"percentage_allocation\":50}],\"audience\":{\"match\":\"any\",\"segment_ids\":[]}},\"metrics\":[{\"metric\":45,\"expected_direction\":\"increase\"}],\"updated_at\":\"2026-11-27T20:27:12.990146Z\"}",
+    "update_experiment {\"environment_api_key\":\"P4GoJMG3gBhyneTnj6PxUv\",\"experiment_id\":26,\"feature\":543,\"hypothesis\":\"Create account wins\",\"name\":\"apple_pay_copy test\",\"status\":\"running\"}",
+    "get_experiment {\"environment_api_key\":\"P4GoJMG3gBhyneTnj6PxUv\",\"experiment_id\":26}"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_experiments",
+          "input": {
+            "environment_api_key": "P4GoJMG3gBhyneTnj6PxUv",
+            "q": "apple_pay_copy"
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":26,\"feature\":{\"id\":543,\"name\":\"apple_pay_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"id\":55,\"uuid\":\"bd35de41-81ef-4f1e-9aa3-5e1dea921394\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Create account\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"apple_pay_copy test\",\"hypothesis\":\"Create account wins\",\"status\":\"created\",\"metrics\":[{\"id\":36,\"metric\":45,\"metric_name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:27:12.974964Z\"}],\"created_at\":\"2026-11-27T20:27:12.974419Z\",\"updated_at\":\"2026-11-27T20:27:12.990146Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}],\"status_counts\":{\"created\":1,\"running\":0,\"paused\":0,\"completed\":0}}",
+          "isError": false,
+          "ms": 288
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 157,
+        "cacheRead": 0,
+        "cacheWrite": 29554
+      },
+      "costUsd": 0.0037731500000000003,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "get_experiment",
+          "input": {
+            "environment_api_key": "P4GoJMG3gBhyneTnj6PxUv",
+            "experiment_id": 26
+          },
+          "output": "{\"id\":26,\"feature\":{\"id\":543,\"name\":\"apple_pay_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"id\":55,\"uuid\":\"bd35de41-81ef-4f1e-9aa3-5e1dea921394\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Create account\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"apple_pay_copy test\",\"hypothesis\":\"Create account wins\",\"status\":\"created\",\"metrics\":[{\"id\":36,\"metric\":45,\"metric_name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:27:12.974964Z\"}],\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100.0,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":55,\"percentage_allocation\":50.0}],\"audience\":{\"match\":\"any\",\"segments\":[]}},\"created_at\":\"2026-11-27T20:27:12.974419Z\",\"updated_at\":\"2026-11-27T20:27:12.990146Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
+          "isError": false,
+          "ms": 359
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 196,
+        "cacheRead": 29554,
+        "cacheWrite": 570
+      },
+      "costUsd": 0.00046499000000000003,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "update_experiment",
+          "input": {
+            "environment_api_key": "P4GoJMG3gBhyneTnj6PxUv",
+            "experiment_id": 26,
+            "feature": 543,
+            "hypothesis": "Create account wins",
+            "name": "apple_pay_copy test",
+            "status": "running",
+            "experiment_rollout": {
+              "enabled": true,
+              "rollout_percentage": 100,
+              "feature_state_value": {
+                "type": "string",
+                "value": "Sign up"
+              },
+              "multivariate_feature_state_values": [
+                {
+                  "multivariate_feature_option": 55,
+                  "percentage_allocation": 50
+                }
+              ],
+              "audience": {
+                "match": "any",
+                "segment_ids": []
+              }
+            },
+            "metrics": [
+              {
+                "metric": 45,
+                "expected_direction": "increase"
+              }
+            ],
+            "updated_at": "2026-11-27T20:27:12.990146Z"
+          },
+          "output": "Error calling tool 'update_experiment': HTTP error 400: Bad Request - {'feature': ['Cannot change the feature of an existing experiment.']}",
+          "isError": true,
+          "ms": 463
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 530,
+        "cacheRead": 30124,
+        "cacheWrite": 669
+      },
+      "costUsd": 0.000650065,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "",
+      "calls": [
+        {
+          "name": "update_experiment",
+          "input": {
+            "environment_api_key": "P4GoJMG3gBhyneTnj6PxUv",
+            "experiment_id": 26,
+            "feature": 543,
+            "hypothesis": "Create account wins",
+            "name": "apple_pay_copy test",
+            "status": "running"
+          },
+          "output": "Error calling tool 'update_experiment': HTTP error 400: Bad Request - {'feature': ['Cannot change the feature of an existing experiment.']}",
+          "isError": true,
+          "ms": 275
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 433,
+        "cacheRead": 30793,
+        "cacheWrite": 596
+      },
+      "costUsd": 0.00059913,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "get_experiment",
+          "input": {
+            "environment_api_key": "P4GoJMG3gBhyneTnj6PxUv",
+            "experiment_id": 26
+          },
+          "output": "{\"id\":26,\"feature\":{\"id\":543,\"name\":\"apple_pay_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"id\":55,\"uuid\":\"bd35de41-81ef-4f1e-9aa3-5e1dea921394\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Create account\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"apple_pay_copy test\",\"hypothesis\":\"Create account wins\",\"status\":\"created\",\"metrics\":[{\"id\":36,\"metric\":45,\"metric_name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:27:12.974964Z\"}],\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100.0,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":55,\"percentage_allocation\":50.0}],\"audience\":{\"match\":\"any\",\"segments\":[]}},\"created_at\":\"2026-11-27T20:27:12.974419Z\",\"updated_at\":\"2026-11-27T20:27:12.990146Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
+          "isError": false,
+          "ms": 288
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 177,
+        "cacheRead": 31389,
+        "cacheWrite": 497
+      },
+      "costUsd": 0.000464715,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "FAILED: I could not start the \"apple_pay_copy test\" experiment (id 26) in Production. The experiment is still in status \"created\" with nothing changed.\n\nThe only status-changing call available is `update_experiment`, and the API rejects every update that includes the `feature` field with \"Cannot change the feature of an existing experiment.\" The call is required by the schema, so I could not send a status-only update. Starting the experiment needs either a status-only update endpoint or a fix to that validation in the tool or API.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 160,
+        "cacheRead": 31886,
+        "cacheWrite": 650
+      },
+      "costUsd": 0.00048031,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:27:10.549Z"
+}

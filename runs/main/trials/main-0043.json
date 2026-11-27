@@ -1,0 +1,168 @@
+{
+  "trialId": "main-0043",
+  "index": 43,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "ship_winner",
+  "family": "experiments",
+  "heldOut": true,
+  "task": "The experiment \"saved_carts_copy test\" in Production has finished and the variation \"Pay securely\" won. Complete the experiment and roll the winning variation out to everyone.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.experiment.saved_carts_copy test.rollout_decision",
+      "before": null,
+      "after": "variant"
+    },
+    {
+      "path": "env.Production.experiment.saved_carts_copy test.status",
+      "before": "running",
+      "after": "completed"
+    },
+    {
+      "path": "env.Production.flag.saved_carts_copy.split.Pay securely",
+      "before": 0,
+      "after": 100
+    },
+    {
+      "path": "env.Production.override.saved_carts_copy.experiment-9-rollout.enabled",
+      "before": true,
+      "after": null
+    },
+    {
+      "path": "env.Production.override.saved_carts_copy.experiment-9-rollout.value",
+      "before": "Checkout",
+      "after": null
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: The \"saved_carts_copy test\" experiment in Production (id 9) is completed with the \"Pay securely\" variant (option id 20) as the rollout decision. The experiment shows status `completed` and `rollout_decision` `variant`. The flag `saved_carts_copy` is enabled with \"Pay securely\" at 100% weight. Its control value is still \"Checkout\", but at 100% weight every user receives the winning variant. The Development environment was not touched.",
+  "costUsd": 0.001451,
+  "usage": {
+    "input": 12,
+    "output": 1114,
+    "cacheRead": 14383,
+    "cacheWrite": 5991
+  },
+  "toolCalls": 4,
+  "toolErrors": 0,
+  "turns": 5,
+  "ms": 13156,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "E=FybYvBcFq6oHuZaNAdJ6KF; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'",
+    "E=FybYvBcFq6oHuZaNAdJ6KF; flagsmith api api/v1/environments/$E/experiments/9/ | jq '.'; flagsmith feature variant list saved_carts_copy --json 2>&1 | head -50",
+    "E=FybYvBcFq6oHuZaNAdJ6KF; flagsmith api api/v1/environments/$E/experiments/9/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":20}\nJSON\necho; flagsmith api api/v1/environments/$E/experiments/9/ --jq '{status,rollout_decision,rollout_variant,ended_at}'\necho; flagsmith flag get saved_carts_copy -e $E --json --jq '{enabled,value,variants}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 153
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 89,
+        "cacheRead": 0,
+        "cacheWrite": 1102
+      },
+      "costUsd": 0.00018265,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "Let me find the experiment in Production (environment key FybYvBcFq6oHuZaNAdJ6KF).",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=FybYvBcFq6oHuZaNAdJ6KF; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'"
+          },
+          "output": "{\"feature\":{\"id\":168,\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":20,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Pay securely\",\"type\":\"unicode\",\"uuid\":\"a5a9b141-f245-4e97-9445-83e395a6dd4e\"}],\"name\":\"saved_carts_copy\",\"type\":\"MULTIVARIATE\"},\"id\":9,\"name\":\"saved_carts_copy test\",\"rollout_decision\":null,\"status\":\"running\"}",
+          "isError": false,
+          "ms": 387
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 158,
+        "cacheRead": 1102,
+        "cacheWrite": 2779
+      },
+      "costUsd": 0.00043759500000000004,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=FybYvBcFq6oHuZaNAdJ6KF; flagsmith api api/v1/environments/$E/experiments/9/ | jq '.'; flagsmith feature variant list saved_carts_copy --json 2>&1 | head -50"
+          },
+          "output": "{\n  \"id\": 9,\n  \"feature\": {\n    \"id\": 168,\n    \"name\": \"saved_carts_copy\",\n    \"type\": \"MULTIVARIATE\",\n    \"initial_value\": \"Checkout\",\n    \"multivariate_options\": [\n      {\n        \"id\": 20,\n        \"uuid\": \"a5a9b141-f245-4e97-9445-83e395a6dd4e\",\n        \"type\": \"unicode\",\n        \"integer_value\": null,\n        \"string_value\": \"Pay securely\",\n        \"boolean_value\": null,\n        \"default_percentage_allocation\": 0.0,\n        \"key\": \"b\"\n      }\n    ]\n  },\n  \"name\": \"saved_carts_copy test\",\n  \"hypothesis\": \"Pay securely wins\",\n  \"status\": \"running\",\n  \"metrics\": [\n    {\n      \"id\": 13,\n      \"metric\": 16,\n      \"metric_name\": \"checkout_completed\",\n      \"aggregation\": \"occurrence\",\n      \"direction\": \"up\",\n      \"expected_direction\": \"increase\",\n      \"created_at\": \"2026-11-27T20:19:41.074258Z\"\n    }\n  ],\n  \"experiment_rollout\": {\n    \"enabled\": true,\n    \"rollout_percentage\": 100.0,\n    \"feature_state_value\": {\n      \"type\": \"string\",\n      \"value\": \"Checkout\"\n    },\n    \"multivariate_feature_state_values\": [\n      {\n        \"multivariate_feature_option\": 20,\n        \"percentage_allocation\": 50.0\n      }\n    ],\n    \"audience\": {\n      \"match\": \"any\",\n      \"segments\": []\n    }\n  },\n  \"created_at\": \"2026-11-27T20:19:41.072312Z\",\n  \"updated_at\": \"2026-11-27T20:19:41.259872Z\",\n  \"started_at\": \"2026-11-27T20:19:41.259076Z\",\n  \"ended_at\": null,\n  \"rollout_decision\": null,\n  \"rollout_variant\": null\n}\n[\n  {\n    \"id\": 20,\n    \"value\": \"Pay securely\",\n    \"weight\": 0,\n    \"key\": \"b\"\n  }\n]",
+          "isError": false,
+          "ms": 946
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 255,
+        "cacheRead": 3881,
+        "cacheWrite": 350
+      },
+      "costUsd": 0.00021025999999999998,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "The experiment is running and its winning variant \"Pay securely\" is option id 20. I'll complete it with that variant as the rollout decision.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=FybYvBcFq6oHuZaNAdJ6KF; flagsmith api api/v1/environments/$E/experiments/9/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":20}\nJSON\necho; flagsmith api api/v1/environments/$E/experiments/9/ --jq '{status,rollout_decision,rollout_variant,ended_at}'\necho; flagsmith flag get saved_carts_copy -e $E --json --jq '{enabled,value,variants}'"
+          },
+          "output": "{\"id\":9,\"feature\":{\"id\":168,\"name\":\"saved_carts_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"id\":20,\"uuid\":\"a5a9b141-f245-4e97-9445-83e395a6dd4e\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Pay securely\",\"boolean_value\":null,\"default_percentage_allocation\":100.0,\"key\":\"b\"}]},\"name\":\"saved_carts_copy test\",\"hypothesis\":\"Pay securely wins\",\"status\":\"completed\",\"metrics\":[{\"id\":13,\"metric\":16,\"metric_name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:19:41.074258Z\"}],\"created_at\":\"2026-11-27T20:19:41.072312Z\",\"updated_at\":\"2026-11-27T20:19:51.172425Z\",\"started_at\":\"2026-11-27T20:19:41.259076Z\",\"ended_at\":\"2026-11-27T20:19:51.098092Z\",\"rollout_decision\":\"variant\",\"rollout_variant\":20}\n{\"ended_at\":\"2026-11-27T20:19:51.098092Z\",\"rollout_decision\":\"variant\",\"rollout_variant\":20,\"status\":\"completed\"}\n\n{\"enabled\":true,\"value\":\"Checkout\",\"variants\":[{\"id\":20,\"key\":\"b\",\"value\":\"Pay securely\",\"weight\":100}]}",
+          "isError": false,
+          "ms": 1426
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 321,
+        "cacheRead": 4231,
+        "cacheWrite": 938
+      },
+      "costUsd": 0.00032026,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "DONE: The \"saved_carts_copy test\" experiment in Production (id 9) is completed with the \"Pay securely\" variant (option id 20) as the rollout decision. The experiment shows status `completed` and `rollout_decision` `variant`. The flag `saved_carts_copy` is enabled with \"Pay securely\" at 100% weight. Its control value is still \"Checkout\", but at 100% weight every user receives the winning variant. The Development environment was not touched.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 291,
+        "cacheRead": 5169,
+        "cacheWrite": 822
+      },
+      "costUsd": 0.00030014,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:19:39.970Z"
+}

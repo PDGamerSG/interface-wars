@@ -1,0 +1,216 @@
+{
+  "trialId": "main-0091",
+  "index": 91,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "ship_winner",
+  "family": "experiments",
+  "heldOut": true,
+  "task": "The experiment \"review_photos_copy test\" in Production has finished and the variation \"Pay securely\" won. Complete the experiment and roll the winning variation out to everyone.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.experiment.review_photos_copy test.rollout_decision",
+      "before": null,
+      "after": "variant"
+    },
+    {
+      "path": "env.Production.experiment.review_photos_copy test.status",
+      "before": "running",
+      "after": "completed"
+    },
+    {
+      "path": "env.Production.flag.review_photos_copy.split.Pay securely",
+      "before": 0,
+      "after": 100
+    },
+    {
+      "path": "env.Production.override.review_photos_copy.experiment-18-rollout.enabled",
+      "before": true,
+      "after": null
+    },
+    {
+      "path": "env.Production.override.review_photos_copy.experiment-18-rollout.value",
+      "before": "Checkout",
+      "after": null
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Experiment \"review_photos_copy test\" (id 18) in Production is completed with rollout decision \"variant\" set to \"Pay securely\" (option 38). That variant now has 100% allocation on `review_photos_copy`, so every identity gets \"Pay securely\". Caveat: the flag's base/control value still reads \"Checkout\" and the anonymous environment evaluation shows \"Checkout\", as expected for a multivariate split. I left that unchanged because the task only asked to complete the experiment.",
+  "costUsd": 0.002186,
+  "usage": {
+    "input": 16,
+    "output": 2201,
+    "cacheRead": 26275,
+    "cacheWrite": 6573
+  },
+  "toolCalls": 6,
+  "toolErrors": 0,
+  "turns": 7,
+  "ms": 19419,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "flagsmith api api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/experiments/ --jq '.results[] | {id,name,status,feature}'",
+    "flagsmith api api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/experiments/18/ ; echo; flagsmith flag get review_photos_copy -e 4HRWZd7JKpLn2q3xstZA9R --json --jq '{enabled,value,variants}'; flagsmith feature variant list review_photos_copy --json",
+    "flagsmith api api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/experiments/18/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":38}\nJSON\necho; flagsmith api api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/experiments/18/ --jq '{status,rollout_decision,rollout_variant,ended_at}'; flagsmith flag get review_photos_copy -e 4HRWZd7JKpLn2q3xstZA9R --json --jq '{enabled,value,variants}'",
+    "flagsmith evaluate -e 4HRWZd7JKpLn2q3xstZA9R --json --jq '.[] | select(.name==\"review_photos_copy\")' 2>&1 | head -20",
+    "flagsmith evaluate -e 4HRWZd7JKpLn2q3xstZA9R 2>&1 | head -30; flagsmith api \"api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/featurestates/?feature=357\" --jq '.results[] | {enabled,value:.feature_state_value,mv:.multivariate_feature_state_values}' 2>&1 | head"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 78
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 89,
+        "cacheRead": 0,
+        "cacheWrite": 1099
+      },
+      "costUsd": 0.000182275,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/experiments/ --jq '.results[] | {id,name,status,feature}'"
+          },
+          "output": "{\"feature\":{\"id\":357,\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":38,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Pay securely\",\"type\":\"unicode\",\"uuid\":\"55901681-2c7b-4ab5-b45e-b04663f6aae8\"}],\"name\":\"review_photos_copy\",\"type\":\"MULTIVARIATE\"},\"id\":18,\"name\":\"review_photos_copy test\",\"status\":\"running\"}",
+          "isError": false,
+          "ms": 556
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 106,
+        "cacheRead": 1099,
+        "cacheWrite": 2779
+      },
+      "costUsd": 0.0004115650000000001,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/experiments/18/ ; echo; flagsmith flag get review_photos_copy -e 4HRWZd7JKpLn2q3xstZA9R --json --jq '{enabled,value,variants}'; flagsmith feature variant list review_photos_copy --json"
+          },
+          "output": "{\"id\":18,\"feature\":{\"id\":357,\"name\":\"review_photos_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"id\":38,\"uuid\":\"55901681-2c7b-4ab5-b45e-b04663f6aae8\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Pay securely\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"review_photos_copy test\",\"hypothesis\":\"Pay securely wins\",\"status\":\"running\",\"metrics\":[{\"id\":25,\"metric\":31,\"metric_name\":\"signup_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:22:51.468740Z\"}],\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100.0,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":38,\"percentage_allocation\":50.0}],\"audience\":{\"match\":\"any\",\"segments\":[]}},\"created_at\":\"2026-11-27T20:22:51.467685Z\",\"updated_at\":\"2026-11-27T20:22:51.574439Z\",\"started_at\":\"2026-11-27T20:22:51.571928Z\",\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}\n{\"enabled\":true,\"value\":\"Checkout\",\"variants\":[{\"id\":38,\"key\":\"b\",\"value\":\"Pay securely\",\"weight\":0}]}\n[\n  {\n    \"id\": 38,\n    \"value\": \"Pay securely\",\n    \"weight\": 0,\n    \"key\": \"b\"\n  }\n]",
+          "isError": false,
+          "ms": 1790
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 254,
+        "cacheRead": 3878,
+        "cacheWrite": 286
+      },
+      "costUsd": 0.00020173,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "The experiment is running and \"Pay securely\" is variant option 38. Completing it with that variant as the rollout decision.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/experiments/18/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":38}\nJSON\necho; flagsmith api api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/experiments/18/ --jq '{status,rollout_decision,rollout_variant,ended_at}'; flagsmith flag get review_photos_copy -e 4HRWZd7JKpLn2q3xstZA9R --json --jq '{enabled,value,variants}'"
+          },
+          "output": "{\"id\":18,\"feature\":{\"id\":357,\"name\":\"review_photos_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"id\":38,\"uuid\":\"55901681-2c7b-4ab5-b45e-b04663f6aae8\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Pay securely\",\"boolean_value\":null,\"default_percentage_allocation\":100.0,\"key\":\"b\"}]},\"name\":\"review_photos_copy test\",\"hypothesis\":\"Pay securely wins\",\"status\":\"completed\",\"metrics\":[{\"id\":25,\"metric\":31,\"metric_name\":\"signup_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:22:51.468740Z\"}],\"created_at\":\"2026-11-27T20:22:51.467685Z\",\"updated_at\":\"2026-11-27T20:23:02.066227Z\",\"started_at\":\"2026-11-27T20:22:51.571928Z\",\"ended_at\":\"2026-11-27T20:23:02.002317Z\",\"rollout_decision\":\"variant\",\"rollout_variant\":38}\n{\"ended_at\":\"2026-11-27T20:23:02.002317Z\",\"rollout_decision\":\"variant\",\"rollout_variant\":38,\"status\":\"completed\"}\n{\"enabled\":true,\"value\":\"Checkout\",\"variants\":[{\"id\":38,\"key\":\"b\",\"value\":\"Pay securely\",\"weight\":100}]}",
+          "isError": false,
+          "ms": 1671
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 382,
+        "cacheRead": 4164,
+        "cacheWrite": 840
+      },
+      "costUsd": 0.00033783999999999995,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "The experiment is completed and the variant now has 100% weight. The flag's base value still reads \"Checkout\", so I'll check what SDKs actually evaluate.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith evaluate -e 4HRWZd7JKpLn2q3xstZA9R --json --jq '.[] | select(.name==\"review_photos_copy\")' 2>&1 | head -20"
+          },
+          "output": "Error: expected an object but got: string (\"https://raw.githubuserco ...\")",
+          "isError": false,
+          "ms": 91
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 331,
+        "cacheRead": 5004,
+        "cacheWrite": 880
+      },
+      "costUsd": 0.00032574000000000004,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith evaluate -e 4HRWZd7JKpLn2q3xstZA9R 2>&1 | head -30; flagsmith api \"api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/featurestates/?feature=357\" --jq '.results[] | {enabled,value:.feature_state_value,mv:.multivariate_feature_state_values}' 2>&1 | head"
+          },
+          "output": "FEATURE              ENABLED   VALUE      REASON\nreview_photos_copy   on        Checkout   STATIC\norder_tracking_v2    off       grid       STATIC\nguest_checkout       on        v2         STATIC\n\n3 flags\n{\"enabled\":true,\"mv\":[{\"id\":92,\"multivariate_feature_option\":38,\"percentage_allocation\":100}],\"value\":\"Checkout\"}",
+          "isError": false,
+          "ms": 455
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 186,
+        "cacheRead": 5884,
+        "cacheWrite": 362
+      },
+      "costUsd": 0.00019729000000000003,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 7,
+      "text": "DONE: Experiment \"review_photos_copy test\" (id 18) in Production is completed with rollout decision \"variant\" set to \"Pay securely\" (option 38). That variant now has 100% allocation on `review_photos_copy`, so every identity gets \"Pay securely\". Caveat: the flag's base/control value still reads \"Checkout\" and the anonymous environment evaluation shows \"Checkout\", as expected for a multivariate split. I left that unchanged because the task only asked to complete the experiment.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 853,
+        "cacheRead": 6246,
+        "cacheWrite": 327
+      },
+      "costUsd": 0.000530035,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:22:50.419Z"
+}

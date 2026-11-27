@@ -1,0 +1,122 @@
+{
+  "trialId": "main-0067",
+  "index": 67,
+  "arm": "mcp",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "kill_switch",
+  "family": "flags",
+  "heldOut": true,
+  "task": "Incident: the flag \"price_alerts\" is causing checkout errors in Production. Turn it off in Production right now. Do not touch any other flag or environment.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.flag.price_alerts.enabled",
+      "before": true,
+      "after": false
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: \"price_alerts\" is now disabled in Production (environment 137). Its feature state (id 555) changed from enabled to disabled, and the value \"max_10\" is unchanged. I did not touch any other flag or environment, and the re-check confirms `enabled: false`.",
+  "costUsd": 0.00489,
+  "usage": {
+    "input": 8,
+    "output": 740,
+    "cacheRead": 59769,
+    "cacheWrite": 31371
+  },
+  "toolCalls": 3,
+  "toolErrors": 0,
+  "turns": 3,
+  "ms": 9554,
+  "commands": [
+    "list_project_features {\"project_pk\":69,\"environment\":137,\"search\":\"price_alerts\"}",
+    "update_feature_state {\"id__path\":555,\"id\":555,\"environment\":137,\"feature\":266,\"enabled\":false,\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"max_10\"}}",
+    "list_project_features {\"project_pk\":69,\"environment\":137,\"search\":\"price_alerts\"}"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 69,
+            "environment": 137,
+            "search": "price_alerts"
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":266,\"name\":\"price_alerts\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"max_10\",\"created_date\":\"2026-11-27T20:21:11.179358Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"a2c14a69-1af2-4015-847d-cc786cd54814\"}],\"group_owners\":[],\"uuid\":\"c184c4b2-ffad-4f29-b4b6-45409efb3a63\",\"project\":69,\"environment_feature_state\":{\"id\":555,\"feature_state_value\":\"max_10\",\"environment\":137,\"identity\":null,\"feature_segment\":null,\"enabled\":true},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 344
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 189,
+        "cacheRead": 0,
+        "cacheWrite": 29574
+      },
+      "costUsd": 0.00379165,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "update_feature_state",
+          "input": {
+            "id__path": 555,
+            "id": 555,
+            "environment": 137,
+            "feature": 266,
+            "enabled": false,
+            "feature_state_value": {
+              "type": "unicode",
+              "string_value": "max_10"
+            }
+          },
+          "output": "{\"id\":555,\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"max_10\",\"integer_value\":null,\"boolean_value\":null},\"multivariate_feature_state_values\":[],\"deleted_at\":null,\"uuid\":\"0903fe85-e404-41a8-84b5-af21f9230fcf\",\"enabled\":false,\"created_at\":\"2026-11-27T20:21:11.195292Z\",\"updated_at\":\"2026-11-27T20:21:19.997973Z\",\"live_from\":\"2026-11-27T20:21:11.194379Z\",\"version\":1,\"feature\":266,\"environment\":137,\"identity\":null,\"feature_segment\":null,\"change_request\":null,\"environment_feature_version\":null}",
+          "isError": false,
+          "ms": 605
+        },
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 69,
+            "environment": 137,
+            "search": "price_alerts"
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":266,\"name\":\"price_alerts\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"max_10\",\"created_date\":\"2026-11-27T20:21:11.179358Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"a2c14a69-1af2-4015-847d-cc786cd54814\"}],\"group_owners\":[],\"uuid\":\"c184c4b2-ffad-4f29-b4b6-45409efb3a63\",\"project\":69,\"environment_feature_state\":{\"id\":555,\"feature_state_value\":\"max_10\",\"environment\":137,\"identity\":null,\"feature_segment\":null,\"enabled\":false},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 681
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 460,
+        "cacheRead": 29574,
+        "cacheWrite": 621
+      },
+      "costUsd": 0.000603565,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "DONE: \"price_alerts\" is now disabled in Production (environment 137). Its feature state (id 555) changed from enabled to disabled, and the value \"max_10\" is unchanged. I did not touch any other flag or environment, and the re-check confirms `enabled: false`.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 91,
+        "cacheRead": 30195,
+        "cacheWrite": 1176
+      },
+      "costUsd": 0.00049465,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:21:10.762Z"
+}

@@ -1,0 +1,124 @@
+{
+  "trialId": "main-0053",
+  "index": 53,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "change_split_in_production",
+  "family": "targeting",
+  "heldOut": false,
+  "task": "In Production only, change the traffic split of the multivariate flag \"search_v2_copy\" so the \"Create account\" variation gets 80% of users and the rest stay on the control value. Development keeps its current split.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.flag.search_v2_copy.split.Create account",
+      "before": 50,
+      "after": 80
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: In Production, \"search_v2_copy\" now gives \"Create account\" (variant id 21) 80% of users, with the control \"Sign up\" keeping the remaining 20%. Read-back confirmed the change, and Development still has \"Create account\" at 50%, unchanged.",
+  "costUsd": 0.001068,
+  "usage": {
+    "input": 10,
+    "output": 711,
+    "cacheRead": 9330,
+    "cacheWrite": 4946
+  },
+  "toolCalls": 3,
+  "toolErrors": 0,
+  "turns": 4,
+  "ms": 13939,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "P=2KqpaXtcVFJhnxFDW9oETw; flagsmith flag get search_v2_copy -e $P --json; echo ---; flagsmith feature variant list search_v2_copy --json; echo ---; D=JLDbVUbr2um7YBpTcZfmeS; flagsmith flag get search_v2_copy -e $D --json --jq '{enabled,value,variants}'",
+    "P=2KqpaXtcVFJhnxFDW9oETw; flagsmith flag update search_v2_copy -e $P --weight 21=80 --yes && flagsmith flag get search_v2_copy -e $P --json --jq '{enabled,value,variants}'; echo ---; flagsmith flag get search_v2_copy -e JLDbVUbr2um7YBpTcZfmeS --json --jq '{enabled,value,variants}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 94
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 89,
+        "cacheRead": 0,
+        "cacheWrite": 1110
+      },
+      "costUsd": 0.00018365000000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=2KqpaXtcVFJhnxFDW9oETw; flagsmith flag get search_v2_copy -e $P --json; echo ---; flagsmith feature variant list search_v2_copy --json; echo ---; D=JLDbVUbr2um7YBpTcZfmeS; flagsmith flag get search_v2_copy -e $D --json --jq '{enabled,value,variants}'"
+          },
+          "output": "{\n  \"feature\": \"search_v2_copy\",\n  \"type\": \"multivariate\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"Sign up\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\",\n  \"variants\": [\n    {\n      \"id\": 21,\n      \"value\": \"Create account\",\n      \"weight\": 50,\n      \"key\": \"b\"\n    }\n  ]\n}\n---\n[\n  {\n    \"id\": 21,\n    \"value\": \"Create account\",\n    \"weight\": 50,\n    \"key\": \"b\"\n  }\n]\n---\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":21,\"key\":\"b\",\"value\":\"Create account\",\"weight\":50}]}",
+          "isError": false,
+          "ms": 3247
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 181,
+        "cacheRead": 1110,
+        "cacheWrite": 2779
+      },
+      "costUsd": 0.00044917500000000006,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "Production currently has \"Create account\" at 50%, with \"Sign up\" as control. I'll set that variant to 80% (control keeps the remaining 20%) in Production only.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=2KqpaXtcVFJhnxFDW9oETw; flagsmith flag update search_v2_copy -e $P --weight 21=80 --yes && flagsmith flag get search_v2_copy -e $P --json --jq '{enabled,value,variants}'; echo ---; flagsmith flag get search_v2_copy -e JLDbVUbr2um7YBpTcZfmeS --json --jq '{enabled,value,variants}'"
+          },
+          "output": "Feature              search_v2_copy\nDescription          \nType                 multivariate\nState                on\nValue                Sign up\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n\nVariants\n  VALUE           WEIGHT  KEY  ID\n  Create account  80%     b    21\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":21,\"key\":\"b\",\"value\":\"Create account\",\"weight\":80}]}\n---\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":21,\"key\":\"b\",\"value\":\"Create account\",\"weight\":50}]}\n\n[stderr]\n✓ Set search_v2_copy weights to 21=80 in environment Production (2KqpaXtcVFJhnxFDW9oETw)",
+          "isError": false,
+          "ms": 3861
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 350,
+        "cacheRead": 3889,
+        "cacheWrite": 442
+      },
+      "costUsd": 0.00026933999999999997,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "DONE: In Production, \"search_v2_copy\" now gives \"Create account\" (variant id 21) 80% of users, with the control \"Sign up\" keeping the remaining 20%. Read-back confirmed the change, and Development still has \"Create account\" at 50%, unchanged.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 91,
+        "cacheRead": 4331,
+        "cacheWrite": 615
+      },
+      "costUsd": 0.000165885,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:20:19.191Z"
+}

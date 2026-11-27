@@ -1,0 +1,316 @@
+{
+  "trialId": "main-0010",
+  "index": 10,
+  "arm": "cli",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "start_experiment",
+  "family": "experiments",
+  "heldOut": false,
+  "task": "The experiment \"live_chat_copy test\" in Production is set up but not running. Start it.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.experiment.live_chat_copy test.status",
+      "before": "created",
+      "after": "running"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: The \"live_chat_copy test\" experiment (id 2) in Production is now `running` (started_at 2026-11-27T20:17:37Z), up from `created`. I made no other changes.",
+  "costUsd": 0.004348,
+  "usage": {
+    "input": 26,
+    "output": 2957,
+    "cacheRead": 88805,
+    "cacheWrite": 15830
+  },
+  "toolCalls": 11,
+  "toolErrors": 0,
+  "turns": 12,
+  "ms": 41609,
+  "commands": [
+    "flagsmith --help; echo ---; flagsmith experiments --help 2>&1 | head -50",
+    "flagsmith feature --help; echo ---; flagsmith api --help; echo ---; flagsmith config",
+    "flagsmith api api/v1/projects/12/experiments/ --json 2>&1 | head -c 3000; echo; echo ---; flagsmith api api/v1/experiments/ --json 2>&1 | head -c 1500",
+    "flagsmith feature list --help | head -30; echo ---; flagsmith feature list 2>&1 | head -60; echo ---; flagsmith environment --help | head -30",
+    "flagsmith feature get live_chat_copy 2>&1; echo ---; flagsmith flag --help | head -20; echo ---; for p in api/v1/environments/Vej9ZCq5W66jBCVxFAc6UL/ api/v1/projects/12/ api/v1/projects/12/experiments/ api/v1/experiments/ api/v1/environments/23/experiments/ api/v1/projects/12/features/39/; do echo \"== $p\"; flagsmith api $p -H \"Accept: application/json\" 2>&1 | head -c 400; echo; done",
+    "flagsmith flag get live_chat_copy -e Vej9ZCq5W66jBCVxFAc6UL 2>&1; echo ---; flagsmith flag list -e Vej9ZCq5W66jBCVxFAc6UL 2>&1; echo ---; flagsmith api api/v1/environments/Vej9ZCq5W66jBCVxFAc6UL/ 2>&1 | jq . | head -80",
+    "for p in api/v1/environments/Vej9ZCq5W66jBCVxFAc6UL/experiments/ api/v1/environments/23/experiments/ api/v1/projects/12/experiments api/v1/environments/23/ api/v1/experiments/?project=12 ; do echo \"== $p\"; flagsmith api $p -i 2>&1 | head -c 500; echo; done; flagsmith auth --help | head; flagsmith auth status 2>&1 | head",
+    "flagsmith api api/v1/environments/Vej9ZCq5W66jBCVxFAc6UL/experiments/ 2>&1 | jq .",
+    "flagsmith api api/v1/environments/Vej9ZCq5W66jBCVxFAc6UL/experiments/2/ -i 2>&1 | head -30; echo; flagsmith api api/v1/environments/Vej9ZCq5W66jBCVxFAc6UL/experiments/2/start/ -X OPTIONS -i 2>&1 | head -20",
+    "flagsmith api api/v1/environments/Vej9ZCq5W66jBCVxFAc6UL/experiments/2/start/ -X POST -i 2>&1 | head -c 1500",
+    "flagsmith api api/v1/environments/Vej9ZCq5W66jBCVxFAc6UL/experiments/ 2>&1 | jq '{status_counts, results: [.results[] | {id,name,status,started_at,ended_at}]}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith --help; echo ---; flagsmith experiments --help 2>&1 | head -50"
+          },
+          "output": "The Flagsmith command-line interface\n\nUsage:\n  flagsmith [command] [flags]\n\nAvailable Commands:\n  api          Call the Flagsmith API with the CLI's credentials\n  auth         Inspect and manage authentication\n  completion   Generate the autocompletion script for the specified shell\n  config       Show the resolved context and where each value comes from\n  environment  Manage environments in the current project\n  evaluate     Show the flags an SDK resolves for the current environment\n  feature      Manage features in the current project\n  flag         Inspect feature flags in the current environment\n  help         Help about any command\n  init         Bind this directory to a Flagsmith project (writes flagsmith.json)\n  login        Log in to Flagsmith in your browser\n  logout       Log out of an instance and revoke the stored session\n  organisation Manage organisations\n  project      Manage projects\n  segment      Manage segments in the current project\n\nFlags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n  -h, --help                  help for flagsmith\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n  -v, --version               version for flagsmith\n      --yes                   answer confirmations affirmatively\n\nUse \"flagsmith [command] --help\" for more information about a command.\n---\nError: unknown command \"experiments\" for \"flagsmith\"\nRun 'flagsmith --help' for usage.",
+          "isError": false,
+          "ms": 193
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 92,
+        "cacheRead": 0,
+        "cacheWrite": 935
+      },
+      "costUsd": 0.000163275,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith feature --help; echo ---; flagsmith api --help; echo ---; flagsmith config"
+          },
+          "output": "Manage features in the current project\n\nUsage:\n  flagsmith feature [command] [flags]\n\nAvailable Commands:\n  create      Create a feature\n  delete      Delete a feature\n  get         Show a feature and its variants\n  list        List features in the current project\n  update      Update a feature's description or archive state\n  variant     Manage a multivariate feature's variants\n\nFlags:\n  -h, --help   help for feature\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n\nUse \"flagsmith feature [command] --help\" for more information about a command.\n---\nCall the Flagsmith API with the CLI's credentials\n\nUsage:\n  flagsmith api <path> [flags]\n\nExamples:\n  # GET any endpoint with the CLI's credentials applied\n  flagsmith api api/v1/organisations/\n\n  # typed fields build a JSON body (POST is implied)\n  flagsmith api api/v1/projects/ -F name=\"Acme\" -F organisation=13\n\n  # -X sets the method — e.g. a bodiless DELETE\n  flagsmith api api/v1/projects/102/ -X DELETE\n\n  # call the SDK API with the environment key instead\n  flagsmith api --sdk api/v1/flags/\n\nFlags:\n  -F, --field stringArray       typed field key=value (repeatable)\n  -H, --header stringArray      request header 'Name: value' (repeatable)\n  -h, --help                    help for api\n  -i, --include                 include the response status line and headers\n      --input string            request body from a file, or - for stdin\n  -X, --method string           HTTP method (default \"GET\")\n  -f, --raw-field stringArray   string field key=value (repeatable)\n      --sdk                     call the SDK API with the environment key instead of the Admin API\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n---\nConfig file    -                                  default\nProject        12                                 env\nOrganisation   12                                 env\nEnvironment    -                                  default\nAPI            http://host.docker.internal:8300   env\nSDK API        http://host.docker.internal:8300   default",
+          "isError": false,
+          "ms": 137
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 80,
+        "cacheRead": 935,
+        "cacheWrite": 870
+      },
+      "costUsd": 0.0001583,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api api/v1/projects/12/experiments/ --json 2>&1 | head -c 3000; echo; echo ---; flagsmith api api/v1/experiments/ --json 2>&1 | head -c 1500"
+          },
+          "output": "<!doctype html><html lang=\"en-GB\"><head><meta name=\"robots\" content=\"noindex, nofollow\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no\"><meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\"><meta name=\"description\" content=\"Manage your Feature Flags, Feature Toggles and Remote Config in your Mobile, React, React Native, Java, Javascript (Node) and Python projects.\"><meta property=\"og:image\" content=\"https://flagsmith.com/static/aa08b77a1a9bca99643945f1f3eeb027/b2d24/social-preview.jpg\"><meta property=\"og:title\" content=\"Flagsmith\"><script src=\"/config/project-overrides\"></script><style>\n        @font-face {\n            font-family: 'OpenSans';\n            src: local('OpenSans'),\n            url('/static/fonts/OpenSans-Regular.ttf') format('ttf'),\n            url('/static/fonts/OpenSans-Regular.woff2') format('woff2'),\n            url('/static/fonts/OpenSans-Regular.woff') format('woff');\n            font-weight: normal;\n            font-display:swap;\n        }\n\n        @font-face {\n            font-family: 'OpenSans';\n            src: local('OpenSans'),\n            url('/static/fonts/OpenSans-Regular.woff2') format('woff2'),\n            url('/static/fonts/OpenSans-Regular.woff') format('woff');\n            font-weight: 400;\n            font-display:swap;\n        }\n\n        @font-face {\n            font-family: 'OpenSans';\n            src: local('OpenSans'),\n            url('/static/fonts/OpenSans-Light.woff2') format('woff2'),\n            url('/static/fonts/OpenSans-Light.woff') format('woff');\n            font-weight: 300;\n            font-display:swap;\n        }\n\n        @font-face {\n            font-family: 'OpenSans';\n            src: local('OpenSans'),\n            url('/static/fonts/OpenSans-Light.ttf') format('ttf'),\n            url('/static/fonts/OpenSans-Light.woff2') format('woff2'),\n            url('/static/fonts/OpenSans-Light.woff') format('woff');\n            font-weight: 100;\n            font-display:swap;\n        }\n\n        @font-face {\n            font-family: 'OpenSans';\n            src: local('OpenSans'),\n            url('/static/fonts/OpenSans-Light.ttf') format('ttf'),\n            url('/static/fonts/OpenSans-Light.woff2') format('woff2'),\n            url('/static/fonts/OpenSans-Light.woff') format('woff');\n            font-weight: 200;\n            font-display:swap;\n        }\n\n        @font-face {\n            font-family: 'OpenSans';\n            src: local('OpenSans'),\n            url('/static/fonts/OpenSans-Bold.ttf') format('ttf'),\n            url('/static/fonts/OpenSans-Bold.woff2') format('woff2'),\n            url('/static/fonts/OpenSans-Bold.woff') format('woff');\n            font-weight:bold;\n            font-display:swap;\n        }\n\n        @font-face {\n            font-family: 'OpenSans';\n            src: local('OpenSans'),\n            url('/static/fonts/OpenSans-SemiBold.ttf') format('ttf'),\n            url('/static/fonts/OpenSans\n---\n<!doctype html><html lang=\"en-GB\"><head><meta name=\"robots\" content=\"noindex, nofollow\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no\"><meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\"><meta name=\"description\" content=\"Manage your Feature Flags, Feature Toggles and Remote Config in your Mobile, React, React Native, Java, Javascript (Node) and Python projects.\"><meta property=\"og:image\" content=\"https://flagsmith.com/static/aa08b77a1a9bca99643945f1f3eeb027/b2d24/social-preview.jpg\"><meta property=\"og:title\" content=\"Flagsmith\"><script src=\"/config/project-overrides\"></script><style>\n        @font-face {\n            font-family: 'OpenSans';\n            src: local('OpenSans'),\n            url('/static/fonts/OpenSans-Regular.ttf') format('ttf'),\n            url('/static/fonts/OpenSans-Regular.woff2') format('woff2'),\n            url('/static/fonts/OpenSans-Regular.woff') format('woff');\n     ",
+          "isError": false,
+          "ms": 97
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 224,
+        "cacheRead": 1805,
+        "cacheWrite": 1484
+      },
+      "costUsd": 0.00031575,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith feature list --help | head -30; echo ---; flagsmith feature list 2>&1 | head -60; echo ---; flagsmith environment --help | head -30"
+          },
+          "output": "List features in the current project\n\nUsage:\n  flagsmith feature list [flags]\n\nExamples:\n  flagsmith feature list\n\n  # include archived features\n  flagsmith feature list --include-archived\n\nFlags:\n  -h, --help               help for list\n      --include-archived   include archived features\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n---\nNAME             ID   TYPE           DEFAULT VALUE   DESCRIPTION\nlive_chat_copy   39   multivariate   Checkout        \nprice_alerts     40   standard       grid            \napple_pay        41   standard       beta_copy       \n\n3 features\n---\nManage environments in the current project\n\nUsage:\n  flagsmith environment [command] [flags]\n\nAliases:\n  environment, env\n\nAvailable Commands:\n  clone       Clone an environment into a new one\n  create      Create an environment (mints a client-side key)\n  delete      Delete an environment\n  document    Output the environment document (JSON for local SDK evaluation)\n  get         Show an environment\n  key         Manage an environment's server-side SDK keys\n  list        List environments in the current project\n  update      Update an environment\n\nFlags:\n  -h, --help   help for environment\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)",
+          "isError": false,
+          "ms": 335
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 237,
+        "cacheRead": 3289,
+        "cacheWrite": 2017
+      },
+      "costUsd": 0.000403715,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith feature get live_chat_copy 2>&1; echo ---; flagsmith flag --help | head -20; echo ---; for p in api/v1/environments/Vej9ZCq5W66jBCVxFAc6UL/ api/v1/projects/12/ api/v1/projects/12/experiments/ api/v1/experiments/ api/v1/environments/23/experiments/ api/v1/projects/12/features/39/; do echo \"== $p\"; flagsmith api $p -H \"Accept: application/json\" 2>&1 | head -c 400; echo; done"
+          },
+          "output": "Feature         live_chat_copy (39)\nDescription     \nType            multivariate\nDefault value   Checkout\nEnabled         true\n\nVariants\n  VALUE         WEIGHT  KEY  ID\n  Pay securely  0%      b    7\n---\nInspect feature flags in the current environment\n\nUsage:\n  flagsmith flag [command] [flags]\n\nAvailable Commands:\n  delete      Delete a flag's segment override in the current environment\n  disable     Disable a flag (shorthand for `flag update --disable`)\n  enable      Enable a flag (shorthand for `flag update --enable`)\n  get         Show a single flag's state in the current environment\n  list        List every flag in the current environment\n  reorder     Re-permute a feature's segment override priorities\n  update      Change a flag's state in the current environment\n\nFlags:\n  -h, --help   help for flag\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n---\n== api/v1/environments/Vej9ZCq5W66jBCVxFAc6UL/\n{\"id\":23,\"uuid\":\"5d3ba317-340c-4bc4-81eb-abd95578d76f\",\"name\":\"Production\",\"api_key\":\"Vej9ZCq5W66jBCVxFAc6UL\",\"description\":null,\"project\":12,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versio\n== api/v1/projects/12/\n{\"id\":12,\"uuid\":\"18e90ce3-9922-40b2-8b77-e669fb550e31\",\"name\":\"shop\",\"organisation\":12,\"hide_disabled_flags\":false,\"enable_dynamo_db\":false,\"migration_status\":\"NOT_APPLICABLE\",\"use_edge_identities\":false,\"prevent_flag_defaults\":false,\"enable_realtime_updates\":false,\"only_allow_lower_case_feature_names\":true,\"feature_name_regex\":null,\"show_edge_identity_overrides_for_feature\":false,\"stale_flags_lim\n== api/v1/projects/12/experiments/\n<!doctype html><html lang=\"en-GB\"><head><meta name=\"robots\" content=\"noindex, nofollow\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no\"><meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\"><meta name=\"description\" content=\"Manage your Feature Flags, Feature Toggles and Remote Config in your Mobile, React, Rea\n== api/v1/experiments/\n<!doctype html><html lang=\"en-GB\"><head><meta name=\"robots\" content=\"noindex, nofollow\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no\"><meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\"><meta name=\"description\" content=\"Manage your Feature Flags, Feature Toggles and Remote Config in your Mobile, React, Rea\n== api/v1/environments/23/experiments/\n{\"detail\":\"You do not have permission to perform this action.\"}\nError: GET http://host.docker.internal:8300/api/v1/environments/23/experiments/ returned 403 Forbidden\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\n\n== api/v1/projects/12/features/39/\n{\"id\":39,\"name\":\"live_chat_copy\",\"type\":\"MULTIVARIATE\",\"default_enabled\":true,\"initial_value\":\"Checkout\",\"created_date\":\"2026-11-27T20:17:01.637537Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[{\"id\":7,\"uuid\":\"7442317f-ecde-4fce-a8cc-eba22c31b5f3\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Pay securely\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}],\"is_arch",
+          "isError": false,
+          "ms": 1724
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 372,
+        "cacheRead": 5306,
+        "cacheWrite": 1314
+      },
+      "costUsd": 0.00040351,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag get live_chat_copy -e Vej9ZCq5W66jBCVxFAc6UL 2>&1; echo ---; flagsmith flag list -e Vej9ZCq5W66jBCVxFAc6UL 2>&1; echo ---; flagsmith api api/v1/environments/Vej9ZCq5W66jBCVxFAc6UL/ 2>&1 | jq . | head -80"
+          },
+          "output": "Feature              live_chat_copy\nDescription          \nType                 multivariate\nState                on\nValue                Checkout\nSegment overrides    1\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n\nVariants\n  VALUE         WEIGHT  KEY  ID\n  Pay securely  0%      b    7\n---\nNAME             TYPE           STATE   VALUE       LIFECYCLE\nlive_chat_copy   multivariate   on      Checkout    new\nprice_alerts     standard       off     grid        new\napple_pay        standard       on      beta_copy   new\n\n3 flags\n---\n{\n  \"id\": 23,\n  \"uuid\": \"5d3ba317-340c-4bc4-81eb-abd95578d76f\",\n  \"name\": \"Production\",\n  \"api_key\": \"Vej9ZCq5W66jBCVxFAc6UL\",\n  \"description\": null,\n  \"project\": 12,\n  \"minimum_change_request_approvals\": null,\n  \"allow_client_traits\": true,\n  \"banner_text\": null,\n  \"banner_colour\": null,\n  \"hide_disabled_flags\": null,\n  \"use_mv_v2_evaluation\": true,\n  \"use_identity_composite_key_for_hashing\": true,\n  \"hide_sensitive_data\": false,\n  \"use_v2_feature_versioning\": false,\n  \"use_identity_overrides_in_local_eval\": true,\n  \"is_creating\": false,\n  \"metadata\": [],\n  \"total_segment_overrides\": 1\n}",
+          "isError": false,
+          "ms": 1819
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 342,
+        "cacheRead": 6620,
+        "cacheWrite": 1895
+      },
+      "costUsd": 0.00047427499999999997,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 7,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "for p in api/v1/environments/Vej9ZCq5W66jBCVxFAc6UL/experiments/ api/v1/environments/23/experiments/ api/v1/projects/12/experiments api/v1/environments/23/ api/v1/experiments/?project=12 ; do echo \"== $p\"; flagsmith api $p -i 2>&1 | head -c 500; echo; done; flagsmith auth --help | head; flagsmith auth status 2>&1 | head"
+          },
+          "output": "== api/v1/environments/Vej9ZCq5W66jBCVxFAc6UL/experiments/\nHTTP/1.1 200 OK\nAllow: GET, POST, HEAD, OPTIONS\r\nCache-Control: max-age=0, no-cache, no-store, must-revalidate, private\r\nConnection: keep-alive\r\nContent-Length: 864\r\nContent-Type: application/json\r\nCross-Origin-Opener-Policy: same-origin\r\nDate: Fri, 27 Nov 2026 20:17:23 GMT\r\nExpires: Fri, 27 Nov 2026 20:17:23 GMT\r\nFlagsmith-Version: 2.295.2\r\nPragma: no-cache\r\nReferrer-Policy: same-origin\r\nServer: gunicorn\r\nVary: Accept, Origin\r\nX-Content-Type-Options: nosniff\r\nX-Frame-Options: DENY\r\n\n{\"count\":1,\n== api/v1/environments/23/experiments/\n{\"detail\":\"You do not have permission to perform this action.\"}\nError: GET http://host.docker.internal:8300/api/v1/environments/23/experiments/ returned 403 Forbidden\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\n\n== api/v1/projects/12/experiments\nHTTP/1.1 200 OK\nCache-Control: max-age=0, no-cache, no-store, must-revalidate, private\r\nConnection: keep-alive\r\nContent-Length: 3922\r\nContent-Type: text/html; charset=utf-8\r\nCross-Origin-Opener-Policy: same-origin\r\nDate: Fri, 27 Nov 2026 20:17:23 GMT\r\nExpires: Fri, 27 Nov 2026 20:17:23 GMT\r\nFlagsmith-Version: 2.295.2\r\nPragma: no-cache\r\nReferrer-Policy: same-origin\r\nServer: gunicorn\r\nVary: Origin, Cookie\r\nX-Content-Type-Options: nosniff\r\nX-Frame-Options: DENY\r\n\n<!doctype html><html lang=\"en-GB\"><\n== api/v1/environments/23/\n{\"detail\":\"No Environment matches the given query.\"}\nError: GET http://host.docker.internal:8300/api/v1/environments/23/ returned 404 Not Found\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\n\n== api/v1/experiments/?project=12\nHTTP/1.1 200 OK\nCache-Control: max-age=0, no-cache, no-store, must-revalidate, private\r\nConnection: keep-alive\r\nContent-Length: 3922\r\nContent-Type: text/html; charset=utf-8\r\nCross-Origin-Opener-Policy: same-origin\r\nDate: Fri, 27 Nov 2026 20:17:24 GMT\r\nExpires: Fri, 27 Nov 2026 20:17:24 GMT\r\nFlagsmith-Version: 2.295.2\r\nPragma: no-cache\r\nReferrer-Policy: same-origin\r\nServer: gunicorn\r\nVary: Origin, Cookie\r\nX-Content-Type-Options: nosniff\r\nX-Frame-Options: DENY\r\n\n<!doctype html><html lang=\"en-GB\"><\nInspect and manage authentication\n\nUsage:\n  flagsmith auth [command] [flags]\n\nAvailable Commands:\n  login       Log in to Flagsmith in your browser\n  logout      Log out of an instance and revoke the stored session\n  status      Show the current identity, organisation and credential source\n  token       Print the active Admin API credential (for curl and scripts)\nInstance            http://host.docker.internal:8300\nIdentity            Master API key\nOrganisations       sbx-main-0010 (12)\nCredential source   $FLAGSMITH_API_KEY_host_docker_internal_8300",
+          "isError": false,
+          "ms": 1097
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 533,
+        "cacheRead": 8515,
+        "cacheWrite": 842
+      },
+      "costUsd": 0.0004571,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 8,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api api/v1/environments/Vej9ZCq5W66jBCVxFAc6UL/experiments/ 2>&1 | jq ."
+          },
+          "output": "{\n  \"count\": 1,\n  \"next\": null,\n  \"previous\": null,\n  \"results\": [\n    {\n      \"id\": 2,\n      \"feature\": {\n        \"id\": 39,\n        \"name\": \"live_chat_copy\",\n        \"type\": \"MULTIVARIATE\",\n        \"initial_value\": \"Checkout\",\n        \"multivariate_options\": [\n          {\n            \"id\": 7,\n            \"uuid\": \"7442317f-ecde-4fce-a8cc-eba22c31b5f3\",\n            \"type\": \"unicode\",\n            \"integer_value\": null,\n            \"string_value\": \"Pay securely\",\n            \"boolean_value\": null,\n            \"default_percentage_allocation\": 0.0,\n            \"key\": \"b\"\n          }\n        ]\n      },\n      \"name\": \"live_chat_copy test\",\n      \"hypothesis\": \"Pay securely wins\",\n      \"status\": \"created\",\n      \"metrics\": [\n        {\n          \"id\": 4,\n          \"metric\": 6,\n          \"metric_name\": \"trial_started\",\n          \"aggregation\": \"occurrence\",\n          \"direction\": \"up\",\n          \"expected_direction\": \"increase\",\n          \"created_at\": \"2026-11-27T20:17:02.231770Z\"\n        }\n      ],\n      \"created_at\": \"2026-11-27T20:17:02.230505Z\",\n      \"updated_at\": \"2026-11-27T20:17:02.242953Z\",\n      \"started_at\": null,\n      \"ended_at\": null,\n      \"rollout_decision\": null,\n      \"rollout_variant\": null\n    }\n  ],\n  \"status_counts\": {\n    \"created\": 1,\n    \"running\": 0,\n    \"paused\": 0,\n    \"completed\": 0\n  }\n}",
+          "isError": false,
+          "ms": 317
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 97,
+        "cacheRead": 9357,
+        "cacheWrite": 1841
+      },
+      "costUsd": 0.00037239500000000003,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 9,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api api/v1/environments/Vej9ZCq5W66jBCVxFAc6UL/experiments/2/ -i 2>&1 | head -30; echo; flagsmith api api/v1/environments/Vej9ZCq5W66jBCVxFAc6UL/experiments/2/start/ -X OPTIONS -i 2>&1 | head -20"
+          },
+          "output": "HTTP/1.1 200 OK\nAllow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS\r\nCache-Control: max-age=0, no-cache, no-store, must-revalidate, private\r\nConnection: keep-alive\r\nContent-Length: 1011\r\nContent-Type: application/json\r\nCross-Origin-Opener-Policy: same-origin\r\nDate: Fri, 27 Nov 2026 20:17:31 GMT\r\nExpires: Fri, 27 Nov 2026 20:17:31 GMT\r\nFlagsmith-Version: 2.295.2\r\nPragma: no-cache\r\nReferrer-Policy: same-origin\r\nServer: gunicorn\r\nVary: Accept, Origin\r\nX-Content-Type-Options: nosniff\r\nX-Frame-Options: DENY\r\n\n{\"id\":2,\"feature\":{\"id\":39,\"name\":\"live_chat_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"id\":7,\"uuid\":\"7442317f-ecde-4fce-a8cc-eba22c31b5f3\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Pay securely\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"live_chat_copy test\",\"hypothesis\":\"Pay securely wins\",\"status\":\"created\",\"metrics\":[{\"id\":4,\"metric\":6,\"metric_name\":\"trial_started\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:17:02.231770Z\"}],\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100.0,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":7,\"percentage_allocation\":50.0}],\"audience\":{\"match\":\"any\",\"segments\":[]}},\"created_at\":\"2026-11-27T20:17:02.230505Z\",\"updated_at\":\"2026-11-27T20:17:02.242953Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}\nHTTP/1.1 200 OK\nAllow: POST, OPTIONS\r\nCache-Control: max-age=0, no-cache, no-store, must-revalidate, private\r\nConnection: keep-alive\r\nContent-Length: 3390\r\nContent-Type: application/json\r\nCross-Origin-Opener-Policy: same-origin\r\nDate: Fri, 27 Nov 2026 20:17:32 GMT\r\nExpires: Fri, 27 Nov 2026 20:17:32 GMT\r\nFlagsmith-Version: 2.295.2\r\nPragma: no-cache\r\nReferrer-Policy: same-origin\r\nServer: gunicorn\r\nVary: Accept, Origin\r\nX-Content-Type-Options: nosniff\r\nX-Frame-Options: DENY\r\n\n{\"name\":\"Start\",\"description\":\"Manage experiments for an environment.\",\"renders\":[\"application/json\",\"text/html\"],\"parses\":[\"application/json\",\"application/x-www-form-urlencoded\",\"multipart/form-data\"],\"actions\":{\"POST\":{\"id\":{\"type\":\"integer\",\"required\":false,\"read_only\":true,\"label\":\"ID\"},\"feature\":{\"type\":\"field\",\"required\":true,\"read_only\":false,\"label\":\"Feature\"},\"name\":{\"type\":\"string\",\"required\":true,\"read_only\":false,\"label\":\"Name\",\"max_length\":255},\"hypothesis\":{\"type\":\"string\",\"required\":true,\"read_only\":false,\"label\":\"Hypothesis\"},\"status\":{\"type\":\"choice\",\"required\":false,\"read_only\":true,\"label\":\"Status\"},\"metrics\":{\"type\":\"field\",\"required\":false,\"read_only\":false,\"label\":\"Metrics\",\"child\":{\"type\":\"nested object\",\"required\":false,\"read_only\":false,\"children\":{\"metric\":{\"type\":\"field\",\"required\":true,\"read_only\":false,\"label\":\"Metric\"},\"expected_direction\":{\"type\":\"choice\",\"required\":true,\"read_only\":false,\"label\":\"Expected direction\",\"choices\":[{\"value\":\"increase\",\"display_name\":\"Increase\"},{\"value\":\"decrease\",\"display_name\":\"Decrease\"},{\"value\":\"not_increase\",\"display_name\":\"Should not increase\"},{\"value\":\"not_decrease\",\"display_name\":\"Should not decrease\"}]}}}},\"experiment_rollout\":{\"type\":\"nested object\",\"required\":false,\"read_only\":false,\"label\":\"Experiment rollout\",\"children\":{\"enabled\":{\"type\":\"boolean\",\"required\":true,\"read_only\":false,\"label\":\"Enabled\"},\"rollout_percentage\":{\"type\":\"float\",\"required\":true,\"read_only\":false,\"label\":\"Rollout percentage\",\"min_value\":0,\"max_value\":100},\"feature_state_value\":{\"type\":\"nested object\",\"required\":true,\"read_only\":false,\"label\":\"Feature state value\",\"children\":{\"type\":{\"type\":\"choice\",\"required\":true,\"read_only\":false,\"label\":\"Type\",\"choices\":[{\"value\":\"integer\",\"display_name\":\"integer\"},{\"value\":\"string\",\"display_name\":\"string\"},{\"value\":\"boolean\",\"display_name\":\"boolean\"}]},\"value\":{\"type\":\"string\",\"required\":true,\"read_only\":false,\"label\":\"Value\"}}},\"multivariate_feature_state_values\":{\"type\":\"field\",\"requ",
+          "isError": false,
+          "ms": 759
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 237,
+        "cacheRead": 11198,
+        "cacheWrite": 642
+      },
+      "costUsd": 0.00031093,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 10,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api api/v1/environments/Vej9ZCq5W66jBCVxFAc6UL/experiments/2/start/ -X POST -i 2>&1 | head -c 1500"
+          },
+          "output": "HTTP/1.1 200 OK\nAllow: POST, OPTIONS\r\nCache-Control: max-age=0, no-cache, no-store, must-revalidate, private\r\nConnection: keep-alive\r\nContent-Length: 770\r\nContent-Type: application/json\r\nCross-Origin-Opener-Policy: same-origin\r\nDate: Fri, 27 Nov 2026 20:17:38 GMT\r\nExpires: Fri, 27 Nov 2026 20:17:38 GMT\r\nFlagsmith-Version: 2.295.2\r\nPragma: no-cache\r\nReferrer-Policy: same-origin\r\nServer: gunicorn\r\nVary: Accept, Origin\r\nX-Content-Type-Options: nosniff\r\nX-Frame-Options: DENY\r\n\n{\"id\":2,\"feature\":{\"id\":39,\"name\":\"live_chat_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"id\":7,\"uuid\":\"7442317f-ecde-4fce-a8cc-eba22c31b5f3\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Pay securely\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"live_chat_copy test\",\"hypothesis\":\"Pay securely wins\",\"status\":\"running\",\"metrics\":[{\"id\":4,\"metric\":6,\"metric_name\":\"trial_started\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:17:02.231770Z\"}],\"created_at\":\"2026-11-27T20:17:02.230505Z\",\"updated_at\":\"2026-11-27T20:17:37.981071Z\",\"started_at\":\"2026-11-27T20:17:37.979856Z\",\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
+          "isError": false,
+          "ms": 394
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 534,
+        "cacheRead": 11840,
+        "cacheWrite": 2548
+      },
+      "costUsd": 0.0007041,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 11,
+      "text": "Verifying the experiment's state now.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api api/v1/environments/Vej9ZCq5W66jBCVxFAc6UL/experiments/ 2>&1 | jq '{status_counts, results: [.results[] | {id,name,status,started_at,ended_at}]}'"
+          },
+          "output": "{\n  \"status_counts\": {\n    \"created\": 0,\n    \"running\": 1,\n    \"paused\": 0,\n    \"completed\": 0\n  },\n  \"results\": [\n    {\n      \"id\": 2,\n      \"name\": \"live_chat_copy test\",\n      \"status\": \"running\",\n      \"started_at\": \"2026-11-27T20:17:37.979856Z\",\n      \"ended_at\": null\n    }\n  ]\n}",
+          "isError": false,
+          "ms": 313
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 143,
+        "cacheRead": 14388,
+        "cacheWrite": 1164
+      },
+      "costUsd": 0.00036108,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 12,
+      "text": "DONE: The \"live_chat_copy test\" experiment (id 2) in Production is now `running` (started_at 2026-11-27T20:17:37Z), up from `created`. I made no other changes.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 66,
+        "cacheRead": 15552,
+        "cacheWrite": 278
+      },
+      "costUsd": 0.00022347000000000003,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:17:01.169Z"
+}
