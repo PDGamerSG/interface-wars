@@ -31,14 +31,16 @@ Spend so far: $1.00 of the $15 cap (`runs/spend.local.json`). The API key is onl
 
 ## 3. Next
 
-1. **Website** in `web/`, planned in `docs/WEBSITE_PLAN.md` (stack from the user's On-Record project: React 19,
+1. **Operational controls** are now available through `ops:setup`, `ops:pause` and `ops:resume`. The control
+   Flagsmith project exposes `trials_enabled` and `spend_cap_usd`; the runner reads them before each trial.
+2. **Website** in `web/`, planned in `docs/WEBSITE_PLAN.md` (stack from the user's On-Record project: React 19,
    React Router 7, Vite 8, TypeScript 6, plain CSS tokens, oxlint, fontsource, Phosphor). Data comes from
    `web/public/data/`. Product context for the design workflow is in `PRODUCT.md`. A visual direction round was
    started (roll assigned "The Fight Card", pick "Trial Report") but the user paused the frontend before choosing.
-2. Render static site deploy, then add the URL to the README.
-3. Confirm the README "AI tools used" wording with the user.
-4. Ask before filing any upstream issue from `docs/FLAGSMITH_FINDINGS.md`.
-5. Submit on the WeMakeDevs page before 14:30 UTC on 29 November.
+3. Render static site deploy, then add the URL to the README.
+4. Confirm the README "AI tools used" wording with the user.
+5. Ask before filing any upstream issue from `docs/FLAGSMITH_FINDINGS.md`.
+6. Submit on the WeMakeDevs page before 14:30 UTC on 29 November.
 
 ## 4. Facts learned the hard way
 
