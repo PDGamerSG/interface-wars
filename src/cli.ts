@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { bootstrap } from './lab/bootstrap.ts';
 import { loadEnvFile, readLab, RUNS, FLAGSMITH_URL } from './lab/config.ts';
 import { setupExperiment, startExperiment, experimentState, completeExperiment, FLAG } from './experiment/control.ts';
+import { ensureOpsFlags, setTrialsEnabled } from './experiment/ops.ts';
 import { buildReadout, renderMarkdown } from './experiment/readout.ts';
 import type { ArmName } from './arms/types.ts';
 import { compareJob, showTrial } from './views.ts';
@@ -92,6 +93,15 @@ switch (command) {
     console.log(renderPlan(getManifest(experiment)));
     break;
   }
+  case 'ops:setup':
+    console.log(JSON.stringify(await ensureOpsFlags(), null, 2));
+    break;
+  case 'ops:pause':
+    console.log(JSON.stringify(await setTrialsEnabled(false), null, 2));
+    break;
+  case 'ops:resume':
+    console.log(JSON.stringify(await setTrialsEnabled(true), null, 2));
+    break;
   case 'readout': {
     const r = await buildReadout(rest.find((arg) => arg !== '--offline') ?? 'main', { withFlagsmith: !rest.includes('--offline') });
     console.log(renderMarkdown(r));
@@ -120,6 +130,9 @@ switch (command) {
   node src/cli.ts experiment:setup         create the agent_interface flag, metrics and experiment
   node src/cli.ts experiment:start         start the archived main experiment
   node src/cli.ts plan --experiment <id>     validate and print a credential-free experiment manifest
+  node src/cli.ts ops:setup                  create the trials kill switch and remote spend cap
+  node src/cli.ts ops:pause                  stop new trials through the Flagsmith control flag
+  node src/cli.ts ops:resume                 allow new trials through the Flagsmith control flag
   node src/run.ts --run main --count 240   run trials (see src/run.ts for options)
   node src/cli.ts readout main             Flagsmith results + template bootstrap + pre-registered verdict
   node src/cli.ts ship main                human approval, then complete the experiment and roll out the winner

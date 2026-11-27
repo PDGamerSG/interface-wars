@@ -74,6 +74,7 @@ export async function setTrialsEnabled(enabled: boolean) {
   const feature = features.find((f: { name: string }) => f.name === KILL_SWITCH);
   if (!feature) throw new Error(`No ${KILL_SWITCH} flag. Run: node src/cli.ts ops:setup`);
   const state = states.find((s: any) => s.feature === feature.id && s.feature_segment === null && s.identity === null);
+  if (!state) throw new Error(`No environment state for ${KILL_SWITCH}`);
   await a.patch(`/api/v1/environments/${lab.control.environmentKey}/featurestates/${state.id}/`, { enabled });
   return readOpsFlags();
 }
