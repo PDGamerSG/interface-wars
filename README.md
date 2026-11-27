@@ -157,6 +157,13 @@ node scripts/count-tokens.ts                # per-request input tokens of each i
 
 Deviations from the pre-registration are listed in `prereg/DEVIATIONS.md`.
 
+Read the results in the terminal:
+
+```bash
+node src/cli.ts compare create_metric --pick failed   # one job across the three arms, call by call
+node src/cli.ts show main-0075                        # one trial: every tool call, the state diff, the verdict
+```
+
 Re-running the same `run.ts` command resumes and retries failed trials with the same identities.
 `IW_MAX_SPEND_USD` sets a hard spend cap (ledger in `runs/spend.local.json`). `IW_DRY_RUN=1` runs the whole
 pipeline with a scripted stand-in agent and no API calls; dry-run numbers are fake by design.
