@@ -8,3 +8,4 @@ runs/ci/
 runs/main.local.log
 *.local.log
 .impeccable/questions/
+runs/*/readout.offline.*

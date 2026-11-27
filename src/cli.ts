@@ -86,7 +86,7 @@ switch (command) {
     console.log(JSON.stringify(await experimentState(), null, 2));
     break;
   case 'readout': {
-    const r = await buildReadout(rest[0] ?? 'main', { withFlagsmith: !rest.includes('--offline') });
+    const r = await buildReadout(rest.find((arg) => arg !== '--offline') ?? 'main', { withFlagsmith: !rest.includes('--offline') });
     console.log(renderMarkdown(r));
     break;
   }
