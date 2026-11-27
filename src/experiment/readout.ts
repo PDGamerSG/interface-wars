@@ -125,7 +125,8 @@ export async function buildReadout(run: string, opts: { withFlagsmith?: boolean 
   const winners = Object.entries(decisions).filter(([, d]) => d.verdict === 'WIN').map(([a]) => a);
   const recommendation = winners.length === 0
     ? { ship: null, reason: 'No arm met the pre-registered bar against the MCP control. Keep the control.' }
-    : { ship: winners.sort((x, y) => perArm[y].correctRate - perArm[x].correctRate)[0], reason: 'Met the pre-registered bar on job_correct with both analyses agreeing and no guardrail breach.' };
+    // Tie-break between two winning arms: higher job_correct rate, then lower mean cost (pre-registered).
+    : { ship: winners.sort((x, y) => perArm[y].correctRate - perArm[x].correctRate || perArm[x].meanCost - perArm[y].meanCost)[0], reason: 'Met the pre-registered bar on job_correct with both analyses agreeing and no guardrail breach.' };
 
   const readout = {
     run, generatedAt: new Date().toISOString(), trials: trials.length,

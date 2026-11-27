@@ -7,6 +7,7 @@ import { runTrial, type TrialRecord } from './trial.ts';
 import { ARMS, type ArmName } from './arms/types.ts';
 import { createAssigner, experimentState } from './experiment/control.ts';
 import { loadEnvFile, RUNS } from './lab/config.ts';
+import { BudgetExceeded, CAP_USD, checkBudget, spentUsd } from './agent/budget.ts';
 
 loadEnvFile();
 const args = process.argv.slice(2);
@@ -27,6 +28,16 @@ const templateFilter = opt('template');
 if (process.env.IW_DRY_RUN !== '1' && !process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
   console.error('Set ANTHROPIC_API_KEY in .env first.');
   process.exit(2);
+}
+
+if (process.env.IW_DRY_RUN !== '1') {
+  try {
+    checkBudget();
+  } catch (error) {
+    console.error((error as Error).message);
+    process.exit(2);
+  }
+  console.log(`Spend so far: $${spentUsd().toFixed(4)} of cap $${CAP_USD}.`);
 }
 
 const assigner = pilot || forcedArm ? null : createAssigner();
@@ -69,7 +80,13 @@ async function worker() {
         (r.correct ? '' : `  ${[...r.reasons, ...r.collateral.map((c) => 'collateral ' + c.path)].join('; ').slice(0, 160)}`),
       );
     } catch (error) {
-      console.log(`${trialId} ERROR ${(error as Error).stack?.split('\n').slice(0, 3).join(' | ')}`);
+      if (error instanceof BudgetExceeded) {
+        // Not an agent failure: the trial is not recorded, so a later run with a higher cap retries it.
+        console.log(`${trialId} STOPPED ${error.message} No new trials will start.`);
+        queue.length = 0;
+      } else {
+        console.log(`${trialId} ERROR ${(error as Error).stack?.split('\n').slice(0, 3).join(' | ')}`);
+      }
     } finally {
       active--;
     }
@@ -88,4 +105,5 @@ console.log('\nSummary (this batch, raw counts):');
 for (const [arm, a] of Object.entries(byArm)) {
   console.log(`  ${arm.padEnd(9)} n=${a.n} correct=${a.correct} (${((100 * a.correct) / a.n).toFixed(0)}%) collateral=${a.collateral} mean cost=$${(a.cost / a.n).toFixed(4)}`);
 }
+if (process.env.IW_DRY_RUN !== '1') console.log(`\nTotal real spend (all runs): $${spentUsd().toFixed(4)} of cap $${CAP_USD}.`);
 void active;

@@ -6,6 +6,10 @@ export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 export const RUNS = join(ROOT, 'runs');
 export const LAB_FILE = join(RUNS, 'lab.local.json');
 
+// Load .env when this module is first imported. Other modules read process.env into constants at import
+// time (for example IW_MODEL in agent/loop.ts), so a later loadEnvFile() call in an entry script is too late.
+loadEnvFile();
+
 // Host-side URLs (the runner, verifier and MCP client run on the host).
 export const FLAGSMITH_URL = process.env.IW_FLAGSMITH_URL ?? 'http://127.0.0.1:8300';
 export const MCP_URL = process.env.IW_MCP_URL ?? 'http://127.0.0.1:8301/mcp';

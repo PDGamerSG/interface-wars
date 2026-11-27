@@ -4,16 +4,21 @@
 import Anthropic from '@anthropic-ai/sdk';
 import type { Arm } from '../arms/types.ts';
 import type { Sandbox } from '../lab/sandbox.ts';
+import { checkBudget, recordSpend } from './budget.ts';
 
-export const MODEL = process.env.IW_MODEL ?? 'claude-opus-5-5';
+export const MODEL = process.env.IW_MODEL ?? 'claude-haiku-5-5';
 export const EFFORT = (process.env.IW_EFFORT ?? 'medium') as 'low' | 'medium' | 'high';
 export const MAX_TURNS = Number(process.env.IW_MAX_TURNS ?? 30);
 
-// USD per million tokens. Cache writes use the 5-minute TTL rate (1.25x input).
-const PRICES: Record<string, { input: number; output: number; cacheRead: number }> = {
+// USD per million tokens. Cache reads are 0.1x input; cache writes use the 5-minute TTL rate (1.25x input).
+// Claude Haiku 5.5 has two rate cards: a request whose prompt (input + cache read + cache write) is over
+// 100K tokens is billed entirely at the higher card. Long MCP trials can cross that line, so cost is
+// computed per request, not from summed usage.
+type Rates = { input: number; output: number; cacheRead: number };
+const PRICES: Record<string, Rates & { long?: Rates & { above: number } }> = {
   'claude-opus-5-5': { input: 4, output: 20, cacheRead: 0.2 },
   'claude-sonnet-5-5': { input: 2, output: 10, cacheRead: 0.1 },
-  'claude-haiku-5-5': { input: 0.1, output: 0.5, cacheRead: 0.01 },
+  'claude-haiku-5-5': { input: 0.1, output: 0.5, cacheRead: 0.01, long: { above: 100_000, input: 0.5, output: 2.5, cacheRead: 0.05 } },
 };
 
 export type Usage = { input: number; output: number; cacheRead: number; cacheWrite: number };
@@ -22,6 +27,7 @@ export type TurnRecord = {
   text: string;
   calls: { name: string; input: unknown; output: string; isError: boolean; ms: number }[];
   usage: Usage;
+  costUsd: number;
   stopReason: string | null;
 };
 export type AgentResult = {
@@ -35,8 +41,12 @@ export type AgentResult = {
   ms: number;
 };
 
+// Cost of one request. Pass the usage of a single response, never a sum over turns.
 export function costOf(model: string, u: Usage) {
-  const p = PRICES[model] ?? PRICES['claude-opus-5-5'];
+  const card = PRICES[model];
+  if (!card) throw new Error(`No price card for model ${model}. Add it to PRICES in src/agent/loop.ts.`);
+  const prompt = u.input + u.cacheRead + u.cacheWrite;
+  const p = card.long && prompt > card.long.above ? card.long : card;
   return (u.input * p.input + u.output * p.output + u.cacheRead * p.cacheRead + u.cacheWrite * p.input * 1.25) / 1_000_000;
 }
 
@@ -77,10 +87,12 @@ export async function runAgent(arm: Arm, sandbox: Sandbox, task: string, client 
   const usage: Usage = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 };
   let toolCalls = 0;
   let toolErrors = 0;
+  let costUsd = 0;
   let finalText = '';
   let outcome: AgentResult['outcome'] = 'turn_limit';
 
   for (let turn = 1; turn <= MAX_TURNS; turn++) {
+    checkBudget();
     let response: Anthropic.Message;
     try {
       response = await client.messages.create({
@@ -104,9 +116,12 @@ export async function runAgent(arm: Arm, sandbox: Sandbox, task: string, client 
       cacheWrite: response.usage.cache_creation_input_tokens ?? 0,
     };
     usage.input += u.input; usage.output += u.output; usage.cacheRead += u.cacheRead; usage.cacheWrite += u.cacheWrite;
+    const turnCost = costOf(MODEL, u);
+    costUsd += turnCost;
+    recordSpend(turnCost);
 
     const text = response.content.filter((b): b is Anthropic.TextBlock => b.type === 'text').map((b) => b.text).join('\n').trim();
-    const record: TurnRecord = { turn, text, calls: [], usage: u, stopReason: response.stop_reason };
+    const record: TurnRecord = { turn, text, calls: [], usage: u, costUsd: turnCost, stopReason: response.stop_reason };
     turns.push(record);
     messages.push({ role: 'assistant', content: response.content });
 
@@ -136,5 +151,5 @@ export async function runAgent(arm: Arm, sandbox: Sandbox, task: string, client 
     messages.push({ role: 'user', content: results });
   }
 
-  return { outcome, finalText, turns, usage, costUsd: costOf(MODEL, usage), toolCalls, toolErrors, ms: Date.now() - started };
+  return { outcome, finalText, turns, usage, costUsd, toolCalls, toolErrors, ms: Date.now() - started };
 }
