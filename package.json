@@ -22,6 +22,7 @@
     "readout": "node src/cli.ts readout",
     "ship": "node src/cli.ts ship",
     "which": "node src/cli.ts which",
+    "plan": "node src/cli.ts plan",
     "tokens": "node scripts/count-tokens.ts",
     "export:web": "node scripts/export-web-data.ts"
   },

@@ -10,6 +10,7 @@ import { setupExperiment, startExperiment, experimentState, completeExperiment, 
 import { buildReadout, renderMarkdown } from './experiment/readout.ts';
 import type { ArmName } from './arms/types.ts';
 import { compareJob, showTrial } from './views.ts';
+import { getManifest, renderPlan } from './experiment/manifest.ts';
 
 loadEnvFile();
 const [command, ...rest] = process.argv.slice(2);
@@ -85,6 +86,12 @@ switch (command) {
   case 'experiment:status':
     console.log(JSON.stringify(await experimentState(), null, 2));
     break;
+  case 'plan': {
+    const experimentIdx = rest.indexOf('--experiment');
+    const experiment = experimentIdx >= 0 ? rest[experimentIdx + 1] : undefined;
+    console.log(renderPlan(getManifest(experiment)));
+    break;
+  }
   case 'readout': {
     const r = await buildReadout(rest.find((arg) => arg !== '--offline') ?? 'main', { withFlagsmith: !rest.includes('--offline') });
     console.log(renderMarkdown(r));
@@ -111,7 +118,8 @@ switch (command) {
     console.log(`Usage:
   node src/cli.ts lab:bootstrap            create the lab admin and control organisation
   node src/cli.ts experiment:setup         create the agent_interface flag, metrics and experiment
-  node src/cli.ts experiment:start         start the experiment (Flagsmith begins assigning arms)
+  node src/cli.ts experiment:start         start the archived main experiment
+  node src/cli.ts plan --experiment <id>     validate and print a credential-free experiment manifest
   node src/run.ts --run main --count 240   run trials (see src/run.ts for options)
   node src/cli.ts readout main             Flagsmith results + template bootstrap + pre-registered verdict
   node src/cli.ts ship main                human approval, then complete the experiment and roll out the winner
