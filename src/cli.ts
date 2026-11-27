@@ -9,6 +9,7 @@ import { loadEnvFile, readLab, RUNS, FLAGSMITH_URL } from './lab/config.ts';
 import { setupExperiment, startExperiment, experimentState, completeExperiment, FLAG } from './experiment/control.ts';
 import { buildReadout, renderMarkdown } from './experiment/readout.ts';
 import type { ArmName } from './arms/types.ts';
+import { compareJob, showTrial } from './views.ts';
 
 loadEnvFile();
 const [command, ...rest] = process.argv.slice(2);
@@ -95,6 +96,17 @@ switch (command) {
   case 'which':
     await which();
     break;
+  case 'show':
+    if (!rest[0]) throw new Error('Usage: node src/cli.ts show <trial id> [--full]');
+    showTrial(rest[0], { full: rest.includes('--full') });
+    break;
+  case 'compare': {
+    if (!rest[0]) throw new Error('Usage: node src/cli.ts compare <template> [--run main] [--pick first|failed|correct]');
+    const runIdx = rest.indexOf('--run');
+    const pickIdx = rest.indexOf('--pick');
+    compareJob(rest[0], { run: runIdx >= 0 ? rest[runIdx + 1] : undefined, pick: pickIdx >= 0 ? (rest[pickIdx + 1] as any) : undefined });
+    break;
+  }
   default:
     console.log(`Usage:
   node src/cli.ts lab:bootstrap            create the lab admin and control organisation
@@ -103,5 +115,7 @@ switch (command) {
   node src/run.ts --run main --count 240   run trials (see src/run.ts for options)
   node src/cli.ts readout main             Flagsmith results + template bootstrap + pre-registered verdict
   node src/cli.ts ship main                human approval, then complete the experiment and roll out the winner
-  node src/cli.ts which                    what interface a new agent session gets from the flag`);
+  node src/cli.ts which                    what interface a new agent session gets from the flag
+  node src/cli.ts show <trial id>          one trial: every tool call, the state diff and the verdict
+  node src/cli.ts compare <template>       the same job across the three arms (--pick failed shows failures)`);
 }
