@@ -26,14 +26,14 @@ Render URL.
 
 Interface Wars is an experiment, run with Flagsmith Experimentation, that answers how an AI agent should operate
 Flagsmith: through the official MCP server, through the Flagsmith CLI, or through the CLI plus an Agent Skill.
-Real Claude agents do real Flagsmith jobs in sandbox organisations on self-hosted Flagsmith; a verifier diffs the
-whole Flagsmith state before and after each job. The site presents the result and every trial behind it. Success:
+Real Claude agents do real Flagsmith jobs in sandbox organisations on self-hosted Flagsmith; a verifier compares selected
+sandbox fields before and after each job. The site presents the result and every trial behind it. Success:
 a judge understands the question, the answer and how Flagsmith ran the experiment within one screen, and anyone
 can open any trial and see why it passed or failed.
 
 ## Positioning
 
-It settles a claim the sponsor made on stage ("the CLI is more performant") with a pre-registered experiment that
+It tests a claim the sponsor made on stage ("the CLI is more performant") with a pre-registered experiment that
 Flagsmith itself assigns, measures, analyses and rolls out. Every number links to the transcripts and state diffs
 that produced it.
 
@@ -54,7 +54,7 @@ that produced it.
 
 ## Evidence on Hand
 
-- 255-trial main run (`runs/main/`), with full transcripts, state diffs, grading reasons, tokens and cost per trial.
+- 255-trial main run (`runs/main/`), with per-turn traces, clipped tool outputs, final state diffs, grading reasons, tokens and cost per trial.
 - Readout with Flagsmith's Bayesian result and a template-level cluster bootstrap (`runs/main/readout.json`).
 - Pre-registration (`prereg/PREREGISTRATION.md`, tag `prereg-v1`), pilot data (`runs/pilot/`, `runs/smoke-*`).
 - The Agent Skill (`skills/flagsmith-ops/SKILL.md`).

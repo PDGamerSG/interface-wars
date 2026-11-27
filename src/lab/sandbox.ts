@@ -173,7 +173,7 @@ function normalizeRules(rules: any[]): any {
   }));
 }
 
-// A flat path -> value map of everything an agent could change in the sandbox.
+// Selected fields from the sandbox APIs used by the task and collateral checks.
 export async function snapshot(s: Sandbox): Promise<Snapshot> {
   const a = s.admin;
   const out: Snapshot = {};

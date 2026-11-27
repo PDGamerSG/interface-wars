@@ -2,7 +2,8 @@
 
 Problems in Flagsmith 2.295.2 and the official Flagsmith MCP server 2.295.2 that Interface Wars ran into. Each one
 links to the trials or the harness code that show it. Trial IDs refer to `runs/main/trials/<id>.json`, which holds
-the full transcript, the tool calls and the state diff.
+per-turn tool calls and the final snapshot diff. The logger kept up to 4,000 characters of each tool result.
+The limit was reached by 203 tool results in 155 main trials.
 
 None of these has been filed upstream yet. The text under each heading is written so it can be pasted into an issue.
 
@@ -30,78 +31,76 @@ None of these has been filed upstream yet. The text under each heading is writte
 - **Fix:** expose `start_experiment` and `complete_experiment` tools (`rollout_decision`, `rollout_variant`), and
   drop `feature` from the `update_experiment` required list.
 
-### 3. An existing multivariate split cannot be changed through MCP
+### 3. MCP reads omit the value IDs needed to change an existing split
 
-- **Effect:** 1 of 5 `change_split_in_production` trials succeeded on the MCP arm.
-- **Cause:** updating a split needs the IDs of the existing multivariate feature-state values, and no MCP tool
-  returns them. Without the IDs the API answers `Multivariate feature state value with this Feature state and
-  Multivariate feature option already exists.`
-- **Evidence:** `main-0085`, `main-0101`, `main-0165`, `main-0181`.
-- **Fix:** return `multivariate_feature_state_values` (with IDs) from a feature-state read tool, or accept updates
-  keyed by `multivariate_feature_option`.
+Four of five split changes failed. Updates without the existing feature-state value IDs hit the uniqueness check.
+The fifth agent submitted an update preserving the current value. Its response exposed value ID 111, which the
+agent then used to change the split from 50% to 90%. A read operation returning these IDs would remove the need
+for a write to discover them. [Successful trace](https://github.com/PDGamerSG/interface-wars/blob/main/runs/main/trials/main-0117.json) · [Failed trace](https://github.com/PDGamerSG/interface-wars/blob/main/runs/main/trials/main-0085.json)
 
 ### 4. A flag cannot be found by tag name through MCP
 
 - **Effect:** 0 of 4 `archive_stale_flag` trials succeeded on the MCP arm ("archive the flag tagged stale").
 - **Cause:** features carry numeric tag IDs only, and no MCP tool lists a project's tags, so the agent cannot map
-  `stale` to an ID. The agents reported this and changed nothing.
+  `stale` to an ID. All four agents reported failure and left empty final diffs.
 - **Evidence:** `main-0110`, `main-0174`, `main-0190`, `main-0254`.
 - **Fix:** add a `list_project_tags` tool, or include tag labels in feature results.
 
 ### 5. The tool list costs 29,270 input tokens per request
 
 - **Effect:** the MCP arm read 130,914 input tokens per trial on average, against 20,329 for the CLI with the
-  skill, although it took fewer turns (4.2 against 5.1). Its mean cost per trial was 4.3 times higher.
+  skill, although it took fewer turns (4.2 against 5.1). Its mean cost per trial was 4.43 times the skill arm’s cost.
 - **Cause:** the server exposes 54 tools with about 67 KB of JSON schema, and every request carries all of them.
 - **Fix:** tool groups or scopes that a client can enable, and shorter schemas (many list read-only fields such as
   `created_at` and `uuid` as inputs).
 
 ## Flagsmith API and Experimentation
 
-### 6. The sample-ratio check never runs for experiments
+### 6. The sample-ratio test skips the experiment rollout in this configuration
 
 - **Effect:** `srm_p_value` is `null` in the results of the main experiment, with 255 identities.
 - **Cause:** `_expected_variant_shares` in `experimentation/services.py` reads the split from the environment
   default feature state. Creating an experiment zeroes that split and moves it to the hidden
   `experiment-<id>-rollout` segment override, so the shares come back empty and the check is skipped. The code
-  carries a TODO saying exactly this.
+  documents this in a TODO. [Share calculation](https://github.com/Flagsmith/flagsmith/blob/5369ece3ff3aefbd021d2496f82a7ce0e9cd04d6/api/experimentation/services.py#L421-L443) · [Nonpositive-share check](https://github.com/Flagsmith/flagsmith/blob/5369ece3ff3aefbd021d2496f82a7ce0e9cd04d6/api/experimentation/stats.py#L88-L100)
 - **Workaround in this repo:** the readout runs its own chi-square test against the configured split
   (`sampleRatioCheck` in `src/experiment/readout.ts`).
 - **Fix:** read the split from the rollout segment override.
 
-### 7. `PATCH` on a feature state ignores `multivariate_feature_state_values`
+### 7. Environment feature-state PATCH ignores multivariate allocations
 
-- **Effect:** a split change sent with `PATCH` returns success and changes nothing.
-- **Cause:** the field is silently ignored on partial update. `PUT` with the full state applies it.
-- **Evidence:** harness code `src/jobs/reference.ts` (`putState`) uses `PUT` for this reason.
-- **Fix:** apply the field on `PATCH`, or reject it with a 400.
+On the environment feature-state endpoint, a PATCH carrying `multivariate_feature_state_values` returned success
+while the split stayed at its prior values. A PUT of the full state applied the requested split. The view selects
+different serializers for full and partial update. [Versioned view](https://github.com/Flagsmith/flagsmith/blob/5369ece3ff3aefbd021d2496f82a7ce0e9cd04d6/api/features/views.py#L712-L725) · [Reference update](https://github.com/PDGamerSG/interface-wars/blob/main/src/jobs/reference.ts)
 
-### 8. A multivariate option's `key` is ignored on create
+### 8. Nested multivariate option creation treats the option key as read-only
 
-- **Effect:** experiment results label the variant `""` unless the key is set afterwards.
-- **Cause:** `key` is dropped on `POST`; a later `PUT .../mv-options/<id>/` sets it.
-- **Evidence:** `setupExperiment` in `src/experiment/control.ts`.
-- **Fix:** accept `key` on create.
+When the harness created a feature with nested options, the experiment results used an empty variant label until
+the harness set the option key through the dedicated `mv-options` endpoint. The nested serializer declares the
+field read-only and points to the dedicated endpoint for uniqueness validation. Documenting that second step in the
+experiment setup example would help clients produce named variants. [Serializer](https://github.com/Flagsmith/flagsmith/blob/5369ece3ff3aefbd021d2496f82a7ce0e9cd04d6/api/features/multivariate/serializers.py#L20-L33) · [Harness setup](https://github.com/PDGamerSG/interface-wars/blob/main/src/experiment/control.ts)
 
-### 9. `warehouse_type: "flagsmith"` breaks results on self-hosted
+### 9. The flagsmith warehouse driver needs ClickHouse
 
-- **Effect:** results computation crashes on a self-hosted instance.
-- **Cause:** that type is the Cloud-only ClickHouse warehouse. Self-hosted needs
-  `{"warehouse_type": "postgres", "config": {"source": "flagsmith_database"}}`.
-- **Fix:** reject the Cloud-only type on self-hosted with a clear error, and document the Postgres option.
+Our lab runs Flagsmith and Postgres. Choosing `warehouse_type: "flagsmith"` led the results job to look for a
+ClickHouse connection. Choosing `{"warehouse_type":"postgres","config":{"source":"flagsmith_database"}}`
+let it compute results from the local event store. The driver reads `EXPERIMENTATION_CLICKHOUSE_URL`. [Driver](https://github.com/Flagsmith/flagsmith/blob/5369ece3ff3aefbd021d2496f82a7ce0e9cd04d6/api/experimentation/warehouses/flagsmith.py#L53-L66)
 
 ### 10. Warehouse-connection writes are throttled at 10 per minute
 
 - **Effect:** creating a sandbox organisation per trial with its own warehouse hits the throttle at concurrency 6.
-- **Cause:** a hard-coded throttle on warehouse-connection writes.
+- The versioned rate is 10 writes per minute. [Throttle configuration](https://github.com/Flagsmith/flagsmith/blob/5369ece3ff3aefbd021d2496f82a7ce0e9cd04d6/api/app/settings/common.py#L394)
 - **Workaround in this repo:** sandboxes skip the warehouse (`IW_SANDBOX_WAREHOUSE=1` turns it back on).
 - **Fix:** make the rate configurable for self-hosted instances.
 
 ## Agent behaviour worth knowing
 
-- On the MCP arm, all 19 failures ended with an explicit `FAILED` line and no change. No MCP agent claimed success
-  falsely.
-- On the CLI arm without the skill, 5 of 7 failures ended with `DONE` although the job was not done (for example
-  `main-0075`: it set the winning variant to 100% but never completed the experiment). The skill's read-back rule
-  is the main difference: the CLI arm with the skill had no failures.
-- No trial in any arm changed anything outside the job's scope (0 collateral changes in 255 trials).
+- All 19 failed MCP trials reported `FAILED` and had an empty final snapshot diff.
+- Four of seven failed CLI trials opened their final response with `DONE:`. One said the experiment was already
+  live when its status was still `created`. The other three acknowledged incomplete work. A fifth machine outcome
+  was classified as `done` for a response beginning “DONE? No.” [Claimed live](https://github.com/PDGamerSG/interface-wars/blob/main/runs/main/trials/main-0074.json) · [Partial rollout](https://github.com/PDGamerSG/interface-wars/blob/main/runs/main/trials/main-0075.json) · [“DONE? No”](https://github.com/PDGamerSG/interface-wars/blob/main/runs/main/trials/main-0202.json)
+- The verifier detected zero out-of-scope final changes in 255 trials. It misses temporary writes and fields
+  outside its snapshot, including identity overrides. One CLI agent changed a Production weight and restored it.
+  [Recorded calls](https://github.com/PDGamerSG/interface-wars/blob/main/runs/main/trials/main-0139.json) · [Snapshot fields](https://github.com/PDGamerSG/interface-wars/blob/main/src/lab/sandbox.ts)
+- Ten registered passes on setup-only tasks had enrollment enabled at the end. All six skill trials on that
+  template were affected. [Sensitivity analysis](https://github.com/PDGamerSG/interface-wars/blob/main/runs/main/sensitivity.md)
