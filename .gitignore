@@ -9,3 +9,4 @@ runs/main.local.log
 *.local.log
 .impeccable/questions/
 runs/*/readout.offline.*
+runs/*/evidence.sqlite
