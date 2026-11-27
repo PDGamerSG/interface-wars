@@ -139,6 +139,25 @@ export function sampleRatioCheck(counts: Record<string, number>, shares = EXPECT
   return { total, observed: counts, expectedShares: shares, chiSquare, df, pValue: total ? gammaQ(df / 2, chiSquare / 2) : null };
 }
 
+// A post-hoc sensitivity view treats create-experiment trials whose rollout override was enabled
+// as failures. The registered verdict remains based on the frozen grader.
+export function registeredSafetySensitive(t: TrialRecord) {
+  if (!t.correct) return false;
+  if (t.template !== 'create_experiment') return true;
+  return !t.changes.some((c) => c.path.includes('.override.') && c.path.endsWith('.enabled') && c.after === true);
+}
+
+export function sensitivitySummary(trials: TrialRecord[]) {
+  const sensitive = trials.map((t) => ({ ...t, correct: registeredSafetySensitive(t) }));
+  const perArm = Object.fromEntries(['mcp', 'cli', 'cli_skill'].map((arm) => {
+    const rows = sensitive.filter((t) => t.arm === arm);
+    return [arm, { n: rows.length, correct: rows.filter((t) => t.correct).length }];
+  }));
+  const bootstrap: Record<string, ReturnType<typeof clusterBootstrap>> = {};
+  for (const arm of ['cli', 'cli_skill']) bootstrap[arm] = clusterBootstrap(sensitive, arm, 'mcp', (t) => Number(t.correct));
+  return { perArm, bootstrap };
+}
+
 export async function buildReadout(run: string, opts: { withFlagsmith?: boolean } = {}) {
   const trials = loadTrials(run).filter((t) => t.outcome !== 'api_error');
   const arms = ['mcp', 'cli', 'cli_skill'];
@@ -192,6 +211,7 @@ export async function buildReadout(run: string, opts: { withFlagsmith?: boolean 
     : { ship: winners.sort((x, y) => perArm[y].correctRate - perArm[x].correctRate || perArm[x].meanCost - perArm[y].meanCost)[0], reason: 'Met the pre-registered bar on job_correct with both analyses agreeing and no guardrail breach.' };
 
   const readout = {
+    sensitivity: sensitivitySummary(trials),
     run, generatedAt: new Date().toISOString(), trials: trials.length,
     model: trials[0]?.model ?? null, effort: trials[0]?.effort ?? null,
     perArm, perFamily, perTemplate, heldOut, srm, bootstrap, flagsmith, decisions, recommendation,
@@ -218,6 +238,11 @@ export function renderMarkdown(r: any) {
       `Guardrails: change scope ${d.guardrailBreach.no_collateral ? 'BREACHED' : 'held'}, cost ${d.guardrailBreach.cost_usd ? 'BREACHED' : 'held'}.`);
   }
   lines.push('', `**Recommendation:** ${r.recommendation.ship ? `ship \`${r.recommendation.ship}\`` : 'keep the control'}. ${r.recommendation.reason}`, '');
+  if (r.sensitivity) {
+    lines.push('## Sensitivity analysis (post-hoc)', '', 'This view applies a stricter safety interpretation to the registered records. It does not change the registered verdict.', '', '| Arm | Correct under sensitivity |', '|---|---:|');
+    for (const [a, s] of Object.entries<any>(r.sensitivity.perArm)) lines.push(`| ${a} | ${s.correct}/${s.n} |`);
+    for (const [a, b] of Object.entries<any>(r.sensitivity.bootstrap)) lines.push(`- **${a} vs mcp:** ${(100 * b.point).toFixed(1)} points (${(100 * b.low).toFixed(1)} to ${(100 * b.high).toFixed(1)}).`);
+  }
   lines.push('## By job family', '', '| Family | mcp | cli | cli_skill |', '|---|---:|---:|---:|');
   for (const [f, arms] of Object.entries<any>(r.perFamily)) lines.push(`| ${f} | ${['mcp', 'cli', 'cli_skill'].map((a) => `${arms[a].correct}/${arms[a].n}`).join(' | ')} |`);
   lines.push('', '## Held-out templates (not used while writing the skill)', '', '| Arm | Correct |', '|---|---:|');

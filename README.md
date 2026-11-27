@@ -3,7 +3,7 @@
 **We used Flagsmith Experimentation to decide how AI agents should operate Flagsmith.**
 
 On the Toggle Wars kickoff stream, the Flagsmith team said they prefer the CLI to the MCP server and think it is
-"more performant". Nobody had measured it. Interface Wars measures it with a real experiment: real Claude agents
+"more performant". Interface Wars measures that claim on the pinned Flagsmith 2.295.2 surface: real Claude agents
 do real Flagsmith jobs on self-hosted Flagsmith, a verifier checks every change, and Flagsmith Experimentation
 assigns the arms, collects the outcomes, computes the result and rolls out the winner.
 
@@ -14,7 +14,7 @@ Built for the WeMakeDevs x Flagsmith Toggle Wars hackathon, Track 01 "Test Somet
 
 <!-- RESULTS:START -->
 **The CLI with the Agent Skill won. The CLI alone did not clear the bar.** 255 trials on Claude Haiku 5.5, arms
-assigned by Flagsmith, jobs checked by diffing the whole Flagsmith state.
+assigned by Flagsmith, jobs checked by a snapshot of the observable Flagsmith state.
 
 | Arm | Trials | Jobs correct | Out-of-scope changes | Mean cost | Mean input tokens | Mean turns | Mean time |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -25,7 +25,7 @@ assigned by Flagsmith, jobs checked by diffing the whole Flagsmith state.
 Decision under the pre-registered rule (both analyses must agree):
 
 - **`cli_skill` vs `mcp`: WIN.** Flagsmith: lift +27.9%, 95% interval +13.6% to +42.2%, chance to beat control
-  100.0%. Template bootstrap: +21.8 points (+6.1 to +43.1). Guardrails held: no out-of-scope changes, cost 77%
+  100.0%. Template bootstrap: +21.8 points (+6.1 to +43.1). Guardrails held: zero detected out-of-scope final changes, cost 77%
   lower.
 - **`cli` vs `mcp`: INCONCLUSIVE.** Flagsmith: lift +17.0%, 95% interval +1.8% to +32.2%, chance to beat control
   98.6%. The template bootstrap interval (-1.0 to +33.7 points) crosses zero, so the rule does not call it.
@@ -41,14 +41,14 @@ What decided it:
 
 - **The MCP server cannot do some jobs at all.** All 19 MCP failures sit in five templates whose tools are missing
   or broken: creating a metric, starting or completing an experiment, changing a split, finding a flag by tag
-  ([findings](docs/FLAGSMITH_FINDINGS.md)). In every one the agent said FAILED and changed nothing.
+  ([findings](docs/FLAGSMITH_FINDINGS.md)). In every one the agent said FAILED and left no detected final change.
 - **The MCP tool list is expensive.** 54 tools are 29,270 input tokens on every request. The CLI's bash tool is
-  611, and the skill adds 1,950 tokens once, when the agent reads it.
+  611, and the skill adds 1,950 tokens once, when the agent reads it. That is a 4.43x MCP-to-skill tool-context ratio.
 - **The skill turns a capable CLI into a reliable one.** Without it the CLI agent explored, took twice the turns,
-  and 5 of its 7 failures claimed DONE when the job was not done. With it: 86 of 86, at the lowest cost.
+  and 4 of its 7 failures claimed DONE when the job was not done. With it: 86 of 86, at the lowest cost.
 
-Full readout: [`runs/main/readout.md`](runs/main/readout.md). Every trial, with its transcript and state diff:
-`runs/main/trials/`.
+Full readout: [`runs/main/readout.md`](runs/main/readout.md). Every trial, with a clipped transcript and observable-state diff:
+`runs/main/trials/`. Tool outputs are clipped at 4,000 characters in each record.
 <!-- RESULTS:END -->
 
 The pre-registration (`prereg/PREREGISTRATION.md`, git tag `prereg-v1`) fixed the hypotheses, arms, jobs, metrics,
@@ -121,9 +121,9 @@ Ten problems in Flagsmith 2.295.2 and its MCP server, each with the trials or co
    created (0/5 trials).
 2. No MCP tool starts or completes an experiment, and `update_experiment` requires `feature`, which the API then
    rejects (0/6 trials).
-3. No MCP tool returns the multivariate value IDs that a split change needs (1/5 trials).
+3. MCP read operations do not return the multivariate value IDs that a split change needs. One of five MCP trials succeeded after an update response exposed an ID.
 4. No MCP tool lists project tags, so a flag cannot be found by tag name (0/4 trials).
-5. The MCP tool list is 29,270 input tokens on every request.
+5. The MCP tool list is 29,270 input tokens on every request (4.43x the 6,611-token CLI-skill interface context).
 6. The sample-ratio check never runs for experiments: it reads the split from the environment default, which an
    experiment zeroes (Flagsmith's own code has a TODO for it).
 7. `PATCH` on a feature state silently ignores `multivariate_feature_state_values`.
@@ -164,8 +164,8 @@ node src/cli.ts compare create_metric --pick failed   # one job across the three
 node src/cli.ts show main-0075                        # one trial: every tool call, the state diff, the verdict
 ```
 
-Re-running the same `run.ts` command resumes and retries failed trials with the same identities.
-`IW_MAX_SPEND_USD` sets a hard spend cap (ledger in `runs/spend.local.json`). `IW_DRY_RUN=1` runs the whole
+Re-running a run name resumes existing records. Use a fresh run name for a new experiment batch, for example `--run replay-2026-11-28`, because committed trial IDs are skipped.
+`IW_MAX_SPEND_USD` sets the machine spend cap (ledger in `runs/spend.local.json`). `trials_enabled` and `spend_cap_usd` in the control Flagsmith project can pause new trials or lower that cap. The cap is checked before each request, so concurrent requests can overshoot it. `IW_DRY_RUN=1` runs the whole
 pipeline with a scripted stand-in agent and no API calls; dry-run numbers are fake by design.
 
 Flagsmith UI: http://127.0.0.1:8300 (the admin login is in `runs/lab.local.json`).
@@ -184,7 +184,7 @@ mkdir -p ~/.claude/skills && cp -r skills/flagsmith-ops ~/.claude/skills/
 ```
 
 The skill was frozen before the main run (`prereg-v1`) and four of the sixteen job templates were held out while it
-was written; it passed all 16 held-out trials.
+was written; it passed all 16 held-out trials. The readout also publishes a post-hoc sensitivity view that treats an enabled rollout override in a “set up but do not start” record as a failure. This view is separate from the registered verdict.
 
 ## Repository map
 
