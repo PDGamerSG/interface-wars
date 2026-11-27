@@ -1,0 +1,15 @@
+{
+  "model": "claude-haiku-5-5",
+  "mcpTools": {
+    "tools": 54,
+    "schemaBytes": 67082,
+    "tokens": 29270
+  },
+  "bashTool": {
+    "tokens": 611
+  },
+  "skill": {
+    "bytes": 4832,
+    "tokens": 1950
+  }
+}
