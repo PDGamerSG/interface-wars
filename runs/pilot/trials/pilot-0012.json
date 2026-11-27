@@ -1,0 +1,153 @@
+{
+  "trialId": "pilot-0012",
+  "index": 12,
+  "arm": "mcp",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "sync_production_to_development",
+  "family": "repair",
+  "heldOut": false,
+  "task": "Make the flag \"apple_pay\" in Production match its Development configuration exactly (on/off state and value). Change nothing else.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.flag.apple_pay.enabled",
+      "before": false,
+      "after": true
+    },
+    {
+      "path": "env.Production.flag.apple_pay.value",
+      "before": "max_10",
+      "after": "compact"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: The `apple_pay` flag in Production (environment 555) is now enabled with value `compact`, matching Development. I changed only that flag's Production state. Re-reading the flag confirms the match, and I did not touch the default value (`max_10`), segment overrides, or anything else.",
+  "costUsd": 0.005333,
+  "usage": {
+    "input": 10,
+    "output": 851,
+    "cacheRead": 91677,
+    "cacheWrite": 31917
+  },
+  "toolCalls": 4,
+  "toolErrors": 0,
+  "turns": 4,
+  "ms": 12853,
+  "commands": [
+    "list_project_features {\"project_pk\":278,\"search\":\"apple_pay\",\"environment\":554}",
+    "list_project_features {\"project_pk\":278,\"search\":\"apple_pay\",\"environment\":555}",
+    "update_feature_state {\"id__path\":2230,\"environment\":555,\"feature\":1073,\"id\":2230,\"enabled\":true,\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"compact\"}}",
+    "list_project_features {\"project_pk\":278,\"search\":\"apple_pay\",\"environment\":555}"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 278,
+            "search": "apple_pay",
+            "environment": 554
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":1073,\"name\":\"apple_pay\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"max_10\",\"created_date\":\"2026-11-27T20:10:46.803361Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"bfffdff1-08ea-4f13-b02d-00b0ac77839e\"}],\"group_owners\":[],\"uuid\":\"8d64656a-4eeb-426a-8a93-c2f44b7167da\",\"project\":278,\"environment_feature_state\":{\"id\":2229,\"feature_state_value\":\"compact\",\"environment\":554,\"identity\":null,\"feature_segment\":null,\"enabled\":true},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 283
+        },
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 278,
+            "search": "apple_pay",
+            "environment": 555
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":1073,\"name\":\"apple_pay\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"max_10\",\"created_date\":\"2026-11-27T20:10:46.803361Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"bfffdff1-08ea-4f13-b02d-00b0ac77839e\"}],\"group_owners\":[],\"uuid\":\"8d64656a-4eeb-426a-8a93-c2f44b7167da\",\"project\":278,\"environment_feature_state\":{\"id\":2230,\"feature_state_value\":\"max_10\",\"environment\":555,\"identity\":null,\"feature_segment\":null,\"enabled\":false},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 282
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 237,
+        "cacheRead": 0,
+        "cacheWrite": 29568
+      },
+      "costUsd": 0.0038149,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "Development has `apple_pay` enabled with value `compact`. Production has it disabled with value `max_10`. I'll update the Production feature state (id 2230) to match.",
+      "calls": [
+        {
+          "name": "update_feature_state",
+          "input": {
+            "id__path": 2230,
+            "environment": 555,
+            "feature": 1073,
+            "id": 2230,
+            "enabled": true,
+            "feature_state_value": {
+              "type": "unicode",
+              "string_value": "compact"
+            }
+          },
+          "output": "{\"id\":2230,\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"compact\",\"integer_value\":null,\"boolean_value\":null},\"multivariate_feature_state_values\":[],\"deleted_at\":null,\"uuid\":\"1c0684f3-8dd3-43d6-b2ed-4dd29f3760cb\",\"enabled\":true,\"created_at\":\"2026-11-27T20:10:46.815776Z\",\"updated_at\":\"2026-11-27T20:10:58.036047Z\",\"live_from\":\"2026-11-27T20:10:46.814993Z\",\"version\":1,\"feature\":1073,\"environment\":555,\"identity\":null,\"feature_segment\":null,\"change_request\":null,\"environment_feature_version\":null}",
+          "isError": false,
+          "ms": 286
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 420,
+        "cacheRead": 29568,
+        "cacheWrite": 1156
+      },
+      "costUsd": 0.00065038,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 278,
+            "search": "apple_pay",
+            "environment": 555
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":1073,\"name\":\"apple_pay\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"max_10\",\"created_date\":\"2026-11-27T20:10:46.803361Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"bfffdff1-08ea-4f13-b02d-00b0ac77839e\"}],\"group_owners\":[],\"uuid\":\"8d64656a-4eeb-426a-8a93-c2f44b7167da\",\"project\":278,\"environment_feature_state\":{\"id\":2230,\"feature_state_value\":\"compact\",\"environment\":555,\"identity\":null,\"feature_segment\":null,\"enabled\":true},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 287
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 99,
+        "cacheRead": 30724,
+        "cacheWrite": 661
+      },
+      "costUsd": 0.000439565,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "DONE: The `apple_pay` flag in Production (environment 555) is now enabled with value `compact`, matching Development. I changed only that flag's Production state. Re-reading the flag confirms the match, and I did not touch the default value (`max_10`), segment overrides, or anything else.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 95,
+        "cacheRead": 31385,
+        "cacheWrite": 532
+      },
+      "costUsd": 0.00042805,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:10:46.430Z"
+}

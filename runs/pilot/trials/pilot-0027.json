@@ -1,0 +1,191 @@
+{
+  "trialId": "pilot-0027",
+  "index": 27,
+  "arm": "mcp",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "ship_winner",
+  "family": "experiments",
+  "heldOut": true,
+  "task": "The experiment \"loyalty_points_copy test\" in Production has finished and the variation \"Pay securely\" won. Complete the experiment and roll the winning variation out to everyone.",
+  "correct": false,
+  "reasons": [
+    "completed: expected \"completed\", got \"running\"",
+    "shipped the variation: expected \"variant\", got null",
+    "winner serves everyone: expected 100, got 0"
+  ],
+  "collateral": [],
+  "changes": [],
+  "outcome": "failed",
+  "finalText": "FAILED: I could not complete the experiment. The update to experiment 50 in Production was rejected on every attempt with \"Cannot change the feature of an existing experiment,\" even though I sent the same feature ID (1133) it already has. The experiment is still `running`, and nothing was changed in Production.\n\nI did not set the flag's value directly as a workaround, because that would bypass the experiment's own completion and rollout. The experiment's results endpoint also returned no computed results, so I could not confirm the win from the data. The fix is likely on the Flagsmith server side; once the update works, the call is to mark experiment 50 completed with `rollout_decision: variant` and `rollout_variant: 96` (\"Pay securely\", key `b`).",
+  "costUsd": 0.006432,
+  "usage": {
+    "input": 12,
+    "output": 2302,
+    "cacheRead": 122567,
+    "cacheWrite": 32430
+  },
+  "toolCalls": 5,
+  "toolErrors": 2,
+  "turns": 5,
+  "ms": 25069,
+  "commands": [
+    "list_experiments {\"environment_api_key\":\"gH5fH84sqRZ3eapewjikAe\",\"q\":\"loyalty_points_copy\"}",
+    "get_experiment {\"environment_api_key\":\"gH5fH84sqRZ3eapewjikAe\",\"experiment_id\":50}",
+    "get_experiment_results {\"environment_api_key\":\"gH5fH84sqRZ3eapewjikAe\",\"experiment_id\":50}",
+    "update_experiment {\"environment_api_key\":\"gH5fH84sqRZ3eapewjikAe\",\"experiment_id\":50,\"feature\":1133,\"hypothesis\":\"Pay securely wins\",\"name\":\"loyalty_points_copy test\",\"status\":\"completed\",\"rollout_decision\":\"variant\",\"rollout_variant\":96,\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":96,\"percentage_allocation\":50}],\"audience\":{\"match\":\"any\",\"segment_ids\":[]}}}",
+    "update_experiment {\"environment_api_key\":\"gH5fH84sqRZ3eapewjikAe\",\"experiment_id\":50,\"feature\":1133,\"hypothesis\":\"Pay securely wins\",\"name\":\"loyalty_points_copy test\",\"status\":\"completed\",\"rollout_decision\":\"variant\",\"rollout_variant\":96}"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_experiments",
+          "input": {
+            "environment_api_key": "gH5fH84sqRZ3eapewjikAe",
+            "q": "loyalty_points_copy"
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":50,\"feature\":{\"id\":1133,\"name\":\"loyalty_points_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"id\":96,\"uuid\":\"e83e867c-e4d3-4a1b-ada5-59c6b5c7df38\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Pay securely\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"loyalty_points_copy test\",\"hypothesis\":\"Pay securely wins\",\"status\":\"running\",\"metrics\":[{\"id\":65,\"metric\":89,\"metric_name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:11:33.967564Z\"}],\"created_at\":\"2026-11-27T20:11:33.966944Z\",\"updated_at\":\"2026-11-27T20:11:34.047558Z\",\"started_at\":\"2026-11-27T20:11:34.046150Z\",\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}],\"status_counts\":{\"created\":0,\"running\":1,\"paused\":0,\"completed\":0}}",
+          "isError": false,
+          "ms": 253
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 148,
+        "cacheRead": 0,
+        "cacheWrite": 29578
+      },
+      "costUsd": 0.00377165,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "get_experiment",
+          "input": {
+            "environment_api_key": "gH5fH84sqRZ3eapewjikAe",
+            "experiment_id": 50
+          },
+          "output": "{\"id\":50,\"feature\":{\"id\":1133,\"name\":\"loyalty_points_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"id\":96,\"uuid\":\"e83e867c-e4d3-4a1b-ada5-59c6b5c7df38\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Pay securely\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"loyalty_points_copy test\",\"hypothesis\":\"Pay securely wins\",\"status\":\"running\",\"metrics\":[{\"id\":65,\"metric\":89,\"metric_name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:11:33.967564Z\"}],\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100.0,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":96,\"percentage_allocation\":50.0}],\"audience\":{\"match\":\"any\",\"segments\":[]}},\"created_at\":\"2026-11-27T20:11:33.966944Z\",\"updated_at\":\"2026-11-27T20:11:34.047558Z\",\"started_at\":\"2026-11-27T20:11:34.046150Z\",\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
+          "isError": false,
+          "ms": 253
+        },
+        {
+          "name": "get_experiment_results",
+          "input": {
+            "environment_api_key": "gH5fH84sqRZ3eapewjikAe",
+            "experiment_id": 50
+          },
+          "output": "{\"results\":null}",
+          "isError": false,
+          "ms": 241
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 207,
+        "cacheRead": 29578,
+        "cacheWrite": 586
+      },
+      "costUsd": 0.00047273000000000004,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "update_experiment",
+          "input": {
+            "environment_api_key": "gH5fH84sqRZ3eapewjikAe",
+            "experiment_id": 50,
+            "feature": 1133,
+            "hypothesis": "Pay securely wins",
+            "name": "loyalty_points_copy test",
+            "status": "completed",
+            "rollout_decision": "variant",
+            "rollout_variant": 96,
+            "experiment_rollout": {
+              "enabled": true,
+              "rollout_percentage": 100,
+              "feature_state_value": {
+                "type": "string",
+                "value": "Checkout"
+              },
+              "multivariate_feature_state_values": [
+                {
+                  "multivariate_feature_option": 96,
+                  "percentage_allocation": 50
+                }
+              ],
+              "audience": {
+                "match": "any",
+                "segment_ids": []
+              }
+            }
+          },
+          "output": "Error calling tool 'update_experiment': HTTP error 400: Bad Request - {'feature': ['Cannot change the feature of an existing experiment.']}",
+          "isError": true,
+          "ms": 277
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 901,
+        "cacheRead": 30164,
+        "cacheWrite": 768
+      },
+      "costUsd": 0.0008483399999999999,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "",
+      "calls": [
+        {
+          "name": "update_experiment",
+          "input": {
+            "environment_api_key": "gH5fH84sqRZ3eapewjikAe",
+            "experiment_id": 50,
+            "feature": 1133,
+            "hypothesis": "Pay securely wins",
+            "name": "loyalty_points_copy test",
+            "status": "completed",
+            "rollout_decision": "variant",
+            "rollout_variant": 96
+          },
+          "output": "Error calling tool 'update_experiment': HTTP error 400: Bad Request - {'feature': ['Cannot change the feature of an existing experiment.']}",
+          "isError": true,
+          "ms": 285
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 473,
+        "cacheRead": 30932,
+        "cacheWrite": 961
+      },
+      "costUsd": 0.0006661449999999999,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "FAILED: I could not complete the experiment. The update to experiment 50 in Production was rejected on every attempt with \"Cannot change the feature of an existing experiment,\" even though I sent the same feature ID (1133) it already has. The experiment is still `running`, and nothing was changed in Production.\n\nI did not set the flag's value directly as a workaround, because that would bypass the experiment's own completion and rollout. The experiment's results endpoint also returned no computed results, so I could not confirm the win from the data. The fix is likely on the Flagsmith server side; once the update works, the call is to mark experiment 50 completed with `rollout_decision: variant` and `rollout_variant: 96` (\"Pay securely\", key `b`).",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 573,
+        "cacheRead": 31893,
+        "cacheWrite": 537
+      },
+      "costUsd": 0.000672755,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:11:33.167Z"
+}

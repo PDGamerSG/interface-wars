@@ -1,0 +1,135 @@
+{
+  "trialId": "pilot-0003",
+  "index": 3,
+  "arm": "mcp",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "kill_switch",
+  "family": "flags",
+  "heldOut": true,
+  "task": "Incident: the flag \"review_photos\" is causing checkout errors in Production. Turn it off in Production right now. Do not touch any other flag or environment.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.flag.review_photos.enabled",
+      "before": true,
+      "after": false
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: \"review_photos\" is now disabled in Production (environment 536). Its feature state (id 2143) went from enabled to disabled, and the value \"blue\" is unchanged. A re-read confirms `enabled: false`. No other flags or environments were touched.",
+  "costUsd": 0.005125,
+  "usage": {
+    "input": 10,
+    "output": 635,
+    "cacheRead": 90404,
+    "cacheWrite": 31222
+  },
+  "toolCalls": 3,
+  "toolErrors": 0,
+  "turns": 4,
+  "ms": 6491,
+  "commands": [
+    "list_project_features {\"project_pk\":269,\"search\":\"review_photos\",\"environment\":536}",
+    "update_feature_state {\"id__path\":2143,\"environment\":536,\"feature\":1030,\"enabled\":false,\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"blue\"}}",
+    "list_project_features {\"project_pk\":269,\"search\":\"review_photos\",\"environment\":536}"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 269,
+            "search": "review_photos",
+            "environment": 536
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":1030,\"name\":\"review_photos\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"blue\",\"created_date\":\"2026-11-27T20:10:28.192637Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"bfffdff1-08ea-4f13-b02d-00b0ac77839e\"}],\"group_owners\":[],\"uuid\":\"c5b367c5-b281-45f5-a513-156e60b48cfa\",\"project\":269,\"environment_feature_state\":{\"id\":2143,\"feature_state_value\":\"blue\",\"environment\":536,\"identity\":null,\"feature_segment\":null,\"enabled\":true},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 296
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 134,
+        "cacheRead": 0,
+        "cacheWrite": 29572
+      },
+      "costUsd": 0.0037639000000000006,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "update_feature_state",
+          "input": {
+            "id__path": 2143,
+            "environment": 536,
+            "feature": 1030,
+            "enabled": false,
+            "feature_state_value": {
+              "type": "unicode",
+              "string_value": "blue"
+            }
+          },
+          "output": "{\"id\":2143,\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"blue\",\"integer_value\":null,\"boolean_value\":null},\"multivariate_feature_state_values\":[],\"deleted_at\":null,\"uuid\":\"ce3680c1-2680-4ea5-9f6f-fab21813b5e7\",\"enabled\":false,\"created_at\":\"2026-11-27T20:10:28.205272Z\",\"updated_at\":\"2026-11-27T20:10:32.980618Z\",\"live_from\":\"2026-11-27T20:10:28.204658Z\",\"version\":1,\"feature\":1030,\"environment\":536,\"identity\":null,\"feature_segment\":null,\"change_request\":null,\"environment_feature_version\":null}",
+          "isError": false,
+          "ms": 312
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 317,
+        "cacheRead": 29572,
+        "cacheWrite": 566
+      },
+      "costUsd": 0.00052517,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 269,
+            "search": "review_photos",
+            "environment": 536
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":1030,\"name\":\"review_photos\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"blue\",\"created_date\":\"2026-11-27T20:10:28.192637Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"bfffdff1-08ea-4f13-b02d-00b0ac77839e\"}],\"group_owners\":[],\"uuid\":\"c5b367c5-b281-45f5-a513-156e60b48cfa\",\"project\":269,\"environment_feature_state\":{\"id\":2143,\"feature_state_value\":\"blue\",\"environment\":536,\"identity\":null,\"feature_segment\":null,\"enabled\":false},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 279
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 98,
+        "cacheRead": 30138,
+        "cacheWrite": 556
+      },
+      "costUsd": 0.00042008,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "DONE: \"review_photos\" is now disabled in Production (environment 536). Its feature state (id 2143) went from enabled to disabled, and the value \"blue\" is unchanged. A re-read confirms `enabled: false`. No other flags or environments were touched.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 86,
+        "cacheRead": 30694,
+        "cacheWrite": 528
+      },
+      "costUsd": 0.00041614,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:10:27.815Z"
+}

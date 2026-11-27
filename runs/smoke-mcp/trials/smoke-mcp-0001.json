@@ -1,0 +1,146 @@
+{
+  "trialId": "smoke-mcp-0001",
+  "index": 1,
+  "arm": "mcp",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "enable_in_production",
+  "family": "flags",
+  "heldOut": false,
+  "task": "Turn on the flag \"bulk_discounts\" in Production. Development must stay exactly as it is.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.flag.bulk_discounts.enabled",
+      "before": false,
+      "after": true
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: The `bulk_discounts` flag is now enabled in Production (environment 515), with its value unchanged at `max_10`. Development (512) still shows it disabled with the same value.",
+  "costUsd": 0.005329,
+  "usage": {
+    "input": 10,
+    "output": 867,
+    "cacheRead": 90472,
+    "cacheWrite": 31922
+  },
+  "toolCalls": 4,
+  "toolErrors": 0,
+  "turns": 4,
+  "ms": 10359,
+  "commands": [
+    "list_project_features {\"project_pk\":257,\"search\":\"bulk_discounts\",\"environment\":515}",
+    "update_environment_feature_state {\"id__path\":2075,\"environment_api_key\":\"Sp3EGkReBCDqVaWeSPXRNp\",\"feature\":996,\"id\":2075,\"environment\":515,\"enabled\":true,\"feature_state_value\":\"max_10\"}",
+    "list_project_features {\"project_pk\":257,\"search\":\"bulk_discounts\",\"environment\":512}",
+    "list_project_features {\"project_pk\":257,\"search\":\"bulk_discounts\",\"environment\":515}"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 257,
+            "search": "bulk_discounts",
+            "environment": 515
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":996,\"name\":\"bulk_discounts\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"max_10\",\"created_date\":\"2026-11-27T20:09:30.085867Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"bfffdff1-08ea-4f13-b02d-00b0ac77839e\"}],\"group_owners\":[],\"uuid\":\"bf6f6a35-12cd-4213-8048-d7706543322e\",\"project\":257,\"environment_feature_state\":{\"id\":2075,\"feature_state_value\":\"max_10\",\"environment\":515,\"identity\":null,\"feature_segment\":null,\"enabled\":false},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 392
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 140,
+        "cacheRead": 0,
+        "cacheWrite": 29554
+      },
+      "costUsd": 0.00376465,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "update_environment_feature_state",
+          "input": {
+            "id__path": 2075,
+            "environment_api_key": "Sp3EGkReBCDqVaWeSPXRNp",
+            "feature": 996,
+            "id": 2075,
+            "environment": 515,
+            "enabled": true,
+            "feature_state_value": "max_10"
+          },
+          "output": "{\"id\":2075,\"feature_state_value\":\"max_10\",\"multivariate_feature_state_values\":[],\"deleted_at\":null,\"uuid\":\"bf1f1d96-8ef4-4c68-ab1b-5cd9e3f864a2\",\"enabled\":true,\"created_at\":\"2026-11-27T20:09:30.107795Z\",\"updated_at\":\"2026-11-27T20:09:38.219619Z\",\"live_from\":\"2026-11-27T20:09:30.106835Z\",\"version\":1,\"feature\":996,\"environment\":515,\"identity\":null,\"feature_segment\":null,\"change_request\":null,\"environment_feature_version\":null}",
+          "isError": false,
+          "ms": 379
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 447,
+        "cacheRead": 29554,
+        "cacheWrite": 575
+      },
+      "costUsd": 0.000591115,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "Verifying the result and confirming Development is untouched.",
+      "calls": [
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 257,
+            "search": "bulk_discounts",
+            "environment": 512
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":996,\"name\":\"bulk_discounts\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"max_10\",\"created_date\":\"2026-11-27T20:09:30.085867Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"bfffdff1-08ea-4f13-b02d-00b0ac77839e\"}],\"group_owners\":[],\"uuid\":\"bf6f6a35-12cd-4213-8048-d7706543322e\",\"project\":257,\"environment_feature_state\":{\"id\":2072,\"feature_state_value\":\"max_10\",\"environment\":512,\"identity\":null,\"feature_segment\":null,\"enabled\":false},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 346
+        },
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 257,
+            "search": "bulk_discounts",
+            "environment": 515
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":996,\"name\":\"bulk_discounts\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":\"max_10\",\"created_date\":\"2026-11-27T20:09:30.085867Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"bfffdff1-08ea-4f13-b02d-00b0ac77839e\"}],\"group_owners\":[],\"uuid\":\"bf6f6a35-12cd-4213-8048-d7706543322e\",\"project\":257,\"environment_feature_state\":{\"id\":2075,\"feature_state_value\":\"max_10\",\"environment\":515,\"identity\":null,\"feature_segment\":null,\"enabled\":true},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 280
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 217,
+        "cacheRead": 30129,
+        "cacheWrite": 660
+      },
+      "costUsd": 0.00049249,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "DONE: The `bulk_discounts` flag is now enabled in Production (environment 515), with its value unchanged at `max_10`. Development (512) still shows it disabled with the same value.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 63,
+        "cacheRead": 30789,
+        "cacheWrite": 1133
+      },
+      "costUsd": 0.00048121499999999995,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:09:29.715Z"
+}

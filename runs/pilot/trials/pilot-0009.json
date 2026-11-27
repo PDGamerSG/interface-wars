@@ -1,0 +1,306 @@
+{
+  "trialId": "pilot-0009",
+  "index": 9,
+  "arm": "mcp",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "create_experiment",
+  "family": "experiments",
+  "heldOut": false,
+  "task": "In Production, set up (but do not start) an experiment named \"wishlist_sync_copy test\" on the multivariate flag \"wishlist_sync_copy\". Hypothesis: \"Pay securely\" increases checkout completed versus \"Checkout\". The primary metric \"checkout_completed\" should increase, and \"refund_requested\" is a guardrail that should not increase. Split users evenly between the control and the variation.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.experiment.wishlist_sync_copy test.feature",
+      "before": null,
+      "after": "wishlist_sync_copy"
+    },
+    {
+      "path": "env.Production.experiment.wishlist_sync_copy test.hypothesis",
+      "before": null,
+      "after": "\"Pay securely\" increases checkout completed versus \"Checkout\"."
+    },
+    {
+      "path": "env.Production.experiment.wishlist_sync_copy test.metric.checkout_completed",
+      "before": null,
+      "after": "increase"
+    },
+    {
+      "path": "env.Production.experiment.wishlist_sync_copy test.metric.refund_requested",
+      "before": null,
+      "after": "not_increase"
+    },
+    {
+      "path": "env.Production.experiment.wishlist_sync_copy test.status",
+      "before": null,
+      "after": "created"
+    },
+    {
+      "path": "env.Production.override.wishlist_sync_copy.experiment-48-rollout.enabled",
+      "before": null,
+      "after": false
+    },
+    {
+      "path": "env.Production.override.wishlist_sync_copy.experiment-48-rollout.value",
+      "before": null,
+      "after": "Checkout"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Created experiment \"wishlist_sync_copy test\" (id 48) in Production on the multivariate flag \"wishlist_sync_copy\" with status \"created\" and not started. The hypothesis is set, and the metrics are checkout_completed (expected to increase) and refund_requested (expected not to increase). The split is 50% \"Pay securely\" (option 88) and 50% control \"Checkout\", with the rollout at 100% and not enabled.",
+  "costUsd": 0.007252,
+  "usage": {
+    "input": 14,
+    "output": 2734,
+    "cacheRead": 159461,
+    "cacheWrite": 34308
+  },
+  "toolCalls": 9,
+  "toolErrors": 2,
+  "turns": 6,
+  "ms": 22194,
+  "commands": [
+    "list_project_features {\"project_pk\":275,\"search\":\"wishlist_sync_copy\",\"environment\":549}",
+    "list_metrics {\"environment_api_key\":\"75qFhznxi2Y6hqKoFbnBk5\",\"q\":\"checkout_completed\"}",
+    "list_metrics {\"environment_api_key\":\"75qFhznxi2Y6hqKoFbnBk5\",\"q\":\"refund_requested\"}",
+    "list_experiments {\"environment_api_key\":\"75qFhznxi2Y6hqKoFbnBk5\",\"q\":\"wishlist_sync_copy\"}",
+    "list_feature_multivariate_options {\"feature_pk\":1064,\"project_pk\":\"275\"}",
+    "get_experiment_exposures {\"environment_api_key\":\"75qFhznxi2Y6hqKoFbnBk5\",\"experiment_id\":1}",
+    "create_experiment {\"environment_api_key\":\"75qFhznxi2Y6hqKoFbnBk5\",\"feature\":1064,\"name\":\"wishlist_sync_copy test\",\"hypothesis\":\"\\\"Pay securely\\\" increases checkout completed versus \\\"Checkout\\\".\",\"status\":\"created\",\"metrics\":[{\"metric\":\"checkout_completed\",\"expected_direction\":\"increase\"},{\"metric\":\"refund_requested\",\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":false,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":88,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
+    "create_experiment {\"environment_api_key\":\"75qFhznxi2Y6hqKoFbnBk5\",\"feature\":1064,\"name\":\"wishlist_sync_copy test\",\"hypothesis\":\"\\\"Pay securely\\\" increases checkout completed versus \\\"Checkout\\\".\",\"status\":\"created\",\"metrics\":[{\"metric\":81,\"expected_direction\":\"increase\"},{\"metric\":82,\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":false,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":88,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
+    "get_experiment {\"environment_api_key\":\"75qFhznxi2Y6hqKoFbnBk5\",\"experiment_id\":48}"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 275,
+            "search": "wishlist_sync_copy",
+            "environment": 549
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":1064,\"name\":\"wishlist_sync_copy\",\"type\":\"MULTIVARIATE\",\"default_enabled\":true,\"initial_value\":\"Checkout\",\"created_date\":\"2026-11-27T20:10:41.058818Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[{\"id\":88,\"uuid\":\"c7b71ec9-2e80-4dd8-b9e6-0f227f18ca38\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Pay securely\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"bfffdff1-08ea-4f13-b02d-00b0ac77839e\"}],\"group_owners\":[],\"uuid\":\"c0714008-9b6c-40e1-91ac-8cc1ee924acb\",\"project\":275,\"environment_feature_state\":{\"id\":2211,\"feature_state_value\":\"Checkout\",\"environment\":549,\"identity\":null,\"feature_segment\":null,\"enabled\":true},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 277
+        },
+        {
+          "name": "list_metrics",
+          "input": {
+            "environment_api_key": "75qFhznxi2Y6hqKoFbnBk5",
+            "q": "checkout_completed"
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":81,\"name\":\"checkout_completed\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"event\":\"checkout_completed\",\"version\":1},\"experiments\":[],\"created_at\":\"2026-11-27T20:10:41.391430Z\",\"updated_at\":\"2026-11-27T20:10:41.391439Z\"}]}",
+          "isError": false,
+          "ms": 257
+        },
+        {
+          "name": "list_metrics",
+          "input": {
+            "environment_api_key": "75qFhznxi2Y6hqKoFbnBk5",
+            "q": "refund_requested"
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":82,\"name\":\"refund_requested\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"down\",\"definition\":{\"event\":\"refund_requested\",\"version\":1},\"experiments\":[],\"created_at\":\"2026-11-27T20:10:41.406605Z\",\"updated_at\":\"2026-11-27T20:10:41.406613Z\"}]}",
+          "isError": false,
+          "ms": 251
+        },
+        {
+          "name": "list_experiments",
+          "input": {
+            "environment_api_key": "75qFhznxi2Y6hqKoFbnBk5",
+            "q": "wishlist_sync_copy"
+          },
+          "output": "{\"count\":0,\"next\":null,\"previous\":null,\"results\":[],\"status_counts\":{\"created\":0,\"running\":0,\"paused\":0,\"completed\":0}}",
+          "isError": false,
+          "ms": 264
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 526,
+        "cacheRead": 0,
+        "cacheWrite": 29658
+      },
+      "costUsd": 0.00397065,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_feature_multivariate_options",
+          "input": {
+            "feature_pk": 1064,
+            "project_pk": "275"
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":88,\"uuid\":\"c7b71ec9-2e80-4dd8-b9e6-0f227f18ca38\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Pay securely\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\",\"feature\":1064}]}",
+          "isError": false,
+          "ms": 263
+        },
+        {
+          "name": "get_experiment_exposures",
+          "input": {
+            "environment_api_key": "75qFhznxi2Y6hqKoFbnBk5",
+            "experiment_id": 1
+          },
+          "output": "Error calling tool 'get_experiment_exposures': HTTP error 404: Not Found - {'detail': 'No Experiment matches the given query.'}",
+          "isError": true,
+          "ms": 253
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 547,
+        "cacheRead": 29658,
+        "cacheWrite": 1504
+      },
+      "costUsd": 0.00075828,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "create_experiment",
+          "input": {
+            "environment_api_key": "75qFhznxi2Y6hqKoFbnBk5",
+            "feature": 1064,
+            "name": "wishlist_sync_copy test",
+            "hypothesis": "\"Pay securely\" increases checkout completed versus \"Checkout\".",
+            "status": "created",
+            "metrics": [
+              {
+                "metric": "checkout_completed",
+                "expected_direction": "increase"
+              },
+              {
+                "metric": "refund_requested",
+                "expected_direction": "not_increase"
+              }
+            ],
+            "experiment_rollout": {
+              "enabled": false,
+              "feature_state_value": {
+                "type": "string",
+                "value": "Checkout"
+              },
+              "multivariate_feature_state_values": [
+                {
+                  "multivariate_feature_option": 88,
+                  "percentage_allocation": 50
+                }
+              ],
+              "rollout_percentage": 100
+            }
+          },
+          "output": "Error calling tool 'create_experiment': HTTP error 400: Bad Request - {'metrics': [{'metric': ['Incorrect type. Expected pk value, received str.']}, {'metric': ['Incorrect type. Expected pk value, received str.']}]}",
+          "isError": true,
+          "ms": 276
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 999,
+        "cacheRead": 31162,
+        "cacheWrite": 795
+      },
+      "costUsd": 0.0009106949999999999,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "The metrics must be referenced by ID, so I'll retry using the metric IDs (81 and 82) I found earlier.",
+      "calls": [
+        {
+          "name": "create_experiment",
+          "input": {
+            "environment_api_key": "75qFhznxi2Y6hqKoFbnBk5",
+            "feature": 1064,
+            "name": "wishlist_sync_copy test",
+            "hypothesis": "\"Pay securely\" increases checkout completed versus \"Checkout\".",
+            "status": "created",
+            "metrics": [
+              {
+                "metric": 81,
+                "expected_direction": "increase"
+              },
+              {
+                "metric": 82,
+                "expected_direction": "not_increase"
+              }
+            ],
+            "experiment_rollout": {
+              "enabled": false,
+              "feature_state_value": {
+                "type": "string",
+                "value": "Checkout"
+              },
+              "multivariate_feature_state_values": [
+                {
+                  "multivariate_feature_option": 88,
+                  "percentage_allocation": 50
+                }
+              ],
+              "rollout_percentage": 100
+            }
+          },
+          "output": "{\"id\":48,\"feature\":1064,\"name\":\"wishlist_sync_copy test\",\"hypothesis\":\"\\\"Pay securely\\\" increases checkout completed versus \\\"Checkout\\\".\",\"status\":\"created\",\"created_at\":\"2026-11-27T20:11:00.630401Z\",\"updated_at\":\"2026-11-27T20:11:00.648549Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
+          "isError": false,
+          "ms": 410
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 416,
+        "cacheRead": 31957,
+        "cacheWrite": 1100
+      },
+      "costUsd": 0.00066527,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "get_experiment",
+          "input": {
+            "environment_api_key": "75qFhznxi2Y6hqKoFbnBk5",
+            "experiment_id": 48
+          },
+          "output": "{\"id\":48,\"feature\":{\"id\":1064,\"name\":\"wishlist_sync_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"id\":88,\"uuid\":\"c7b71ec9-2e80-4dd8-b9e6-0f227f18ca38\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Pay securely\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"wishlist_sync_copy test\",\"hypothesis\":\"\\\"Pay securely\\\" increases checkout completed versus \\\"Checkout\\\".\",\"status\":\"created\",\"metrics\":[{\"id\":62,\"metric\":81,\"metric_name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:11:00.631210Z\"},{\"id\":63,\"metric\":82,\"metric_name\":\"refund_requested\",\"aggregation\":\"occurrence\",\"direction\":\"down\",\"expected_direction\":\"not_increase\",\"created_at\":\"2026-11-27T20:11:00.631219Z\"}],\"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":100.0,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":88,\"percentage_allocation\":50.0}],\"audience\":{\"match\":\"any\",\"segments\":[]}},\"created_at\":\"2026-11-27T20:11:00.630401Z\",\"updated_at\":\"2026-11-27T20:11:00.648549Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
+          "isError": false,
+          "ms": 261
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 99,
+        "cacheRead": 33057,
+        "cacheWrite": 570
+      },
+      "costUsd": 0.00045151999999999996,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "DONE: Created experiment \"wishlist_sync_copy test\" (id 48) in Production on the multivariate flag \"wishlist_sync_copy\" with status \"created\" and not started. The hypothesis is set, and the metrics are checkout_completed (expected to increase) and refund_requested (expected not to increase). The split is 50% \"Pay securely\" (option 88) and 50% control \"Checkout\", with the rollout at 100% and not enabled.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 147,
+        "cacheRead": 33627,
+        "cacheWrite": 681
+      },
+      "costUsd": 0.000495095,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:10:40.696Z"
+}

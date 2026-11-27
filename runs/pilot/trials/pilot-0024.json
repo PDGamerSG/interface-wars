@@ -1,0 +1,167 @@
+{
+  "trialId": "pilot-0024",
+  "index": 24,
+  "arm": "mcp",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "create_metric",
+  "family": "experiments",
+  "heldOut": false,
+  "task": "In Production, create an experiment metric named \"add_to_cart\" that records whether the event \"add_to_cart_clicked\" happened at least once per user. Higher is better.",
+  "correct": false,
+  "reasons": [
+    "aggregation: expected \"occurrence\", got null",
+    "direction: expected \"up\", got null",
+    "event: expected \"add_to_cart_clicked\", got null"
+  ],
+  "collateral": [],
+  "changes": [],
+  "outcome": "failed",
+  "finalText": "FAILED: The metric was not created in Production. The create_metric endpoint rejects every request with \"definition: This field is required.\" I tried the event name as a plain string, as a JSON object, and as a structured object with an aggregation, and each was rejected. The tool's schema does not expose a `definition` property, so I could not supply the event definition in a form the server accepts. A search for \"add_to_cart\" in Production returns no metrics, so nothing was left behind. This needs either a fix to the tool's definition field or creating the metric in the Flagsmith UI with the event \"add_to_cart_clicked\", aggregation \"occurrence\", and direction \"up\".",
+  "costUsd": 0.005778,
+  "usage": {
+    "input": 12,
+    "output": 1399,
+    "cacheRead": 120809,
+    "cacheWrite": 30953
+  },
+  "toolCalls": 4,
+  "toolErrors": 3,
+  "turns": 5,
+  "ms": 27056,
+  "commands": [
+    "create_metric {\"environment_api_key\":\"Qtwvk6aXzUVwy5H5h93SYX\",\"name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"description\":\"Whether the event add_to_cart_clicked happened at least once per user.\",\"definition\":\"add_to_cart_clicked\"}",
+    "create_metric {\"environment_api_key\":\"Qtwvk6aXzUVwy5H5h93SYX\",\"name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"description\":\"Whether the event add_to_cart_clicked happened at least once per user.\",\"definition\":{\"event\":\"add_to_cart_clicked\"}}",
+    "create_metric {\"environment_api_key\":\"Qtwvk6aXzUVwy5H5h93SYX\",\"name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"description\":\"Whether the event add_to_cart_clicked happened at least once per user.\",\"definition\":{\"event_name\":\"add_to_cart_clicked\",\"aggregation\":\"occurrence\"}}",
+    "list_metrics {\"environment_api_key\":\"Qtwvk6aXzUVwy5H5h93SYX\",\"q\":\"add_to_cart\"}"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "create_metric",
+          "input": {
+            "environment_api_key": "Qtwvk6aXzUVwy5H5h93SYX",
+            "name": "add_to_cart",
+            "aggregation": "occurrence",
+            "direction": "up",
+            "description": "Whether the event add_to_cart_clicked happened at least once per user.",
+            "definition": "add_to_cart_clicked"
+          },
+          "output": "Error calling tool 'create_metric': HTTP error 400: Bad Request - {'definition': ['This field is required.']}",
+          "isError": true,
+          "ms": 282
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 468,
+        "cacheRead": 0,
+        "cacheWrite": 29576
+      },
+      "costUsd": 0.003931400000000001,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "create_metric",
+          "input": {
+            "environment_api_key": "Qtwvk6aXzUVwy5H5h93SYX",
+            "name": "add_to_cart",
+            "aggregation": "occurrence",
+            "direction": "up",
+            "description": "Whether the event add_to_cart_clicked happened at least once per user.",
+            "definition": {
+              "event": "add_to_cart_clicked"
+            }
+          },
+          "output": "Error calling tool 'create_metric': HTTP error 400: Bad Request - {'definition': ['This field is required.']}",
+          "isError": true,
+          "ms": 246
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 262,
+        "cacheRead": 29576,
+        "cacheWrite": 522
+      },
+      "costUsd": 0.00049221,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "create_metric",
+          "input": {
+            "environment_api_key": "Qtwvk6aXzUVwy5H5h93SYX",
+            "name": "add_to_cart",
+            "aggregation": "occurrence",
+            "direction": "up",
+            "description": "Whether the event add_to_cart_clicked happened at least once per user.",
+            "definition": {
+              "event_name": "add_to_cart_clicked",
+              "aggregation": "occurrence"
+            }
+          },
+          "output": "Error calling tool 'create_metric': HTTP error 400: Bad Request - {'definition': ['This field is required.']}",
+          "isError": true,
+          "ms": 249
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 259,
+        "cacheRead": 30098,
+        "cacheWrite": 314
+      },
+      "costUsd": 0.00046993,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_metrics",
+          "input": {
+            "environment_api_key": "Qtwvk6aXzUVwy5H5h93SYX",
+            "q": "add_to_cart"
+          },
+          "output": "{\"count\":0,\"next\":null,\"previous\":null,\"results\":[]}",
+          "isError": false,
+          "ms": 239
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 202,
+        "cacheRead": 30412,
+        "cacheWrite": 311
+      },
+      "costUsd": 0.000444195,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "FAILED: The metric was not created in Production. The create_metric endpoint rejects every request with \"definition: This field is required.\" I tried the event name as a plain string, as a JSON object, and as a structured object with an aggregation, and each was rejected. The tool's schema does not expose a `definition` property, so I could not supply the event definition in a form the server accepts. A search for \"add_to_cart\" in Production returns no metrics, so nothing was left behind. This needs either a fix to the tool's definition field or creating the metric in the Flagsmith UI with the event \"add_to_cart_clicked\", aggregation \"occurrence\", and direction \"up\".",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 208,
+        "cacheRead": 30723,
+        "cacheWrite": 230
+      },
+      "costUsd": 0.00044018000000000003,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:11:22.389Z"
+}

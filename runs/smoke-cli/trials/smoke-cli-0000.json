@@ -1,0 +1,202 @@
+{
+  "trialId": "smoke-cli-0000",
+  "index": 0,
+  "arm": "cli",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "create_flag",
+  "family": "flags",
+  "heldOut": false,
+  "task": "Create a new feature flag named \"loyalty_points\" in the shop project with the description \"Gates the loyalty points rollout\". It must be turned off in every environment.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Development.flag.loyalty_points.enabled",
+      "before": null,
+      "after": false
+    },
+    {
+      "path": "env.Production.flag.loyalty_points.enabled",
+      "before": null,
+      "after": false
+    },
+    {
+      "path": "feature.loyalty_points.archived",
+      "before": null,
+      "after": false
+    },
+    {
+      "path": "feature.loyalty_points.description",
+      "before": null,
+      "after": "Gates the loyalty points rollout"
+    },
+    {
+      "path": "feature.loyalty_points.exists",
+      "before": null,
+      "after": true
+    },
+    {
+      "path": "feature.loyalty_points.tags",
+      "before": null,
+      "after": ""
+    },
+    {
+      "path": "feature.loyalty_points.type",
+      "before": null,
+      "after": "STANDARD"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Created feature `loyalty_points` (id 1028) in the shop project with description \"Gates the loyalty points rollout\". It is off in both environments, Development and Production (verified with `flag list`).",
+  "costUsd": 0.001124,
+  "usage": {
+    "input": 14,
+    "output": 802,
+    "cacheRead": 14560,
+    "cacheWrite": 4610
+  },
+  "toolCalls": 5,
+  "toolErrors": 0,
+  "turns": 6,
+  "ms": 12046,
+  "commands": [
+    "flagsmith --help; echo; flagsmith feature --help 2>&1 | head -50",
+    "flagsmith feature create --help; echo; flagsmith config; echo; flagsmith feature list --json 2>&1 | head -c 1500",
+    "flagsmith feature create loyalty_points --description \"Gates the loyalty points rollout\" && echo ---- && flagsmith feature get loyalty_points 2>&1 | head -40",
+    "flagsmith environment --help | head -20; echo; flagsmith flag --help | head -20; echo; for e in X3g22VPAyZvqZwJRZ5SNyc AoTPgL5NK38GGHnf2KpU5Z; do echo \"== $e\"; flagsmith -e $e flag list --json 2>&1 | jq -r '.[] | select(.feature.name==\"loyalty_points\" or .name==\"loyalty_points\") | .' 2>/dev/null || flagsmith -e $e flag list 2>&1 | grep -i loyalty; done",
+    "flagsmith environment list 2>&1"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith --help; echo; flagsmith feature --help 2>&1 | head -50"
+          },
+          "output": "The Flagsmith command-line interface\n\nUsage:\n  flagsmith [command] [flags]\n\nAvailable Commands:\n  api          Call the Flagsmith API with the CLI's credentials\n  auth         Inspect and manage authentication\n  completion   Generate the autocompletion script for the specified shell\n  config       Show the resolved context and where each value comes from\n  environment  Manage environments in the current project\n  evaluate     Show the flags an SDK resolves for the current environment\n  feature      Manage features in the current project\n  flag         Inspect feature flags in the current environment\n  help         Help about any command\n  init         Bind this directory to a Flagsmith project (writes flagsmith.json)\n  login        Log in to Flagsmith in your browser\n  logout       Log out of an instance and revoke the stored session\n  organisation Manage organisations\n  project      Manage projects\n  segment      Manage segments in the current project\n\nFlags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n  -h, --help                  help for flagsmith\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n  -v, --version               version for flagsmith\n      --yes                   answer confirmations affirmatively\n\nUse \"flagsmith [command] --help\" for more information about a command.\n\nManage features in the current project\n\nUsage:\n  flagsmith feature [command] [flags]\n\nAvailable Commands:\n  create      Create a feature\n  delete      Delete a feature\n  get         Show a feature and its variants\n  list        List features in the current project\n  update      Update a feature's description or archive state\n  variant     Manage a multivariate feature's variants\n\nFlags:\n  -h, --help   help for feature\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n\nUse \"flagsmith feature [command] --help\" for more information about a command.",
+          "isError": false,
+          "ms": 91
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 91,
+        "cacheRead": 0,
+        "cacheWrite": 957
+      },
+      "costUsd": 0.000165525,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith feature create --help; echo; flagsmith config; echo; flagsmith feature list --json 2>&1 | head -c 1500"
+          },
+          "output": "Create a feature\n\nUsage:\n  flagsmith feature create <name> [flags]\n\nExamples:\n  # a standard feature, off by default\n  flagsmith feature create onboarding --description \"New onboarding flow\"\n\n  # a default value, enabled everywhere\n  flagsmith feature create banner-text --value \"Welcome!\" --enabled\n\n  # a multivariate feature with weighted variants from a file\n  flagsmith feature create button-colour --variants @variants.json\n\nFlags:\n      --description string   feature description\n      --enabled              enable the feature by default\n  -h, --help                 help for create\n      --value string         the feature's default value\n      --variants string      multivariate variants: @file, -, or inline JSON\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n\nConfig file    -                                  default\nProject        262                                env\nOrganisation   262                                env\nEnvironment    -                                  default\nAPI            http://host.docker.internal:8300   env\nSDK API        http://host.docker.internal:8300   default\n\n[\n  {\n    \"id\": 1008,\n    \"name\": \"bulk_discounts\",\n    \"type\": \"standard\",\n    \"default_value\": \"v2\",\n    \"enabled\": false\n  },\n  {\n    \"id\": 1010,\n    \"name\": \"smart_reorder\",\n    \"type\": \"standard\",\n    \"default_value\": \"eu_west\",\n    \"enabled\": false\n  },\n  {\n    \"id\": 1012,\n    \"name\": \"saved_carts\",\n    \"type\": \"standard\",\n    \"default_value\": \"blue\",\n    \"enabled\": false\n  }\n]",
+          "isError": false,
+          "ms": 334
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 92,
+        "cacheRead": 957,
+        "cacheWrite": 1368
+      },
+      "costUsd": 0.00022677,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith feature create loyalty_points --description \"Gates the loyalty points rollout\" && echo ---- && flagsmith feature get loyalty_points 2>&1 | head -40"
+          },
+          "output": "Feature         loyalty_points (1028)\nDescription     Gates the loyalty points rollout\nType            standard\nDefault value   -\nEnabled         false\n----\nFeature         loyalty_points (1028)\nDescription     Gates the loyalty points rollout\nType            standard\nDefault value   -\nEnabled         false\n\n[stderr]\n✓ Created feature loyalty_points (1028)",
+          "isError": false,
+          "ms": 953
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 171,
+        "cacheRead": 2325,
+        "cacheWrite": 959
+      },
+      "costUsd": 0.000228825,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "Created. Now I'll verify the per-environment state in both Development and Production.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith environment --help | head -20; echo; flagsmith flag --help | head -20; echo; for e in X3g22VPAyZvqZwJRZ5SNyc AoTPgL5NK38GGHnf2KpU5Z; do echo \"== $e\"; flagsmith -e $e flag list --json 2>&1 | jq -r '.[] | select(.feature.name==\"loyalty_points\" or .name==\"loyalty_points\") | .' 2>/dev/null || flagsmith -e $e flag list 2>&1 | grep -i loyalty; done"
+          },
+          "output": "Manage environments in the current project\n\nUsage:\n  flagsmith environment [command] [flags]\n\nAliases:\n  environment, env\n\nAvailable Commands:\n  clone       Clone an environment into a new one\n  create      Create an environment (mints a client-side key)\n  delete      Delete an environment\n  document    Output the environment document (JSON for local SDK evaluation)\n  get         Show an environment\n  key         Manage an environment's server-side SDK keys\n  list        List environments in the current project\n  update      Update an environment\n\nFlags:\n  -h, --help   help for environment\n\nInspect feature flags in the current environment\n\nUsage:\n  flagsmith flag [command] [flags]\n\nAvailable Commands:\n  delete      Delete a flag's segment override in the current environment\n  disable     Disable a flag (shorthand for `flag update --disable`)\n  enable      Enable a flag (shorthand for `flag update --enable`)\n  get         Show a single flag's state in the current environment\n  list        List every flag in the current environment\n  reorder     Re-permute a feature's segment override priorities\n  update      Change a flag's state in the current environment\n\nFlags:\n  -h, --help   help for flag\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n\n== X3g22VPAyZvqZwJRZ5SNyc\nloyalty_points   standard   off     -         new\n== AoTPgL5NK38GGHnf2KpU5Z\nloyalty_points   standard   off     -         new",
+          "isError": false,
+          "ms": 2801
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 260,
+        "cacheRead": 3284,
+        "cacheWrite": 301
+      },
+      "costUsd": 0.000200665,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "Both environments show the flag as off. I'll confirm these are the only environments in the project.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith environment list 2>&1"
+          },
+          "output": "NAME          KEY                      DESCRIPTION\nDevelopment   X3g22VPAyZvqZwJRZ5SNyc   \nProduction    AoTPgL5NK38GGHnf2KpU5Z   \n\n2 environments",
+          "isError": false,
+          "ms": 418
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 120,
+        "cacheRead": 3585,
+        "cacheWrite": 824
+      },
+      "costUsd": 0.00019905000000000001,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "DONE: Created feature `loyalty_points` (id 1028) in the shop project with description \"Gates the loyalty points rollout\". It is off in both environments, Development and Production (verified with `flag list`).",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 68,
+        "cacheRead": 4409,
+        "cacheWrite": 201
+      },
+      "costUsd": 0.00010341500000000001,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:09:47.825Z"
+}

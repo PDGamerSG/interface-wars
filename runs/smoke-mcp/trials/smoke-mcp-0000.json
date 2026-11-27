@@ -1,0 +1,157 @@
+{
+  "trialId": "smoke-mcp-0000",
+  "index": 0,
+  "arm": "mcp",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "create_flag",
+  "family": "flags",
+  "heldOut": false,
+  "task": "Create a new feature flag named \"promo_banner\" in the shop project with the description \"Gates the promo banner rollout\". It must be turned off in every environment.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Development.flag.promo_banner.enabled",
+      "before": null,
+      "after": false
+    },
+    {
+      "path": "env.Production.flag.promo_banner.enabled",
+      "before": null,
+      "after": false
+    },
+    {
+      "path": "feature.promo_banner.archived",
+      "before": null,
+      "after": false
+    },
+    {
+      "path": "feature.promo_banner.description",
+      "before": null,
+      "after": "Gates the promo banner rollout"
+    },
+    {
+      "path": "feature.promo_banner.exists",
+      "before": null,
+      "after": true
+    },
+    {
+      "path": "feature.promo_banner.tags",
+      "before": null,
+      "after": ""
+    },
+    {
+      "path": "feature.promo_banner.type",
+      "before": null,
+      "after": "STANDARD"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Created feature flag `promo_banner` (id 1005) in the shop project with the description \"Gates the promo banner rollout\". It is disabled in both Development (513) and Production (516), and I verified this state in each environment.",
+  "costUsd": 0.004881,
+  "usage": {
+    "input": 8,
+    "output": 634,
+    "cacheRead": 60259,
+    "cacheWrite": 31685
+  },
+  "toolCalls": 4,
+  "toolErrors": 0,
+  "turns": 3,
+  "ms": 9160,
+  "commands": [
+    "create_feature {\"name\":\"promo_banner\",\"project_pk\":258,\"description\":\"Gates the promo banner rollout\",\"default_enabled\":false}",
+    "list_project_environments {\"id\":258}",
+    "list_project_features {\"project_pk\":258,\"environment\":513,\"search\":\"promo_banner\"}",
+    "list_project_features {\"project_pk\":258,\"environment\":516,\"search\":\"promo_banner\"}"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "create_feature",
+          "input": {
+            "name": "promo_banner",
+            "project_pk": 258,
+            "description": "Gates the promo banner rollout",
+            "default_enabled": false
+          },
+          "output": "{\"id\":1005,\"name\":\"promo_banner\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":null,\"created_date\":\"2026-11-27T20:09:36.480878Z\",\"description\":\"Gates the promo banner rollout\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[],\"group_owners\":[],\"uuid\":\"33e10483-0f9e-4ddb-9325-b6773e21131d\",\"project\":258,\"environment_feature_state\":null,\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[]}",
+          "isError": false,
+          "ms": 414
+        },
+        {
+          "name": "list_project_environments",
+          "input": {
+            "id": 258
+          },
+          "output": "{\"result\":[{\"id\":513,\"uuid\":\"715bcb20-9ccb-44cc-ad36-e2f581769c3c\",\"name\":\"Development\",\"api_key\":\"HsfRo9mPdGYGyfwaNRnYzF\",\"description\":null,\"project\":258,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false},{\"id\":516,\"uuid\":\"745d101b-0549-48ea-96ce-f7ed0838a326\",\"name\":\"Production\",\"api_key\":\"drXBC5dDGgEos82YF9xofY\",\"description\":null,\"project\":258,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false}]}",
+          "isError": false,
+          "ms": 286
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 333,
+        "cacheRead": 0,
+        "cacheWrite": 29570
+      },
+      "costUsd": 0.00386315,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "Two environments exist (Development 513, Production 516). I'll verify the flag's state in each.",
+      "calls": [
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 258,
+            "environment": 513,
+            "search": "promo_banner"
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":1005,\"name\":\"promo_banner\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":null,\"created_date\":\"2026-11-27T20:09:36.480878Z\",\"description\":\"Gates the promo banner rollout\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[],\"group_owners\":[],\"uuid\":\"33e10483-0f9e-4ddb-9325-b6773e21131d\",\"project\":258,\"environment_feature_state\":{\"id\":2092,\"feature_state_value\":null,\"environment\":513,\"identity\":null,\"feature_segment\":null,\"enabled\":false},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 312
+        },
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 258,
+            "environment": 516,
+            "search": "promo_banner"
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":1005,\"name\":\"promo_banner\",\"type\":\"STANDARD\",\"default_enabled\":false,\"initial_value\":null,\"created_date\":\"2026-11-27T20:09:36.480878Z\",\"description\":\"Gates the promo banner rollout\",\"tags\":[],\"multivariate_options\":[],\"is_archived\":false,\"owners\":[],\"group_owners\":[],\"uuid\":\"33e10483-0f9e-4ddb-9325-b6773e21131d\",\"project\":258,\"environment_feature_state\":{\"id\":2093,\"feature_state_value\":null,\"environment\":516,\"identity\":null,\"feature_segment\":null,\"enabled\":false},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 341
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 226,
+        "cacheRead": 29570,
+        "cacheWrite": 1119
+      },
+      "costUsd": 0.0005487749999999999,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "DONE: Created feature flag `promo_banner` (id 1005) in the shop project with the description \"Gates the promo banner rollout\". It is disabled in both Development (513) and Production (516), and I verified this state in each environment.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 75,
+        "cacheRead": 30689,
+        "cacheWrite": 996
+      },
+      "costUsd": 0.00046908999999999997,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:09:29.701Z"
+}

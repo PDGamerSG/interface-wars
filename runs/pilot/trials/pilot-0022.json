@@ -1,0 +1,148 @@
+{
+  "trialId": "pilot-0022",
+  "index": 22,
+  "arm": "cli",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "create_segment",
+  "family": "targeting",
+  "heldOut": false,
+  "task": "Create a segment named \"internal_staff\" that matches users whose trait \"email_domain\" equals \"shop.example\".",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "segment.internal_staff",
+      "before": null,
+      "after": "[{\"type\":\"ALL\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"email_domain\",\"value\":\"shop.example\"}],\"rules\":[]}]"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Created segment `internal_staff` (ID 113) in project 288 with one rule: `email_domain` EQUAL `shop.example` (match all). I verified it with `segment get` and `segment list`. I did not change any flags or environments, including Production.",
+  "costUsd": 0.000975,
+  "usage": {
+    "input": 12,
+    "output": 675,
+    "cacheRead": 9627,
+    "cacheWrite": 4321
+  },
+  "toolCalls": 4,
+  "toolErrors": 0,
+  "turns": 5,
+  "ms": 14219,
+  "commands": [
+    "flagsmith --help 2>&1 | head -50; echo ---; flagsmith segments --help 2>&1 | head -40",
+    "flagsmith segment --help 2>&1; echo ---; flagsmith segment create --help 2>&1",
+    "flagsmith config 2>&1; echo ---; flagsmith segment list 2>&1 | head -40; echo ---; flagsmith segment update --help 2>&1 | head -30",
+    "flagsmith segment create internal_staff --rules '{\"type\":\"ALL\",\"conditions\":[{\"property\":\"email_domain\",\"operator\":\"EQUAL\",\"value\":\"shop.example\"}],\"rules\":[]}' --description \"Users whose email_domain trait is shop.example\" 2>&1; echo ---; flagsmith segment list 2>&1; echo ---; flagsmith segment get internal_staff 2>&1"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith --help 2>&1 | head -50; echo ---; flagsmith segments --help 2>&1 | head -40"
+          },
+          "output": "The Flagsmith command-line interface\n\nUsage:\n  flagsmith [command] [flags]\n\nAvailable Commands:\n  api          Call the Flagsmith API with the CLI's credentials\n  auth         Inspect and manage authentication\n  completion   Generate the autocompletion script for the specified shell\n  config       Show the resolved context and where each value comes from\n  environment  Manage environments in the current project\n  evaluate     Show the flags an SDK resolves for the current environment\n  feature      Manage features in the current project\n  flag         Inspect feature flags in the current environment\n  help         Help about any command\n  init         Bind this directory to a Flagsmith project (writes flagsmith.json)\n  login        Log in to Flagsmith in your browser\n  logout       Log out of an instance and revoke the stored session\n  organisation Manage organisations\n  project      Manage projects\n  segment      Manage segments in the current project\n\nFlags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n  -h, --help                  help for flagsmith\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n  -v, --version               version for flagsmith\n      --yes                   answer confirmations affirmatively\n\nUse \"flagsmith [command] --help\" for more information about a command.\n---\nError: unknown command \"segments\" for \"flagsmith\"\n\nDid you mean this?\n\tsegment\n\nRun 'flagsmith --help' for usage.",
+          "isError": false,
+          "ms": 57
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 87,
+        "cacheRead": 0,
+        "cacheWrite": 943
+      },
+      "costUsd": 0.00016177500000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith segment --help 2>&1; echo ---; flagsmith segment create --help 2>&1"
+          },
+          "output": "Manage segments in the current project\n\nUsage:\n  flagsmith segment [command] [flags]\n\nAvailable Commands:\n  create      Create a segment\n  delete      Delete a segment\n  get         Show a segment and its rule tree\n  list        List segments in the current project\n  update      Update a segment's rule tree or fields\n\nFlags:\n  -h, --help   help for segment\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n\nUse \"flagsmith segment [command] --help\" for more information about a command.\n---\nCreate a segment\n\nUsage:\n  flagsmith segment create <name> [flags]\n\nExamples:\n  # rules from a file, - for stdin, or an inline JSON string\n  flagsmith segment create beta-users --rules @rules.json --description \"Beta cohort\"\n\n  # scope it to a feature (feature-specific segment)\n  flagsmith segment create rollout --rules @rules.json --feature onboarding\n\nFlags:\n      --description string   segment description\n      --feature string       scope to a feature (id or name), making it feature-specific\n  -h, --help                 help for create\n      --rules string         rule tree: @file, - for stdin, or an inline JSON string\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively",
+          "isError": false,
+          "ms": 47
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 80,
+        "cacheRead": 943,
+        "cacheWrite": 876
+      },
+      "costUsd": 0.00015913000000000003,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith config 2>&1; echo ---; flagsmith segment list 2>&1 | head -40; echo ---; flagsmith segment update --help 2>&1 | head -30"
+          },
+          "output": "Config file    -                                  default\nProject        288                                env\nOrganisation   288                                env\nEnvironment    -                                  default\nAPI            http://host.docker.internal:8300   env\nSDK API        http://host.docker.internal:8300   default\n---\nNo segments.\n---\nUpdate a segment's rule tree or fields\n\nUsage:\n  flagsmith segment update <segment> [flags]\n\nExamples:\n  # --rules replaces the whole tree\n  flagsmith segment update beta-users --rules @rules.json\n  flagsmith segment update beta-users --description \"Updated cohort\"\n\nFlags:\n      --description string   segment description\n      --feature string       scope to a feature (id or name), making it feature-specific\n  -h, --help                 help for update\n      --rules string         rule tree: @file, - for stdin, or an inline JSON string\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively",
+          "isError": false,
+          "ms": 543
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 146,
+        "cacheRead": 1819,
+        "cacheWrite": 1213
+      },
+      "costUsd": 0.000243015,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith segment create internal_staff --rules '{\"type\":\"ALL\",\"conditions\":[{\"property\":\"email_domain\",\"operator\":\"EQUAL\",\"value\":\"shop.example\"}],\"rules\":[]}' --description \"Users whose email_domain trait is shop.example\" 2>&1; echo ---; flagsmith segment list 2>&1; echo ---; flagsmith segment get internal_staff 2>&1"
+          },
+          "output": "✓ Created segment internal_staff (113)\nSegment       internal_staff (113)\nDescription   Users whose email_domain trait is shop.example\n\nAll of the below:\n  email_domain  EQUAL  shop.example\n---\nNAME             ID    CONDITIONS   DESCRIPTION\ninternal_staff   113   1            Users whose email_domain trait is shop.example\n\n1 segment\n---\nTo get segment overrides, run flagsmith flag list --segment 113\n\nSegment       internal_staff (113)\nDescription   Users whose email_domain trait is shop.example\n\nAll of the below:\n  email_domain  EQUAL  shop.example",
+          "isError": false,
+          "ms": 1050
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 276,
+        "cacheRead": 3032,
+        "cacheWrite": 801
+      },
+      "costUsd": 0.000268645,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "DONE: Created segment `internal_staff` (ID 113) in project 288 with one rule: `email_domain` EQUAL `shop.example` (match all). I verified it with `segment get` and `segment list`. I did not change any flags or environments, including Production.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 86,
+        "cacheRead": 3833,
+        "cacheWrite": 488
+      },
+      "costUsd": 0.00014253,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:11:15.871Z"
+}

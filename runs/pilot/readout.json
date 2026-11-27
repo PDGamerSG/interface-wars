@@ -1,0 +1,954 @@
+{
+  "run": "pilot",
+  "generatedAt": "2026-11-27T20:14:45.321Z",
+  "trials": 30,
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "perArm": {
+    "mcp": {
+      "n": 10,
+      "correct": 7,
+      "collateral": 0,
+      "costTotal": 0.057066000000000006,
+      "meanCost": 0.005706600000000001,
+      "correctRate": 0.7,
+      "collateralRate": 0,
+      "costPerCorrect": 0.008152285714285714,
+      "meanTurns": 4.5,
+      "meanTokensIn": 139256.9
+    },
+    "cli": {
+      "n": 10,
+      "correct": 10,
+      "collateral": 0,
+      "costTotal": 0.026453,
+      "meanCost": 0.0026453,
+      "correctRate": 1,
+      "collateralRate": 0,
+      "costPerCorrect": 0.0026453,
+      "meanTurns": 8.5,
+      "meanTokensIn": 59127.2
+    },
+    "cli_skill": {
+      "n": 10,
+      "correct": 10,
+      "collateral": 0,
+      "costTotal": 0.013119,
+      "meanCost": 0.0013119,
+      "correctRate": 1,
+      "collateralRate": 0,
+      "costPerCorrect": 0.0013119,
+      "meanTurns": 5.4,
+      "meanTokensIn": 21595.7
+    }
+  },
+  "perFamily": {
+    "flags": {
+      "mcp": {
+        "n": 3,
+        "correct": 3,
+        "collateral": 0,
+        "costTotal": 0.015043999999999998,
+        "meanCost": 0.005014666666666666,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.005014666666666666,
+        "meanTurns": 3.6666666666666665,
+        "meanTokensIn": 111402.66666666667
+      },
+      "cli": {
+        "n": 3,
+        "correct": 3,
+        "collateral": 0,
+        "costTotal": 0.004573000000000001,
+        "meanCost": 0.0015243333333333335,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.0015243333333333335,
+        "meanTurns": 6,
+        "meanTokensIn": 26138.333333333332
+      },
+      "cli_skill": {
+        "n": 2,
+        "correct": 2,
+        "collateral": 0,
+        "costTotal": 0.001875,
+        "meanCost": 0.0009375,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.0009375,
+        "meanTurns": 4,
+        "meanTokensIn": 13604.5
+      }
+    },
+    "targeting": {
+      "mcp": {
+        "n": 2,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.011726,
+        "meanCost": 0.005863,
+        "correctRate": 0.5,
+        "collateralRate": 0,
+        "costPerCorrect": 0.011726,
+        "meanTurns": 4.5,
+        "meanTokensIn": 140249
+      },
+      "cli": {
+        "n": 3,
+        "correct": 3,
+        "collateral": 0,
+        "costTotal": 0.004926,
+        "meanCost": 0.001642,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.001642,
+        "meanTurns": 6.333333333333333,
+        "meanTokensIn": 28718
+      },
+      "cli_skill": {
+        "n": 3,
+        "correct": 3,
+        "collateral": 0,
+        "costTotal": 0.003929,
+        "meanCost": 0.0013096666666666667,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.0013096666666666667,
+        "meanTurns": 5.333333333333333,
+        "meanTokensIn": 21553
+      }
+    },
+    "experiments": {
+      "mcp": {
+        "n": 3,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.019462,
+        "meanCost": 0.006487333333333334,
+        "correctRate": 0.3333333333333333,
+        "collateralRate": 0,
+        "costPerCorrect": 0.019462,
+        "meanTurns": 5.333333333333333,
+        "meanTokensIn": 166855.33333333334
+      },
+      "cli": {
+        "n": 2,
+        "correct": 2,
+        "collateral": 0,
+        "costTotal": 0.013656000000000001,
+        "meanCost": 0.006828000000000001,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.006828000000000001,
+        "meanTurns": 17,
+        "meanTokensIn": 183157
+      },
+      "cli_skill": {
+        "n": 3,
+        "correct": 3,
+        "collateral": 0,
+        "costTotal": 0.004786,
+        "meanCost": 0.0015953333333333334,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.0015953333333333334,
+        "meanTurns": 6,
+        "meanTokensIn": 25796.333333333332
+      }
+    },
+    "repair": {
+      "mcp": {
+        "n": 2,
+        "correct": 2,
+        "collateral": 0,
+        "costTotal": 0.010834,
+        "meanCost": 0.005417,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.005417,
+        "meanTurns": 4.5,
+        "meanTokensIn": 138648.5
+      },
+      "cli": {
+        "n": 2,
+        "correct": 2,
+        "collateral": 0,
+        "costTotal": 0.0032979999999999997,
+        "meanCost": 0.0016489999999999999,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.0016489999999999999,
+        "meanTurns": 7,
+        "meanTokensIn": 30194.5
+      },
+      "cli_skill": {
+        "n": 2,
+        "correct": 2,
+        "collateral": 0,
+        "costTotal": 0.002529,
+        "meanCost": 0.0012645,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.0012645,
+        "meanTurns": 6,
+        "meanTokensIn": 23350
+      }
+    }
+  },
+  "perTemplate": {
+    "archive_stale_flag": {
+      "mcp": {
+        "n": 0,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0,
+        "meanCost": 0,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 0,
+        "meanTokensIn": 0
+      },
+      "cli": {
+        "n": 0,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0,
+        "meanCost": 0,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 0,
+        "meanTokensIn": 0
+      },
+      "cli_skill": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.001252,
+        "meanCost": 0.001252,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.001252,
+        "meanTurns": 5,
+        "meanTokensIn": 19532
+      }
+    },
+    "change_split_in_production": {
+      "mcp": {
+        "n": 1,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0.007113,
+        "meanCost": 0.007113,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 6,
+        "meanTokensIn": 190457
+      },
+      "cli": {
+        "n": 0,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0,
+        "meanCost": 0,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 0,
+        "meanTokensIn": 0
+      },
+      "cli_skill": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.001046,
+        "meanCost": 0.001046,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.001046,
+        "meanTurns": 4,
+        "meanTokensIn": 14287
+      }
+    },
+    "create_experiment": {
+      "mcp": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.007252,
+        "meanCost": 0.007252,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.007252,
+        "meanTurns": 6,
+        "meanTokensIn": 193783
+      },
+      "cli": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.008736,
+        "meanCost": 0.008736,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.008736,
+        "meanTurns": 20,
+        "meanTokensIn": 241124
+      },
+      "cli_skill": {
+        "n": 0,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0,
+        "meanCost": 0,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 0,
+        "meanTokensIn": 0
+      }
+    },
+    "create_flag": {
+      "mcp": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.004768,
+        "meanCost": 0.004768,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.004768,
+        "meanTurns": 3,
+        "meanTokensIn": 90800
+      },
+      "cli": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.000933,
+        "meanCost": 0.000933,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.000933,
+        "meanTurns": 5,
+        "meanTokensIn": 13107
+      },
+      "cli_skill": {
+        "n": 0,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0,
+        "meanCost": 0,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 0,
+        "meanTokensIn": 0
+      }
+    },
+    "create_metric": {
+      "mcp": {
+        "n": 1,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0.005778,
+        "meanCost": 0.005778,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 5,
+        "meanTokensIn": 151774
+      },
+      "cli": {
+        "n": 0,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0,
+        "meanCost": 0,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 0,
+        "meanTokensIn": 0
+      },
+      "cli_skill": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.001178,
+        "meanCost": 0.001178,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.001178,
+        "meanTurns": 5,
+        "meanTokensIn": 18147
+      }
+    },
+    "create_multivariate": {
+      "mcp": {
+        "n": 0,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0,
+        "meanCost": 0,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 0,
+        "meanTokensIn": 0
+      },
+      "cli": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.0018,
+        "meanCost": 0.0018,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.0018,
+        "meanTurns": 7,
+        "meanTokensIn": 32009
+      },
+      "cli_skill": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.001131,
+        "meanCost": 0.001131,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.001131,
+        "meanTurns": 4,
+        "meanTokensIn": 15090
+      }
+    },
+    "create_segment": {
+      "mcp": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.004613,
+        "meanCost": 0.004613,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.004613,
+        "meanTurns": 3,
+        "meanTokensIn": 90041
+      },
+      "cli": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.000975,
+        "meanCost": 0.000975,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.000975,
+        "meanTurns": 5,
+        "meanTokensIn": 13960
+      },
+      "cli_skill": {
+        "n": 0,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0,
+        "meanCost": 0,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 0,
+        "meanTokensIn": 0
+      }
+    },
+    "enable_in_production": {
+      "mcp": {
+        "n": 0,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0,
+        "meanCost": 0,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 0,
+        "meanTokensIn": 0
+      },
+      "cli": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.002153,
+        "meanCost": 0.002153,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.002153,
+        "meanTurns": 7,
+        "meanTokensIn": 42417
+      },
+      "cli_skill": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.001009,
+        "meanCost": 0.001009,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.001009,
+        "meanTurns": 4,
+        "meanTokensIn": 13866
+      }
+    },
+    "find_maintenance_flag": {
+      "mcp": {
+        "n": 0,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0,
+        "meanCost": 0,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 0,
+        "meanTokensIn": 0
+      },
+      "cli": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.001552,
+        "meanCost": 0.001552,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.001552,
+        "meanTurns": 7,
+        "meanTokensIn": 30091
+      },
+      "cli_skill": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.001277,
+        "meanCost": 0.001277,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.001277,
+        "meanTurns": 7,
+        "meanTokensIn": 27168
+      }
+    },
+    "kill_switch": {
+      "mcp": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.005125,
+        "meanCost": 0.005125,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.005125,
+        "meanTurns": 4,
+        "meanTokensIn": 121636
+      },
+      "cli": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.001487,
+        "meanCost": 0.001487,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.001487,
+        "meanTurns": 6,
+        "meanTokensIn": 22891
+      },
+      "cli_skill": {
+        "n": 0,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0,
+        "meanCost": 0,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 0,
+        "meanTokensIn": 0
+      }
+    },
+    "remove_segment_override": {
+      "mcp": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.005501,
+        "meanCost": 0.005501,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.005501,
+        "meanTurns": 5,
+        "meanTokensIn": 153693
+      },
+      "cli": {
+        "n": 0,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0,
+        "meanCost": 0,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 0,
+        "meanTokensIn": 0
+      },
+      "cli_skill": {
+        "n": 0,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0,
+        "meanCost": 0,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 0,
+        "meanTokensIn": 0
+      }
+    },
+    "segment_override": {
+      "mcp": {
+        "n": 0,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0,
+        "meanCost": 0,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 0,
+        "meanTokensIn": 0
+      },
+      "cli": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.002151,
+        "meanCost": 0.002151,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.002151,
+        "meanTurns": 7,
+        "meanTokensIn": 40185
+      },
+      "cli_skill": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.001752,
+        "meanCost": 0.001752,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.001752,
+        "meanTurns": 8,
+        "meanTokensIn": 35282
+      }
+    },
+    "set_value_in_development": {
+      "mcp": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.005151,
+        "meanCost": 0.005151,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.005151,
+        "meanTurns": 4,
+        "meanTokensIn": 121772
+      },
+      "cli": {
+        "n": 0,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0,
+        "meanCost": 0,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 0,
+        "meanTokensIn": 0
+      },
+      "cli_skill": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.000866,
+        "meanCost": 0.000866,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.000866,
+        "meanTurns": 4,
+        "meanTokensIn": 13343
+      }
+    },
+    "ship_winner": {
+      "mcp": {
+        "n": 1,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0.006432,
+        "meanCost": 0.006432,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 5,
+        "meanTokensIn": 155009
+      },
+      "cli": {
+        "n": 0,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0,
+        "meanCost": 0,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 0,
+        "meanTokensIn": 0
+      },
+      "cli_skill": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.001389,
+        "meanCost": 0.001389,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.001389,
+        "meanTurns": 5,
+        "meanTokensIn": 19818
+      }
+    },
+    "start_experiment": {
+      "mcp": {
+        "n": 0,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0,
+        "meanCost": 0,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 0,
+        "meanTokensIn": 0
+      },
+      "cli": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.00492,
+        "meanCost": 0.00492,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.00492,
+        "meanTurns": 14,
+        "meanTokensIn": 125190
+      },
+      "cli_skill": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.002219,
+        "meanCost": 0.002219,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.002219,
+        "meanTurns": 8,
+        "meanTokensIn": 39424
+      }
+    },
+    "sync_production_to_development": {
+      "mcp": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.005333,
+        "meanCost": 0.005333,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.005333,
+        "meanTurns": 4,
+        "meanTokensIn": 123604
+      },
+      "cli": {
+        "n": 1,
+        "correct": 1,
+        "collateral": 0,
+        "costTotal": 0.001746,
+        "meanCost": 0.001746,
+        "correctRate": 1,
+        "collateralRate": 0,
+        "costPerCorrect": 0.001746,
+        "meanTurns": 7,
+        "meanTokensIn": 30298
+      },
+      "cli_skill": {
+        "n": 0,
+        "correct": 0,
+        "collateral": 0,
+        "costTotal": 0,
+        "meanCost": 0,
+        "correctRate": 0,
+        "collateralRate": 0,
+        "costPerCorrect": null,
+        "meanTurns": 0,
+        "meanTokensIn": 0
+      }
+    }
+  },
+  "heldOut": {
+    "mcp": {
+      "n": 3,
+      "correct": 2,
+      "collateral": 0,
+      "costTotal": 0.017058,
+      "meanCost": 0.005686,
+      "correctRate": 0.6666666666666666,
+      "collateralRate": 0,
+      "costPerCorrect": 0.008529,
+      "meanTurns": 4.666666666666667,
+      "meanTokensIn": 143446
+    },
+    "cli": {
+      "n": 2,
+      "correct": 2,
+      "collateral": 0,
+      "costTotal": 0.003638,
+      "meanCost": 0.001819,
+      "correctRate": 1,
+      "collateralRate": 0,
+      "costPerCorrect": 0.001819,
+      "meanTurns": 6.5,
+      "meanTokensIn": 31538
+    },
+    "cli_skill": {
+      "n": 2,
+      "correct": 2,
+      "collateral": 0,
+      "costTotal": 0.003141,
+      "meanCost": 0.0015705,
+      "correctRate": 1,
+      "collateralRate": 0,
+      "costPerCorrect": 0.0015705,
+      "meanTurns": 6.5,
+      "meanTokensIn": 27550
+    }
+  },
+  "bootstrap": {
+    "cli": {
+      "job_correct": {
+        "point": 0.30000000000000004,
+        "low": 0,
+        "high": 0.6153846153846154,
+        "iterations": 4000
+      },
+      "no_collateral": {
+        "point": 0,
+        "low": 0,
+        "high": 0,
+        "iterations": 4000
+      },
+      "cost_usd": {
+        "point": -0.0030613000000000007,
+        "low": -0.00412251282051282,
+        "high": -0.001764,
+        "iterations": 4000
+      }
+    },
+    "cli_skill": {
+      "job_correct": {
+        "point": 0.30000000000000004,
+        "low": 0,
+        "high": 0.6,
+        "iterations": 4000
+      },
+      "no_collateral": {
+        "point": 0,
+        "low": 0,
+        "high": 0,
+        "iterations": 4000
+      },
+      "cost_usd": {
+        "point": -0.004394700000000001,
+        "low": -0.005027618181818182,
+        "high": -0.0037629666666666667,
+        "iterations": 4000
+      }
+    }
+  },
+  "flagsmith": null,
+  "decisions": {
+    "cli": {
+      "verdict": "INCONCLUSIVE",
+      "flagsmithWin": false,
+      "bootstrapWin": false,
+      "guardrailBreach": {
+        "no_collateral": false,
+        "cost_usd": false
+      },
+      "flagsmith": null,
+      "bootstrap": {
+        "point": 0.30000000000000004,
+        "low": 0,
+        "high": 0.6153846153846154,
+        "iterations": 4000
+      }
+    },
+    "cli_skill": {
+      "verdict": "INCONCLUSIVE",
+      "flagsmithWin": false,
+      "bootstrapWin": false,
+      "guardrailBreach": {
+        "no_collateral": false,
+        "cost_usd": false
+      },
+      "flagsmith": null,
+      "bootstrap": {
+        "point": 0.30000000000000004,
+        "low": 0,
+        "high": 0.6,
+        "iterations": 4000
+      }
+    }
+  },
+  "recommendation": {
+    "ship": null,
+    "reason": "No arm met the pre-registered bar against the MCP control. Keep the control."
+  },
+  "metrics": [
+    {
+      "name": "job_correct",
+      "event": "job_correct",
+      "aggregation": "occurrence",
+      "direction": "up",
+      "expected": "increase",
+      "role": "primary"
+    },
+    {
+      "name": "no_collateral",
+      "event": "no_collateral",
+      "aggregation": "occurrence",
+      "direction": "up",
+      "expected": "not_decrease",
+      "role": "guardrail"
+    },
+    {
+      "name": "cost_usd",
+      "event": "cost_usd",
+      "aggregation": "mean",
+      "direction": "down",
+      "expected": "not_increase",
+      "role": "guardrail"
+    }
+  ]
+}

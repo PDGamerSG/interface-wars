@@ -1,0 +1,205 @@
+{
+  "trialId": "pilot-0021",
+  "index": 21,
+  "arm": "mcp",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "change_split_in_production",
+  "family": "targeting",
+  "heldOut": false,
+  "task": "In Production only, change the traffic split of the multivariate flag \"wishlist_sync_copy\" so the \"Create account\" variation gets 80% of users and the rest stay on the control value. Development keeps its current split.",
+  "correct": false,
+  "reasons": [
+    "Production split: expected 80, got 50"
+  ],
+  "collateral": [],
+  "changes": [],
+  "outcome": "failed",
+  "finalText": "FAILED: I could not change the Production split. The update API rejects the new value because the existing multivariate value record for the \"Create account\" option (option 91) already exists on Production feature state 2313, and it needs that record's ID. None of the tools here return that ID, and I didn't want to guess an ID on a live environment. Both attempts failed with a 400 error, so nothing changed in Production or Development. The fix needs the ID of the existing Production multivariate value (or a tool that can update it by option), and then the 80% allocation can be set.",
+  "costUsd": 0.007113,
+  "usage": {
+    "input": 14,
+    "output": 2639,
+    "cacheRead": 156638,
+    "cacheWrite": 33805
+  },
+  "toolCalls": 6,
+  "toolErrors": 2,
+  "turns": 6,
+  "ms": 32899,
+  "commands": [
+    "list_project_features {\"project_pk\":287,\"environment\":573,\"search\":\"wishlist_sync_copy\"}",
+    "list_project_environments {\"id\":287}",
+    "list_feature_multivariate_options {\"feature_pk\":1112,\"project_pk\":\"287\"}",
+    "update_environment_feature_state {\"id__path\":2313,\"environment_api_key\":\"bmKnxrLmvpE5fbt98KZP8t\",\"feature\":1112,\"enabled\":true,\"feature_state_value\":\"Sign up\",\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":91,\"percentage_allocation\":80}]}",
+    "get_feature_flag {\"id\":1112,\"project_pk\":287}",
+    "update_feature_state {\"id__path\":2313,\"environment\":573,\"feature\":1112,\"enabled\":true,\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"Sign up\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":91,\"percentage_allocation\":80}]}"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_project_features",
+          "input": {
+            "project_pk": 287,
+            "environment": 573,
+            "search": "wishlist_sync_copy"
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":1112,\"name\":\"wishlist_sync_copy\",\"type\":\"MULTIVARIATE\",\"default_enabled\":true,\"initial_value\":\"Sign up\",\"created_date\":\"2026-11-27T20:11:15.561029Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[{\"id\":91,\"uuid\":\"58eb4402-50f9-46b9-a8d4-19901355eeac\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Create account\",\"boolean_value\":null,\"default_percentage_allocation\":50.0,\"key\":\"b\"}],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"bfffdff1-08ea-4f13-b02d-00b0ac77839e\"}],\"group_owners\":[],\"uuid\":\"164b9af2-b510-4ada-b11a-03a7d121d8da\",\"project\":287,\"environment_feature_state\":{\"id\":2313,\"feature_state_value\":\"Sign up\",\"environment\":573,\"identity\":null,\"feature_segment\":null,\"enabled\":true},\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[],\"lifecycle_stage\":\"new\"}]}",
+          "isError": false,
+          "ms": 287
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 151,
+        "cacheRead": 0,
+        "cacheWrite": 29590
+      },
+      "costUsd": 0.00377465,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "list_project_environments",
+          "input": {
+            "id": 287
+          },
+          "output": "{\"result\":[{\"id\":572,\"uuid\":\"a125186c-2d5f-4ba4-ac84-c2e65a5980ca\",\"name\":\"Development\",\"api_key\":\"FGNBCRumyVFH5deCQb4BTL\",\"description\":null,\"project\":287,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false},{\"id\":573,\"uuid\":\"db6b9299-86b3-4ee3-a415-a32669a3ac0f\",\"name\":\"Production\",\"api_key\":\"bmKnxrLmvpE5fbt98KZP8t\",\"description\":null,\"project\":287,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false}]}",
+          "isError": false,
+          "ms": 306
+        },
+        {
+          "name": "list_feature_multivariate_options",
+          "input": {
+            "feature_pk": 1112,
+            "project_pk": "287"
+          },
+          "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":91,\"uuid\":\"58eb4402-50f9-46b9-a8d4-19901355eeac\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Create account\",\"boolean_value\":null,\"default_percentage_allocation\":50.0,\"key\":\"b\",\"feature\":1112}]}",
+          "isError": false,
+          "ms": 282
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 527,
+        "cacheRead": 29590,
+        "cacheWrite": 689
+      },
+      "costUsd": 0.000645725,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "Production uses v1 feature versioning, so I'll update the Production feature state (id 2313) directly, setting the \"Create account\" variation to 80% and leaving the control with the remaining 20%.",
+      "calls": [
+        {
+          "name": "update_environment_feature_state",
+          "input": {
+            "id__path": 2313,
+            "environment_api_key": "bmKnxrLmvpE5fbt98KZP8t",
+            "feature": 1112,
+            "enabled": true,
+            "feature_state_value": "Sign up",
+            "multivariate_feature_state_values": [
+              {
+                "multivariate_feature_option": 91,
+                "percentage_allocation": 80
+              }
+            ]
+          },
+          "output": "Error calling tool 'update_environment_feature_state': HTTP error 400: Bad Request - [\"{'__all__': ['Multivariate feature state value with this Feature state and Multivariate feature option already exists.']}\"]",
+          "isError": true,
+          "ms": 280
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 757,
+        "cacheRead": 30279,
+        "cacheWrite": 1177
+      },
+      "costUsd": 0.000828615,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "",
+      "calls": [
+        {
+          "name": "get_feature_flag",
+          "input": {
+            "id": 1112,
+            "project_pk": 287
+          },
+          "output": "{\"id\":1112,\"name\":\"wishlist_sync_copy\",\"type\":\"MULTIVARIATE\",\"default_enabled\":true,\"initial_value\":\"Sign up\",\"created_date\":\"2026-11-27T20:11:15.561029Z\",\"description\":\"\",\"tags\":[],\"multivariate_options\":[{\"id\":91,\"uuid\":\"58eb4402-50f9-46b9-a8d4-19901355eeac\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Create account\",\"boolean_value\":null,\"default_percentage_allocation\":50.0,\"key\":\"b\"}],\"is_archived\":false,\"owners\":[{\"id\":1,\"email\":\"lab@interface-wars.test\",\"first_name\":\"Interface\",\"last_name\":\"Wars\",\"last_login\":null,\"uuid\":\"bfffdff1-08ea-4f13-b02d-00b0ac77839e\"}],\"group_owners\":[],\"uuid\":\"164b9af2-b510-4ada-b11a-03a7d121d8da\",\"project\":287,\"environment_feature_state\":null,\"segment_feature_state\":null,\"num_segment_overrides\":0,\"num_identity_overrides\":null,\"is_num_identity_overrides_complete\":true,\"is_server_key_only\":false,\"last_modified_in_any_environment\":null,\"last_modified_in_current_environment\":null,\"metadata\":[],\"code_references_counts\":[]}",
+          "isError": false,
+          "ms": 270
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 263,
+        "cacheRead": 31456,
+        "cacheWrite": 842
+      },
+      "costUsd": 0.00055151,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "update_feature_state",
+          "input": {
+            "id__path": 2313,
+            "environment": 573,
+            "feature": 1112,
+            "enabled": true,
+            "feature_state_value": {
+              "type": "unicode",
+              "string_value": "Sign up"
+            },
+            "multivariate_feature_state_values": [
+              {
+                "multivariate_feature_option": 91,
+                "percentage_allocation": 80
+              }
+            ]
+          },
+          "output": "Error calling tool 'update_feature_state': HTTP error 400: Bad Request - [\"{'__all__': ['Multivariate feature state value with this Feature state and Multivariate feature option already exists.']}\"]",
+          "isError": true,
+          "ms": 271
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 708,
+        "cacheRead": 32298,
+        "cacheWrite": 717
+      },
+      "costUsd": 0.0007668050000000001,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "FAILED: I could not change the Production split. The update API rejects the new value because the existing multivariate value record for the \"Create account\" option (option 91) already exists on Production feature state 2313, and it needs that record's ID. None of the tools here return that ID, and I didn't want to guess an ID on a live environment. Both attempts failed with a 400 error, so nothing changed in Production or Development. The fix needs the ID of the existing Production multivariate value (or a tool that can update it by option), and then the 80% allocation can be set.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 233,
+        "cacheRead": 33015,
+        "cacheWrite": 790
+      },
+      "costUsd": 0.0005456,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-27T20:11:15.229Z"
+}
