@@ -1,6 +1,6 @@
 # Starts the self-hosted Flagsmith lab, proves the verifier on all 16 jobs with the reference solutions, and
 # runs the full trial pipeline with the scripted dry-run agent (no API key, no model calls).
-name: verifier self-test
+name: checks
 
 on:
   push:
@@ -9,6 +9,25 @@ on:
   workflow_dispatch:
 
 jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '26'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Unit tests (statistics, decision rule, verifier, cost, recorded trials)
+        run: npm test
+
   selftest:
     runs-on: ubuntu-latest
     timeout-minutes: 25
