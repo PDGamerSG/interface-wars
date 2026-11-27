@@ -108,3 +108,21 @@ test('readout counts match Flagsmith counts for every metric and arm', () => {
     close(r.flagsmith.metrics.cost_usd.variants[name[arm]].sum, s.costTotal, 1e-6);
   }
 });
+
+
+import { getManifest, manifestHash, renderPlan } from '../src/experiment/manifest.ts';
+
+test('experiment manifests validate, hash guides and render a credential-free plan', () => {
+  const manifest = getManifest('mcp-guidance-v1');
+  assert.equal(manifest.arms.length, 2);
+  assert.equal(manifest.jobPack.templateIds.length, 4);
+  assert.match(manifestHash(manifest), /^[0-9a-f]{64}$/);
+  const plan = renderPlan(manifest);
+  assert.match(plan, /agent_interface_mcp_guidance_v1/);
+  assert.match(plan, /mcp-guidance-v1/);
+  assert.doesNotMatch(plan, /Api-Key|sk-ant|password/i);
+});
+
+test('unknown experiments fail before touching the lab', () => {
+  assert.throws(() => getManifest('missing-experiment'), /Unknown experiment/);
+});

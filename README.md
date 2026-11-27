@@ -121,6 +121,25 @@ Ten problems in Flagsmith 2.295.2 and its MCP server, each with the trials or co
 9. The `flagsmith` warehouse driver uses ClickHouse. Our Postgres-only lab uses the `postgres` warehouse.
 10. Warehouse-connection writes are throttled at a hard-coded 10 per minute.
 
+## Experiment manifests and a matched MCP follow-up
+
+The shipped three-arm study is an immutable archive. New studies are described before execution by a versioned
+manifest that includes the question, Flagsmith assignment flag, arm shares, model settings, job pack, metrics,
+guide hashes and spend budget. The planned `mcp-guidance-v1` study keeps the official 54-tool MCP surface in both
+arms and changes only a short frozen read-before-write guide. It uses four existing held-out-capable jobs and a
+50/50 split. No model calls or credentials are needed to inspect its plan.
+
+```bash
+node src/cli.ts plan                         # the shipped interface-wars-v1 manifest
+node src/cli.ts plan --experiment mcp-guidance-v1
+npm run plan -- --experiment mcp-guidance-v1
+```
+
+The command validates template IDs, arm shares, metrics, budgets and guide files, then prints SHA-256 fingerprints.
+The follow-up is deliberately planned separately because the first experiment's assignment flag, exposure data and
+approval record must remain read-only. Its execution needs a matched-case runner and a fresh Flagsmith experiment.
+See [the manifest design](docs/EXPERIMENT_MANIFESTS.md) and [the frozen guide](guides/mcp-guidance-v1.md).
+
 ## Setup
 
 With Node.js 26 you can replay the published evidence locally. Install the locked dependencies once.
