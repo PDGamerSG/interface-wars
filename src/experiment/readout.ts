@@ -65,6 +65,52 @@ export function clusterBootstrap(trials: TrialRecord[], arm: string, control: st
 
 export type Verdict = 'WIN' | 'LOSS' | 'INCONCLUSIVE';
 
+// Upper regularized incomplete gamma Q(a, x), for chi-square p-values (Numerical Recipes, gammq).
+function lnGamma(z: number): number {
+  const c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
+  let x = z, y = z, tmp = x + 5.5;
+  tmp -= (x + 0.5) * Math.log(tmp);
+  let ser = 1.000000000190015;
+  for (const k of c) ser += k / ++y;
+  return -tmp + Math.log((2.5066282746310005 * ser) / x);
+}
+function gammaQ(a: number, x: number): number {
+  if (x <= 0) return 1;
+  if (x < a + 1) {
+    let sum = 1 / a, del = sum, ap = a;
+    for (let n = 0; n < 500 && Math.abs(del) > Math.abs(sum) * 1e-14; n++) { ap++; del *= x / ap; sum += del; }
+    return 1 - sum * Math.exp(-x + a * Math.log(x) - lnGamma(a));
+  }
+  let b = x + 1 - a, c = 1e300, d = 1 / b, h = d;
+  for (let i = 1; i < 500; i++) {
+    const an = -i * (i - a);
+    b += 2;
+    d = an * d + b; if (Math.abs(d) < 1e-300) d = 1e-300;
+    c = b + an / c; if (Math.abs(c) < 1e-300) c = 1e-300;
+    d = 1 / d;
+    const del = d * c;
+    h *= del;
+    if (Math.abs(del - 1) < 1e-14) break;
+  }
+  return Math.exp(-x + a * Math.log(x) - lnGamma(a)) * h;
+}
+
+// Sample-ratio check against the experiment's configured split (cli 33.33%, cli_skill 33.33%, control the rest).
+// Flagsmith 2.295.2 skips its own check for experiments: it reads the split from the environment default feature
+// state, which an experiment zeroes in favour of its rollout segment override (see the TODO in
+// experimentation/services.py, _expected_variant_shares). Reported alongside the decision, not part of the rule.
+export const EXPECTED_SHARES: Record<string, number> = { mcp: 0.3334, cli: 0.3333, cli_skill: 0.3333 };
+export function sampleRatioCheck(counts: Record<string, number>, shares = EXPECTED_SHARES) {
+  const total = Object.values(counts).reduce((s, n) => s + n, 0);
+  let chiSquare = 0;
+  for (const [arm, share] of Object.entries(shares)) {
+    const expected = total * share;
+    chiSquare += ((counts[arm] ?? 0) - expected) ** 2 / expected;
+  }
+  const df = Object.keys(shares).length - 1;
+  return { total, observed: counts, expectedShares: shares, chiSquare, df, pValue: total ? gammaQ(df / 2, chiSquare / 2) : null };
+}
+
 export async function buildReadout(run: string, opts: { withFlagsmith?: boolean } = {}) {
   const trials = loadTrials(run).filter((t) => t.outcome !== 'api_error');
   const arms = ['mcp', 'cli', 'cli_skill'];
@@ -73,6 +119,7 @@ export async function buildReadout(run: string, opts: { withFlagsmith?: boolean 
   const perFamily = Object.fromEntries(families.map((f) => [f, Object.fromEntries(arms.map((a) => [a, stats(trials.filter((t) => t.family === f && t.arm === a))]))]));
   const perTemplate = Object.fromEntries([...new Set(trials.map((t) => t.template))].sort().map((tpl) => [tpl, Object.fromEntries(arms.map((a) => [a, stats(trials.filter((t) => t.template === tpl && t.arm === a))]))]));
   const heldOut = Object.fromEntries(arms.map((a) => [a, stats(trials.filter((t) => t.heldOut && t.arm === a))]));
+  const srm = sampleRatioCheck(Object.fromEntries(arms.map((a) => [a, perArm[a].n])));
 
   const bootstrap: Record<string, any> = {};
   for (const a of ['cli', 'cli_skill']) {
@@ -131,7 +178,7 @@ export async function buildReadout(run: string, opts: { withFlagsmith?: boolean 
   const readout = {
     run, generatedAt: new Date().toISOString(), trials: trials.length,
     model: trials[0]?.model ?? null, effort: trials[0]?.effort ?? null,
-    perArm, perFamily, perTemplate, heldOut, bootstrap, flagsmith, decisions, recommendation,
+    perArm, perFamily, perTemplate, heldOut, srm, bootstrap, flagsmith, decisions, recommendation,
     metrics: METRICS,
   };
   writeFileSync(join(RUNS, run, 'readout.json'), JSON.stringify(readout, null, 2));
@@ -159,7 +206,17 @@ export function renderMarkdown(r: any) {
   for (const [f, arms] of Object.entries<any>(r.perFamily)) lines.push(`| ${f} | ${['mcp', 'cli', 'cli_skill'].map((a) => `${arms[a].correct}/${arms[a].n}`).join(' | ')} |`);
   lines.push('', '## Held-out templates (not used while writing the skill)', '', '| Arm | Correct |', '|---|---:|');
   for (const [a, s] of Object.entries<any>(r.heldOut)) lines.push(`| ${a} | ${s.correct}/${s.n} |`);
-  if (r.flagsmith?.srmPValue !== undefined) lines.push('', `Sample ratio mismatch p-value (Flagsmith): ${r.flagsmith?.srmPValue ?? 'n/a'}.`);
+  lines.push('', '## Sample ratio check', '');
+  if (r.srm) {
+    const counts = Object.entries<number>(r.srm.observed).map(([a, n]) => `${a} ${n}`).join(', ');
+    lines.push(`Harness chi-square test against the configured split: ${counts} of ${r.srm.total}; ` +
+      `chi-square ${r.srm.chiSquare.toFixed(3)} on ${r.srm.df} df, p = ${r.srm.pValue === null ? 'n/a' : r.srm.pValue.toFixed(3)}. ` +
+      (r.srm.pValue !== null && r.srm.pValue < 0.01 ? '**Assignment looks unbalanced; treat the result with caution.**' : 'No sign of unbalanced assignment.'));
+  }
+  if (r.flagsmith?.srmPValue !== undefined) {
+    lines.push('', `Flagsmith's own check: ${r.flagsmith.srmPValue ?? 'not computed'}` +
+      (r.flagsmith.srmPValue === null ? ' (Flagsmith 2.295.2 reads the split from the environment default, which an experiment zeroes; see its TODO in `_expected_variant_shares`).' : '.'));
+  }
   return lines.join('\n') + '\n';
 }
 
