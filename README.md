@@ -163,6 +163,22 @@ pipeline with a scripted stand-in agent and no API calls; dry-run numbers are fa
 
 Flagsmith UI: http://127.0.0.1:8300 (the admin login is in `runs/lab.local.json`).
 
+## Use the skill
+
+`skills/flagsmith-ops/SKILL.md` is a standard Agent Skill: 1,950 tokens of rules and recipes for running Flagsmith
+with CLI v2, including experiments and metrics through `flagsmith api`, scoped changes and read-back checks. In this
+experiment it took a Haiku 5.5 agent from 91.5% to 100% of jobs done correctly and cut the mean cost per job by
+63% against the plain CLI.
+
+To use it with Claude Code, copy the folder into your skills directory and install the Flagsmith CLI:
+
+```bash
+mkdir -p ~/.claude/skills && cp -r skills/flagsmith-ops ~/.claude/skills/
+```
+
+The skill was frozen before the main run (`prereg-v1`) and four of the sixteen job templates were held out while it
+was written; it passed all 16 held-out trials.
+
 ## Repository map
 
 | Path | What it is |
