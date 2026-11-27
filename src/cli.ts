@@ -54,7 +54,7 @@ async function which() {
       headers: { 'X-Environment-Key': lab.control.serverKey },
     });
     if (!res.ok) throw new Error(`Flag evaluation failed for ${identifier}: HTTP ${res.status}`);
-    const body = await res.json();
+    const body: any = await res.json();
     const f = body.flags?.find((x: any) => x.feature.name === FLAG);
     values[identifier] = f?.enabled ? String(f.feature_state_value) : '(flag disabled)';
   }
