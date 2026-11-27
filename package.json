@@ -1,0 +1,22 @@
+{
+  "name": "interface-wars",
+  "version": "1.0.0",
+  "description": "CLI vs MCP vs Skill: Flagsmith Experimentation decides how AI agents should operate Flagsmith",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "lab:up": "docker compose -p interface-wars -f infra/compose.yml up -d && node src/lab/bootstrap.ts",
+    "lab:down": "docker compose -p interface-wars -f infra/compose.yml down -v"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.14.0",
+    "@flagsmith/nodejs": "^9.5.0",
+    "@modelcontextprotocol/sdk": "^1.32.2"
+  }
+}

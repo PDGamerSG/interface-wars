@@ -1,0 +1,74 @@
+# Self-hosted Flagsmith (open source) with Experimentation, plus the official Flagsmith MCP server.
+# One stack holds both the experiment "control" organisation and every per-trial sandbox organisation.
+x-flagsmith-env: &flagsmith-env
+  DATABASE_URL: postgresql://postgres:interfacewars@postgres:5432/flagsmith
+  USE_POSTGRES_FOR_ANALYTICS: 'true'
+  ENVIRONMENT: production
+  DJANGO_ALLOWED_HOSTS: '*'
+  FLAGSMITH_DOMAIN: localhost:8300
+  DJANGO_SECRET_KEY: interface-wars-local-only
+  WAREHOUSE_CREDENTIALS_SECRET: interface-wars-local-only
+  TASK_RUN_METHOD: TASK_PROCESSOR
+  EXPERIMENTATION_ENABLED: 'true'
+  CACHE_FLAGS_SECONDS: '0'
+  GET_FLAGS_ENDPOINT_CACHE_SECONDS: '0'
+  ENVIRONMENT_CACHE_SECONDS: '0'
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_PASSWORD: interfacewars
+      POSTGRES_DB: flagsmith
+    volumes:
+      - iw_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -d flagsmith -U postgres']
+      interval: 2s
+      timeout: 2s
+      retries: 30
+      start_period: 20s
+
+  migrate-db:
+    image: docker.flagsmith.com/flagsmith/flagsmith:2.295.2
+    command: [migrate]
+    environment:
+      <<: *flagsmith-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  flagsmith:
+    image: docker.flagsmith.com/flagsmith/flagsmith:2.295.2
+    command: [serve]
+    environment:
+      <<: *flagsmith-env
+    ports:
+      - 127.0.0.1:8300:8000
+    depends_on:
+      migrate-db:
+        condition: service_completed_successfully
+
+  flagsmith-task-processor:
+    image: docker.flagsmith.com/flagsmith/flagsmith:2.295.2
+    command: [run-task-processor]
+    environment:
+      <<: *flagsmith-env
+    depends_on:
+      migrate-db:
+        condition: service_completed_successfully
+
+  # Official Flagsmith MCP server. Each agent session authenticates with its own sandbox
+  # organisation key (Authorization: Api-Key ...), so an agent can only reach its sandbox.
+  flagsmith-mcp:
+    image: flagsmith/flagsmith-mcp:2.295.2
+    environment:
+      FLAGSMITH_API_URL: http://flagsmith:8000
+      MCP_SERVER_URL: http://127.0.0.1:8301
+    ports:
+      - 127.0.0.1:8301:8000
+    depends_on:
+      - flagsmith
+
+volumes:
+  iw_pgdata:

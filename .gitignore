@@ -1,0 +1,6 @@
+node_modules/
+.env
+runs/*.local.*
+runs/tmp/
+.DS_Store
+runs/dryrun/
