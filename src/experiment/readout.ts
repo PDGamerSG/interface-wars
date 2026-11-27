@@ -65,6 +65,34 @@ export function clusterBootstrap(trials: TrialRecord[], arm: string, control: st
 
 export type Verdict = 'WIN' | 'LOSS' | 'INCONCLUSIVE';
 
+type Inference = { lift: number; ci_low: number; ci_high: number; chance_to_win: number };
+type Interval = { point: number; low: number; high: number };
+
+// The pre-registered decision rule for one treatment arm against the control, as a pure function of the two
+// analyses. WIN needs Flagsmith (chance to beat control >= 95% and interval above 0) and the template bootstrap
+// (interval above 0) to agree, with neither guardrail breached. LOSS needs both to agree the other way.
+export function decideArm(
+  flagsmith: { jobCorrect?: Inference; noCollateral?: Inference; cost?: Inference },
+  bootstrap: { job_correct: Interval; no_collateral: Interval; cost_usd: Interval },
+) {
+  const inf = flagsmith.jobCorrect;
+  const boot = bootstrap.job_correct;
+  const flagsmithWin = Boolean(inf && inf.chance_to_win >= 0.95 && inf.ci_low > 0);
+  const flagsmithLoss = Boolean(inf && inf.chance_to_win <= 0.05 && inf.ci_high < 0);
+  const bootWin = boot.low > 0;
+  const bootLoss = boot.high < 0;
+  const guardrailBreach = {
+    // Breach = the arm is credibly worse at keeping changes in scope.
+    no_collateral: Boolean((flagsmith.noCollateral && flagsmith.noCollateral.ci_high < 0) || bootstrap.no_collateral.high < 0),
+    // Breach = the arm credibly costs more.
+    cost_usd: Boolean((flagsmith.cost && flagsmith.cost.ci_low > 0) || bootstrap.cost_usd.low > 0),
+  };
+  let verdict: Verdict = 'INCONCLUSIVE';
+  if (flagsmithWin && bootWin && !guardrailBreach.no_collateral && !guardrailBreach.cost_usd) verdict = 'WIN';
+  else if (flagsmithLoss && bootLoss) verdict = 'LOSS';
+  return { verdict, flagsmithWin, bootstrapWin: bootWin, guardrailBreach, flagsmith: inf ?? null, bootstrap: boot };
+}
+
 // Upper regularized incomplete gamma Q(a, x), for chi-square p-values (Numerical Recipes, gammq).
 function lnGamma(z: number): number {
   const c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
@@ -149,25 +177,13 @@ export async function buildReadout(run: string, opts: { withFlagsmith?: boolean 
   }
 
   // Pre-registered decision rule, per arm versus control (mcp).
-  const decisions: Record<string, any> = {};
+  const decisions: Record<string, ReturnType<typeof decideArm>> = {};
   for (const a of ['cli', 'cli_skill']) {
-    const inf = flagsmith?.metrics?.job_correct?.inference?.[a];
-    const boot = bootstrap[a].job_correct;
-    const flagsmithWin = inf && inf.chance_to_win >= 0.95 && inf.ci_low > 0;
-    const flagsmithLoss = inf && inf.chance_to_win <= 0.05 && inf.ci_high < 0;
-    const bootWin = boot.low > 0;
-    const bootLoss = boot.high < 0;
-    const collInf = flagsmith?.metrics?.no_collateral?.inference?.[a];
-    const costInf = flagsmith?.metrics?.cost_usd?.inference?.[a];
-    const guardrailBreach = {
-      // Breach = the arm is credibly worse at keeping changes in scope.
-      no_collateral: Boolean((collInf && collInf.ci_high < 0) || bootstrap[a].no_collateral.high < 0),
-      cost_usd: Boolean((costInf && costInf.ci_low > 0) || bootstrap[a].cost_usd.low > 0),
-    };
-    let verdict: Verdict = 'INCONCLUSIVE';
-    if (flagsmithWin && bootWin && !guardrailBreach.no_collateral && !guardrailBreach.cost_usd) verdict = 'WIN';
-    else if (flagsmithLoss && bootLoss) verdict = 'LOSS';
-    decisions[a] = { verdict, flagsmithWin: Boolean(flagsmithWin), bootstrapWin: bootWin, guardrailBreach, flagsmith: inf ?? null, bootstrap: boot };
+    decisions[a] = decideArm({
+      jobCorrect: flagsmith?.metrics?.job_correct?.inference?.[a],
+      noCollateral: flagsmith?.metrics?.no_collateral?.inference?.[a],
+      cost: flagsmith?.metrics?.cost_usd?.inference?.[a],
+    }, bootstrap[a]);
   }
   const winners = Object.entries(decisions).filter(([, d]) => d.verdict === 'WIN').map(([a]) => a);
   const recommendation = winners.length === 0

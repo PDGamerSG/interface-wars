@@ -9,6 +9,8 @@
     "node": ">=26"
   },
   "scripts": {
+    "test": "node --test test/",
+    "typecheck": "tsc -p .",
     "lab:up": "docker compose -p interface-wars -f infra/compose.yml up -d && node src/lab/bootstrap.ts",
     "lab:down": "docker compose -p interface-wars -f infra/compose.yml down -v",
     "lab:reset": "./scripts/lab-reset.sh",
@@ -27,5 +29,9 @@
     "@anthropic-ai/sdk": "^1.14.0",
     "@flagsmith/nodejs": "^9.5.0",
     "@modelcontextprotocol/sdk": "^1.32.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3"
   }
 }

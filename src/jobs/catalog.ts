@@ -92,7 +92,9 @@ function decoys(rng: Rng, exclude: string[], n = 3): Seed['features'] {
 const is = (got: unknown, want: unknown, label: string) =>
   JSON.stringify(got ?? null) === JSON.stringify(want ?? null) ? [] : [`${label}: expected ${JSON.stringify(want)}, got ${JSON.stringify(got ?? null)}`];
 
-const prefix = (...ps: string[]) => (path: string) => ps.some((p) => path === p || path.startsWith(p + '.') || path.startsWith(p));
+// A path is allowed when it equals a prefix or sits below it. A prefix that ends in '.' only matches below it, so
+// `segment.vip` does not also allow `segment.vip_customers.rules`.
+const prefix = (...ps: string[]) => (path: string) => ps.some((p) => path === p || path.startsWith(p.endsWith('.') ? p : p + '.'));
 
 export const TEMPLATES: Template[] = [
   // ---------- Family 1: flag basics ----------
