@@ -39,6 +39,12 @@ jobs:
           IW_DRY_RUN: '1'
         run: node src/run.ts --run ci --count 6 --pilot --concurrency 3
 
+      - name: Rebuild the committed readout offline and check the web export for credentials
+        run: |
+          node src/cli.ts readout main --offline > /dev/null
+          git checkout -- runs/main/readout.json runs/main/readout.md
+          node scripts/export-web-data.ts main --out "$RUNNER_TEMP/web-data"
+
       - name: Flagsmith logs on failure
         if: failure()
         run: docker compose -p interface-wars -f infra/compose.yml logs --tail 200
