@@ -41,6 +41,21 @@ All six subsequent agents read the winner from the same flag and passed their as
 The pre-registration (`prereg/PREREGISTRATION.md`, git tag `prereg-v1`) fixed the hypotheses, arms, jobs, metrics,
 sample size and decision rule before the main run started.
 
+## Operational controls
+
+The control organisation has two remote flags for an active run. They are created with `node src/cli.ts ops:setup`.
+
+```bash
+node src/cli.ts ops:setup
+node src/cli.ts ops:pause
+node src/cli.ts ops:resume
+```
+
+`trials_enabled` stops new trials while allowing an already-running trial to finish. `spend_cap_usd` lowers the
+machine-side `IW_MAX_SPEND_USD` cap. The runner refreshes both flags before every trial. If the control Flagsmith
+endpoint is unavailable, the runner continues only with the local cap so a transient control-plane outage does not
+create an unbounded batch. These controls apply to new runs and do not alter the archived `main` records.
+
 ## How it works
 
 ```
