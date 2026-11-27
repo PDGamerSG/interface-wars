@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // interface-wars: one entry point for the lab, the experiment and the human ship gate.
 import { createInterface } from 'node:readline/promises';
+import { randomUUID } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { bootstrap } from './lab/bootstrap.ts';
@@ -42,13 +43,30 @@ async function ship(run: string) {
 }
 
 async function which() {
-  // What a newly started agent session would use: the flag's current value, read like any app reads a flag.
+  // What a newly started agent session would use. Each agent session is a Flagsmith identity, and a multivariate
+  // split only applies to identities, so evaluate the flag for fresh session identifiers exactly as the runner
+  // does. (The environment-level flags endpoint returns the control value whatever the split is.)
   const lab = readLab();
-  const res = await fetch(`${FLAGSMITH_URL}/api/v1/flags/`, { headers: { 'X-Environment-Key': lab.control.serverKey } });
-  const flags = await res.json();
-  const f = flags.find((x: any) => x.feature.name === FLAG);
+  const sessions = rest.includes('--session') ? [rest[rest.indexOf('--session') + 1]] : Array.from({ length: 5 }, () => `agent-session-${randomUUID()}`);
+  const values: Record<string, string> = {};
+  for (const identifier of sessions) {
+    const res = await fetch(`${FLAGSMITH_URL}/api/v1/identities/?identifier=${encodeURIComponent(identifier)}`, {
+      headers: { 'X-Environment-Key': lab.control.serverKey },
+    });
+    if (!res.ok) throw new Error(`Flag evaluation failed for ${identifier}: HTTP ${res.status}`);
+    const body = await res.json();
+    const f = body.flags?.find((x: any) => x.feature.name === FLAG);
+    values[identifier] = f?.enabled ? String(f.feature_state_value) : '(flag disabled)';
+  }
   const state = await experimentState();
-  console.log(JSON.stringify({ flag: FLAG, value: f?.feature_state_value, enabled: f?.enabled, experiment: state?.status, rollout_decision: state?.rollout_decision ?? null }, null, 2));
+  const distinct = [...new Set(Object.values(values))];
+  console.log(JSON.stringify({
+    flag: FLAG,
+    newSessionsGet: distinct.length === 1 ? distinct[0] : distinct,
+    sessions: values,
+    experiment: state?.status ?? null,
+    rollout_decision: state?.rollout_decision ?? null,
+  }, null, 2));
 }
 
 switch (command) {

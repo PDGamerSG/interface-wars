@@ -1,6 +1,8 @@
 // Runs a batch of trials in parallel.
 //   node src/run.ts --run pilot --count 30 --pilot            # arms rotate, no experiment events
 //   node src/run.ts --run main --from 0 --count 240           # Flagsmith assigns arms and receives events
+//   node src/run.ts --run after-ship --count 6 --follow-flag  # agents take the interface the flag serves now;
+//                                                             # no events (the experiment is complete)
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { runTrial, type TrialRecord } from './trial.ts';
@@ -24,6 +26,7 @@ const concurrency = Number(opt('concurrency', '6'));
 const pilot = flag('pilot');
 const forcedArm = opt('arm') as ArmName | undefined;
 const templateFilter = opt('template');
+const followFlag = flag('follow-flag');
 
 if (process.env.IW_DRY_RUN !== '1' && !process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
   console.error('Set ANTHROPIC_API_KEY in .env first.');
@@ -41,7 +44,9 @@ if (process.env.IW_DRY_RUN !== '1') {
 }
 
 const assigner = pilot || forcedArm ? null : createAssigner();
-if (assigner) {
+// Experiment events are sent only while the experiment runs; a follow-flag batch reads the flag and nothing else.
+const sendEvents = Boolean(assigner) && !followFlag;
+if (sendEvents) {
   const state = await experimentState();
   if (state?.status !== 'running') {
     console.error(`Experiment is not running (status: ${state?.status ?? 'missing'}). Run: node src/cli.ts experiment:start`);
@@ -68,7 +73,7 @@ async function worker() {
     try {
       const arm: ArmName = forcedArm ?? (assigner ? await assigner.assign(trialId) : ARMS[index % ARMS.length]);
       const r = await runTrial({ run, index, trialId, arm });
-      if (assigner) {
+      if (assigner && sendEvents) {
         if (r.correct) assigner.track('job_correct', trialId);
         if (r.collateral.length === 0) assigner.track('no_collateral', trialId);
         assigner.track('cost_usd', trialId, r.costUsd);
