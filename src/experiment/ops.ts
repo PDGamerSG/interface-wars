@@ -12,6 +12,17 @@ export const SPEND_CAP = 'spend_cap_usd';
 
 export type OpsFlags = { trialsEnabled: boolean; spendCapUsd: number | null; source: 'flagsmith' | 'unavailable' };
 
+export function parseOpsFlags(flags: any[]): Omit<OpsFlags, 'source'> {
+  const get = (name: string) => flags.find((f) => f.feature?.name === name);
+  const kill = get(KILL_SWITCH);
+  const cap = get(SPEND_CAP);
+  const capValue = cap?.enabled ? Number(cap.feature_state_value) : NaN;
+  return {
+    trialsEnabled: kill ? Boolean(kill.enabled) : true,
+    spendCapUsd: Number.isFinite(capValue) && capValue >= 0 ? capValue : null,
+  };
+}
+
 function admin() {
   const lab = readLab();
   return { lab, admin: createAdmin(FLAGSMITH_URL, { kind: 'token', value: lab.admin.token }) };
@@ -52,15 +63,7 @@ export async function readOpsFlags(): Promise<OpsFlags> {
     const res = await fetch(`${FLAGSMITH_URL}/api/v1/flags/`, { headers: { 'X-Environment-Key': lab.control.serverKey } });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const flags = (await res.json()) as any[];
-    const get = (name: string) => flags.find((f) => f.feature?.name === name);
-    const kill = get(KILL_SWITCH);
-    const cap = get(SPEND_CAP);
-    const capValue = cap?.enabled ? Number(cap.feature_state_value) : NaN;
-    return {
-      trialsEnabled: kill ? Boolean(kill.enabled) : true,
-      spendCapUsd: Number.isFinite(capValue) && capValue >= 0 ? capValue : null,
-      source: 'flagsmith',
-    };
+    return { ...parseOpsFlags(flags), source: 'flagsmith' };
   } catch {
     return { trialsEnabled: true, spendCapUsd: null, source: 'unavailable' };
   }
