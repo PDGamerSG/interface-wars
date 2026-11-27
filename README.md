@@ -13,7 +13,42 @@ Built for the WeMakeDevs x Flagsmith Toggle Wars hackathon, Track 01 "Test Somet
 ## Results
 
 <!-- RESULTS:START -->
-The main run is in progress. This section is filled from `runs/main/readout.md` when it finishes.
+**The CLI with the Agent Skill won. The CLI alone did not clear the bar.** 255 trials on Claude Haiku 5.5, arms
+assigned by Flagsmith, jobs checked by diffing the whole Flagsmith state.
+
+| Arm | Trials | Jobs correct | Out-of-scope changes | Mean cost | Mean input tokens | Mean turns | Mean time |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `mcp` (control) | 87 | 68 (78.2%) | 0 | $0.0056 | 130,914 | 4.2 | 15.2 s |
+| `cli` | 82 | 75 (91.5%) | 0 | $0.0034 | 88,008 | 10.2 | 37.7 s |
+| `cli_skill` | 86 | **86 (100%)** | 0 | **$0.0013** | **20,329** | 5.1 | 16.6 s |
+
+Decision under the pre-registered rule (both analyses must agree):
+
+- **`cli_skill` vs `mcp`: WIN.** Flagsmith: lift +27.9%, 95% interval +13.6% to +42.2%, chance to beat control
+  100.0%. Template bootstrap: +21.8 points (+6.1 to +43.1). Guardrails held: no out-of-scope changes, cost 77%
+  lower.
+- **`cli` vs `mcp`: INCONCLUSIVE.** Flagsmith: lift +17.0%, 95% interval +1.8% to +32.2%, chance to beat control
+  98.6%. The template bootstrap interval (-1.0 to +33.7 points) crosses zero, so the rule does not call it.
+- Sample-ratio check: 87 / 82 / 86 against an equal split, p = 0.92. Held-out templates: `cli_skill` 16/16,
+  `mcp` 25/28, `cli` 16/19.
+
+A human approved `cli_skill` at the `ship` prompt. Flagsmith completed the experiment with
+`rollout_decision=variant`, and every new agent session now gets `cli_skill` from the same flag
+(`node src/cli.ts which`). Six agents started after the ship all read `cli_skill` from the flag and did their jobs
+correctly (`runs/after-ship/`).
+
+What decided it:
+
+- **The MCP server cannot do some jobs at all.** All 19 MCP failures sit in five templates whose tools are missing
+  or broken: creating a metric, starting or completing an experiment, changing a split, finding a flag by tag
+  ([findings](docs/FLAGSMITH_FINDINGS.md)). In every one the agent said FAILED and changed nothing.
+- **The MCP tool list is expensive.** 54 tools are 29,270 input tokens on every request. The CLI's bash tool is
+  611, and the skill adds 1,950 tokens once, when the agent reads it.
+- **The skill turns a capable CLI into a reliable one.** Without it the CLI agent explored, took twice the turns,
+  and 5 of its 7 failures claimed DONE when the job was not done. With it: 86 of 86, at the lowest cost.
+
+Full readout: [`runs/main/readout.md`](runs/main/readout.md). Every trial, with its transcript and state diff:
+`runs/main/trials/`.
 <!-- RESULTS:END -->
 
 The pre-registration (`prereg/PREREGISTRATION.md`, git tag `prereg-v1`) fixed the hypotheses, arms, jobs, metrics,
@@ -79,20 +114,22 @@ Flagsmith is both the system under test and the experiment platform.
 
 ### What we found in Flagsmith along the way
 
-These came from building the harness and from agent transcripts. We have not filed them upstream yet.
+Ten problems in Flagsmith 2.295.2 and its MCP server, each with the trials or code that show it, are written up in
+[docs/FLAGSMITH_FINDINGS.md](docs/FLAGSMITH_FINDINGS.md). They have not been filed upstream yet. The short list:
 
-1. **MCP `create_metric` cannot create a metric.** The tool schema lists `definition` as required but leaves it out
-   of `properties`, so the field never reaches the API (`definition: This field is required.`).
-2. **MCP cannot complete an experiment.** No tool calls the `complete` endpoint, and `update_experiment` requires
-   `feature` and then rejects it even when unchanged (`Cannot change the feature of an existing experiment.`).
-3. **MCP cannot change an existing multivariate split.** No tool returns the IDs of the existing multivariate
-   feature-state values, and the update fails without them.
-4. **`PATCH` on a feature state silently ignores `multivariate_feature_state_values`.** `PUT` with the full state
-   applies them.
-5. **Multivariate option `key` is ignored on create.** It must be set with a later `PUT`; without it, experiment
-   results label the variant `""`.
-6. **Self-hosted warehouse.** `warehouse_type: "flagsmith"` is the Cloud-only warehouse and breaks results on
-   self-hosted; use `{"warehouse_type":"postgres","config":{"source":"flagsmith_database"}}`.
+1. MCP `create_metric` lists `definition` as required but leaves it out of `properties`, so no metric can be
+   created (0/5 trials).
+2. No MCP tool starts or completes an experiment, and `update_experiment` requires `feature`, which the API then
+   rejects (0/6 trials).
+3. No MCP tool returns the multivariate value IDs that a split change needs (1/5 trials).
+4. No MCP tool lists project tags, so a flag cannot be found by tag name (0/4 trials).
+5. The MCP tool list is 29,270 input tokens on every request.
+6. The sample-ratio check never runs for experiments: it reads the split from the environment default, which an
+   experiment zeroes (Flagsmith's own code has a TODO for it).
+7. `PATCH` on a feature state silently ignores `multivariate_feature_state_values`.
+8. A multivariate option's `key` is ignored on create, so results label the variant `""`.
+9. `warehouse_type: "flagsmith"` is Cloud-only and breaks results on self-hosted.
+10. Warehouse-connection writes are throttled at a hard-coded 10 per minute.
 
 ## Setup
 
@@ -114,7 +151,11 @@ node src/run.ts --run main --count 255 --concurrency 6
 node src/cli.ts readout main
 node src/cli.ts ship main                   # a human types the arm to roll out
 node src/cli.ts which                       # what a new agent session gets from the flag
+node src/run.ts --run after-ship --count 6 --follow-flag   # agents take their interface from the flag
+node scripts/count-tokens.ts                # per-request input tokens of each interface
 ```
+
+Deviations from the pre-registration are listed in `prereg/DEVIATIONS.md`.
 
 Re-running the same `run.ts` command resumes and retries failed trials with the same identities.
 `IW_MAX_SPEND_USD` sets a hard spend cap (ledger in `runs/spend.local.json`). `IW_DRY_RUN=1` runs the whole

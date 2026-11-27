@@ -48,7 +48,7 @@ None of these has been filed upstream yet. The text under each heading is writte
 - **Evidence:** `main-0110`, `main-0174`, `main-0190`, `main-0254`.
 - **Fix:** add a `list_project_tags` tool, or include tag labels in feature results.
 
-### 5. The tool list costs about 29,500 input tokens per request
+### 5. The tool list costs 29,270 input tokens per request
 
 - **Effect:** the MCP arm read 130,914 input tokens per trial on average, against 20,329 for the CLI with the
   skill, although it took fewer turns (4.2 against 5.1). Its mean cost per trial was 4.3 times higher.
