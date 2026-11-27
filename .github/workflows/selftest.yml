@@ -61,7 +61,16 @@ jobs:
       - name: Rebuild the committed readout offline and check the web export for credentials
         run: |
           node src/cli.ts readout main --offline > /dev/null
-          git checkout -- runs/main/readout.json runs/main/readout.md
+          node --input-type=module - <<'JS'
+          import assert from 'node:assert/strict';
+          import { readFileSync } from 'node:fs';
+          const read = (name) => JSON.parse(readFileSync('runs/main/' + name, 'utf8'));
+          const { generatedAt: originalTime, ...published } = read('readout.json');
+          const { generatedAt: replayTime, ...replayed } = read('readout.offline.json');
+          assert.deepEqual(replayed, published);
+          JS
+          git diff --exit-code -- runs/main/readout.json runs/main/readout.md
+          node scripts/sensitivity.ts | diff -u runs/main/sensitivity.md -
           node scripts/export-web-data.ts main --out "$RUNNER_TEMP/web-data"
 
       - name: Flagsmith logs on failure

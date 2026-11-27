@@ -1,6 +1,10 @@
 # Website plan: Interface Wars results site
 
-Status: plan only. No site code is written yet. Review this plan before the build starts.
+For the submission, prioritize two views. The verdict view pairs the registered result with the disabled-staging
+sensitivity, labels relative lift (%) and absolute differences (percentage points), and shows the 16-template grid.
+The comparison view can link the exact same `apple_pay_copy` task across MCP `main-0138`, CLI `main-0074` and skill
+`main-0154`. Link the saved readout, approval and raw records on GitHub. The explorer, themes and method route
+can follow these two views. [Numbers and limitations](../prereg/DEVIATIONS.md)
 
 ## Goal
 
@@ -48,7 +52,7 @@ web/
     data/                    generated, see "Data pipeline"
       readout.json
       trials.json            one slim row per trial
-      trials/<trialId>.json  full transcript, loaded on demand
+      trials/<trialId>.json  turns with clipped tool outputs, loaded on demand
       skill.md               the frozen skill, shown on the method page
   src/
     main.tsx, App.tsx        router and app shell
@@ -101,7 +105,7 @@ web/
 
 The demo-video view. The same job template with one trial per arm in three columns:
 
-- the task text (identical across arms),
+- the task text for each trial (only matched seeds or identical rendered tasks share a prompt),
 - the tool calls in order, with inputs and clipped outputs; errors highlighted,
 - the final DONE or FAILED line,
 - the state diff the verifier saw, with allowed changes and collateral marked,
@@ -116,7 +120,7 @@ turns and time. Each row opens the trial page.
 
 ### `/trials/:id` One trial
 
-The full transcript: every turn's text, tool calls, results, usage and cost, plus the state diff and the grading
+Each recorded turn’s text, tool calls, clipped results, usage and cost, plus the state diff and the grading
 reasons.
 
 ### `/method` Method

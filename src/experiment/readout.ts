@@ -17,7 +17,7 @@ type ArmStats = {
 export function loadTrials(run: string): TrialRecord[] {
   const dir = join(RUNS, run, 'trials');
   if (!existsSync(dir)) return [];
-  return readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => JSON.parse(readFileSync(join(dir, f), 'utf8')));
+  return readdirSync(dir).filter((f) => f.endsWith('.json')).sort().map((f) => JSON.parse(readFileSync(join(dir, f), 'utf8')));
 }
 
 function stats(trials: TrialRecord[]): ArmStats {
@@ -159,7 +159,15 @@ export async function buildReadout(run: string, opts: { withFlagsmith?: boolean 
   }
 
   let flagsmith: any = null;
-  if (opts.withFlagsmith !== false) {
+  const offline = opts.withFlagsmith === false;
+  const runDir = join(RUNS, run);
+  const archive = join(runDir, 'readout.json');
+  if (offline && existsSync(archive)) {
+    // Flagsmith owns the fitted model. Replay its saved native inputs to the decision rule.
+    const saved = JSON.parse(readFileSync(archive, 'utf8'));
+    if (saved.run !== run) throw new Error(`Archived readout belongs to ${saved.run}, expected ${run}.`);
+    flagsmith = saved.flagsmith ?? null;
+  } else if (!offline) {
     try {
       const { results, exposures } = await refreshAndFetchResults();
       const lab = readLab();
@@ -197,8 +205,9 @@ export async function buildReadout(run: string, opts: { withFlagsmith?: boolean 
     perArm, perFamily, perTemplate, heldOut, srm, bootstrap, flagsmith, decisions, recommendation,
     metrics: METRICS,
   };
-  writeFileSync(join(RUNS, run, 'readout.json'), JSON.stringify(readout, null, 2));
-  writeFileSync(join(RUNS, run, 'readout.md'), renderMarkdown(readout));
+  const basename = offline ? 'readout.offline' : 'readout';
+  writeFileSync(join(runDir, basename + '.json'), JSON.stringify(readout, null, 2));
+  writeFileSync(join(runDir, basename + '.md'), renderMarkdown(readout));
   return readout;
 }
 
@@ -237,7 +246,7 @@ export function renderMarkdown(r: any) {
 }
 
 if (import.meta.main) {
-  const run = process.argv[2] ?? 'main';
+  const run = process.argv.slice(2).find((arg) => arg !== '--offline') ?? 'main';
   const r = await buildReadout(run, { withFlagsmith: !process.argv.includes('--offline') });
   console.log(renderMarkdown(r));
 }

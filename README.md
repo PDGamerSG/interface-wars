@@ -2,10 +2,9 @@
 
 **We used Flagsmith Experimentation to decide how AI agents should operate Flagsmith.**
 
-On the Toggle Wars kickoff stream, the Flagsmith team said they prefer the CLI to the MCP server and think it is
-"more performant". Nobody had measured it. Interface Wars measures it with a real experiment: real Claude agents
-do real Flagsmith jobs on self-hosted Flagsmith, a verifier checks every change, and Flagsmith Experimentation
-assigns the arms, collects the outcomes, computes the result and rolls out the winner.
+On the Toggle Wars kickoff stream, the Flagsmith team said they preferred the CLI to the MCP server and thought it
+was "more performant". We tested that claim on Flagsmith 2.295.2. Flagsmith assigned each agent an interface,
+collected the outcomes and served the human-approved winner to later sessions. [Kickoff at 23:28](https://www.youtube.com/watch?v=wm2mKxQDpHQ&t=1408s)
 
 Built for the WeMakeDevs x Flagsmith Toggle Wars hackathon, Track 01 "Test Something Real". The Agent Skill in
 `skills/flagsmith-ops/` is also a Track 04 deliverable.
@@ -13,42 +12,30 @@ Built for the WeMakeDevs x Flagsmith Toggle Wars hackathon, Track 01 "Test Somet
 ## Results
 
 <!-- RESULTS:START -->
-**The CLI with the Agent Skill won. The CLI alone did not clear the bar.** 255 trials on Claude Haiku 5.5, arms
-assigned by Flagsmith, jobs checked by diffing the whole Flagsmith state.
+**The CLI with the skill won under the registered grader. Requiring disabled enrollment for staged experiments makes that win inconclusive.** In 255 trials, Claude Haiku 5.5 performed one of 16 release jobs in a fresh Flagsmith sandbox.
 
-| Arm | Trials | Jobs correct | Out-of-scope changes | Mean cost | Mean input tokens | Mean turns | Mean time |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| `mcp` (control) | 87 | 68 (78.2%) | 0 | $0.0056 | 130,914 | 4.2 | 15.2 s |
-| `cli` | 82 | 75 (91.5%) | 0 | $0.0034 | 88,008 | 10.2 | 37.7 s |
-| `cli_skill` | 86 | **86 (100%)** | 0 | **$0.0013** | **20,329** | 5.1 | 16.6 s |
+| Arm | Registered passes | Detected out-of-scope final changes | Mean cost per trial | Mean input tokens¹ | Mean turns | Mean time |
+|---|---:|---:|---:|---:|---:|---:|
+| MCP | 68/87 (78.2%) | 0 | $0.0056 | 130,914 | 4.2 | 15.2 s |
+| CLI | 75/82 (91.5%) | 0 | $0.0034 | 88,008 | 10.2 | 37.7 s |
+| CLI with skill | 86/86 (100%) | 0 | $0.0013 | 20,329 | 5.1 | 16.6 s |
 
-Decision under the pre-registered rule (both analyses must agree):
+¹ Includes cache reads and writes. The MCP tool list contributed 29,270 tokens per request. The CLI's bash tool used 611. Skill agents each read the 1,950-token file once and retained it in conversation history.
 
-- **`cli_skill` vs `mcp`: WIN.** Flagsmith: lift +27.9%, 95% interval +13.6% to +42.2%, chance to beat control
-  100.0%. Template bootstrap: +21.8 points (+6.1 to +43.1). Guardrails held: no out-of-scope changes, cost 77%
-  lower.
-- **`cli` vs `mcp`: INCONCLUSIVE.** Flagsmith: lift +17.0%, 95% interval +1.8% to +32.2%, chance to beat control
-  98.6%. The template bootstrap interval (-1.0 to +33.7 points) crosses zero, so the rule does not call it.
-- Sample-ratio check: 87 / 82 / 86 against an equal split, p = 0.92. Held-out templates: `cli_skill` 16/16,
-  `mcp` 25/28, `cli` 16/19.
+| Registered comparison | Flagsmith relative lift [95% interval] | Chance to beat MCP | Template bootstrap in percentage points [95% interval] | Verdict |
+|---|---:|---:|---:|---|
+| CLI with skill vs MCP | +27.9% [+13.6%, +42.2%] | 99.9936% | +21.8 [+6.1, +43.1] | WIN |
+| CLI vs MCP | +17.0% [+1.8%, +32.2%] | 98.6% | +13.3 [−1.0, +33.7] | INCONCLUSIVE |
 
-A human approved `cli_skill` at the `ship` prompt. Flagsmith completed the experiment with
-`rollout_decision=variant`, and every new agent session now gets `cli_skill` from the same flag
-(`node src/cli.ts which`). Six agents started after the ship all read `cli_skill` from the flag and did their jobs
-correctly (`runs/after-ship/`).
+**What changes the interpretation?**
 
-What decided it:
+- **Staging safety.** Ten accepted experiment drafts had an enabled rollout in Production. Flagsmith can enroll identities in that state. Requiring disabled enrollment gives MCP **64/87**, CLI **75/82**, and skill **80/86**. The skill advantage over MCP becomes **+19.5 points [0.0, +42.6]**. A win needs a lower bound above zero. These are sandbox state observations, with no measured customer exposures. [Ten trial records and calculations](runs/main/sensitivity.md)
+- **Job mix.** All 19 MCP failures came from five templates covering metric creation, experiment start and completion, split changes and tag lookup. Each reported failure with an empty final diff. On the other eleven templates the registered scores were **67/67 MCP**, **54/55 CLI**, and **53/53 skill**. Giving each of all 16 templates equal weight yields CLI versus MCP **+23.4 points [+5.5, +43.8]** in a post-hoc analysis. [Sensitivity report](runs/main/sensitivity.md)
+- **Skill vs bare CLI.** The skill cut observed mean cost by **63%** and mean turns from 10.2 to 5.1. Its exploratory correctness difference was **+8.5 points [0.0, +18.0]**. Four of seven failed CLI records opened their final answer with `DONE:`. Three of those four acknowledged incomplete work. [Trial evidence](docs/FLAGSMITH_FINDINGS.md#agent-behaviour-worth-knowing)
 
-- **The MCP server cannot do some jobs at all.** All 19 MCP failures sit in five templates whose tools are missing
-  or broken: creating a metric, starting or completing an experiment, changing a split, finding a flag by tag
-  ([findings](docs/FLAGSMITH_FINDINGS.md)). In every one the agent said FAILED and changed nothing.
-- **The MCP tool list is expensive.** 54 tools are 29,270 input tokens on every request. The CLI's bash tool is
-  611, and the skill adds 1,950 tokens once, when the agent reads it.
-- **The skill turns a capable CLI into a reliable one.** Without it the CLI agent explored, took twice the turns,
-  and 5 of its 7 failures claimed DONE when the job was not done. With it: 86 of 86, at the lowest cost.
-
-Full readout: [`runs/main/readout.md`](runs/main/readout.md). Every trial, with its transcript and state diff:
-`runs/main/trials/`.
+The harness sample-ratio test gave **p = 0.92**. Held-out scores were 25/28 MCP, 16/19 CLI and 16/16 skill.
+Pallab Das approved `cli_skill` on the registered evidence. Flagsmith recorded `rollout_decision=variant`.
+All six subsequent agents read the winner from the same flag and passed their assigned jobs. [Readout](runs/main/readout.md) · [Approval](runs/main/approval.json) · [Post-ship trials](runs/after-ship/trials/)
 <!-- RESULTS:END -->
 
 The pre-registration (`prereg/PREREGISTRATION.md`, git tag `prereg-v1`) fixed the hypotheses, arms, jobs, metrics,
@@ -64,7 +51,7 @@ trial id ──► Flagsmith flag "agent_interface" ──► arm: mcp | cli | c
                                                         │
                    Claude agent does the job through its arm's interface
                                                         │
-       verifier diffs the full Flagsmith state before and after the agent ran
+       verifier compares selected sandbox fields before and after the job
                                                         │
       events to Flagsmith: job_correct, no_collateral, cost_usd ──► Bayesian result
                                                         │
@@ -81,17 +68,21 @@ trial id ──► Flagsmith flag "agent_interface" ──► arm: mcp | cli | c
 | `cli` | One bash tool in a locked container with Flagsmith CLI v2, jq and coreutils. No curl, wget, nc or node. |
 | `cli_skill` | The same container plus the `flagsmith-ops` Agent Skill, mounted read-only. |
 
-Model, effort, system prompt (except one paragraph naming the interface), task text, turn limit and sandbox seed
-are identical across arms.
+All arms use the same model, effort, 30-turn limit and task generator. Each trial ID seeds its own names and values.
+The CLI has a preselected project and raw Management API access. MCP receives all 54 tool schemas up front. A
+client with lazy tool discovery or a different model could have different costs.
 
-### The jobs
+### How the verifier scores a job
 
-16 job templates in 4 families: flags, targeting, experiments and repair. Four templates are held out: they were not
-used while writing the skill, which guards against fitting the skill to the test. Each trial renders its template
-with names and values seeded by the trial ID, in a fresh sandbox organisation that is destroyed afterwards.
+The 16 templates cover flags, targeting, experiments and repair. Four templates were held out while the skill
+was written. The same team authored the skill and the jobs, and the skill covers the held-out operations.
 
-A job is correct only when every check passes and nothing outside the job's scope changed. The reference solutions
-pass all 16 templates (`node src/jobs/selftest.ts`).
+The verifier checks selected fields for flags, splits, segments, overrides, metrics and experiments. A pass requires
+every programmed check to succeed and the final snapshot to show zero changes outside the allowed paths.
+Identity overrides and permissions fall outside the snapshot. The frozen experiment-creation check covered status
+and metric links. It omitted the requested hypothesis, 50/50 rollout and disabled enrollment. In one failed
+ship trial the agent changed a Production weight and restored it before the snapshot. Tool outputs in the archive
+are clipped at 4,000 characters. [Grader](src/jobs/catalog.ts) · [Snapshot](src/lab/sandbox.ts) · [Reverted write](runs/main/trials/main-0139.json)
 
 ## How we used Flagsmith
 
@@ -102,8 +93,8 @@ Flagsmith is both the system under test and the experiment platform.
 - **Experimentation.** One experiment with three metric definitions: `job_correct` (primary, occurrence, higher is
   better), `no_collateral` (guardrail, occurrence) and `cost_usd` (guardrail, mean, lower is better). Outcomes go to
   Flagsmith as SDK events.
-- **Bayesian results.** The readout uses Flagsmith's lift, 95% credible interval, chance to beat control and the
-  sample-ratio check. A cluster bootstrap over job templates must agree before an arm counts as a winner.
+- **Bayesian results.** The readout uses Flagsmith's lift, 95% credible interval and chance to beat control alongside a
+  template bootstrap for the registered decision. The harness reports a separate sample-ratio test because the native result returned null.
 - **Rollout decision.** A human types the arm at the `ship` prompt. That completes the experiment with a
   `rollout_decision`, and new agent sessions read the winner from the same flag (`node src/cli.ts which`).
 - **Self-hosted open source.** Flagsmith 2.295.2 with the task processor and Postgres, plus the official MCP server
@@ -121,61 +112,57 @@ Ten problems in Flagsmith 2.295.2 and its MCP server, each with the trials or co
    created (0/5 trials).
 2. No MCP tool starts or completes an experiment, and `update_experiment` requires `feature`, which the API then
    rejects (0/6 trials).
-3. No MCP tool returns the multivariate value IDs that a split change needs (1/5 trials).
+3. MCP read operations do not return the multivariate value IDs that a split change needs. One of five MCP trials succeeded after an update response exposed an ID.
 4. No MCP tool lists project tags, so a flag cannot be found by tag name (0/4 trials).
-5. The MCP tool list is 29,270 input tokens on every request.
-6. The sample-ratio check never runs for experiments: it reads the split from the environment default, which an
-   experiment zeroes (Flagsmith's own code has a TODO for it).
-7. `PATCH` on a feature state silently ignores `multivariate_feature_state_values`.
+5. This client sent all 54 MCP tools on each request. MCP cost **4.43× as much per trial** as CLI with the skill.
+6. Flagsmith skipped the sample-ratio test for our experiment because it read the zeroed environment split.
+7. `PATCH` on the environment feature-state endpoint silently ignores `multivariate_feature_state_values`.
 8. A multivariate option's `key` is ignored on create, so results label the variant `""`.
-9. `warehouse_type: "flagsmith"` is Cloud-only and breaks results on self-hosted.
+9. The `flagsmith` warehouse driver uses ClickHouse. Our Postgres-only lab uses the `postgres` warehouse.
 10. Warehouse-connection writes are throttled at a hard-coded 10 per minute.
 
 ## Setup
 
-Requirements: Docker, Node.js 26 (runs the TypeScript files directly, no build step) and an Anthropic API key.
+With Node.js 26 you can replay the published evidence locally. Install the locked dependencies once.
 
 ```bash
-npm install
-cp .env.example .env                        # add ANTHROPIC_API_KEY
-docker build -t interface-wars-cli:2.0.0 -f infra/cli.Dockerfile infra
-./scripts/lab-reset.sh                      # fresh Flagsmith lab and a created, not started, experiment
-node src/jobs/selftest.ts                   # the verifier proves all 16 jobs with reference solutions
+npm ci
+node src/cli.ts readout main --offline
+node scripts/sensitivity.ts
+node src/cli.ts compare start_experiment --pick failed
+node src/cli.ts show main-0154
 ```
 
-Run the experiment:
+Offline readout recomputes the trial statistics and bootstrap, then applies the decision rule to the archived Flagsmith
+inference. It writes `runs/main/readout.offline.json` and `readout.offline.md`.
+
+### Run a fresh experiment
+
+On a fresh local Docker lab, copy `.env.example` to `.env` and set the Anthropic API key and project spend limit.
+Use a new run name. The name identifies both the trial directory and the Flagsmith identities.
 
 ```bash
+npm run cli:image
+npm run lab:up
+node src/cli.ts experiment:setup
+npm run selftest
 node src/cli.ts experiment:start
-node src/run.ts --run main --count 255 --concurrency 6
-node src/cli.ts readout main
-node src/cli.ts ship main                   # a human types the arm to roll out
-node src/cli.ts which                       # what a new agent session gets from the flag
-node src/run.ts --run after-ship --count 6 --follow-flag   # agents take their interface from the flag
-node scripts/count-tokens.ts                # per-request input tokens of each interface
+node src/run.ts --run replication-01 --count 255 --concurrency 6
+node src/cli.ts readout replication-01
+node src/cli.ts ship replication-01       # review the readout and enter the chosen arm
+node src/cli.ts which
+node src/run.ts --run replication-01-followup --count 6 --follow-flag
 ```
 
-Deviations from the pre-registration are listed in `prereg/DEVIATIONS.md`.
-
-Read the results in the terminal:
-
-```bash
-node src/cli.ts compare create_metric --pick failed   # one job across the three arms, call by call
-node src/cli.ts show main-0075                        # one trial: every tool call, the state diff, the verdict
-```
-
-Re-running the same `run.ts` command resumes and retries failed trials with the same identities.
-`IW_MAX_SPEND_USD` sets a hard spend cap (ledger in `runs/spend.local.json`). `IW_DRY_RUN=1` runs the whole
-pipeline with a scripted stand-in agent and no API calls; dry-run numbers are fake by design.
-
-Flagsmith UI: http://127.0.0.1:8300 (the admin login is in `runs/lab.local.json`).
+Resuming the same name skips saved records and retries missing trial IDs. `IW_MAX_SPEND_USD` is checked before each
+model request. Charges for requests already in flight can take the total above the threshold. For a scripted plumbing
+check on an initialized lab, run `IW_DRY_RUN=1 node src/run.ts --run dryrun --count 6 --pilot`. The agent is scripted
+and the pilot sends no experiment events. The local Flagsmith UI is at http://127.0.0.1:8300.
 
 ## Use the skill
 
 `skills/flagsmith-ops/SKILL.md` is a standard Agent Skill: 1,950 tokens of rules and recipes for running Flagsmith
-with CLI v2, including experiments and metrics through `flagsmith api`, scoped changes and read-back checks. In this
-experiment it took a Haiku 5.5 agent from 91.5% to 100% of jobs done correctly and cut the mean cost per job by
-63% against the plain CLI.
+with CLI v2, including experiments and metrics through `flagsmith api`, scoped changes and read-back checks. Haiku used 63% less per job on average with the skill than with bare CLI in this run.
 
 To use it with Claude Code, copy the folder into your skills directory and install the Flagsmith CLI:
 
@@ -184,7 +171,7 @@ mkdir -p ~/.claude/skills && cp -r skills/flagsmith-ops ~/.claude/skills/
 ```
 
 The skill was frozen before the main run (`prereg-v1`) and four of the sixteen job templates were held out while it
-was written; it passed all 16 held-out trials.
+was written. All 16 assigned held-out skill trials passed the frozen grader.
 
 ## Repository map
 
@@ -198,7 +185,7 @@ was written; it passed all 16 held-out trials.
 | `src/experiment/` | Flagsmith experiment control plane, SDK assignment and events, readout |
 | `skills/flagsmith-ops/` | The Agent Skill |
 | `prereg/` | The pre-registration |
-| `runs/` | Trial records with full transcripts, and readouts |
+| `runs/` | Per-turn records with clipped tool output, final state diffs and readouts |
 
 ## AI tools used
 
