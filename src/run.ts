@@ -9,7 +9,8 @@ import { runTrial, type TrialRecord } from './trial.ts';
 import { ARMS, type ArmName } from './arms/types.ts';
 import { createAssigner, experimentState } from './experiment/control.ts';
 import { loadEnvFile, RUNS } from './lab/config.ts';
-import { BudgetExceeded, CAP_USD, checkBudget, spentUsd } from './agent/budget.ts';
+import { BudgetExceeded, capUsd, checkBudget, setRemoteCap, spentUsd } from './agent/budget.ts';
+import { readOpsFlags, KILL_SWITCH, SPEND_CAP } from './experiment/ops.ts';
 
 loadEnvFile();
 const args = process.argv.slice(2);
@@ -33,6 +34,19 @@ if (process.env.IW_DRY_RUN !== '1' && !process.env.ANTHROPIC_API_KEY && !process
   process.exit(2);
 }
 
+// The ops flags in Flagsmith: the kill switch and the remote spend cap (src/experiment/ops.ts).
+async function refreshOps() {
+  const ops = await readOpsFlags();
+  setRemoteCap(ops.spendCapUsd);
+  return ops;
+}
+const ops = await refreshOps();
+if (ops.source === 'unavailable') console.log('Ops flags unavailable in Flagsmith; using the machine cap only.');
+if (!ops.trialsEnabled) {
+  console.error(`Trials are paused: the ${KILL_SWITCH} flag is off in Flagsmith. Turn it on to run.`);
+  process.exit(2);
+}
+
 if (process.env.IW_DRY_RUN !== '1') {
   try {
     checkBudget();
@@ -40,7 +54,7 @@ if (process.env.IW_DRY_RUN !== '1') {
     console.error((error as Error).message);
     process.exit(2);
   }
-  console.log(`Spend so far: $${spentUsd().toFixed(4)} of cap $${CAP_USD}.`);
+  console.log(`Spend so far: $${spentUsd().toFixed(4)} of cap $${capUsd()}${ops.spendCapUsd !== null ? ` (${SPEND_CAP} in Flagsmith: $${ops.spendCapUsd})` : ''}.`);
 }
 
 const assigner = pilot || forcedArm ? null : createAssigner();
@@ -69,6 +83,13 @@ async function worker() {
     }
     const { jobFor } = await import('./jobs/catalog.ts');
     if (templateFilter && jobFor(index, trialId).template !== templateFilter) continue;
+    // Read the ops flags before every trial, so a change in the dashboard takes effect within one trial.
+    const now = await refreshOps();
+    if (!now.trialsEnabled) {
+      console.log(`${trialId} PAUSED: the ${KILL_SWITCH} flag was turned off in Flagsmith. No new trials will start.`);
+      queue.length = 0;
+      break;
+    }
     active++;
     try {
       const arm: ArmName = forcedArm ?? (assigner ? await assigner.assign(trialId) : ARMS[index % ARMS.length]);
@@ -110,5 +131,5 @@ console.log('\nSummary (this batch, raw counts):');
 for (const [arm, a] of Object.entries(byArm)) {
   console.log(`  ${arm.padEnd(9)} n=${a.n} correct=${a.correct} (${((100 * a.correct) / a.n).toFixed(0)}%) collateral=${a.collateral} mean cost=$${(a.cost / a.n).toFixed(4)}`);
 }
-if (process.env.IW_DRY_RUN !== '1') console.log(`\nTotal real spend (all runs): $${spentUsd().toFixed(4)} of cap $${CAP_USD}.`);
+if (process.env.IW_DRY_RUN !== '1') console.log(`\nTotal real spend (all runs): $${spentUsd().toFixed(4)} of cap $${capUsd()}.`);
 void active;
