@@ -4,3 +4,5 @@ runs/*.local.*
 runs/tmp/
 .DS_Store
 runs/dryrun/
+runs/ci/
+runs/main.local.log

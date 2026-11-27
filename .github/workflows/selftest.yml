@@ -1,0 +1,44 @@
+# Starts the self-hosted Flagsmith lab, proves the verifier on all 16 jobs with the reference solutions, and
+# runs the full trial pipeline with the scripted dry-run agent (no API key, no model calls).
+name: verifier self-test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build the CLI sandbox image
+        run: docker build -t interface-wars-cli:2.0.0 -f infra/cli.Dockerfile infra
+
+      - name: Start Flagsmith, task processor, Postgres and the MCP server
+        run: docker compose -p interface-wars -f infra/compose.yml up -d
+
+      - name: Bootstrap the lab
+        run: node src/lab/bootstrap.ts
+
+      - name: Verifier self-test (16 jobs)
+        run: node src/jobs/selftest.ts
+
+      - name: Dry-run pipeline (all three arms, scripted agent)
+        env:
+          IW_DRY_RUN: '1'
+        run: node src/run.ts --run ci --count 6 --pilot --concurrency 3
+
+      - name: Flagsmith logs on failure
+        if: failure()
+        run: docker compose -p interface-wars -f infra/compose.yml logs --tail 200
