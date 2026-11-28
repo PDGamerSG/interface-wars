@@ -155,6 +155,17 @@ The follow-up is deliberately planned separately because the first experiment's 
 approval record must remain read-only. Its execution needs a matched-case runner and a fresh Flagsmith experiment.
 See [the manifest design](docs/EXPERIMENT_MANIFESTS.md) and [the frozen guide](guides/mcp-guidance-v1.md).
 
+## Staged release gate
+
+Track 04 now includes `skills/flagsmith-release-gate/`, a separate production-safety workflow for a future rollout. It binds the target and disabled pre-state to a signed digest, requires two distinct approvals, checks the kill switch and lower spend cap before every write, promotes one stage at a time, evaluates member and nonmember probes, and records rollback receipts. The archived `agent_interface` experiment is unchanged.
+
+```bash
+node skills/flagsmith-release-gate/scripts/release.ts demo
+npm run release:smoke
+```
+
+The first command is a credential-free rehearsal. The second uses the official Flagsmith CLI against one disposable local organization and proves disabled creation, approval denial, cohort verification, idempotent retry and rollback to zero. See [the release gate guide](docs/RELEASE_GATE.md).
+
 ## Query the evidence
 
 Build a redacted, read-only SQLite projection of the archived trial records. It gives cross-trial answers about tool
