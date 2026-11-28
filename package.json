@@ -23,6 +23,7 @@
     "ship": "node src/cli.ts ship",
     "which": "node src/cli.ts which",
     "plan": "node src/cli.ts plan",
+    "demo": "node scripts/demo.ts",
     "release": "node skills/flagsmith-release-gate/scripts/release.ts",
     "evidence": "node scripts/evidence.ts",
     "tokens": "node scripts/count-tokens.ts",
