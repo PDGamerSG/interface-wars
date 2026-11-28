@@ -31,7 +31,7 @@ export type TurnRecord = {
   stopReason: string | null;
 };
 export type AgentResult = {
-  outcome: 'done' | 'failed' | 'turn_limit' | 'refusal' | 'api_error';
+  outcome: 'done' | 'failed' | 'incomplete' | 'turn_limit' | 'refusal' | 'api_error';
   finalText: string;
   turns: TurnRecord[];
   usage: Usage;
@@ -40,6 +40,17 @@ export type AgentResult = {
   toolErrors: number;
   ms: number;
 };
+
+export type FinalStatus = 'done' | 'failed' | 'incomplete';
+
+// Only a standalone status line is authoritative. Phrases such as “DONE? No”
+// and mixed DONE/FAILED explanations are incomplete reports.
+export function classifyFinalText(text: string): FinalStatus {
+  const done = /^\s*DONE:\s*.*$/m.test(text);
+  const failed = /^\s*FAILED:\s*.*$/m.test(text);
+  if (done === failed) return 'incomplete';
+  return done ? 'done' : 'failed';
+}
 
 // Cost of one request. Pass the usage of a single response, never a sum over turns.
 export function costOf(model: string, u: Usage) {
@@ -131,11 +142,11 @@ export async function runAgent(arm: Arm, sandbox: Sandbox, task: string, client 
     const uses = response.content.filter((b): b is Anthropic.ToolUseBlock => b.type === 'tool_use');
     if (uses.length === 0) {
       finalText = text;
-      outcome = /^\s*FAILED/m.test(text) && !/^\s*DONE/m.test(text) ? 'failed' : 'done';
       if (response.stop_reason === 'max_tokens') {
         messages.push({ role: 'user', content: 'Continue.' });
         continue;
       }
+      outcome = classifyFinalText(text);
       break;
     }
 
