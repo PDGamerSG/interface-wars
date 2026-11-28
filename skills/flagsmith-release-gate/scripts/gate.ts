@@ -91,19 +91,20 @@ function stateAt(plan: ReleasePlan, percentage: number, enabled = percentage > 0
   return { ...plan.baseline, status: 'running', rollout: { ...plan.baseline.rollout, enabled, percentage } };
 }
 
-async function guardedWrite(adapter: ReleaseAdapter, expected: ReleaseState, next: ReleaseState, write: () => Promise<void>) {
+async function guardedWrite(adapter: ReleaseAdapter, expected: ReleaseState, next: ReleaseState, write: () => Promise<void>, estimatedCostUsd = 0) {
   if (digest(await adapter.read()) !== digest(expected)) throw Error('State drift before write. Read the target again.');
   const policy = await adapter.policy();
   if (policy.permitted !== true) throw Error('Release policy denied this write.');
   const amounts = [policy.localCapUsd, policy.remoteCapUsd, policy.spentUsd];
-  if (!amounts.every(value => Number.isFinite(value) && value >= 0) ||
-      policy.spentUsd >= Math.min(policy.localCapUsd, policy.remoteCapUsd)) throw Error('Release spend cap reached or unavailable.');
+  const cap = Math.min(policy.localCapUsd, policy.remoteCapUsd);
+  if (!amounts.every(value => Number.isFinite(value) && value >= 0) || estimatedCostUsd < 0 ||
+      policy.spentUsd + estimatedCostUsd > cap) throw Error('Release spend cap reached or unavailable for the estimated write.');
   await write();
   if (digest(await adapter.read()) !== digest(next)) throw Error('Read-back mismatch. Inspect the live state before retrying.');
 }
 
 export async function runStage(plan: ReleasePlan, action: 'apply' | 'rollback', percentage: number,
-                               approvals: Approval[], signers: Record<string, string>, adapter: ReleaseAdapter) {
+                               approvals: Approval[], signers: Record<string, string>, adapter: ReleaseAdapter, estimatedCostUsd = 0) {
   requireApprovals(plan, approvals, signers);
   if (action !== 'apply' && action !== 'rollback') throw Error('Unknown release action.');
   const index = plan.stages.findIndex(stage => stage.percentage === percentage);
@@ -119,7 +120,7 @@ export async function runStage(plan: ReleasePlan, action: 'apply' | 'rollback', 
   const probes: { identifier: string; matched: boolean }[] = [];
   const receipt = (status: string, after: ReleaseState) => ({ status, before: currentHash, after: digest(after), rollback, probes });
   const restore = (from: ReleaseState) => guardedWrite(adapter, from, previous,
-    () => adapter.rollout(previous.rollout.enabled, previous.rollout.percentage));
+    () => adapter.rollout(previous.rollout.enabled, previous.rollout.percentage), estimatedCostUsd);
 
   // Starting is irreversible in the server's lifecycle. Its separate zero-percent state is a safe retry point.
   const first = index === 0;
@@ -134,8 +135,8 @@ export async function runStage(plan: ReleasePlan, action: 'apply' | 'rollback', 
 
   if (!at(target)) {
     if (!(draft || startedAtZero || at(previous))) throw Error('State drift or out-of-order promotion.');
-    if (draft) await guardedWrite(adapter, current, armed, () => adapter.start());
-    await guardedWrite(adapter, draft ? armed : current, target, () => adapter.rollout(true, percentage));
+    if (draft) await guardedWrite(adapter, current, armed, () => adapter.start(), estimatedCostUsd);
+    await guardedWrite(adapter, draft ? armed : current, target, () => adapter.rollout(true, percentage), estimatedCostUsd);
   }
   for (const probe of plan.stages[index].probes) {
     // An unavailable evaluation also fails the guardrail. Restore only from the exact approved post-state.

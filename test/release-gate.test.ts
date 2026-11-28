@@ -39,8 +39,8 @@ function fixture() {
     },
     async evaluate(p) { return { enabled: p.enabled, value: p.value }; },
   };
-  const run = (action: 'apply' | 'rollback', percentage: number) =>
-    runStage(plan, action, percentage, signatures, signers, adapter);
+  const run = (action: 'apply' | 'rollback', percentage: number, estimatedCostUsd = 0.1) =>
+    runStage(plan, action, percentage, signatures, signers, adapter, estimatedCostUsd);
   return { adapter, state, writes, policy, run };
 }
 
@@ -143,4 +143,10 @@ test('the installed skill can run an offline rehearsal from outside the reposito
   assert.equal(rehearsal.mode, 'offline rehearsal');
   assert.deepEqual(rehearsal.receipts.map((r: { status: string }) => r.status), ['APPLIED', 'APPLIED', 'ROLLED_BACK', 'ROLLED_BACK']);
   assert.deepEqual(rehearsal.finalEnrollment, { enabled: false, percentage: 0 });
+});
+
+test('a write reserves its estimated cost against the lower available cap', async () => {
+  const f = fixture();
+  f.policy.spentUsd = 1.95;
+  await assert.rejects(f.run('apply', 5), /estimated|cap/i);
 });
