@@ -7,7 +7,7 @@ const baseline: ReleaseState = {
   target: { server: 'https://flags.example', environmentId: 8, projectId: 5, experimentId: 7, featureId: 14, feature: 'checkout_copy' },
   status: 'created', hypothesis: 'A shorter checkout label helps.', metrics: [{ id: 2, direction: 'increase' }],
   rollout: { enabled: false, percentage: 0, control: { type: 'string', value: 'control' },
-    variants: [{ id: 10, weight: 100 }], audience: { match: 'any', segmentIds: [4] } },
+    variants: [{ id: 10, weight: 100, value: 'variant' }], audience: { match: 'any', segmentIds: [4] } },
 };
 const probes = [
   { cohort: 'member' as const, identifier: 'member-1', traits: ['plan=beta'], enabled: true, value: 'variant' },
@@ -131,4 +131,16 @@ test('an unacknowledged or partial write never receives a successful receipt', a
   f.adapter.rollout = async () => {};
   await assert.rejects(f.run('apply', 5), /read.back/i);
   assert.equal(f.state.rollout.percentage, 0);
+});
+
+test('the installed skill can run an offline rehearsal from outside the repository', async () => {
+  const { execFileSync } = await import('node:child_process');
+  const { fileURLToPath } = await import('node:url');
+  const { tmpdir } = await import('node:os');
+  const script = fileURLToPath(new URL('../skills/flagsmith-release-gate/scripts/release.ts', import.meta.url));
+  const output = execFileSync(process.execPath, [script, 'demo'], { cwd: tmpdir(), env: {}, encoding: 'utf8' });
+  const rehearsal = JSON.parse(output);
+  assert.equal(rehearsal.mode, 'offline rehearsal');
+  assert.deepEqual(rehearsal.receipts.map((r: { status: string }) => r.status), ['APPLIED', 'APPLIED', 'ROLLED_BACK', 'ROLLED_BACK']);
+  assert.deepEqual(rehearsal.finalEnrollment, { enabled: false, percentage: 0 });
 });

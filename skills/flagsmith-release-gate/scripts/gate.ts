@@ -9,7 +9,7 @@ export type ReleaseState = {
   rollout: {
     enabled: boolean; percentage: number;
     control: { type: string; value: string };
-    variants: { id: number; weight: number }[];
+    variants: { id: number; weight: number; value: string | number | boolean | null }[];
     audience: { match: string; segmentIds: number[] };
   };
 };
