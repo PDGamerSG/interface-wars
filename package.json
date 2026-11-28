@@ -15,6 +15,7 @@
     "lab:down": "docker compose -p interface-wars -f infra/compose.yml down -v",
     "lab:reset": "./scripts/lab-reset.sh",
     "cli:image": "docker build -t interface-wars-cli:2.0.0 -f infra/cli.Dockerfile infra",
+    "cli:isolation": "node scripts/cli-isolation-check.ts",
     "selftest": "node src/jobs/selftest.ts",
     "experiment:start": "node src/cli.ts experiment:start",
     "experiment:status": "node src/cli.ts experiment:status",

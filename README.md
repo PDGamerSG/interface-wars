@@ -92,7 +92,7 @@ trial id ──► Flagsmith flag "agent_interface" ──► arm: mcp | cli | c
 | Arm | What the agent gets |
 |---|---|
 | `mcp` (control) | The official Flagsmith MCP server tools (54 tools), passed to the model unchanged. No shell. |
-| `cli` | One bash tool in a locked container with Flagsmith CLI v2, jq and coreutils. No curl, wget, nc or node. |
+| `cli` | One bash tool in a locked container with Flagsmith CLI v2, jq and coreutils. No curl, wget, nc or node. New runs use an internal Docker network that reaches only Flagsmith ([check](scripts/cli-isolation-check.ts)). |
 | `cli_skill` | The same container plus the `flagsmith-ops` Agent Skill, mounted read-only. |
 
 All arms use the same model, effort, 30-turn limit and task generator. Each trial ID seeds its own names and values.

@@ -45,6 +45,8 @@ services:
       <<: *flagsmith-env
     ports:
       - 127.0.0.1:8300:8000
+    # cli-sandbox is the only network a CLI-arm container joins. Flagsmith is its only other member.
+    networks: [default, cli-sandbox]
     depends_on:
       migrate-db:
         condition: service_completed_successfully
@@ -69,6 +71,13 @@ services:
       - 127.0.0.1:8301:8000
     depends_on:
       - flagsmith
+
+networks:
+  default: {}
+  # Internal: no route to the internet, the Docker host or other containers. A CLI-arm container on this
+  # network reaches only flagsmith:8000, so a raw /dev/tcp socket cannot reach the MCP server or the web.
+  cli-sandbox:
+    internal: true
 
 volumes:
   iw_pgdata:
