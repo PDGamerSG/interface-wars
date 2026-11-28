@@ -138,12 +138,13 @@ Flagsmith is both the system under test and the experiment platform.
 
 ### What we found in Flagsmith along the way
 
-Ten problems in Flagsmith 2.295.2 and its MCP server, each with the trials or code that show it, are written up in
-[docs/FLAGSMITH_FINDINGS.md](docs/FLAGSMITH_FINDINGS.md). We opened [PR #9159](https://github.com/Flagsmith/flagsmith/pull/9159)
-for the first finding and issues [#9158](https://github.com/Flagsmith/flagsmith/issues/9158) and
-[#9157](https://github.com/Flagsmith/flagsmith/issues/9157) for the second and seventh. [PR #9160](https://github.com/Flagsmith/flagsmith/pull/9160)
-adds the missing MCP tag tool from the fourth. The sixth was already tracked in
-[#9128](https://github.com/Flagsmith/flagsmith/issues/9128). [Upstream status](docs/FLAGSMITH_FINDINGS.md#upstream-status). The short list:
+Twelve problems in Flagsmith 2.295.2 and its MCP server, each with the trials or code that show it, are written up in
+[docs/FLAGSMITH_FINDINGS.md](docs/FLAGSMITH_FINDINGS.md). Nine are now tracked in Flagsmith/flagsmith. We opened three
+PRs: [#9159](https://github.com/Flagsmith/flagsmith/pull/9159) fixes the metric schema,
+[#9160](https://github.com/Flagsmith/flagsmith/pull/9160) adds the MCP tag tool and
+[#9171](https://github.com/Flagsmith/flagsmith/pull/9171) fixes the failing audit task. We also opened five issues, and
+the sixth finding was already tracked in [#9128](https://github.com/Flagsmith/flagsmith/issues/9128).
+[Upstream status](docs/FLAGSMITH_FINDINGS.md#upstream-status). The short list:
 
 1. MCP `create_metric` lists `definition` as required but leaves it out of `properties`, so no metric can be
    created (0/5 trials).
@@ -157,6 +158,8 @@ adds the missing MCP tag tool from the fourth. The sixth was already tracked in
 8. A multivariate option's `key` is ignored on create, so results label the variant `""`.
 9. The `flagsmith` warehouse driver uses ClickHouse. Our Postgres-only lab uses the `postgres` warehouse.
 10. Warehouse-connection writes are throttled at a hard-coded 10 per minute.
+11. The audit log API returns an empty list on an unlicensed self-hosted install, though the rows exist.
+12. An audit task fails, and its row is never written, when a segment override is deleted before the task runs.
 
 ## Experiment manifests and a matched MCP follow-up
 

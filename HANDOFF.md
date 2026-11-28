@@ -20,7 +20,7 @@ commit dates.** The user records the demo video. The website is the next piece o
 | Readout | cli_skill WIN, cli INCONCLUSIVE, SRM p = 0.92 (`runs/main/readout.md`) |
 | Ship | Approved by Pallab Das: cli_skill. Experiment completed with `rollout_decision=variant` |
 | Closed loop | `which` returns cli_skill for new sessions; 6 post-ship agents all correct (`runs/after-ship/`) |
-| Findings | 10 Flagsmith and MCP problems with trial evidence (`docs/FLAGSMITH_FINDINGS.md`). Findings 1, 2, 4 and 7 filed as Flagsmith PRs #9159, #9160 and issues #9158, #9157; finding 6 already tracked in #9128 |
+| Findings | 12 Flagsmith and MCP problems with trial evidence (`docs/FLAGSMITH_FINDINGS.md`). Nine tracked upstream: PRs #9159, #9160, #9171; issues #9157, #9158, #9161, #9162, #9172; finding 6 already tracked in #9128 |
 | Deviations | `prereg/DEVIATIONS.md` |
 | Token counts | `runs/interface-tokens.json`: MCP tools 29,270 tokens per request, bash tool 611, skill 1,950 |
 | Web data | `node scripts/export-web-data.ts main` writes `web/public/data/` (3.6 MB, credential guard) |
