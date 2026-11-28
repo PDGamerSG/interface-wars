@@ -184,7 +184,13 @@ See [the manifest design](docs/EXPERIMENT_MANIFESTS.md) and [the frozen guide](g
 
 The repository includes a small read-only static presentation in `judge-site/`. It reads the committed aggregate export and links to the source evidence without exposing raw transcript records or making Flagsmith writes. Render can build it with `npm --prefix judge-site run build` and publish `judge-site/dist`.
 
-Open the live judge site at [interfacewars.pallabdas.me](https://interfacewars.pallabdas.me/). It is deployed from `main` on Render and uses the same static build described above.
+Open the live judge site at [interfacewars.pallabdas.me](https://interfacewars.pallabdas.me/). It is a Render static
+site built from `main` with the build described above. The domain is a Namecheap CNAME to `interface-wars.onrender.com`.
+
+`.github/workflows/deploy.yml` deploys it after the `checks` workflow passes on `main`. The workflow calls the Render deploy
+hook stored in the `RENDER_DEPLOY_HOOK` repository secret. It then waits until the live `version.json` names that commit
+or a later one, and checks that the page and its three data files are served. A deploy that never goes live fails the
+workflow. To deploy by hand, run the workflow from the Actions tab.
 
 Published trial records pass through the same field-aware redactor before they are written to `runs/` or exported to the site. Historical Flagsmith environment keys become stable `[env-…]` labels for trace matching, while server keys and other credential fields become `[REDACTED]`. The exporter fails if a credential-shaped value remains.
 `npm run scan:secrets` applies the same detector to every tracked file, and CI runs it on each change. Commits before

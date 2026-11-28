@@ -41,7 +41,7 @@ A separate `flagsmith-release-gate` Agent Skill is available for production-styl
    React Router 7, Vite 8, TypeScript 6, plain CSS tokens, oxlint, fontsource, Phosphor). Data comes from
    `web/public/data/`. Product context for the design workflow is in `PRODUCT.md`. A visual direction round was
    started (roll assigned "The Fight Card", pick "Trial Report") but the user paused the frontend before choosing.
-3. Render static site deploy, then add the URL to the README.
+3. Done: the judge site is live at https://interfacewars.pallabdas.me (Render static site, Namecheap CNAME). `.github/workflows/deploy.yml` deploys it after CI passes on `main` and checks the live `version.json`.
 4. Confirm the README "AI tools used" wording with the user.
 5. Upstream status is in `docs/FLAGSMITH_FINDINGS.md#upstream-status`. Check it before filing another finding.
 6. Submit on the WeMakeDevs page before 14:30 UTC on 29 November.
