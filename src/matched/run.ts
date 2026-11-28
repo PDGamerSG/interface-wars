@@ -6,10 +6,10 @@ import { lockProject, projectRuns, writeJson } from '../agent/project.ts';
 import { readSpend } from '../agent/budget.ts';
 import { readOpsFlags } from '../experiment/ops.ts';
 import { RUNS, type Lab } from '../lab/config.ts';
-import { MAX_REQUEST_USD, settleReservation } from './billing.ts';
-import { assigner, deliver, experimentPath, management, nativeResults, readControl, setup, warehouse, warehouseMatches } from './control.ts';
+import { MAX_REQUEST_USD, matchedCap, settleReservation } from './billing.ts';
+import { assigner, deliver, experimentPath, liveStudy, management, nativeResults, readControl, setup, warehouse, warehouseMatches } from './control.ts';
 import { summarize } from './readout.ts';
-import { design, manifest, matchedCase, phaseSize, readJournal, runPhase, type Phase } from './study.ts';
+import { design, hash, manifest, matchedCase, phaseSize, readJournal, runPhase, type Phase } from './study.ts';
 import { executeTrial } from './trial.ts';
 
 const { values, positionals } = parseArgs({ allowPositionals: true, options: {
@@ -35,7 +35,13 @@ async function main() {
     if (values.case === undefined || !/^\d+$/.test(values.case)) throw new Error('Pass a zero-based --case number');
     const rank = Number(values.case), c = matchedCase(phase, rank);
     const rows = journal(phase).rows.filter(r => r.rank === rank);
-    print({ phase, rank, template: c.job.template, caseHash: c.caseHash, caseSeed: c.caseSeed, task: c.job.task, seed: c.job.seed,
+    const evidence = rows.map(r => {
+      const path = join(dir, phase, 'trials', r.id + '.json');
+      if (!existsSync(path)) return { id: r.id, graded: false };
+      const { result, reasons, changes, collateral, commands } = read(path);
+      return { id: r.id, arm: r.arm, result, reasons, changes, collateral, commands };
+    });
+    print({ phase, rank, template: c.job.template, caseHash: c.caseHash, caseSeed: c.caseSeed, task: c.job.task, seed: c.job.seed, evidence,
       status: rows.length === 2 ? 'paired' : rows.length ? 'unmatched' : 'planned', assignments: rows });
     return;
   }
@@ -44,7 +50,8 @@ async function main() {
     const nativeFile = join(dir, 'registered', 'native.json');
     const native = phase === 'registered' && existsSync(nativeFile) ? read(nativeFile) : undefined;
     const spend = !synthetic && existsSync(ledgerPath) ? readSpend(ledgerPath).matched?.totals : {};
-    const r = summarize(j, native?.checks, spend);
+    const fresh = native?.journalHash === hash(JSON.stringify(j)) && native.fingerprint === j.fingerprint;
+    const r = summarize(j, fresh ? native.checks : undefined, spend);
     print(r);
     if (existsSync(join(dir, phase, 'assignments.json'))) writeJson(join(dir, phase, 'readout.json'), r);
     return;
@@ -65,7 +72,7 @@ async function main() {
       return;
     }
     const c = readControl(dir, lab), base = experimentPath(c);
-    const state = await admin.get(base + '/');
+    const state = await liveStudy(c, admin);
     if (command === 'start') {
       if (state.status === 'running') { console.log('Study already running'); return; }
       if (state.status !== 'created') throw new Error('Expected a created matched experiment');
@@ -82,11 +89,11 @@ async function main() {
       if (state.status !== 'running' && state.status !== 'completed') throw new Error('Start the registered experiment first');
       const j = journal('registered');
       const raw = warehouseMatches(c, j.rows);
-      const native = await nativeResults(c, admin, j.rows);
+      const native = await nativeResults(c, admin, j.rows, state.status === 'completed');
       const book = !synthetic && existsSync(ledgerPath) ? readSpend(ledgerPath) : undefined;
       const billingMatches = Boolean(book?.matched && !book.matched.pending && j.rows.every(r => r.result && book.matched!.totals[r.id] === r.result.costUsd));
       const checks = { warehouseMatches: raw.matches, aggregatesMatch: native.aggregatesMatch, excluded: native.excluded, billingMatches };
-      const saved = { checks, raw, native, fingerprint: j.fingerprint, environmentId: c.environmentId, experimentId: c.experimentId };
+      const saved = { checks, raw, native, journalHash: hash(JSON.stringify(j)), fingerprint: j.fingerprint, environmentId: c.environmentId, experimentId: c.experimentId };
       mkdirSync(join(dir, 'registered'), { recursive: true });
       writeJson(join(dir, 'registered', 'native.json'), saved);
       print(checks);
@@ -95,6 +102,10 @@ async function main() {
     }
     const p: Phase = command === 'pilot' ? 'pilot' : 'registered';
     if (state.status !== (p === 'pilot' ? 'created' : 'running')) throw new Error('Unexpected study status for ' + p + ': ' + state.status);
+    if (p === 'registered') {
+      const zero = read(join(dir, 'pilot', 'zero-exposures.json'));
+      if (zero.environmentId !== c.environmentId || zero.experimentId !== c.experimentId || zero.storedEvents !== 0) throw new Error('Missing verified pilot exposure audit');
+    }
     if (!synthetic && !process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) throw new Error('Set the model credential before running a paid phase');
     if (!synthetic && !existsSync(ledgerPath)) throw new Error('Expected the existing shared project ledger');
     let cap = design.projectCapUsd;
@@ -102,11 +113,9 @@ async function main() {
       assign: assigner(c), deliver: (r, kind, interrupted) => deliver(c, r, kind, interrupted),
       beforeTrial: async () => {
         if (synthetic) return;
-        const ops = await readOpsFlags(lab);
-        if (ops.source !== 'flagsmith' || !ops.trialsEnabled) throw new Error('Project trials paused or ops flags unavailable');
-        const machine = Number(process.env.IW_MAX_SPEND_USD ?? design.projectCapUsd);
-        if (!Number.isFinite(machine) || machine < 0) throw new Error('Invalid project cap');
-        cap = Math.min(design.projectCapUsd, machine, ops.spendCapUsd ?? Infinity);
+        cap = matchedCap(await readOpsFlags(lab));
+        const live = await liveStudy(c, admin);
+        if (live.status !== state.status) throw new Error('Matched experiment status changed during the batch');
       },
       execute: (r, job) => executeTrial(dir, p, synthetic, lab, c, ledgerPath, cap, r, job),
     }, values.limit === undefined ? undefined : Number(values.limit));

@@ -140,7 +140,7 @@ Ten problems in Flagsmith 2.295.2 and its MCP server, each with the trials or co
 
 The shipped three-arm study is an immutable archive. New studies are described before execution by a versioned
 manifest that includes the question, Flagsmith assignment flag, arm shares, model settings, job pack, metrics,
-guide hashes and spend budget. The planned `mcp-guidance-v1` study keeps the official 54-tool MCP surface in both
+guide hashes and spend budget. The preregistered `mcp-guidance-v1` study keeps the official 54-tool MCP surface in both
 arms and changes only a short frozen read-before-write guide. It uses four existing held-out-capable jobs and a
 50/50 split. No model calls or credentials are needed to inspect its plan.
 

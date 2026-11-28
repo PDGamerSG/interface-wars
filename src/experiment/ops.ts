@@ -60,7 +60,7 @@ export async function ensureOpsFlags(defaultCapUsd = 15) {
 export async function readOpsFlags(knownLab?: Lab): Promise<OpsFlags> {
   try {
     const lab = knownLab ?? readLab();
-    const res = await fetch(`${FLAGSMITH_URL}/api/v1/flags/`, { headers: { 'X-Environment-Key': lab.control.serverKey } });
+    const res = await fetch(`${FLAGSMITH_URL}/api/v1/flags/`, { headers: { 'X-Environment-Key': lab.control.serverKey }, signal: AbortSignal.timeout(10_000) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const flags = (await res.json()) as any[];
     return { ...parseOpsFlags(flags), source: 'flagsmith' };

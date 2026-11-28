@@ -4,10 +4,17 @@ import { existsSync } from 'node:fs';
 import { BudgetExceeded, readSpend } from '../agent/budget.ts';
 import { writeJson } from '../agent/project.ts';
 import { costOf } from '../agent/loop.ts';
+import type { OpsFlags } from '../experiment/ops.ts';
 import { manifest, design } from './study.ts';
 
 export const MAX_REQUEST_USD = costOf(manifest.model.id, { input: 0, cacheRead: 0, cacheWrite: 1_048_576, output: 16_000 });
 const usd = (x: number) => Number(x.toFixed(9));
+
+export function matchedCap(ops: OpsFlags, machine = Number(process.env.IW_MAX_SPEND_USD ?? design.projectCapUsd)) {
+  if (ops.source !== 'flagsmith' || !ops.trialsEnabled) throw new Error('Project trials paused or ops flags unavailable');
+  if (!Number.isFinite(machine) || machine < 0) throw new Error('Invalid project cap');
+  return Math.min(design.projectCapUsd, machine, ops.spendCapUsd ?? Infinity);
+}
 
 export function settleReservation(path: string, nonce: string, actual: number, billed = true) {
   const ledger = readSpend(path);

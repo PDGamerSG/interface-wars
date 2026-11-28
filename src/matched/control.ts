@@ -65,13 +65,30 @@ export async function setup(dir: string, lab: Lab, a: Admin, synthetic: boolean)
     metrics: manifest.metrics.map(m => ({ metric: metricIds[m.name], expected_direction: m.role === 'primary' ? 'decrease' : 'not_decrease' })),
     experiment_rollout: { enabled: true, rollout_percentage: 100, feature_state_value: { type: 'string', value: 'mcp' },
       multivariate_feature_state_values: [{ multivariate_feature_option: option.id, percentage_allocation: manifest.arms[1].share }] } });
-  const key = await a.post(base + '/api-keys/', { name: 'matched-runner' });
+  const key = await findOrCreate(a, base + '/api-keys/', 'matched-runner', {});
+  if (!key.key) throw new Error('Matched server key unavailable');
   const c: Control = { organisationId: org.id, projectId: p.id, environmentId: env.id, environmentKey: env.api_key, serverKey: key.key,
     featureId: feature.id, optionId: option.id, experimentId: exp.id, metricIds, url: FLAGSMITH_URL, fingerprint };
   writeJson(controlFile(dir), c);
-  writeJson(join(dir, 'experiment.json'), { study: manifest.id, synthetic, fingerprint, projectId: p.id, environmentId: env.id,
+  writeJson(join(dir, 'experiment.json'), { study: manifest.id, synthetic, fingerprint, organisationId: org.id, projectId: p.id, environmentId: env.id,
     featureId: feature.id, optionId: option.id, experimentId: exp.id, metricIds });
   return c;
+}
+
+export async function liveStudy(c: Control, a: Admin) {
+  const e = await a.get(experimentPath(c) + '/');
+  const rollout = e.experiment_rollout;
+  const splits = rollout?.multivariate_feature_state_values;
+  const metrics = e.metrics ?? [];
+  if (e.id !== c.experimentId || e.feature?.id !== c.featureId || e.feature?.name !== manifest.flag || e.name !== manifest.title ||
+      e.hypothesis !== manifest.question || !rollout?.enabled || rollout.rollout_percentage !== 100 || rollout.feature_state_value?.value !== 'mcp' ||
+      rollout.audience?.segments?.length || splits?.length !== 1 || splits[0].multivariate_feature_option !== c.optionId ||
+      splits[0].percentage_allocation !== manifest.arms[1].share || metrics.length !== manifest.metrics.length ||
+      !manifest.metrics.every(m => metrics.some((v: any) => v.metric === c.metricIds[m.name] && v.metric_name === m.name &&
+        v.aggregation === m.aggregation && v.direction === m.direction && v.expected_direction === (m.role === 'primary' ? 'decrease' : 'not_decrease')))) {
+    throw new Error('Live feature, metrics or allocation differs from the registered study');
+  }
+  return e;
 }
 
 export function management(lab: Lab) { return createAdmin(FLAGSMITH_URL, { kind: 'token', value: lab.admin.token }); }
@@ -80,7 +97,7 @@ export function assigner(c: Control) {
   // Journal the evaluated arm first. The durable event send below records the exposure exactly once.
   const sdk = new Flagsmith({ environmentKey: c.serverKey, apiUrl: FLAGSMITH_URL + '/api/v1/' });
   return async (id: string): Promise<StudyArm> => {
-    const raw = (await sdk.getIdentityFlags(id)).getFlag(manifest.flag) as any;
+    const raw = (await sdk.getIdentityFlags(id)).flags[manifest.flag];
     if (!raw || !raw.enabled || !raw.experiment?.inExperiment || raw.experiment.id !== c.experimentId ||
         raw.featureId !== c.featureId || !arms.includes(raw.value as StudyArm) || raw.variant !== (raw.value === 'mcp' ? 'control' : 'mcp_guided')) {
       throw new Error('Flagsmith identity is outside the registered experiment or received an unexpected variant');
@@ -138,9 +155,9 @@ export function warehouseMatches(c: Control, rows: Assignment[]) {
     matches: actual.length === expected.length && expected.every(e => actual.filter(x => same(x, e)).length === 1) };
 }
 
-export async function nativeResults(c: Control, a: Admin, rows: Assignment[]) {
+export async function nativeResults(c: Control, a: Admin, rows: Assignment[], completed = false) {
   const base = experimentPath(c);
-  for (const field of ['exposures', 'results']) {
+  for (const field of completed ? [] : ['exposures', 'results']) {
     try { await a.post(`${base}/${field}/refresh/`, {}); }
     catch (error) { if ((error as { status?: number }).status !== 429) throw error; }
   }
