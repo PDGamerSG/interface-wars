@@ -2,10 +2,11 @@
 name: flagsmith-release-gate
 description: Plan, approve, stage, verify and roll back a Flagsmith experiment rollout through CLI v2 with signed two-person approvals and cohort guardrails.
 license: MIT
-compatibility: Requires Flagsmith CLI v2.0.0, jq, noninteractive credentials, an experiment API with rollout and transient evaluation support, and a local spend ledger.
 ---
 
 # Flagsmith release gate
+
+Compatibility: Flagsmith CLI v2.0.0, jq, noninteractive credentials, an experiment API with rollout and transient evaluation support, and a local spend ledger.
 
 Use this skill when a change is ready for a controlled Flagsmith rollout. The workflow keeps a created experiment disabled at zero enrollment, collects two distinct signed approvals over one immutable plan, promotes one stage at a time, evaluates a member and nonmember probe, and retains a rollback receipt.
 
