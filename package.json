@@ -29,6 +29,7 @@
     "evidence": "node scripts/evidence.ts",
     "tokens": "node scripts/count-tokens.ts",
     "export:web": "node scripts/export-web-data.ts",
+    "scan:secrets": "node scripts/scan-secrets.ts",
     "release:smoke": "npm exec --yes --package=@flagsmith/cli@2.0.0 -- node scripts/release-smoke.ts"
   },
   "dependencies": {

@@ -3,10 +3,10 @@
 import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import { LAB_FILE, readLab } from '../lab/config.ts';
+import { isEnvironmentKey } from './secrets.ts';
 
 const MASK = '[REDACTED]';
 const ENV_LABEL = /^\[env-[0-9a-f]{16}\]$/;
-const SHORTUUID = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const ENV_KEY = /(?<![a-zA-Z0-9])(?:ser\.)?[2-9A-HJ-NP-Za-km-z]{22}(?![a-zA-Z0-9])/g;
 const FIELD_NAME = '(?:(?:environment|server|master)[_ -]?(?:api[_ -]?)?key|api[_ -]?key|(?:access[_ -]?)?token|authorization|password|client[_ -]?secret|secret)';
 const SECRET_FIELD = new RegExp('^' + FIELD_NAME + '$', 'i');
@@ -15,17 +15,9 @@ const QUOTED_FIELD = new RegExp(`((?:\\\\*["'])${FIELD_NAME}(?:\\\\*["'])\\s*:\\
 const AUTH = /(\bAuthorization\s*[:=]\s*["\']?(?:(?:Api-Key|Bearer|Token)\s+)?|\b(?:Api-Key|Bearer)\s+|\bToken\s+(?=[a-f0-9]{40}\b)|\bX-Environment-Key\s*:\s*)([A-Za-z0-9._~+/=-]{8,})/gi;
 const SHELL_KEY = /(\b(?:FLAGSMITH_API_KEY(?:_[A-Za-z0-9_]+)?|ANTHROPIC_API_KEY)\s*=\s*["']?|--api-key[= ]+["']?)([A-Za-z0-9._~+/=-]{8,})/gi;
 
-// Flagsmith 2.295.2 issues shortuuid-encoded UUIDv4 environment keys. Checking the UUID bits
-// avoids treating ordinary 22-character words in CLI help or tool output as credentials.
+// A stable opaque label for a real environment key (see isEnvironmentKey), so traces still match across records.
 function environmentLabel(value: string): string | undefined {
-  if (value.length !== 22) return undefined;
-  let uuid = 0n;
-  for (const char of value) {
-    const digit = SHORTUUID.indexOf(char);
-    if (digit < 0) return undefined;
-    uuid = uuid * 57n + BigInt(digit);
-  }
-  if (uuid >= (1n << 128n) || ((uuid >> 76n) & 15n) !== 4n || ((uuid >> 62n) & 3n) !== 2n) return undefined;
+  if (!isEnvironmentKey(value)) return undefined;
   return '[env-' + createHash('sha256').update(value).digest('hex').slice(0, 16) + ']';
 }
 

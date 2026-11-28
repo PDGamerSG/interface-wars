@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { loadDemo, renderDemo } from '../src/demo.ts';
+import { findCredentials } from '../src/evidence/secrets.ts';
 
 test('offline demo replays the recorded comparison, safety sensitivity, approval and follow-up jobs', () => {
   const demo = loadDemo();
@@ -20,7 +21,7 @@ test('offline demo replays the recorded comparison, safety sensitivity, approval
     assert.match(output, new RegExp(id));
   }
 
-  assert.doesNotMatch(output, /P4GoJMG3gBhyneTnj6PxUv|doY9WkJcgEQSjHdB9MtQiq|nsXh46vn6XMeUvfKSKeved/);
+  assert.deepEqual(findCredentials(output), []);
   assert.doesNotMatch(output, /Api-Key\s+[A-Za-z0-9._~+/=-]{8,}|sk-ant-[A-Za-z0-9_-]{10,}/i);
 });
 
