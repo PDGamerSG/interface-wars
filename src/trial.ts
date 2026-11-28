@@ -10,6 +10,7 @@ import { dryRunAgent, DRY_RUN } from './agent/dryrun.ts';
 import type { ArmName, Arm } from './arms/types.ts';
 import { RUNS } from './lab/config.ts';
 import { localCredentials, redactCredentials } from './evidence/redact.ts';
+import { strictGrade, STRICT_GRADER } from './jobs/strict.ts';
 
 export type TrialRecord = {
   trialId: string;
@@ -36,6 +37,7 @@ export type TrialRecord = {
   commands: string[];
   transcript: unknown;
   startedAt: string;
+  grader?: string;
 };
 
 export async function runTrial(opts: { run: string; index: number; trialId: string; arm: ArmName }): Promise<TrialRecord> {
@@ -49,7 +51,9 @@ export async function runTrial(opts: { run: string; index: number; trialId: stri
     const result: AgentResult = DRY_RUN ? await dryRunAgent(opts.arm, job, sandbox) : await runAgent(arm, sandbox, job.task);
     const after = await snapshot(sandbox);
     const changes = diff(before, after);
-    const g = grade(job, before, after, changes);
+    const grader = process.env.IW_GRADER ?? 'registered-v1';
+    if (grader !== 'registered-v1' && grader !== STRICT_GRADER) throw new Error(`Unknown grader ${grader}`);
+    const g = grader === STRICT_GRADER ? strictGrade(job, before, after, changes) : grade(job, before, after, changes);
     const record: TrialRecord = {
       trialId: opts.trialId,
       index: opts.index,
@@ -75,6 +79,7 @@ export async function runTrial(opts: { run: string; index: number; trialId: stri
       commands: arm.commands,
       transcript: result.turns,
       startedAt,
+      grader,
     };
     const dir = join(RUNS, opts.run, 'trials');
     mkdirSync(dir, { recursive: true });

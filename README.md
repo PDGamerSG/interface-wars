@@ -210,6 +210,11 @@ node src/cli.ts show main-0154
 Offline readout recomputes the trial statistics and bootstrap, then applies the decision rule to the archived Flagsmith
 inference. It writes `runs/main/readout.offline.json` and `readout.offline.md`.
 
+New runs can opt into the prospective strict draft grader with `node src/run.ts --grader strict-draft-v1`. It keeps the
+registered grader as the default and records the grader version on each new trial. Strict experiment-creation jobs require
+the exact hypothesis and metric directions, a created status, a disabled rollout, and a 50/50 variation allocation.
+The archived main records and registered readout are unchanged.
+
 Agent outcomes record `done` or `failed` only when the final response contains one unambiguous standalone `DONE:` or
 `FAILED:` line. A missing or mixed status is recorded as `incomplete`, so prose such as `DONE? No` cannot be counted as
 a completed report.

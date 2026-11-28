@@ -2,7 +2,7 @@
 // random generator, so every trial gets fresh names and values but the same kind of work.
 // A job is correct only if the required end state holds AND nothing outside its allowed scope changed.
 import { createHash } from 'node:crypto';
-import type { Seed, Snapshot, Change } from '../lab/sandbox.ts';
+import type { Seed, SeedExperiment, Snapshot, Change } from '../lab/sandbox.ts';
 
 export type Family = 'flags' | 'targeting' | 'experiments' | 'repair';
 
@@ -16,6 +16,7 @@ export type Job = {
   check: (after: Snapshot, before: Snapshot) => string[];
   // Paths the job is allowed to change. Any other change is collateral.
   allowed: (path: string) => boolean;
+  strictDraft?: { name: string; feature: string; hypothesis: string; metrics: SeedExperiment['metrics'] };
 };
 
 export type Template = { id: string; family: Family; heldOut: boolean; render: (rng: Rng) => Job };
@@ -293,6 +294,10 @@ export const TEMPLATES: Template[] = [
             { name: g, event: ge, aggregation: 'occurrence', direction: 'down' },
           ],
         },
+        strictDraft: { name: x, feature: f, hypothesis: h, metrics: [
+          { name: p, expected_direction: 'increase' },
+          { name: g, expected_direction: 'not_increase' },
+        ] },
         check: (a) => [
           ...is(a[`env.Production.experiment.${x}.feature`], f, 'experiment flag'),
           ...is(a[`env.Production.experiment.${x}.status`], 'created', 'not started'),

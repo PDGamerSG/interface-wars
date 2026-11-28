@@ -73,11 +73,12 @@ export async function solve(job: Job, s: Sandbox) {
       const fid = await featureId(s, f);
       const options = await s.admin.list(`/api/v1/projects/${s.projectId}/features/${fid}/mv-options/`);
       const control = (await envState(s, 'Production', f)).feature_state_value;
+      const strictDraft = process.env.IW_GRADER === 'strict-draft-v1';
       await s.admin.post(`/api/v1/environments/${P}/experiments/`, {
         feature: fid, name: x, hypothesis: job.task.split('Hypothesis: ')[1].split('. The primary')[0],
         metrics: [{ metric: primary.id, expected_direction: 'increase' }, { metric: guard.id, expected_direction: 'not_increase' }],
         experiment_rollout: {
-          enabled: true, rollout_percentage: 100, feature_state_value: { type: 'string', value: control },
+          enabled: !strictDraft, rollout_percentage: strictDraft ? 0 : 100, feature_state_value: { type: 'string', value: control },
           multivariate_feature_state_values: options.map((o: any) => ({ multivariate_feature_option: o.id, percentage_allocation: 50 })),
         },
       });
