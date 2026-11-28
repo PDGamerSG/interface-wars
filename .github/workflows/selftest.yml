@@ -53,6 +53,9 @@ jobs:
       - name: Bootstrap the lab
         run: node src/lab/bootstrap.ts
 
+      - name: CLI sandbox isolation (raw sockets and HTTP reach only Flagsmith)
+        run: node scripts/cli-isolation-check.ts
+
       - name: Verifier self-test (16 jobs)
         run: node src/jobs/selftest.ts
 

@@ -27,6 +27,15 @@ the verdicts.
    shipped flag. Six trials ran (`runs/after-ship/`), with no experiment events. They are not counted.
 4. **Interface token counts.** `scripts/count-tokens.ts` measures the per-request cost of each interface with the
    token counter. Reported only.
+5. **CLI sandbox network isolation, new runs only.** The archived CLI-arm trials ran on Docker's default bridge
+   network with a host-gateway entry. Bash's `/dev/tcp` could therefore have opened sockets to the MCP server, the
+   Docker host or the internet. New runs put the container on the internal `cli-sandbox` network in
+   `infra/compose.yml`, whose only other member is the Flagsmith API. `npm run cli:isolation` runs in CI and
+   checks raw sockets and HTTP against the MCP server, Postgres, the Docker host, the gateway and public
+   addresses. The audit in `test/cli-archive-network.test.ts` read every recorded CLI-arm command and found no
+   `/dev/tcp` or `/dev/udp` use. Nine `cli` trials (eight main, one pilot) tried `curl` or `python3` against
+   Flagsmith's own address, and each attempt failed because the client is not installed. The archive and its
+   grades are unchanged.
 
 ## Post-hoc checks on the saved trials
 

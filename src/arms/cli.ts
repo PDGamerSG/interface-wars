@@ -1,10 +1,12 @@
 // CLI arms: the agent gets one tool, Anthropic's bash tool, executed inside a throwaway container that
 // holds only the Flagsmith CLI, jq and coreutils. The cli_skill arm also gets the skill mounted at /skills.
+// The container joins only the lab's internal cli-sandbox network, so bash (including /dev/tcp sockets)
+// can reach the Flagsmith API and nothing else: no MCP server, no Docker host, no internet.
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { join } from 'node:path';
 import type Anthropic from '@anthropic-ai/sdk';
-import { FLAGSMITH_URL_FROM_CONTAINER, ROOT } from '../lab/config.ts';
+import { CLI_NETWORK, FLAGSMITH_URL_FROM_CONTAINER, ROOT } from '../lab/config.ts';
 import type { Sandbox } from '../lab/sandbox.ts';
 import type { Arm } from './types.ts';
 
@@ -21,7 +23,8 @@ export async function openCliArm(sandbox: Sandbox, withSkill: boolean): Promise<
   const name = `iw-${sandbox.trialId}`.replace(/[^a-zA-Z0-9_.-]/g, '-').slice(0, 60);
   const args = [
     'run', '-d', '--rm', '--name', name,
-    '--add-host', 'host.docker.internal:host-gateway',
+    '--network', CLI_NETWORK,
+    '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges',
     '--memory', '256m', '--cpus', '0.5',
     '-e', `FLAGSMITH_API_URL=${FLAGSMITH_URL_FROM_CONTAINER}`,
     '-e', `${hostKeyVar(FLAGSMITH_URL_FROM_CONTAINER)}=${sandbox.apiKey}`,
