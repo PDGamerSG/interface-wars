@@ -78,10 +78,11 @@ The repository includes a small read-only static presentation in `judge-site/`. 
 Open the live judge site at [interfacewars.pallabdas.me](https://interfacewars.pallabdas.me/). It is a Render static
 site built from `main` with the build described above. The domain is a Namecheap CNAME to `interface-wars.onrender.com`.
 
-`.github/workflows/deploy.yml` deploys it after the `checks` workflow passes on `main`. The workflow calls the Render deploy
-hook stored in the `RENDER_DEPLOY_HOOK` repository secret. It then waits until the live `version.json` names that commit
-or a later one, and checks that the page and its three data files are served. A deploy that never goes live fails the
-workflow. To deploy by hand, run the workflow from the Actions tab.
+After `checks` passes on `main`, the deploy workflow reads the commit served at `/version.json`. If that release already
+includes the candidate, the workflow leaves it live and checks the published pages. Otherwise it requests the exact
+commit using `RENDER_DEPLOY_HOOK`, waits for that SHA to appear on the custom domain, and checks the page and its three
+data files. An unreadable live version or commit comparison fails the automatic run. A missing version file (HTTP 404)
+allows first publication. To explicitly redeploy a selected ref, run `deploy` from the Actions tab.
 
 Published trial records pass through the same field-aware redactor before they are written to `runs/` or exported to the site. Historical Flagsmith environment keys become stable `[env-…]` labels for trace matching, while server keys and other credential fields become `[REDACTED]`. The exporter fails if a credential-shaped value remains.
 `npm run scan:secrets` applies the same detector to every tracked file, and CI runs it on each change. Commits before
