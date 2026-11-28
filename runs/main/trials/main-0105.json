@@ -63,11 +63,11 @@
   "ms": 18821,
   "commands": [
     "list_project_features {\"project_pk\":107,\"search\":\"price_alerts_copy\",\"environment\":213}",
-    "list_metrics {\"environment_api_key\":\"Py4zs8qabNQSAWk62iv3tw\",\"q\":\"trial_started\"}",
-    "list_metrics {\"environment_api_key\":\"Py4zs8qabNQSAWk62iv3tw\",\"q\":\"payment_error\"}",
-    "create_experiment {\"environment_api_key\":\"Py4zs8qabNQSAWk62iv3tw\",\"feature\":414,\"name\":\"price_alerts_copy test\",\"hypothesis\":\"\\\"Create account\\\" increases trial started versus \\\"Sign up\\\".\",\"status\":\"created\",\"metrics\":[{\"metric\":\"trial_started\",\"expected_direction\":\"increase\"},{\"metric\":\"payment_error\",\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":true,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Create account\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":42,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
-    "create_experiment {\"environment_api_key\":\"Py4zs8qabNQSAWk62iv3tw\",\"feature\":414,\"name\":\"price_alerts_copy test\",\"hypothesis\":\"\\\"Create account\\\" increases trial started versus \\\"Sign up\\\".\",\"status\":\"created\",\"metrics\":[{\"metric\":32,\"expected_direction\":\"increase\"},{\"metric\":33,\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":true,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Create account\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":42,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
-    "get_experiment {\"environment_api_key\":\"Py4zs8qabNQSAWk62iv3tw\",\"experiment_id\":22}"
+    "list_metrics {\"environment_api_key\":\"[env-2ee6c8fa4b94016a]\",\"q\":\"trial_started\"}",
+    "list_metrics {\"environment_api_key\":\"[env-2ee6c8fa4b94016a]\",\"q\":\"payment_error\"}",
+    "create_experiment {\"environment_api_key\":\"[env-2ee6c8fa4b94016a]\",\"feature\":414,\"name\":\"price_alerts_copy test\",\"hypothesis\":\"\\\"Create account\\\" increases trial started versus \\\"Sign up\\\".\",\"status\":\"created\",\"metrics\":[{\"metric\":\"trial_started\",\"expected_direction\":\"increase\"},{\"metric\":\"payment_error\",\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":true,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Create account\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":42,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
+    "create_experiment {\"environment_api_key\":\"[env-2ee6c8fa4b94016a]\",\"feature\":414,\"name\":\"price_alerts_copy test\",\"hypothesis\":\"\\\"Create account\\\" increases trial started versus \\\"Sign up\\\".\",\"status\":\"created\",\"metrics\":[{\"metric\":32,\"expected_direction\":\"increase\"},{\"metric\":33,\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":true,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Create account\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":42,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
+    "get_experiment {\"environment_api_key\":\"[env-2ee6c8fa4b94016a]\",\"experiment_id\":22}"
   ],
   "transcript": [
     {
@@ -88,7 +88,7 @@
         {
           "name": "list_metrics",
           "input": {
-            "environment_api_key": "Py4zs8qabNQSAWk62iv3tw",
+            "environment_api_key": "[env-2ee6c8fa4b94016a]",
             "q": "trial_started"
           },
           "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":32,\"name\":\"trial_started\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"event\":\"trial_started\",\"version\":1},\"experiments\":[],\"created_at\":\"2026-11-27T20:23:37.024718Z\",\"updated_at\":\"2026-11-27T20:23:37.024728Z\"}]}",
@@ -98,7 +98,7 @@
         {
           "name": "list_metrics",
           "input": {
-            "environment_api_key": "Py4zs8qabNQSAWk62iv3tw",
+            "environment_api_key": "[env-2ee6c8fa4b94016a]",
             "q": "payment_error"
           },
           "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":33,\"name\":\"payment_error\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"down\",\"definition\":{\"event\":\"payment_error\",\"version\":1},\"experiments\":[],\"created_at\":\"2026-11-27T20:23:37.048509Z\",\"updated_at\":\"2026-11-27T20:23:37.048519Z\"}]}",
@@ -122,7 +122,7 @@
         {
           "name": "create_experiment",
           "input": {
-            "environment_api_key": "Py4zs8qabNQSAWk62iv3tw",
+            "environment_api_key": "[env-2ee6c8fa4b94016a]",
             "feature": 414,
             "name": "price_alerts_copy test",
             "hypothesis": "\"Create account\" increases trial started versus \"Sign up\".",
@@ -173,7 +173,7 @@
         {
           "name": "create_experiment",
           "input": {
-            "environment_api_key": "Py4zs8qabNQSAWk62iv3tw",
+            "environment_api_key": "[env-2ee6c8fa4b94016a]",
             "feature": 414,
             "name": "price_alerts_copy test",
             "hypothesis": "\"Create account\" increases trial started versus \"Sign up\".",
@@ -224,7 +224,7 @@
         {
           "name": "get_experiment",
           "input": {
-            "environment_api_key": "Py4zs8qabNQSAWk62iv3tw",
+            "environment_api_key": "[env-2ee6c8fa4b94016a]",
             "experiment_id": 22
           },
           "output": "{\"id\":22,\"feature\":{\"id\":414,\"name\":\"price_alerts_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"id\":42,\"uuid\":\"41ea29be-d53d-46bf-ac84-338e1377640e\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Create account\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"price_alerts_copy test\",\"hypothesis\":\"\\\"Create account\\\" increases trial started versus \\\"Sign up\\\".\",\"status\":\"created\",\"metrics\":[{\"id\":30,\"metric\":32,\"metric_name\":\"trial_started\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:23:52.458725Z\"},{\"id\":31,\"metric\":33,\"metric_name\":\"payment_error\",\"aggregation\":\"occurrence\",\"direction\":\"down\",\"expected_direction\":\"not_increase\",\"created_at\":\"2026-11-27T20:23:52.458739Z\"}],\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100.0,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Create account\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":42,\"percentage_allocation\":50.0}],\"audience\":{\"match\":\"any\",\"segments\":[]}},\"created_at\":\"2026-11-27T20:23:52.453182Z\",\"updated_at\":\"2026-11-27T20:23:52.554873Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",

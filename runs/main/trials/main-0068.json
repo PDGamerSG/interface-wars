@@ -104,7 +104,7 @@
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
     "flagsmith feature list --json --jq '.[] | select(.name==\"dark_mode_copy\") | {name,id}'; echo \"---\"; flagsmith feature create dark_mode_copy --value \"Start free trial\" --enabled --variants '[{\"value\":\"Try it free\",\"weight\":50},{\"value\":\"See plans\",\"weight\":50}]' --yes 2>&1 | tail -20",
-    "for e in AZaMsoH2YZgHSwAjYUZ6nj N7vUx4ZwuGJixzCpzmzgH8; do echo \"== $e\"; flagsmith flag get dark_mode_copy -e $e --json --jq '{enabled,value,type,variants}'; done"
+    "for e in [env-99139dc49f4e41a3] [env-dcab547ac2af854f]; do echo \"== $e\"; flagsmith flag get dark_mode_copy -e $e --json --jq '{enabled,value,type,variants}'; done"
   ],
   "transcript": [
     {
@@ -160,9 +160,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "for e in AZaMsoH2YZgHSwAjYUZ6nj N7vUx4ZwuGJixzCpzmzgH8; do echo \"== $e\"; flagsmith flag get dark_mode_copy -e $e --json --jq '{enabled,value,type,variants}'; done"
+            "command": "for e in [env-99139dc49f4e41a3] [env-dcab547ac2af854f]; do echo \"== $e\"; flagsmith flag get dark_mode_copy -e $e --json --jq '{enabled,value,type,variants}'; done"
           },
-          "output": "== AZaMsoH2YZgHSwAjYUZ6nj\n{\"enabled\":true,\"type\":\"multivariate\",\"value\":\"Start free trial\",\"variants\":[{\"id\":27,\"value\":\"Try it free\",\"weight\":50},{\"id\":28,\"value\":\"See plans\",\"weight\":50}]}\n== N7vUx4ZwuGJixzCpzmzgH8\n{\"enabled\":true,\"type\":\"multivariate\",\"value\":\"Start free trial\",\"variants\":[{\"id\":27,\"value\":\"Try it free\",\"weight\":50},{\"id\":28,\"value\":\"See plans\",\"weight\":50}]}",
+          "output": "== [env-99139dc49f4e41a3]\n{\"enabled\":true,\"type\":\"multivariate\",\"value\":\"Start free trial\",\"variants\":[{\"id\":27,\"value\":\"Try it free\",\"weight\":50},{\"id\":28,\"value\":\"See plans\",\"weight\":50}]}\n== [env-dcab547ac2af854f]\n{\"enabled\":true,\"type\":\"multivariate\",\"value\":\"Start free trial\",\"variants\":[{\"id\":27,\"value\":\"Try it free\",\"weight\":50},{\"id\":28,\"value\":\"See plans\",\"weight\":50}]}",
           "isError": false,
           "ms": 2719
         }

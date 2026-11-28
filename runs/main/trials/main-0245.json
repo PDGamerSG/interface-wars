@@ -33,8 +33,8 @@
   "ms": 12646,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "cd /; flagsmith flag get review_photos_copy -e 5ybr7W6byR9y5BeURi8rYh --json --jq '{enabled,value,variants}'; flagsmith feature variant list review_photos_copy --json; flagsmith flag get review_photos_copy -e TEzghbJWamijFKZfyojjcX --json --jq '{enabled,value,variants}'",
-    "cd /; flagsmith flag update review_photos_copy -e 5ybr7W6byR9y5BeURi8rYh --weight 93=90 --yes && flagsmith flag get review_photos_copy -e 5ybr7W6byR9y5BeURi8rYh --json --jq '{enabled,value,variants}'; echo DEV; flagsmith flag get review_photos_copy -e TEzghbJWamijFKZfyojjcX --json --jq '{enabled,value,variants}'"
+    "cd /; flagsmith flag get review_photos_copy -e [env-58f4b2df4f04cefd] --json --jq '{enabled,value,variants}'; flagsmith feature variant list review_photos_copy --json; flagsmith flag get review_photos_copy -e [env-f26f5e98cb35d2d9] --json --jq '{enabled,value,variants}'",
+    "cd /; flagsmith flag update review_photos_copy -e [env-58f4b2df4f04cefd] --weight 93=90 --yes && flagsmith flag get review_photos_copy -e [env-58f4b2df4f04cefd] --json --jq '{enabled,value,variants}'; echo DEV; flagsmith flag get review_photos_copy -e [env-f26f5e98cb35d2d9] --json --jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /; flagsmith flag get review_photos_copy -e 5ybr7W6byR9y5BeURi8rYh --json --jq '{enabled,value,variants}'; flagsmith feature variant list review_photos_copy --json; flagsmith flag get review_photos_copy -e TEzghbJWamijFKZfyojjcX --json --jq '{enabled,value,variants}'"
+            "command": "cd /; flagsmith flag get review_photos_copy -e [env-58f4b2df4f04cefd] --json --jq '{enabled,value,variants}'; flagsmith feature variant list review_photos_copy --json; flagsmith flag get review_photos_copy -e [env-f26f5e98cb35d2d9] --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":93,\"key\":\"b\",\"value\":\"Create account\",\"weight\":50}]}\n[\n  {\n    \"id\": 93,\n    \"value\": \"Create account\",\n    \"weight\": 50,\n    \"key\": \"b\"\n  }\n]\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":93,\"key\":\"b\",\"value\":\"Create account\",\"weight\":50}]}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /; flagsmith flag update review_photos_copy -e 5ybr7W6byR9y5BeURi8rYh --weight 93=90 --yes && flagsmith flag get review_photos_copy -e 5ybr7W6byR9y5BeURi8rYh --json --jq '{enabled,value,variants}'; echo DEV; flagsmith flag get review_photos_copy -e TEzghbJWamijFKZfyojjcX --json --jq '{enabled,value,variants}'"
+            "command": "cd /; flagsmith flag update review_photos_copy -e [env-58f4b2df4f04cefd] --weight 93=90 --yes && flagsmith flag get review_photos_copy -e [env-58f4b2df4f04cefd] --json --jq '{enabled,value,variants}'; echo DEV; flagsmith flag get review_photos_copy -e [env-f26f5e98cb35d2d9] --json --jq '{enabled,value,variants}'"
           },
-          "output": "Feature              review_photos_copy\nDescription          \nType                 multivariate\nState                on\nValue                Sign up\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n\nVariants\n  VALUE           WEIGHT  KEY  ID\n  Create account  90%     b    93\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":93,\"key\":\"b\",\"value\":\"Create account\",\"weight\":90}]}\nDEV\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":93,\"key\":\"b\",\"value\":\"Create account\",\"weight\":50}]}\n\n[stderr]\n✓ Set review_photos_copy weights to 93=90 in environment Production (5ybr7W6byR9y5BeURi8rYh)",
+          "output": "Feature              review_photos_copy\nDescription          \nType                 multivariate\nState                on\nValue                Sign up\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n\nVariants\n  VALUE           WEIGHT  KEY  ID\n  Create account  90%     b    93\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":93,\"key\":\"b\",\"value\":\"Create account\",\"weight\":90}]}\nDEV\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":93,\"key\":\"b\",\"value\":\"Create account\",\"weight\":50}]}\n\n[stderr]\n✓ Set review_photos_copy weights to 93=90 in environment Production ([env-58f4b2df4f04cefd])",
           "isError": false,
           "ms": 2885
         }

@@ -33,8 +33,8 @@
   "ms": 8858,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; echo ---; flagsmith --help",
-    "E=BCiipzL4sj85fQFa6k77xv; flagsmith flag get review_photos -e $E --json --jq '{enabled,value,variants}'",
-    "E=BCiipzL4sj85fQFa6k77xv; flagsmith flag update review_photos -e $E --value \"v2\" --yes && flagsmith flag get review_photos -e $E --json --jq '{enabled,value,variants}'"
+    "E=[env-ef4c1442b3f9a762]; flagsmith flag get review_photos -e $E --json --jq '{enabled,value,variants}'",
+    "E=[env-ef4c1442b3f9a762]; flagsmith flag update review_photos -e $E --value \"v2\" --yes && flagsmith flag get review_photos -e $E --json --jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "E=BCiipzL4sj85fQFa6k77xv; flagsmith flag get review_photos -e $E --json --jq '{enabled,value,variants}'"
+            "command": "E=[env-ef4c1442b3f9a762]; flagsmith flag get review_photos -e $E --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"enabled\":true,\"value\":\"compact\",\"variants\":null}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "E=BCiipzL4sj85fQFa6k77xv; flagsmith flag update review_photos -e $E --value \"v2\" --yes && flagsmith flag get review_photos -e $E --json --jq '{enabled,value,variants}'"
+            "command": "E=[env-ef4c1442b3f9a762]; flagsmith flag update review_photos -e $E --value \"v2\" --yes && flagsmith flag get review_photos -e $E --json --jq '{enabled,value,variants}'"
           },
-          "output": "Feature              review_photos\nDescription          \nType                 standard\nState                on\nValue                v2\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"value\":\"v2\",\"variants\":null}\n\n[stderr]\n✓ Set review_photos to \"v2\" in environment Development (BCiipzL4sj85fQFa6k77xv)",
+          "output": "Feature              review_photos\nDescription          \nType                 standard\nState                on\nValue                v2\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"value\":\"v2\",\"variants\":null}\n\n[stderr]\n✓ Set review_photos to \"v2\" in environment Development ([env-ef4c1442b3f9a762])",
           "isError": false,
           "ms": 2487
         }

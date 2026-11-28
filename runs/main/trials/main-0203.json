@@ -53,9 +53,9 @@
   "ms": 13944,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "E=JMjwXZWHoZbvuNVMqVH2Ai; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'",
-    "E=JMjwXZWHoZbvuNVMqVH2Ai; flagsmith api api/v1/environments/$E/experiments/38/ --jq '{id,name,status,rollout_decision,rollout_variant,feature:.feature.name}'; flagsmith flag get one_click_buy_copy -e $E --json --jq '{enabled,value,variants}'",
-    "E=JMjwXZWHoZbvuNVMqVH2Ai; flagsmith api api/v1/environments/$E/experiments/38/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":80}\nJSON\necho ---; flagsmith api api/v1/environments/$E/experiments/38/ --jq '{status,rollout_decision,rollout_variant}'; flagsmith flag get one_click_buy_copy -e $E --json --jq '{enabled,value,variants}'"
+    "E=[env-8d04b3b8d83b14cb]; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'",
+    "E=[env-8d04b3b8d83b14cb]; flagsmith api api/v1/environments/$E/experiments/38/ --jq '{id,name,status,rollout_decision,rollout_variant,feature:.feature.name}'; flagsmith flag get one_click_buy_copy -e $E --json --jq '{enabled,value,variants}'",
+    "E=[env-8d04b3b8d83b14cb]; flagsmith api api/v1/environments/$E/experiments/38/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":80}\nJSON\necho ---; flagsmith api api/v1/environments/$E/experiments/38/ --jq '{status,rollout_decision,rollout_variant}'; flagsmith flag get one_click_buy_copy -e $E --json --jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -88,7 +88,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "E=JMjwXZWHoZbvuNVMqVH2Ai; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'"
+            "command": "E=[env-8d04b3b8d83b14cb]; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'"
           },
           "output": "{\"feature\":{\"id\":798,\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":80,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Create account\",\"type\":\"unicode\",\"uuid\":\"16dbad78-f13a-49cc-9c08-430cecbf86db\"}],\"name\":\"one_click_buy_copy\",\"type\":\"MULTIVARIATE\"},\"id\":38,\"name\":\"one_click_buy_copy test\",\"rollout_decision\":null,\"status\":\"running\"}",
           "isError": false,
@@ -111,7 +111,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "E=JMjwXZWHoZbvuNVMqVH2Ai; flagsmith api api/v1/environments/$E/experiments/38/ --jq '{id,name,status,rollout_decision,rollout_variant,feature:.feature.name}'; flagsmith flag get one_click_buy_copy -e $E --json --jq '{enabled,value,variants}'"
+            "command": "E=[env-8d04b3b8d83b14cb]; flagsmith api api/v1/environments/$E/experiments/38/ --jq '{id,name,status,rollout_decision,rollout_variant,feature:.feature.name}'; flagsmith flag get one_click_buy_copy -e $E --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"feature\":\"one_click_buy_copy\",\"id\":38,\"name\":\"one_click_buy_copy test\",\"rollout_decision\":null,\"rollout_variant\":null,\"status\":\"running\"}\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":80,\"key\":\"b\",\"value\":\"Create account\",\"weight\":0}]}",
           "isError": false,
@@ -134,7 +134,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "E=JMjwXZWHoZbvuNVMqVH2Ai; flagsmith api api/v1/environments/$E/experiments/38/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":80}\nJSON\necho ---; flagsmith api api/v1/environments/$E/experiments/38/ --jq '{status,rollout_decision,rollout_variant}'; flagsmith flag get one_click_buy_copy -e $E --json --jq '{enabled,value,variants}'"
+            "command": "E=[env-8d04b3b8d83b14cb]; flagsmith api api/v1/environments/$E/experiments/38/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":80}\nJSON\necho ---; flagsmith api api/v1/environments/$E/experiments/38/ --jq '{status,rollout_decision,rollout_variant}'; flagsmith flag get one_click_buy_copy -e $E --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"id\":38,\"feature\":{\"id\":798,\"name\":\"one_click_buy_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"id\":80,\"uuid\":\"16dbad78-f13a-49cc-9c08-430cecbf86db\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Create account\",\"boolean_value\":null,\"default_percentage_allocation\":100.0,\"key\":\"b\"}]},\"name\":\"one_click_buy_copy test\",\"hypothesis\":\"Create account wins\",\"status\":\"completed\",\"metrics\":[{\"id\":51,\"metric\":64,\"metric_name\":\"signup_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:32:24.800910Z\"}],\"created_at\":\"2026-11-27T20:32:24.800270Z\",\"updated_at\":\"2026-11-27T20:32:36.246619Z\",\"started_at\":\"2026-11-27T20:32:24.904698Z\",\"ended_at\":\"2026-11-27T20:32:36.185922Z\",\"rollout_decision\":\"variant\",\"rollout_variant\":80}---\n{\"rollout_decision\":\"variant\",\"rollout_variant\":80,\"status\":\"completed\"}\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":80,\"key\":\"b\",\"value\":\"Create account\",\"weight\":100}]}",
           "isError": false,

@@ -33,8 +33,8 @@
   "ms": 9129,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith flag get apple_pay -e Dh5fnpg7jZVAWVieKLwjC3 --json --jq '{enabled,value,variants}'",
-    "flagsmith flag update apple_pay -e Dh5fnpg7jZVAWVieKLwjC3 --value \"max_10\" --yes && flagsmith flag get apple_pay -e Dh5fnpg7jZVAWVieKLwjC3 --json --jq '{enabled,value,variants}'"
+    "flagsmith flag get apple_pay -e [env-e65ee527f1345739] --json --jq '{enabled,value,variants}'",
+    "flagsmith flag update apple_pay -e [env-e65ee527f1345739] --value \"max_10\" --yes && flagsmith flag get apple_pay -e [env-e65ee527f1345739] --json --jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get apple_pay -e Dh5fnpg7jZVAWVieKLwjC3 --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith flag get apple_pay -e [env-e65ee527f1345739] --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"enabled\":true,\"value\":\"blue\",\"variants\":null}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update apple_pay -e Dh5fnpg7jZVAWVieKLwjC3 --value \"max_10\" --yes && flagsmith flag get apple_pay -e Dh5fnpg7jZVAWVieKLwjC3 --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith flag update apple_pay -e [env-e65ee527f1345739] --value \"max_10\" --yes && flagsmith flag get apple_pay -e [env-e65ee527f1345739] --json --jq '{enabled,value,variants}'"
           },
-          "output": "Feature              apple_pay\nDescription          \nType                 standard\nState                on\nValue                max_10\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"value\":\"max_10\",\"variants\":null}\n\n[stderr]\n✓ Set apple_pay to \"max_10\" in environment Development (Dh5fnpg7jZVAWVieKLwjC3)",
+          "output": "Feature              apple_pay\nDescription          \nType                 standard\nState                on\nValue                max_10\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"value\":\"max_10\",\"variants\":null}\n\n[stderr]\n✓ Set apple_pay to \"max_10\" in environment Development ([env-e65ee527f1345739])",
           "isError": false,
           "ms": 1343
         }

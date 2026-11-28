@@ -104,7 +104,7 @@
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
     "flagsmith feature list --json --jq '.[] | select(.name==\"dark_mode_copy\") | .name' ; flagsmith feature create --help | head -30",
-    "flagsmith feature create dark_mode_copy --value \"Checkout\" --enabled --variants '[{\"value\":\"Pay securely\",\"weight\":50},{\"value\":\"Complete order\",\"weight\":50}]' --yes && flagsmith feature variant list dark_mode_copy --json; for e in ZjXdqDQCoiELD3BCM5QXr7 9t9Axx4E8WLmrqKssMDpLw; do echo \"== $e\"; flagsmith flag get dark_mode_copy -e $e --json --jq '{enabled,value,variants}'; done"
+    "flagsmith feature create dark_mode_copy --value \"Checkout\" --enabled --variants '[{\"value\":\"Pay securely\",\"weight\":50},{\"value\":\"Complete order\",\"weight\":50}]' --yes && flagsmith feature variant list dark_mode_copy --json; for e in [env-1e6dcff589fe983a] [env-c5cf4764de61f1bb]; do echo \"== $e\"; flagsmith flag get dark_mode_copy -e $e --json --jq '{enabled,value,variants}'; done"
   ],
   "transcript": [
     {
@@ -160,9 +160,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith feature create dark_mode_copy --value \"Checkout\" --enabled --variants '[{\"value\":\"Pay securely\",\"weight\":50},{\"value\":\"Complete order\",\"weight\":50}]' --yes && flagsmith feature variant list dark_mode_copy --json; for e in ZjXdqDQCoiELD3BCM5QXr7 9t9Axx4E8WLmrqKssMDpLw; do echo \"== $e\"; flagsmith flag get dark_mode_copy -e $e --json --jq '{enabled,value,variants}'; done"
+            "command": "flagsmith feature create dark_mode_copy --value \"Checkout\" --enabled --variants '[{\"value\":\"Pay securely\",\"weight\":50},{\"value\":\"Complete order\",\"weight\":50}]' --yes && flagsmith feature variant list dark_mode_copy --json; for e in [env-1e6dcff589fe983a] [env-c5cf4764de61f1bb]; do echo \"== $e\"; flagsmith flag get dark_mode_copy -e $e --json --jq '{enabled,value,variants}'; done"
           },
-          "output": "Feature         dark_mode_copy (910)\nDescription     \nType            multivariate\nDefault value   Checkout\nEnabled         true\n\nVariants\n  VALUE           WEIGHT  KEY  ID\n  Pay securely    50%          88\n  Complete order  50%          89\n[\n  {\n    \"id\": 88,\n    \"value\": \"Pay securely\",\n    \"weight\": 50\n  },\n  {\n    \"id\": 89,\n    \"value\": \"Complete order\",\n    \"weight\": 50\n  }\n]\n== ZjXdqDQCoiELD3BCM5QXr7\n{\"enabled\":true,\"value\":\"Checkout\",\"variants\":[{\"id\":88,\"value\":\"Pay securely\",\"weight\":50},{\"id\":89,\"value\":\"Complete order\",\"weight\":50}]}\n== 9t9Axx4E8WLmrqKssMDpLw\n{\"enabled\":true,\"value\":\"Checkout\",\"variants\":[{\"id\":88,\"value\":\"Pay securely\",\"weight\":50},{\"id\":89,\"value\":\"Complete order\",\"weight\":50}]}\n\n[stderr]\n✓ Created feature dark_mode_copy (910)",
+          "output": "Feature         dark_mode_copy (910)\nDescription     \nType            multivariate\nDefault value   Checkout\nEnabled         true\n\nVariants\n  VALUE           WEIGHT  KEY  ID\n  Pay securely    50%          88\n  Complete order  50%          89\n[\n  {\n    \"id\": 88,\n    \"value\": \"Pay securely\",\n    \"weight\": 50\n  },\n  {\n    \"id\": 89,\n    \"value\": \"Complete order\",\n    \"weight\": 50\n  }\n]\n== [env-1e6dcff589fe983a]\n{\"enabled\":true,\"value\":\"Checkout\",\"variants\":[{\"id\":88,\"value\":\"Pay securely\",\"weight\":50},{\"id\":89,\"value\":\"Complete order\",\"weight\":50}]}\n== [env-c5cf4764de61f1bb]\n{\"enabled\":true,\"value\":\"Checkout\",\"variants\":[{\"id\":88,\"value\":\"Pay securely\",\"weight\":50},{\"id\":89,\"value\":\"Complete order\",\"weight\":50}]}\n\n[stderr]\n✓ Created feature dark_mode_copy (910)",
           "isError": false,
           "ms": 2632
         }

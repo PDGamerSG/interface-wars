@@ -19,7 +19,7 @@
     }
   ],
   "outcome": "done",
-  "finalText": "DONE: `live_chat` is now off in Production (oNUdkCWorB3nUSrxGt5iEK, id 233). Its value (max_10) and overrides are unchanged, and Development still has it on, with no other flags or environments touched.",
+  "finalText": "DONE: `live_chat` is now off in Production ([env-4b58d9a8457dacad], id 233). Its value (max_10) and overrides are unchanged, and Development still has it on, with no other flags or environments touched.",
   "costUsd": 0.001699,
   "usage": {
     "input": 16,
@@ -35,10 +35,10 @@
     "flagsmith --help; echo ---; flagsmith flags --help 2>&1 | head -50",
     "flagsmith features --help 2>&1 | head -50; echo ---; flagsmith environments --help 2>&1 | head -40",
     "flagsmith feature --help; echo ---; flagsmith flag --help; echo ---; flagsmith config",
-    "flagsmith flag get --help | head -30; echo ---; flagsmith flag get live_chat -e oNUdkCWorB3nUSrxGt5iEK 2>&1; echo ---; flagsmith flag disable --help | head -30",
+    "flagsmith flag get --help | head -30; echo ---; flagsmith flag get live_chat -e [env-4b58d9a8457dacad] 2>&1; echo ---; flagsmith flag disable --help | head -30",
     "flagsmith environment --help | head -20; echo ---; flagsmith environment list --json 2>&1 | jq -r '.[]? | \"\\(.id) \\(.name) \\(.api_key // .client_api_key // .key // \"\")\"' 2>/dev/null || flagsmith environment list 2>&1",
-    "flagsmith flag disable live_chat -e oNUdkCWorB3nUSrxGt5iEK 2>&1; echo ---; flagsmith flag get live_chat -e oNUdkCWorB3nUSrxGt5iEK 2>&1; echo ---; flagsmith flag get live_chat -e fercCzL7SMFtdMLanYJA9e 2>&1",
-    "flagsmith flag disable live_chat -e oNUdkCWorB3nUSrxGt5iEK --yes 2>&1; echo ---; flagsmith flag get live_chat -e oNUdkCWorB3nUSrxGt5iEK 2>&1; echo ---; flagsmith flag get live_chat -e fercCzL7SMFtdMLanYJA9e 2>&1"
+    "flagsmith flag disable live_chat -e [env-4b58d9a8457dacad] 2>&1; echo ---; flagsmith flag get live_chat -e [env-4b58d9a8457dacad] 2>&1; echo ---; flagsmith flag get live_chat -e [env-5c006664d8067ad0] 2>&1",
+    "flagsmith flag disable live_chat -e [env-4b58d9a8457dacad] --yes 2>&1; echo ---; flagsmith flag get live_chat -e [env-4b58d9a8457dacad] 2>&1; echo ---; flagsmith flag get live_chat -e [env-5c006664d8067ad0] 2>&1"
   ],
   "transcript": [
     {
@@ -103,7 +103,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get --help | head -30; echo ---; flagsmith flag get live_chat -e oNUdkCWorB3nUSrxGt5iEK 2>&1; echo ---; flagsmith flag disable --help | head -30"
+            "command": "flagsmith flag get --help | head -30; echo ---; flagsmith flag get live_chat -e [env-4b58d9a8457dacad] 2>&1; echo ---; flagsmith flag disable --help | head -30"
           },
           "output": "Show a single flag's state in the current environment\n\nUsage:\n  flagsmith flag get <feature> [flags]\n\nExamples:\n  flagsmith flag get onboarding\n\n  # a segment or identity override\n  flagsmith flag get onboarding --segment 12\n  flagsmith flag get onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for get\n  -i, --identifier string   show the override for this identity\n      --segment string      show the override for this segment (id or name)\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n---\nFeature              live_chat\nDescription          \nType                 standard\nState                on\nValue                max_10\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nDisable a flag (shorthand for `flag update --disable`)\n\nUsage:\n  flagsmith flag disable <feature> [flags]\n\nExamples:\n  flagsmith flag disable onboarding\n  flagsmith flag disable onboarding --segment 12\n\nFlags:\n  -h, --help                help for disable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively",
           "isError": false,
@@ -128,7 +128,7 @@
           "input": {
             "command": "flagsmith environment --help | head -20; echo ---; flagsmith environment list --json 2>&1 | jq -r '.[]? | \"\\(.id) \\(.name) \\(.api_key // .client_api_key // .key // \"\")\"' 2>/dev/null || flagsmith environment list 2>&1"
           },
-          "output": "Manage environments in the current project\n\nUsage:\n  flagsmith environment [command] [flags]\n\nAliases:\n  environment, env\n\nAvailable Commands:\n  clone       Clone an environment into a new one\n  create      Create an environment (mints a client-side key)\n  delete      Delete an environment\n  document    Output the environment document (JSON for local SDK evaluation)\n  get         Show an environment\n  key         Manage an environment's server-side SDK keys\n  list        List environments in the current project\n  update      Update an environment\n\nFlags:\n  -h, --help   help for environment\n---\n232 Development fercCzL7SMFtdMLanYJA9e\n233 Production oNUdkCWorB3nUSrxGt5iEK",
+          "output": "Manage environments in the current project\n\nUsage:\n  flagsmith environment [command] [flags]\n\nAliases:\n  environment, env\n\nAvailable Commands:\n  clone       Clone an environment into a new one\n  create      Create an environment (mints a client-side key)\n  delete      Delete an environment\n  document    Output the environment document (JSON for local SDK evaluation)\n  get         Show an environment\n  key         Manage an environment's server-side SDK keys\n  list        List environments in the current project\n  update      Update an environment\n\nFlags:\n  -h, --help   help for environment\n---\n232 Development [env-5c006664d8067ad0]\n233 Production [env-4b58d9a8457dacad]",
           "isError": false,
           "ms": 328
         }
@@ -149,9 +149,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag disable live_chat -e oNUdkCWorB3nUSrxGt5iEK 2>&1; echo ---; flagsmith flag get live_chat -e oNUdkCWorB3nUSrxGt5iEK 2>&1; echo ---; flagsmith flag get live_chat -e fercCzL7SMFtdMLanYJA9e 2>&1"
+            "command": "flagsmith flag disable live_chat -e [env-4b58d9a8457dacad] 2>&1; echo ---; flagsmith flag get live_chat -e [env-4b58d9a8457dacad] 2>&1; echo ---; flagsmith flag get live_chat -e [env-5c006664d8067ad0] 2>&1"
           },
-          "output": "Error: pass --yes to confirm \"Update live_chat in environment Production (oNUdkCWorB3nUSrxGt5iEK)?\" without an interactive terminal\nUsage:\n  flagsmith flag disable <feature> [flags]\n\nExamples:\n  flagsmith flag disable onboarding\n  flagsmith flag disable onboarding --segment 12\n\nFlags:\n  -h, --help                help for disable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n---\nFeature              live_chat\nDescription          \nType                 standard\nState                on\nValue                max_10\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nFeature              live_chat\nDescription          \nType                 standard\nState                on\nValue                max_10\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
+          "output": "Error: pass --yes to confirm \"Update live_chat in environment Production ([env-4b58d9a8457dacad])?\" without an interactive terminal\nUsage:\n  flagsmith flag disable <feature> [flags]\n\nExamples:\n  flagsmith flag disable onboarding\n  flagsmith flag disable onboarding --segment 12\n\nFlags:\n  -h, --help                help for disable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n---\nFeature              live_chat\nDescription          \nType                 standard\nState                on\nValue                max_10\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nFeature              live_chat\nDescription          \nType                 standard\nState                on\nValue                max_10\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
           "isError": false,
           "ms": 1800
         }
@@ -167,14 +167,14 @@
     },
     {
       "turn": 6,
-      "text": "The CLI asked for confirmation, and the prompt names Production (oNUdkCWorB3nUSrxGt5iEK), which is the intended target. Re-running with `--yes`.",
+      "text": "The CLI asked for confirmation, and the prompt names Production ([env-4b58d9a8457dacad]), which is the intended target. Re-running with `--yes`.",
       "calls": [
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag disable live_chat -e oNUdkCWorB3nUSrxGt5iEK --yes 2>&1; echo ---; flagsmith flag get live_chat -e oNUdkCWorB3nUSrxGt5iEK 2>&1; echo ---; flagsmith flag get live_chat -e fercCzL7SMFtdMLanYJA9e 2>&1"
+            "command": "flagsmith flag disable live_chat -e [env-4b58d9a8457dacad] --yes 2>&1; echo ---; flagsmith flag get live_chat -e [env-4b58d9a8457dacad] 2>&1; echo ---; flagsmith flag get live_chat -e [env-5c006664d8067ad0] 2>&1"
           },
-          "output": "✓ Disabled live_chat in environment Production (oNUdkCWorB3nUSrxGt5iEK)\nFeature              live_chat\nDescription          \nType                 standard\nState                off\nValue                max_10\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nFeature              live_chat\nDescription          \nType                 standard\nState                off\nValue                max_10\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nFeature              live_chat\nDescription          \nType                 standard\nState                on\nValue                max_10\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
+          "output": "✓ Disabled live_chat in environment Production ([env-4b58d9a8457dacad])\nFeature              live_chat\nDescription          \nType                 standard\nState                off\nValue                max_10\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nFeature              live_chat\nDescription          \nType                 standard\nState                off\nValue                max_10\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nFeature              live_chat\nDescription          \nType                 standard\nState                on\nValue                max_10\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
           "isError": false,
           "ms": 5728
         }
@@ -190,7 +190,7 @@
     },
     {
       "turn": 7,
-      "text": "DONE: `live_chat` is now off in Production (oNUdkCWorB3nUSrxGt5iEK, id 233). Its value (max_10) and overrides are unchanged, and Development still has it on, with no other flags or environments touched.",
+      "text": "DONE: `live_chat` is now off in Production ([env-4b58d9a8457dacad], id 233). Its value (max_10) and overrides are unchanged, and Development still has it on, with no other flags or environments touched.",
       "calls": [],
       "usage": {
         "input": 2,

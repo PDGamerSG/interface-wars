@@ -33,9 +33,9 @@
   "ms": 11282,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; echo ----; flagsmith --help",
-    "flagsmith api api/v1/environments/8SZ8JHTpisAM23Rk2wr35r/experiments/ --jq '.results[] | {id,name,status,feature}'",
-    "flagsmith api api/v1/environments/8SZ8JHTpisAM23Rk2wr35r/experiments/46/ | jq '{id,name,status,feature:.feature.name,metrics,experiment_rollout,rollout_decision,start_date,end_date}'; flagsmith flag get store_locator_copy -e 8SZ8JHTpisAM23Rk2wr35r --json --jq '{enabled,value,variants}'",
-    "flagsmith api api/v1/environments/8SZ8JHTpisAM23Rk2wr35r/experiments/46/start/ -X POST; echo; flagsmith api api/v1/environments/8SZ8JHTpisAM23Rk2wr35r/experiments/46/ --jq '{status,rollout_decision,start_date}'; flagsmith flag get store_locator_copy -e 8SZ8JHTpisAM23Rk2wr35r --json --jq '{enabled,value,variants}'"
+    "flagsmith api api/v1/environments/[env-d1bdfe80161a54b0]/experiments/ --jq '.results[] | {id,name,status,feature}'",
+    "flagsmith api api/v1/environments/[env-d1bdfe80161a54b0]/experiments/46/ | jq '{id,name,status,feature:.feature.name,metrics,experiment_rollout,rollout_decision,start_date,end_date}'; flagsmith flag get store_locator_copy -e [env-d1bdfe80161a54b0] --json --jq '{enabled,value,variants}'",
+    "flagsmith api api/v1/environments/[env-d1bdfe80161a54b0]/experiments/46/start/ -X POST; echo; flagsmith api api/v1/environments/[env-d1bdfe80161a54b0]/experiments/46/ --jq '{status,rollout_decision,start_date}'; flagsmith flag get store_locator_copy -e [env-d1bdfe80161a54b0] --json --jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -68,7 +68,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/8SZ8JHTpisAM23Rk2wr35r/experiments/ --jq '.results[] | {id,name,status,feature}'"
+            "command": "flagsmith api api/v1/environments/[env-d1bdfe80161a54b0]/experiments/ --jq '.results[] | {id,name,status,feature}'"
           },
           "output": "{\"feature\":{\"id\":984,\"initial_value\":\"Buy now\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":97,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Get it today\",\"type\":\"unicode\",\"uuid\":\"ee153124-2cc7-4da5-8efa-6bcb1ef30167\"}],\"name\":\"store_locator_copy\",\"type\":\"MULTIVARIATE\"},\"id\":46,\"name\":\"store_locator_copy test\",\"status\":\"created\"}",
           "isError": false,
@@ -91,7 +91,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/8SZ8JHTpisAM23Rk2wr35r/experiments/46/ | jq '{id,name,status,feature:.feature.name,metrics,experiment_rollout,rollout_decision,start_date,end_date}'; flagsmith flag get store_locator_copy -e 8SZ8JHTpisAM23Rk2wr35r --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith api api/v1/environments/[env-d1bdfe80161a54b0]/experiments/46/ | jq '{id,name,status,feature:.feature.name,metrics,experiment_rollout,rollout_decision,start_date,end_date}'; flagsmith flag get store_locator_copy -e [env-d1bdfe80161a54b0] --json --jq '{enabled,value,variants}'"
           },
           "output": "{\n  \"id\": 46,\n  \"name\": \"store_locator_copy test\",\n  \"status\": \"created\",\n  \"feature\": \"store_locator_copy\",\n  \"metrics\": [\n    {\n      \"id\": 62,\n      \"metric\": 77,\n      \"metric_name\": \"add_to_cart\",\n      \"aggregation\": \"occurrence\",\n      \"direction\": \"up\",\n      \"expected_direction\": \"increase\",\n      \"created_at\": \"2026-11-27T20:34:41.434251Z\"\n    }\n  ],\n  \"experiment_rollout\": {\n    \"enabled\": true,\n    \"rollout_percentage\": 100.0,\n    \"feature_state_value\": {\n      \"type\": \"string\",\n      \"value\": \"Buy now\"\n    },\n    \"multivariate_feature_state_values\": [\n      {\n        \"multivariate_feature_option\": 97,\n        \"percentage_allocation\": 50.0\n      }\n    ],\n    \"audience\": {\n      \"match\": \"any\",\n      \"segments\": []\n    }\n  },\n  \"rollout_decision\": null,\n  \"start_date\": null,\n  \"end_date\": null\n}\n{\"enabled\":true,\"value\":\"Buy now\",\"variants\":[{\"id\":97,\"key\":\"b\",\"value\":\"Get it today\",\"weight\":0}]}",
           "isError": false,
@@ -114,7 +114,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/8SZ8JHTpisAM23Rk2wr35r/experiments/46/start/ -X POST; echo; flagsmith api api/v1/environments/8SZ8JHTpisAM23Rk2wr35r/experiments/46/ --jq '{status,rollout_decision,start_date}'; flagsmith flag get store_locator_copy -e 8SZ8JHTpisAM23Rk2wr35r --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith api api/v1/environments/[env-d1bdfe80161a54b0]/experiments/46/start/ -X POST; echo; flagsmith api api/v1/environments/[env-d1bdfe80161a54b0]/experiments/46/ --jq '{status,rollout_decision,start_date}'; flagsmith flag get store_locator_copy -e [env-d1bdfe80161a54b0] --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"id\":46,\"feature\":{\"id\":984,\"name\":\"store_locator_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Buy now\",\"multivariate_options\":[{\"id\":97,\"uuid\":\"ee153124-2cc7-4da5-8efa-6bcb1ef30167\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Get it today\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"store_locator_copy test\",\"hypothesis\":\"Get it today wins\",\"status\":\"running\",\"metrics\":[{\"id\":62,\"metric\":77,\"metric_name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:34:41.434251Z\"}],\"created_at\":\"2026-11-27T20:34:41.433605Z\",\"updated_at\":\"2026-11-27T20:34:50.055288Z\",\"started_at\":\"2026-11-27T20:34:50.054285Z\",\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}\n{\"rollout_decision\":null,\"start_date\":null,\"status\":\"running\"}\n{\"enabled\":true,\"value\":\"Buy now\",\"variants\":[{\"id\":97,\"key\":\"b\",\"value\":\"Get it today\",\"weight\":0}]}",
           "isError": false,

@@ -105,7 +105,7 @@
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
     "flagsmith feature create --help | head -40; flagsmith feature list --json --jq '.[] | select(.name==\"size_guide_copy\")'",
     "flagsmith feature create size_guide_copy --value \"Buy now\" --enabled --variants '[{\"value\":\"Get it today\",\"weight\":50},{\"value\":\"Add to bag\",\"weight\":50}]' --yes && flagsmith feature list --json --jq '.[] | select(.name==\"size_guide_copy\")' | head -50",
-    "for k in Y457wLHZaQcVn6Efw8uhub 2t3t8HF8MBEkqoG6ypFn4t; do echo \"== $k\"; flagsmith flag get size_guide_copy -e $k --json --jq '{enabled,value,variants}'; done"
+    "for k in [env-c7d07d88e9b8c326] [env-ed5adc628fb927d4]; do echo \"== $k\"; flagsmith flag get size_guide_copy -e $k --json --jq '{enabled,value,variants}'; done"
   ],
   "transcript": [
     {
@@ -184,9 +184,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "for k in Y457wLHZaQcVn6Efw8uhub 2t3t8HF8MBEkqoG6ypFn4t; do echo \"== $k\"; flagsmith flag get size_guide_copy -e $k --json --jq '{enabled,value,variants}'; done"
+            "command": "for k in [env-c7d07d88e9b8c326] [env-ed5adc628fb927d4]; do echo \"== $k\"; flagsmith flag get size_guide_copy -e $k --json --jq '{enabled,value,variants}'; done"
           },
-          "output": "== Y457wLHZaQcVn6Efw8uhub\n{\"enabled\":true,\"value\":\"Buy now\",\"variants\":[{\"id\":94,\"value\":\"Get it today\",\"weight\":50},{\"id\":95,\"value\":\"Add to bag\",\"weight\":50}]}\n== 2t3t8HF8MBEkqoG6ypFn4t\n{\"enabled\":true,\"value\":\"Buy now\",\"variants\":[{\"id\":94,\"value\":\"Get it today\",\"weight\":50},{\"id\":95,\"value\":\"Add to bag\",\"weight\":50}]}",
+          "output": "== [env-c7d07d88e9b8c326]\n{\"enabled\":true,\"value\":\"Buy now\",\"variants\":[{\"id\":94,\"value\":\"Get it today\",\"weight\":50},{\"id\":95,\"value\":\"Add to bag\",\"weight\":50}]}\n== [env-ed5adc628fb927d4]\n{\"enabled\":true,\"value\":\"Buy now\",\"variants\":[{\"id\":94,\"value\":\"Get it today\",\"weight\":50},{\"id\":95,\"value\":\"Add to bag\",\"weight\":50}]}",
           "isError": false,
           "ms": 1715
         }

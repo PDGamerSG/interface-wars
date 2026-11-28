@@ -65,8 +65,8 @@
     "flagsmith --help; echo; flagsmith features --help 2>&1 | head -50",
     "flagsmith feature --help; flagsmith feature create --help; flagsmith config",
     "flagsmith feature create live_chat --description \"Gates the live chat rollout\" && flagsmith feature get live_chat --json | jq '.' ; flagsmith feature list --json | jq -r '.[] | select(.name==\"live_chat\")' | head -40",
-    "flagsmith flag --help | head -20; for e in dmzSM69SuyT6ReQRY3sWDV jpsMa2ifHsLH4oCg5xwyCj; do echo \"== $e\"; flagsmith -e $e flag list --json 2>/dev/null | jq -r '.[] | select(.feature.name==\"live_chat\" or .name==\"live_chat\") | {name: (.feature.name // .name), enabled}'; done",
-    "for e in dmzSM69SuyT6ReQRY3sWDV jpsMa2ifHsLH4oCg5xwyCj; do echo \"== $e\"; flagsmith -e $e flag get live_chat 2>&1; done"
+    "flagsmith flag --help | head -20; for e in [env-bdce4e4b44b33f00] [env-2d59eb4fca374857]; do echo \"== $e\"; flagsmith -e $e flag list --json 2>/dev/null | jq -r '.[] | select(.feature.name==\"live_chat\" or .name==\"live_chat\") | {name: (.feature.name // .name), enabled}'; done",
+    "for e in [env-bdce4e4b44b33f00] [env-2d59eb4fca374857]; do echo \"== $e\"; flagsmith -e $e flag get live_chat 2>&1; done"
   ],
   "transcript": [
     {
@@ -145,9 +145,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag --help | head -20; for e in dmzSM69SuyT6ReQRY3sWDV jpsMa2ifHsLH4oCg5xwyCj; do echo \"== $e\"; flagsmith -e $e flag list --json 2>/dev/null | jq -r '.[] | select(.feature.name==\"live_chat\" or .name==\"live_chat\") | {name: (.feature.name // .name), enabled}'; done"
+            "command": "flagsmith flag --help | head -20; for e in [env-bdce4e4b44b33f00] [env-2d59eb4fca374857]; do echo \"== $e\"; flagsmith -e $e flag list --json 2>/dev/null | jq -r '.[] | select(.feature.name==\"live_chat\" or .name==\"live_chat\") | {name: (.feature.name // .name), enabled}'; done"
           },
-          "output": "Inspect feature flags in the current environment\n\nUsage:\n  flagsmith flag [command] [flags]\n\nAvailable Commands:\n  delete      Delete a flag's segment override in the current environment\n  disable     Disable a flag (shorthand for `flag update --disable`)\n  enable      Enable a flag (shorthand for `flag update --enable`)\n  get         Show a single flag's state in the current environment\n  list        List every flag in the current environment\n  reorder     Re-permute a feature's segment override priorities\n  update      Change a flag's state in the current environment\n\nFlags:\n  -h, --help   help for flag\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n== dmzSM69SuyT6ReQRY3sWDV\n== jpsMa2ifHsLH4oCg5xwyCj\n\n[stderr]\njq: error (at <stdin>:46): Cannot index string with string (\"name\")\njq: error (at <stdin>:46): Cannot index string with string (\"name\")\n[exit code 5]",
+          "output": "Inspect feature flags in the current environment\n\nUsage:\n  flagsmith flag [command] [flags]\n\nAvailable Commands:\n  delete      Delete a flag's segment override in the current environment\n  disable     Disable a flag (shorthand for `flag update --disable`)\n  enable      Enable a flag (shorthand for `flag update --enable`)\n  get         Show a single flag's state in the current environment\n  list        List every flag in the current environment\n  reorder     Re-permute a feature's segment override priorities\n  update      Change a flag's state in the current environment\n\nFlags:\n  -h, --help   help for flag\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n== [env-bdce4e4b44b33f00]\n== [env-2d59eb4fca374857]\n\n[stderr]\njq: error (at <stdin>:46): Cannot index string with string (\"name\")\njq: error (at <stdin>:46): Cannot index string with string (\"name\")\n[exit code 5]",
           "isError": true,
           "ms": 1231
         }
@@ -168,9 +168,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "for e in dmzSM69SuyT6ReQRY3sWDV jpsMa2ifHsLH4oCg5xwyCj; do echo \"== $e\"; flagsmith -e $e flag get live_chat 2>&1; done"
+            "command": "for e in [env-bdce4e4b44b33f00] [env-2d59eb4fca374857]; do echo \"== $e\"; flagsmith -e $e flag get live_chat 2>&1; done"
           },
-          "output": "== dmzSM69SuyT6ReQRY3sWDV\nFeature              live_chat\nDescription          Gates the live chat rollout\nType                 standard\nState                off\nValue                -\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n== jpsMa2ifHsLH4oCg5xwyCj\nFeature              live_chat\nDescription          Gates the live chat rollout\nType                 standard\nState                off\nValue                -\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
+          "output": "== [env-bdce4e4b44b33f00]\nFeature              live_chat\nDescription          Gates the live chat rollout\nType                 standard\nState                off\nValue                -\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n== [env-2d59eb4fca374857]\nFeature              live_chat\nDescription          Gates the live chat rollout\nType                 standard\nState                off\nValue                -\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
           "isError": false,
           "ms": 3131
         }

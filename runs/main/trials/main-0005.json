@@ -33,9 +33,9 @@
   "ms": 15481,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; echo ----; flagsmith --help",
-    "cd /tmp; flagsmith config 2>&1 | head -20; echo ----; flagsmith flag get dark_mode_copy -e HHQqtGibsRS6udXjYgyc7x --json 2>&1 | jq '{enabled,value,variants}' ; echo ----; flagsmith flag get dark_mode_copy -e gjCELP85a99G62z9JmjDmf --json 2>&1 | jq '{enabled,value,variants}'; echo ----; flagsmith feature variant list dark_mode_copy --json 2>&1 | head -50",
+    "cd /tmp; flagsmith config 2>&1 | head -20; echo ----; flagsmith flag get dark_mode_copy -e [env-5a02bb5fdd155b98] --json 2>&1 | jq '{enabled,value,variants}' ; echo ----; flagsmith flag get dark_mode_copy -e [env-58e9dcbbb77065e8] --json 2>&1 | jq '{enabled,value,variants}'; echo ----; flagsmith feature variant list dark_mode_copy --json 2>&1 | head -50",
     "cd /tmp; flagsmith flag update --help 2>&1 | grep -i -A3 weight",
-    "cd /tmp; flagsmith flag update dark_mode_copy -e HHQqtGibsRS6udXjYgyc7x --weight b=80 --yes 2>&1; echo ----; flagsmith flag get dark_mode_copy -e HHQqtGibsRS6udXjYgyc7x --json | jq '{enabled,value,variants}'; echo ----; flagsmith flag get dark_mode_copy -e gjCELP85a99G62z9JmjDmf --json | jq '{enabled,value,variants}'"
+    "cd /tmp; flagsmith flag update dark_mode_copy -e [env-5a02bb5fdd155b98] --weight b=80 --yes 2>&1; echo ----; flagsmith flag get dark_mode_copy -e [env-5a02bb5fdd155b98] --json | jq '{enabled,value,variants}'; echo ----; flagsmith flag get dark_mode_copy -e [env-58e9dcbbb77065e8] --json | jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -68,7 +68,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith config 2>&1 | head -20; echo ----; flagsmith flag get dark_mode_copy -e HHQqtGibsRS6udXjYgyc7x --json 2>&1 | jq '{enabled,value,variants}' ; echo ----; flagsmith flag get dark_mode_copy -e gjCELP85a99G62z9JmjDmf --json 2>&1 | jq '{enabled,value,variants}'; echo ----; flagsmith feature variant list dark_mode_copy --json 2>&1 | head -50"
+            "command": "cd /tmp; flagsmith config 2>&1 | head -20; echo ----; flagsmith flag get dark_mode_copy -e [env-5a02bb5fdd155b98] --json 2>&1 | jq '{enabled,value,variants}' ; echo ----; flagsmith flag get dark_mode_copy -e [env-58e9dcbbb77065e8] --json 2>&1 | jq '{enabled,value,variants}'; echo ----; flagsmith feature variant list dark_mode_copy --json 2>&1 | head -50"
           },
           "output": "Config file    -                                  default\nProject        7                                  env\nOrganisation   7                                  env\nEnvironment    -                                  default\nAPI            http://host.docker.internal:8300   env\nSDK API        http://host.docker.internal:8300   default\n----\n{\n  \"enabled\": true,\n  \"value\": \"Checkout\",\n  \"variants\": [\n    {\n      \"id\": 3,\n      \"value\": \"Pay securely\",\n      \"weight\": 50,\n      \"key\": \"b\"\n    }\n  ]\n}\n----\n{\n  \"enabled\": true,\n  \"value\": \"Checkout\",\n  \"variants\": [\n    {\n      \"id\": 3,\n      \"value\": \"Pay securely\",\n      \"weight\": 50,\n      \"key\": \"b\"\n    }\n  ]\n}\n----\n[\n  {\n    \"id\": 3,\n    \"value\": \"Pay securely\",\n    \"weight\": 50,\n    \"key\": \"b\"\n  }\n]",
           "isError": false,
@@ -114,9 +114,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith flag update dark_mode_copy -e HHQqtGibsRS6udXjYgyc7x --weight b=80 --yes 2>&1; echo ----; flagsmith flag get dark_mode_copy -e HHQqtGibsRS6udXjYgyc7x --json | jq '{enabled,value,variants}'; echo ----; flagsmith flag get dark_mode_copy -e gjCELP85a99G62z9JmjDmf --json | jq '{enabled,value,variants}'"
+            "command": "cd /tmp; flagsmith flag update dark_mode_copy -e [env-5a02bb5fdd155b98] --weight b=80 --yes 2>&1; echo ----; flagsmith flag get dark_mode_copy -e [env-5a02bb5fdd155b98] --json | jq '{enabled,value,variants}'; echo ----; flagsmith flag get dark_mode_copy -e [env-58e9dcbbb77065e8] --json | jq '{enabled,value,variants}'"
           },
-          "output": "✓ Set dark_mode_copy weights to b=80 in environment Production (HHQqtGibsRS6udXjYgyc7x)\nFeature              dark_mode_copy\nDescription          \nType                 multivariate\nState                on\nValue                Checkout\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n\nVariants\n  VALUE         WEIGHT  KEY  ID\n  Pay securely  80%     b    3\n----\n{\n  \"enabled\": true,\n  \"value\": \"Checkout\",\n  \"variants\": [\n    {\n      \"id\": 3,\n      \"value\": \"Pay securely\",\n      \"weight\": 80,\n      \"key\": \"b\"\n    }\n  ]\n}\n----\n{\n  \"enabled\": true,\n  \"value\": \"Checkout\",\n  \"variants\": [\n    {\n      \"id\": 3,\n      \"value\": \"Pay securely\",\n      \"weight\": 50,\n      \"key\": \"b\"\n    }\n  ]\n}",
+          "output": "✓ Set dark_mode_copy weights to b=80 in environment Production ([env-5a02bb5fdd155b98])\nFeature              dark_mode_copy\nDescription          \nType                 multivariate\nState                on\nValue                Checkout\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n\nVariants\n  VALUE         WEIGHT  KEY  ID\n  Pay securely  80%     b    3\n----\n{\n  \"enabled\": true,\n  \"value\": \"Checkout\",\n  \"variants\": [\n    {\n      \"id\": 3,\n      \"value\": \"Pay securely\",\n      \"weight\": 80,\n      \"key\": \"b\"\n    }\n  ]\n}\n----\n{\n  \"enabled\": true,\n  \"value\": \"Checkout\",\n  \"variants\": [\n    {\n      \"id\": 3,\n      \"value\": \"Pay securely\",\n      \"weight\": 50,\n      \"key\": \"b\"\n    }\n  ]\n}",
           "isError": false,
           "ms": 3728
         }

@@ -104,7 +104,7 @@
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
     "flagsmith feature create --help; flagsmith feature list --json --jq '.[] | select(.name==\"new_checkout_copy\") | .name'",
-    "flagsmith feature create new_checkout_copy --value \"Start free trial\" --enabled --variants '[{\"value\":\"Try it free\",\"weight\":50},{\"value\":\"See plans\",\"weight\":50}]' --yes && for e in AoCfjKM6cP2wDx24NWogWw kKzsDxeV2AwmL6mXNVyyNC; do echo \"== $e\"; flagsmith flag get new_checkout_copy -e $e --json --jq '{enabled,value,variants}'; done"
+    "flagsmith feature create new_checkout_copy --value \"Start free trial\" --enabled --variants '[{\"value\":\"Try it free\",\"weight\":50},{\"value\":\"See plans\",\"weight\":50}]' --yes && for e in [env-e761d319992fdbdc] [env-23451fdb3e6e4fd2]; do echo \"== $e\"; flagsmith flag get new_checkout_copy -e $e --json --jq '{enabled,value,variants}'; done"
   ],
   "transcript": [
     {
@@ -160,9 +160,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith feature create new_checkout_copy --value \"Start free trial\" --enabled --variants '[{\"value\":\"Try it free\",\"weight\":50},{\"value\":\"See plans\",\"weight\":50}]' --yes && for e in AoCfjKM6cP2wDx24NWogWw kKzsDxeV2AwmL6mXNVyyNC; do echo \"== $e\"; flagsmith flag get new_checkout_copy -e $e --json --jq '{enabled,value,variants}'; done"
+            "command": "flagsmith feature create new_checkout_copy --value \"Start free trial\" --enabled --variants '[{\"value\":\"Try it free\",\"weight\":50},{\"value\":\"See plans\",\"weight\":50}]' --yes && for e in [env-e761d319992fdbdc] [env-23451fdb3e6e4fd2]; do echo \"== $e\"; flagsmith flag get new_checkout_copy -e $e --json --jq '{enabled,value,variants}'; done"
           },
-          "output": "Feature         new_checkout_copy (1123)\nDescription     \nType            multivariate\nDefault value   Start free trial\nEnabled         true\n\nVariants\n  VALUE        WEIGHT  KEY  ID\n  Try it free  50%          92\n  See plans    50%          93\n== AoCfjKM6cP2wDx24NWogWw\n{\"enabled\":true,\"value\":\"Start free trial\",\"variants\":[{\"id\":92,\"value\":\"Try it free\",\"weight\":50},{\"id\":93,\"value\":\"See plans\",\"weight\":50}]}\n== kKzsDxeV2AwmL6mXNVyyNC\n{\"enabled\":true,\"value\":\"Start free trial\",\"variants\":[{\"id\":92,\"value\":\"Try it free\",\"weight\":50},{\"id\":93,\"value\":\"See plans\",\"weight\":50}]}\n\n[stderr]\n✓ Created feature new_checkout_copy (1123)",
+          "output": "Feature         new_checkout_copy (1123)\nDescription     \nType            multivariate\nDefault value   Start free trial\nEnabled         true\n\nVariants\n  VALUE        WEIGHT  KEY  ID\n  Try it free  50%          92\n  See plans    50%          93\n== [env-e761d319992fdbdc]\n{\"enabled\":true,\"value\":\"Start free trial\",\"variants\":[{\"id\":92,\"value\":\"Try it free\",\"weight\":50},{\"id\":93,\"value\":\"See plans\",\"weight\":50}]}\n== [env-23451fdb3e6e4fd2]\n{\"enabled\":true,\"value\":\"Start free trial\",\"variants\":[{\"id\":92,\"value\":\"Try it free\",\"weight\":50},{\"id\":93,\"value\":\"See plans\",\"weight\":50}]}\n\n[stderr]\n✓ Created feature new_checkout_copy (1123)",
           "isError": false,
           "ms": 2151
         }

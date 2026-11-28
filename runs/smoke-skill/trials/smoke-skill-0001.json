@@ -33,8 +33,8 @@
   "ms": 8793,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith flag get smart_reorder -e 4owZVYoYUkuPj6TULyHPdT --json --jq '{enabled,value,variants}'; echo ---; flagsmith flag get smart_reorder -e nSvyWmYBD9ZGrZbkpVcn9X --json --jq '{enabled,value,variants}'",
-    "flagsmith flag update smart_reorder -e 4owZVYoYUkuPj6TULyHPdT --enable --yes && flagsmith flag get smart_reorder -e 4owZVYoYUkuPj6TULyHPdT --json --jq '{enabled,value,variants}'; echo ---; flagsmith flag get smart_reorder -e nSvyWmYBD9ZGrZbkpVcn9X --json --jq '{enabled,value,variants}'"
+    "flagsmith flag get smart_reorder -e [env-7c033b27104c84d1] --json --jq '{enabled,value,variants}'; echo ---; flagsmith flag get smart_reorder -e [env-f6042f7fec43e568] --json --jq '{enabled,value,variants}'",
+    "flagsmith flag update smart_reorder -e [env-7c033b27104c84d1] --enable --yes && flagsmith flag get smart_reorder -e [env-7c033b27104c84d1] --json --jq '{enabled,value,variants}'; echo ---; flagsmith flag get smart_reorder -e [env-f6042f7fec43e568] --json --jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get smart_reorder -e 4owZVYoYUkuPj6TULyHPdT --json --jq '{enabled,value,variants}'; echo ---; flagsmith flag get smart_reorder -e nSvyWmYBD9ZGrZbkpVcn9X --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith flag get smart_reorder -e [env-7c033b27104c84d1] --json --jq '{enabled,value,variants}'; echo ---; flagsmith flag get smart_reorder -e [env-f6042f7fec43e568] --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"enabled\":false,\"value\":\"rounded\",\"variants\":null}\n---\n{\"enabled\":false,\"value\":\"rounded\",\"variants\":null}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update smart_reorder -e 4owZVYoYUkuPj6TULyHPdT --enable --yes && flagsmith flag get smart_reorder -e 4owZVYoYUkuPj6TULyHPdT --json --jq '{enabled,value,variants}'; echo ---; flagsmith flag get smart_reorder -e nSvyWmYBD9ZGrZbkpVcn9X --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith flag update smart_reorder -e [env-7c033b27104c84d1] --enable --yes && flagsmith flag get smart_reorder -e [env-7c033b27104c84d1] --json --jq '{enabled,value,variants}'; echo ---; flagsmith flag get smart_reorder -e [env-f6042f7fec43e568] --json --jq '{enabled,value,variants}'"
           },
-          "output": "Feature              smart_reorder\nDescription          \nType                 standard\nState                on\nValue                rounded\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"value\":\"rounded\",\"variants\":null}\n---\n{\"enabled\":false,\"value\":\"rounded\",\"variants\":null}\n\n[stderr]\n✓ Enabled smart_reorder in environment Production (4owZVYoYUkuPj6TULyHPdT)",
+          "output": "Feature              smart_reorder\nDescription          \nType                 standard\nState                on\nValue                rounded\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"value\":\"rounded\",\"variants\":null}\n---\n{\"enabled\":false,\"value\":\"rounded\",\"variants\":null}\n\n[stderr]\n✓ Enabled smart_reorder in environment Production ([env-7c033b27104c84d1])",
           "isError": false,
           "ms": 2834
         }

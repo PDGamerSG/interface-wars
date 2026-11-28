@@ -33,8 +33,8 @@
   "ms": 11811,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith flag get size_guide -e fnhmrMUzm5rUkBhej5niQt --json --jq '{enabled,value}'",
-    "flagsmith flag update size_guide -e fnhmrMUzm5rUkBhej5niQt --value \"compact\" --yes && flagsmith flag get size_guide -e fnhmrMUzm5rUkBhej5niQt --json --jq '{enabled,value}'"
+    "flagsmith flag get size_guide -e [env-ccbfd210c79a4e27] --json --jq '{enabled,value}'",
+    "flagsmith flag update size_guide -e [env-ccbfd210c79a4e27] --value \"compact\" --yes && flagsmith flag get size_guide -e [env-ccbfd210c79a4e27] --json --jq '{enabled,value}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get size_guide -e fnhmrMUzm5rUkBhej5niQt --json --jq '{enabled,value}'"
+            "command": "flagsmith flag get size_guide -e [env-ccbfd210c79a4e27] --json --jq '{enabled,value}'"
           },
           "output": "{\"enabled\":true,\"value\":\"v2\"}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update size_guide -e fnhmrMUzm5rUkBhej5niQt --value \"compact\" --yes && flagsmith flag get size_guide -e fnhmrMUzm5rUkBhej5niQt --json --jq '{enabled,value}'"
+            "command": "flagsmith flag update size_guide -e [env-ccbfd210c79a4e27] --value \"compact\" --yes && flagsmith flag get size_guide -e [env-ccbfd210c79a4e27] --json --jq '{enabled,value}'"
           },
-          "output": "Feature              size_guide\nDescription          \nType                 standard\nState                on\nValue                compact\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"value\":\"compact\"}\n\n[stderr]\n✓ Set size_guide to \"compact\" in environment Development (fnhmrMUzm5rUkBhej5niQt)",
+          "output": "Feature              size_guide\nDescription          \nType                 standard\nState                on\nValue                compact\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"value\":\"compact\"}\n\n[stderr]\n✓ Set size_guide to \"compact\" in environment Development ([env-ccbfd210c79a4e27])",
           "isError": false,
           "ms": 5760
         }

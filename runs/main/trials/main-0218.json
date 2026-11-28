@@ -33,9 +33,9 @@
   "ms": 10329,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "P=nD4UCBw2bnsmoun4B42cgn; flagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'",
-    "P=nD4UCBw2bnsmoun4B42cgn; flagsmith api api/v1/environments/$P/experiments/40/ | jq '{status,feature:.feature.name,metrics,experiment_rollout}'; flagsmith flag get wishlist_sync_copy -e $P --json --jq '{enabled,value,variants}'",
-    "P=nD4UCBw2bnsmoun4B42cgn; flagsmith api api/v1/environments/$P/experiments/40/start/ -X POST; echo; flagsmith api api/v1/environments/$P/experiments/40/ --jq '{status,rollout_decision}'"
+    "P=[env-389fd4508e7766d6]; flagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'",
+    "P=[env-389fd4508e7766d6]; flagsmith api api/v1/environments/$P/experiments/40/ | jq '{status,feature:.feature.name,metrics,experiment_rollout}'; flagsmith flag get wishlist_sync_copy -e $P --json --jq '{enabled,value,variants}'",
+    "P=[env-389fd4508e7766d6]; flagsmith api api/v1/environments/$P/experiments/40/start/ -X POST; echo; flagsmith api api/v1/environments/$P/experiments/40/ --jq '{status,rollout_decision}'"
   ],
   "transcript": [
     {
@@ -68,7 +68,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=nD4UCBw2bnsmoun4B42cgn; flagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'"
+            "command": "P=[env-389fd4508e7766d6]; flagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'"
           },
           "output": "{\"feature\":{\"id\":858,\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":85,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Pay securely\",\"type\":\"unicode\",\"uuid\":\"2f03a08d-ca21-4240-b995-e11441d3d424\"}],\"name\":\"wishlist_sync_copy\",\"type\":\"MULTIVARIATE\"},\"id\":40,\"name\":\"wishlist_sync_copy test\",\"rollout_decision\":null,\"status\":\"created\"}",
           "isError": false,
@@ -91,7 +91,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=nD4UCBw2bnsmoun4B42cgn; flagsmith api api/v1/environments/$P/experiments/40/ | jq '{status,feature:.feature.name,metrics,experiment_rollout}'; flagsmith flag get wishlist_sync_copy -e $P --json --jq '{enabled,value,variants}'"
+            "command": "P=[env-389fd4508e7766d6]; flagsmith api api/v1/environments/$P/experiments/40/ | jq '{status,feature:.feature.name,metrics,experiment_rollout}'; flagsmith flag get wishlist_sync_copy -e $P --json --jq '{enabled,value,variants}'"
           },
           "output": "{\n  \"status\": \"created\",\n  \"feature\": \"wishlist_sync_copy\",\n  \"metrics\": [\n    {\n      \"id\": 54,\n      \"metric\": 67,\n      \"metric_name\": \"trial_started\",\n      \"aggregation\": \"occurrence\",\n      \"direction\": \"up\",\n      \"expected_direction\": \"increase\",\n      \"created_at\": \"2026-11-27T20:33:12.959934Z\"\n    }\n  ],\n  \"experiment_rollout\": {\n    \"enabled\": true,\n    \"rollout_percentage\": 100.0,\n    \"feature_state_value\": {\n      \"type\": \"string\",\n      \"value\": \"Checkout\"\n    },\n    \"multivariate_feature_state_values\": [\n      {\n        \"multivariate_feature_option\": 85,\n        \"percentage_allocation\": 50.0\n      }\n    ],\n    \"audience\": {\n      \"match\": \"any\",\n      \"segments\": []\n    }\n  }\n}\n{\"enabled\":true,\"value\":\"Checkout\",\"variants\":[{\"id\":85,\"key\":\"b\",\"value\":\"Pay securely\",\"weight\":0}]}",
           "isError": false,
@@ -114,7 +114,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=nD4UCBw2bnsmoun4B42cgn; flagsmith api api/v1/environments/$P/experiments/40/start/ -X POST; echo; flagsmith api api/v1/environments/$P/experiments/40/ --jq '{status,rollout_decision}'"
+            "command": "P=[env-389fd4508e7766d6]; flagsmith api api/v1/environments/$P/experiments/40/start/ -X POST; echo; flagsmith api api/v1/environments/$P/experiments/40/ --jq '{status,rollout_decision}'"
           },
           "output": "{\"id\":40,\"feature\":{\"id\":858,\"name\":\"wishlist_sync_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"id\":85,\"uuid\":\"2f03a08d-ca21-4240-b995-e11441d3d424\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Pay securely\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"wishlist_sync_copy test\",\"hypothesis\":\"Pay securely wins\",\"status\":\"running\",\"metrics\":[{\"id\":54,\"metric\":67,\"metric_name\":\"trial_started\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:33:12.959934Z\"}],\"created_at\":\"2026-11-27T20:33:12.959334Z\",\"updated_at\":\"2026-11-27T20:33:22.186596Z\",\"started_at\":\"2026-11-27T20:33:22.185616Z\",\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}\n{\"rollout_decision\":null,\"status\":\"running\"}",
           "isError": false,

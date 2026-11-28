@@ -53,11 +53,11 @@
   "ms": 19419,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith api api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/experiments/ --jq '.results[] | {id,name,status,feature}'",
-    "flagsmith api api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/experiments/18/ ; echo; flagsmith flag get review_photos_copy -e 4HRWZd7JKpLn2q3xstZA9R --json --jq '{enabled,value,variants}'; flagsmith feature variant list review_photos_copy --json",
-    "flagsmith api api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/experiments/18/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":38}\nJSON\necho; flagsmith api api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/experiments/18/ --jq '{status,rollout_decision,rollout_variant,ended_at}'; flagsmith flag get review_photos_copy -e 4HRWZd7JKpLn2q3xstZA9R --json --jq '{enabled,value,variants}'",
-    "flagsmith evaluate -e 4HRWZd7JKpLn2q3xstZA9R --json --jq '.[] | select(.name==\"review_photos_copy\")' 2>&1 | head -20",
-    "flagsmith evaluate -e 4HRWZd7JKpLn2q3xstZA9R 2>&1 | head -30; flagsmith api \"api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/featurestates/?feature=357\" --jq '.results[] | {enabled,value:.feature_state_value,mv:.multivariate_feature_state_values}' 2>&1 | head"
+    "flagsmith api api/v1/environments/[env-b60a88236c41947d]/experiments/ --jq '.results[] | {id,name,status,feature}'",
+    "flagsmith api api/v1/environments/[env-b60a88236c41947d]/experiments/18/ ; echo; flagsmith flag get review_photos_copy -e [env-b60a88236c41947d] --json --jq '{enabled,value,variants}'; flagsmith feature variant list review_photos_copy --json",
+    "flagsmith api api/v1/environments/[env-b60a88236c41947d]/experiments/18/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":38}\nJSON\necho; flagsmith api api/v1/environments/[env-b60a88236c41947d]/experiments/18/ --jq '{status,rollout_decision,rollout_variant,ended_at}'; flagsmith flag get review_photos_copy -e [env-b60a88236c41947d] --json --jq '{enabled,value,variants}'",
+    "flagsmith evaluate -e [env-b60a88236c41947d] --json --jq '.[] | select(.name==\"review_photos_copy\")' 2>&1 | head -20",
+    "flagsmith evaluate -e [env-b60a88236c41947d] 2>&1 | head -30; flagsmith api \"api/v1/environments/[env-b60a88236c41947d]/featurestates/?feature=357\" --jq '.results[] | {enabled,value:.feature_state_value,mv:.multivariate_feature_state_values}' 2>&1 | head"
   ],
   "transcript": [
     {
@@ -90,7 +90,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/experiments/ --jq '.results[] | {id,name,status,feature}'"
+            "command": "flagsmith api api/v1/environments/[env-b60a88236c41947d]/experiments/ --jq '.results[] | {id,name,status,feature}'"
           },
           "output": "{\"feature\":{\"id\":357,\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":38,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Pay securely\",\"type\":\"unicode\",\"uuid\":\"55901681-2c7b-4ab5-b45e-b04663f6aae8\"}],\"name\":\"review_photos_copy\",\"type\":\"MULTIVARIATE\"},\"id\":18,\"name\":\"review_photos_copy test\",\"status\":\"running\"}",
           "isError": false,
@@ -113,7 +113,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/experiments/18/ ; echo; flagsmith flag get review_photos_copy -e 4HRWZd7JKpLn2q3xstZA9R --json --jq '{enabled,value,variants}'; flagsmith feature variant list review_photos_copy --json"
+            "command": "flagsmith api api/v1/environments/[env-b60a88236c41947d]/experiments/18/ ; echo; flagsmith flag get review_photos_copy -e [env-b60a88236c41947d] --json --jq '{enabled,value,variants}'; flagsmith feature variant list review_photos_copy --json"
           },
           "output": "{\"id\":18,\"feature\":{\"id\":357,\"name\":\"review_photos_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"id\":38,\"uuid\":\"55901681-2c7b-4ab5-b45e-b04663f6aae8\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Pay securely\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"review_photos_copy test\",\"hypothesis\":\"Pay securely wins\",\"status\":\"running\",\"metrics\":[{\"id\":25,\"metric\":31,\"metric_name\":\"signup_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:22:51.468740Z\"}],\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100.0,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":38,\"percentage_allocation\":50.0}],\"audience\":{\"match\":\"any\",\"segments\":[]}},\"created_at\":\"2026-11-27T20:22:51.467685Z\",\"updated_at\":\"2026-11-27T20:22:51.574439Z\",\"started_at\":\"2026-11-27T20:22:51.571928Z\",\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}\n{\"enabled\":true,\"value\":\"Checkout\",\"variants\":[{\"id\":38,\"key\":\"b\",\"value\":\"Pay securely\",\"weight\":0}]}\n[\n  {\n    \"id\": 38,\n    \"value\": \"Pay securely\",\n    \"weight\": 0,\n    \"key\": \"b\"\n  }\n]",
           "isError": false,
@@ -136,7 +136,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/experiments/18/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":38}\nJSON\necho; flagsmith api api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/experiments/18/ --jq '{status,rollout_decision,rollout_variant,ended_at}'; flagsmith flag get review_photos_copy -e 4HRWZd7JKpLn2q3xstZA9R --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith api api/v1/environments/[env-b60a88236c41947d]/experiments/18/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":38}\nJSON\necho; flagsmith api api/v1/environments/[env-b60a88236c41947d]/experiments/18/ --jq '{status,rollout_decision,rollout_variant,ended_at}'; flagsmith flag get review_photos_copy -e [env-b60a88236c41947d] --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"id\":18,\"feature\":{\"id\":357,\"name\":\"review_photos_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"id\":38,\"uuid\":\"55901681-2c7b-4ab5-b45e-b04663f6aae8\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Pay securely\",\"boolean_value\":null,\"default_percentage_allocation\":100.0,\"key\":\"b\"}]},\"name\":\"review_photos_copy test\",\"hypothesis\":\"Pay securely wins\",\"status\":\"completed\",\"metrics\":[{\"id\":25,\"metric\":31,\"metric_name\":\"signup_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:22:51.468740Z\"}],\"created_at\":\"2026-11-27T20:22:51.467685Z\",\"updated_at\":\"2026-11-27T20:23:02.066227Z\",\"started_at\":\"2026-11-27T20:22:51.571928Z\",\"ended_at\":\"2026-11-27T20:23:02.002317Z\",\"rollout_decision\":\"variant\",\"rollout_variant\":38}\n{\"ended_at\":\"2026-11-27T20:23:02.002317Z\",\"rollout_decision\":\"variant\",\"rollout_variant\":38,\"status\":\"completed\"}\n{\"enabled\":true,\"value\":\"Checkout\",\"variants\":[{\"id\":38,\"key\":\"b\",\"value\":\"Pay securely\",\"weight\":100}]}",
           "isError": false,
@@ -159,7 +159,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith evaluate -e 4HRWZd7JKpLn2q3xstZA9R --json --jq '.[] | select(.name==\"review_photos_copy\")' 2>&1 | head -20"
+            "command": "flagsmith evaluate -e [env-b60a88236c41947d] --json --jq '.[] | select(.name==\"review_photos_copy\")' 2>&1 | head -20"
           },
           "output": "Error: expected an object but got: string (\"https://raw.githubuserco ...\")",
           "isError": false,
@@ -182,7 +182,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith evaluate -e 4HRWZd7JKpLn2q3xstZA9R 2>&1 | head -30; flagsmith api \"api/v1/environments/4HRWZd7JKpLn2q3xstZA9R/featurestates/?feature=357\" --jq '.results[] | {enabled,value:.feature_state_value,mv:.multivariate_feature_state_values}' 2>&1 | head"
+            "command": "flagsmith evaluate -e [env-b60a88236c41947d] 2>&1 | head -30; flagsmith api \"api/v1/environments/[env-b60a88236c41947d]/featurestates/?feature=357\" --jq '.results[] | {enabled,value:.feature_state_value,mv:.multivariate_feature_state_values}' 2>&1 | head"
           },
           "output": "FEATURE              ENABLED   VALUE      REASON\nreview_photos_copy   on        Checkout   STATIC\norder_tracking_v2    off       grid       STATIC\nguest_checkout       on        v2         STATIC\n\n3 flags\n{\"enabled\":true,\"mv\":[{\"id\":92,\"multivariate_feature_option\":38,\"percentage_allocation\":100}],\"value\":\"Checkout\"}",
           "isError": false,

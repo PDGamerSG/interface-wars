@@ -39,7 +39,7 @@
   "commands": [
     "list_project_features {\"project_pk\":174,\"search\":\"order_tracking_v2\",\"environment\":346}",
     "list_project_features {\"project_pk\":174,\"search\":\"order_tracking_v2\",\"environment\":347}",
-    "update_environment_feature_state {\"id__path\":1410,\"environment_api_key\":\"XbJFdKsrieUYvtTu2G4NNx\",\"feature\":674,\"id\":1410,\"enabled\":true,\"feature_state_value\":\"eu_west\"}",
+    "update_environment_feature_state {\"id__path\":1410,\"environment_api_key\":\"[env-582461b3a142dd6b]\",\"feature\":674,\"id\":1410,\"enabled\":true,\"feature_state_value\":\"eu_west\"}",
     "list_project_features {\"project_pk\":174,\"search\":\"order_tracking_v2\",\"environment\":347}"
   ],
   "transcript": [
@@ -87,7 +87,7 @@
           "name": "update_environment_feature_state",
           "input": {
             "id__path": 1410,
-            "environment_api_key": "XbJFdKsrieUYvtTu2G4NNx",
+            "environment_api_key": "[env-582461b3a142dd6b]",
             "feature": 674,
             "id": 1410,
             "enabled": true,

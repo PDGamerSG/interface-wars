@@ -33,10 +33,10 @@
   "ms": 15346,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith api api/v1/environments/EWs9ZNuZhkghX7ChgSVsu4/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'",
-    "flagsmith api api/v1/environments/EWs9ZNuZhkghX7ChgSVsu4/experiments/5/ | jq '{status,feature:.feature.name,metrics,experiment_rollout,hypothesis}'; flagsmith flag get promo_banner_copy -e EWs9ZNuZhkghX7ChgSVsu4 --json --jq '{enabled,value,variants}'",
-    "flagsmith api api/v1/environments/EWs9ZNuZhkghX7ChgSVsu4/experiments/5/start/ -X POST >/tmp/start.out 2>&1; echo \"exit=$?\"; cat /tmp/start.out | head -c 1000; echo; flagsmith api api/v1/environments/EWs9ZNuZhkghX7ChgSVsu4/experiments/5/ | jq '{status,rollout_decision}'",
-    "flagsmith flag get promo_banner_copy -e EWs9ZNuZhkghX7ChgSVsu4 --json --jq '{enabled,value,variants}'"
+    "flagsmith api api/v1/environments/[env-a90b2c337ad48ead]/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'",
+    "flagsmith api api/v1/environments/[env-a90b2c337ad48ead]/experiments/5/ | jq '{status,feature:.feature.name,metrics,experiment_rollout,hypothesis}'; flagsmith flag get promo_banner_copy -e [env-a90b2c337ad48ead] --json --jq '{enabled,value,variants}'",
+    "flagsmith api api/v1/environments/[env-a90b2c337ad48ead]/experiments/5/start/ -X POST >/tmp/start.out 2>&1; echo \"exit=$?\"; cat /tmp/start.out | head -c 1000; echo; flagsmith api api/v1/environments/[env-a90b2c337ad48ead]/experiments/5/ | jq '{status,rollout_decision}'",
+    "flagsmith flag get promo_banner_copy -e [env-a90b2c337ad48ead] --json --jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -69,7 +69,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/EWs9ZNuZhkghX7ChgSVsu4/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'"
+            "command": "flagsmith api api/v1/environments/[env-a90b2c337ad48ead]/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'"
           },
           "output": "{\"feature\":{\"id\":102,\"initial_value\":\"Start free trial\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":13,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Try it free\",\"type\":\"unicode\",\"uuid\":\"f35b0242-4f90-415e-9e30-898d442d6e81\"}],\"name\":\"promo_banner_copy\",\"type\":\"MULTIVARIATE\"},\"id\":5,\"name\":\"promo_banner_copy test\",\"rollout_decision\":null,\"status\":\"created\"}",
           "isError": false,
@@ -92,7 +92,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/EWs9ZNuZhkghX7ChgSVsu4/experiments/5/ | jq '{status,feature:.feature.name,metrics,experiment_rollout,hypothesis}'; flagsmith flag get promo_banner_copy -e EWs9ZNuZhkghX7ChgSVsu4 --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith api api/v1/environments/[env-a90b2c337ad48ead]/experiments/5/ | jq '{status,feature:.feature.name,metrics,experiment_rollout,hypothesis}'; flagsmith flag get promo_banner_copy -e [env-a90b2c337ad48ead] --json --jq '{enabled,value,variants}'"
           },
           "output": "{\n  \"status\": \"created\",\n  \"feature\": \"promo_banner_copy\",\n  \"metrics\": [\n    {\n      \"id\": 8,\n      \"metric\": 11,\n      \"metric_name\": \"add_to_cart\",\n      \"aggregation\": \"occurrence\",\n      \"direction\": \"up\",\n      \"expected_direction\": \"increase\",\n      \"created_at\": \"2026-11-27T20:18:26.879653Z\"\n    }\n  ],\n  \"experiment_rollout\": {\n    \"enabled\": true,\n    \"rollout_percentage\": 100.0,\n    \"feature_state_value\": {\n      \"type\": \"string\",\n      \"value\": \"Start free trial\"\n    },\n    \"multivariate_feature_state_values\": [\n      {\n        \"multivariate_feature_option\": 13,\n        \"percentage_allocation\": 50.0\n      }\n    ],\n    \"audience\": {\n      \"match\": \"any\",\n      \"segments\": []\n    }\n  },\n  \"hypothesis\": \"Try it free wins\"\n}\n{\"enabled\":true,\"value\":\"Start free trial\",\"variants\":[{\"id\":13,\"key\":\"b\",\"value\":\"Try it free\",\"weight\":0}]}",
           "isError": false,
@@ -115,7 +115,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/EWs9ZNuZhkghX7ChgSVsu4/experiments/5/start/ -X POST >/tmp/start.out 2>&1; echo \"exit=$?\"; cat /tmp/start.out | head -c 1000; echo; flagsmith api api/v1/environments/EWs9ZNuZhkghX7ChgSVsu4/experiments/5/ | jq '{status,rollout_decision}'"
+            "command": "flagsmith api api/v1/environments/[env-a90b2c337ad48ead]/experiments/5/start/ -X POST >/tmp/start.out 2>&1; echo \"exit=$?\"; cat /tmp/start.out | head -c 1000; echo; flagsmith api api/v1/environments/[env-a90b2c337ad48ead]/experiments/5/ | jq '{status,rollout_decision}'"
           },
           "output": "exit=0\n{\"id\":5,\"feature\":{\"id\":102,\"name\":\"promo_banner_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Start free trial\",\"multivariate_options\":[{\"id\":13,\"uuid\":\"f35b0242-4f90-415e-9e30-898d442d6e81\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Try it free\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"promo_banner_copy test\",\"hypothesis\":\"Try it free wins\",\"status\":\"running\",\"metrics\":[{\"id\":8,\"metric\":11,\"metric_name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:18:26.879653Z\"}],\"created_at\":\"2026-11-27T20:18:26.878892Z\",\"updated_at\":\"2026-11-27T20:18:39.283365Z\",\"started_at\":\"2026-11-27T20:18:39.282365Z\",\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}\n{\n  \"status\": \"running\",\n  \"rollout_decision\": null\n}",
           "isError": false,
@@ -138,7 +138,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get promo_banner_copy -e EWs9ZNuZhkghX7ChgSVsu4 --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith flag get promo_banner_copy -e [env-a90b2c337ad48ead] --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"enabled\":true,\"value\":\"Start free trial\",\"variants\":[{\"id\":13,\"key\":\"b\",\"value\":\"Try it free\",\"weight\":0}]}",
           "isError": false,

@@ -33,9 +33,9 @@
   "ms": 24692,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith api api/v1/environments/nsXh46vn6XMeUvfKSKeved/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}' 2>&1 | head -100",
-    "flagsmith api api/v1/environments/nsXh46vn6XMeUvfKSKeved/experiments/29/ 2>&1 | jq . | head -150; flagsmith flag get apple_pay_copy -e nsXh46vn6XMeUvfKSKeved --json 2>&1 | head -60",
-    "flagsmith api api/v1/environments/nsXh46vn6XMeUvfKSKeved/experiments/29/start/ -X POST 2>&1 | jq -c '{status,started_at}' ; flagsmith api api/v1/environments/nsXh46vn6XMeUvfKSKeved/experiments/29/ --jq '{status,started_at,ended_at,rollout_decision}'; flagsmith flag get apple_pay_copy -e nsXh46vn6XMeUvfKSKeved --json --jq '{enabled,value,variants}'"
+    "flagsmith api api/v1/environments/[env-4a62e7a08f895749]/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}' 2>&1 | head -100",
+    "flagsmith api api/v1/environments/[env-4a62e7a08f895749]/experiments/29/ 2>&1 | jq . | head -150; flagsmith flag get apple_pay_copy -e [env-4a62e7a08f895749] --json 2>&1 | head -60",
+    "flagsmith api api/v1/environments/[env-4a62e7a08f895749]/experiments/29/start/ -X POST 2>&1 | jq -c '{status,started_at}' ; flagsmith api api/v1/environments/[env-4a62e7a08f895749]/experiments/29/ --jq '{status,started_at,ended_at,rollout_decision}'; flagsmith flag get apple_pay_copy -e [env-4a62e7a08f895749] --json --jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -68,7 +68,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/nsXh46vn6XMeUvfKSKeved/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}' 2>&1 | head -100"
+            "command": "flagsmith api api/v1/environments/[env-4a62e7a08f895749]/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}' 2>&1 | head -100"
           },
           "output": "{\"feature\":{\"id\":606,\"initial_value\":\"Buy now\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":61,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Get it today\",\"type\":\"unicode\",\"uuid\":\"6c0f077e-879f-4850-a22c-a4ac09aaf18d\"}],\"name\":\"apple_pay_copy\",\"type\":\"MULTIVARIATE\"},\"id\":29,\"name\":\"apple_pay_copy test\",\"rollout_decision\":null,\"status\":\"created\"}",
           "isError": false,
@@ -91,7 +91,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/nsXh46vn6XMeUvfKSKeved/experiments/29/ 2>&1 | jq . | head -150; flagsmith flag get apple_pay_copy -e nsXh46vn6XMeUvfKSKeved --json 2>&1 | head -60"
+            "command": "flagsmith api api/v1/environments/[env-4a62e7a08f895749]/experiments/29/ 2>&1 | jq . | head -150; flagsmith flag get apple_pay_copy -e [env-4a62e7a08f895749] --json 2>&1 | head -60"
           },
           "output": "{\n  \"id\": 29,\n  \"feature\": {\n    \"id\": 606,\n    \"name\": \"apple_pay_copy\",\n    \"type\": \"MULTIVARIATE\",\n    \"initial_value\": \"Buy now\",\n    \"multivariate_options\": [\n      {\n        \"id\": 61,\n        \"uuid\": \"6c0f077e-879f-4850-a22c-a4ac09aaf18d\",\n        \"type\": \"unicode\",\n        \"integer_value\": null,\n        \"string_value\": \"Get it today\",\n        \"boolean_value\": null,\n        \"default_percentage_allocation\": 0.0,\n        \"key\": \"b\"\n      }\n    ]\n  },\n  \"name\": \"apple_pay_copy test\",\n  \"hypothesis\": \"Get it today wins\",\n  \"status\": \"created\",\n  \"metrics\": [\n    {\n      \"id\": 40,\n      \"metric\": 50,\n      \"metric_name\": \"trial_started\",\n      \"aggregation\": \"occurrence\",\n      \"direction\": \"up\",\n      \"expected_direction\": \"increase\",\n      \"created_at\": \"2026-11-27T20:29:14.431615Z\"\n    }\n  ],\n  \"experiment_rollout\": {\n    \"enabled\": true,\n    \"rollout_percentage\": 100.0,\n    \"feature_state_value\": {\n      \"type\": \"string\",\n      \"value\": \"Buy now\"\n    },\n    \"multivariate_feature_state_values\": [\n      {\n        \"multivariate_feature_option\": 61,\n        \"percentage_allocation\": 50.0\n      }\n    ],\n    \"audience\": {\n      \"match\": \"any\",\n      \"segments\": []\n    }\n  },\n  \"created_at\": \"2026-11-27T20:29:14.429913Z\",\n  \"updated_at\": \"2026-11-27T20:29:14.446064Z\",\n  \"started_at\": null,\n  \"ended_at\": null,\n  \"rollout_decision\": null,\n  \"rollout_variant\": null\n}\n{\n  \"feature\": \"apple_pay_copy\",\n  \"type\": \"multivariate\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"Buy now\",\n  \"segment_overrides\": 1,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\",\n  \"variants\": [\n    {\n      \"id\": 61,\n      \"value\": \"Get it today\",\n      \"weight\": 0,\n      \"key\": \"b\"\n    }\n  ]\n}",
           "isError": false,
@@ -114,7 +114,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/nsXh46vn6XMeUvfKSKeved/experiments/29/start/ -X POST 2>&1 | jq -c '{status,started_at}' ; flagsmith api api/v1/environments/nsXh46vn6XMeUvfKSKeved/experiments/29/ --jq '{status,started_at,ended_at,rollout_decision}'; flagsmith flag get apple_pay_copy -e nsXh46vn6XMeUvfKSKeved --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith api api/v1/environments/[env-4a62e7a08f895749]/experiments/29/start/ -X POST 2>&1 | jq -c '{status,started_at}' ; flagsmith api api/v1/environments/[env-4a62e7a08f895749]/experiments/29/ --jq '{status,started_at,ended_at,rollout_decision}'; flagsmith flag get apple_pay_copy -e [env-4a62e7a08f895749] --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"status\":\"running\",\"started_at\":\"2026-11-27T20:29:33.534763Z\"}\n{\"ended_at\":null,\"rollout_decision\":null,\"started_at\":\"2026-11-27T20:29:33.534763Z\",\"status\":\"running\"}\n{\"enabled\":true,\"value\":\"Buy now\",\"variants\":[{\"id\":61,\"key\":\"b\",\"value\":\"Get it today\",\"weight\":0}]}",
           "isError": false,

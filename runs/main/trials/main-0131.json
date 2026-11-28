@@ -35,10 +35,10 @@
     "flagsmith --help; echo; flagsmith features --help 2>&1 | head -50",
     "flagsmith feature --help; echo; flagsmith feature list --help 2>&1 | head -40; echo; flagsmith config",
     "flagsmith flag --help; echo; flagsmith flag --help >/dev/null; for c in list get set toggle update enable disable; do flagsmith flag $c --help 2>&1 | head -25; echo ---; done",
-    "cd /tmp && flagsmith -e AvUndLuy2eMwqRJdU4MaRa flag get store_locator; echo \"rc=$?\"; flagsmith -e AvUndLuy2eMwqRJdU4MaRa flag list --json | jq '.[] | select(.feature.name==\"store_locator\") // empty' 2>/dev/null | head -40",
+    "cd /tmp && flagsmith -e [env-0c82aea798e4db9d] flag get store_locator; echo \"rc=$?\"; flagsmith -e [env-0c82aea798e4db9d] flag list --json | jq '.[] | select(.feature.name==\"store_locator\") // empty' 2>/dev/null | head -40",
     "cd /tmp && flagsmith environment --help | head -20; flagsmith environment list --json 2>/dev/null | jq -r '.[]? | \"\\(.id) \\(.name) \\(.api_key // .key // \"\")\"' 2>/dev/null || flagsmith environment list",
-    "cd /tmp && flagsmith -e AvUndLuy2eMwqRJdU4MaRa flag disable store_locator; echo \"rc=$?\"; flagsmith -e AvUndLuy2eMwqRJdU4MaRa flag get store_locator",
-    "cd /tmp && flagsmith -e AvUndLuy2eMwqRJdU4MaRa flag disable store_locator --yes; echo \"rc=$?\"; echo \"--- verify Production:\"; flagsmith -e AvUndLuy2eMwqRJdU4MaRa flag get store_locator; echo \"--- verify Development unchanged:\"; flagsmith -e e9GEGMMqGGkTyZ8fTRAd5J flag get store_locator"
+    "cd /tmp && flagsmith -e [env-0c82aea798e4db9d] flag disable store_locator; echo \"rc=$?\"; flagsmith -e [env-0c82aea798e4db9d] flag get store_locator",
+    "cd /tmp && flagsmith -e [env-0c82aea798e4db9d] flag disable store_locator --yes; echo \"rc=$?\"; echo \"--- verify Production:\"; flagsmith -e [env-0c82aea798e4db9d] flag get store_locator; echo \"--- verify Development unchanged:\"; flagsmith -e [env-1d30d7f071cc3e88] flag get store_locator"
   ],
   "transcript": [
     {
@@ -117,7 +117,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp && flagsmith -e AvUndLuy2eMwqRJdU4MaRa flag get store_locator; echo \"rc=$?\"; flagsmith -e AvUndLuy2eMwqRJdU4MaRa flag list --json | jq '.[] | select(.feature.name==\"store_locator\") // empty' 2>/dev/null | head -40"
+            "command": "cd /tmp && flagsmith -e [env-0c82aea798e4db9d] flag get store_locator; echo \"rc=$?\"; flagsmith -e [env-0c82aea798e4db9d] flag list --json | jq '.[] | select(.feature.name==\"store_locator\") // empty' 2>/dev/null | head -40"
           },
           "output": "Feature              store_locator\nDescription          \nType                 standard\nState                on\nValue                fast_lane\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\nrc=0",
           "isError": false,
@@ -142,7 +142,7 @@
           "input": {
             "command": "cd /tmp && flagsmith environment --help | head -20; flagsmith environment list --json 2>/dev/null | jq -r '.[]? | \"\\(.id) \\(.name) \\(.api_key // .key // \"\")\"' 2>/dev/null || flagsmith environment list"
           },
-          "output": "Manage environments in the current project\n\nUsage:\n  flagsmith environment [command] [flags]\n\nAliases:\n  environment, env\n\nAvailable Commands:\n  clone       Clone an environment into a new one\n  create      Create an environment (mints a client-side key)\n  delete      Delete an environment\n  document    Output the environment document (JSON for local SDK evaluation)\n  get         Show an environment\n  key         Manage an environment's server-side SDK keys\n  list        List environments in the current project\n  update      Update an environment\n\nFlags:\n  -h, --help   help for environment\n264 Development e9GEGMMqGGkTyZ8fTRAd5J\n265 Production AvUndLuy2eMwqRJdU4MaRa",
+          "output": "Manage environments in the current project\n\nUsage:\n  flagsmith environment [command] [flags]\n\nAliases:\n  environment, env\n\nAvailable Commands:\n  clone       Clone an environment into a new one\n  create      Create an environment (mints a client-side key)\n  delete      Delete an environment\n  document    Output the environment document (JSON for local SDK evaluation)\n  get         Show an environment\n  key         Manage an environment's server-side SDK keys\n  list        List environments in the current project\n  update      Update an environment\n\nFlags:\n  -h, --help   help for environment\n264 Development [env-1d30d7f071cc3e88]\n265 Production [env-0c82aea798e4db9d]",
           "isError": false,
           "ms": 2217
         }
@@ -158,14 +158,14 @@
     },
     {
       "turn": 6,
-      "text": "The key `AvUndLuy2eMwqRJdU4MaRa` is Production (id 265). Now I'll turn the flag off there.",
+      "text": "The key `[env-0c82aea798e4db9d]` is Production (id 265). Now I'll turn the flag off there.",
       "calls": [
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp && flagsmith -e AvUndLuy2eMwqRJdU4MaRa flag disable store_locator; echo \"rc=$?\"; flagsmith -e AvUndLuy2eMwqRJdU4MaRa flag get store_locator"
+            "command": "cd /tmp && flagsmith -e [env-0c82aea798e4db9d] flag disable store_locator; echo \"rc=$?\"; flagsmith -e [env-0c82aea798e4db9d] flag get store_locator"
           },
-          "output": "rc=2\nFeature              store_locator\nDescription          \nType                 standard\nState                on\nValue                fast_lane\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n\n[stderr]\nError: pass --yes to confirm \"Update store_locator in environment Production (AvUndLuy2eMwqRJdU4MaRa)?\" without an interactive terminal\nUsage:\n  flagsmith flag disable <feature> [flags]\n\nExamples:\n  flagsmith flag disable onboarding\n  flagsmith flag disable onboarding --segment 12\n\nFlags:\n  -h, --help                help for disable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively",
+          "output": "rc=2\nFeature              store_locator\nDescription          \nType                 standard\nState                on\nValue                fast_lane\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n\n[stderr]\nError: pass --yes to confirm \"Update store_locator in environment Production ([env-0c82aea798e4db9d])?\" without an interactive terminal\nUsage:\n  flagsmith flag disable <feature> [flags]\n\nExamples:\n  flagsmith flag disable onboarding\n  flagsmith flag disable onboarding --segment 12\n\nFlags:\n  -h, --help                help for disable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively",
           "isError": false,
           "ms": 4451
         }
@@ -181,14 +181,14 @@
     },
     {
       "turn": 7,
-      "text": "The CLI asked for confirmation. The prompt names the exact target (store_locator in Production, AvUndLuy2eMwqRJdU4MaRa), so I'll confirm with `--yes`.",
+      "text": "The CLI asked for confirmation. The prompt names the exact target (store_locator in Production, [env-0c82aea798e4db9d]), so I'll confirm with `--yes`.",
       "calls": [
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp && flagsmith -e AvUndLuy2eMwqRJdU4MaRa flag disable store_locator --yes; echo \"rc=$?\"; echo \"--- verify Production:\"; flagsmith -e AvUndLuy2eMwqRJdU4MaRa flag get store_locator; echo \"--- verify Development unchanged:\"; flagsmith -e e9GEGMMqGGkTyZ8fTRAd5J flag get store_locator"
+            "command": "cd /tmp && flagsmith -e [env-0c82aea798e4db9d] flag disable store_locator --yes; echo \"rc=$?\"; echo \"--- verify Production:\"; flagsmith -e [env-0c82aea798e4db9d] flag get store_locator; echo \"--- verify Development unchanged:\"; flagsmith -e [env-1d30d7f071cc3e88] flag get store_locator"
           },
-          "output": "Feature              store_locator\nDescription          \nType                 standard\nState                off\nValue                fast_lane\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\nrc=0\n--- verify Production:\nFeature              store_locator\nDescription          \nType                 standard\nState                off\nValue                fast_lane\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n--- verify Development unchanged:\nFeature              store_locator\nDescription          \nType                 standard\nState                on\nValue                fast_lane\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n\n[stderr]\n✓ Disabled store_locator in environment Production (AvUndLuy2eMwqRJdU4MaRa)",
+          "output": "Feature              store_locator\nDescription          \nType                 standard\nState                off\nValue                fast_lane\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\nrc=0\n--- verify Production:\nFeature              store_locator\nDescription          \nType                 standard\nState                off\nValue                fast_lane\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n--- verify Development unchanged:\nFeature              store_locator\nDescription          \nType                 standard\nState                on\nValue                fast_lane\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n\n[stderr]\n✓ Disabled store_locator in environment Production ([env-0c82aea798e4db9d])",
           "isError": false,
           "ms": 5101
         }

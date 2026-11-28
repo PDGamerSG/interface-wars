@@ -64,7 +64,7 @@
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
     "flagsmith feature create --help | head -40; flagsmith feature list --json --jq '.[] | select(.name==\"express_shipping\") | .name'; echo \"exists-check done\"",
-    "flagsmith feature create express_shipping --description \"Gates the express shipping rollout\" --yes && flagsmith flag get express_shipping -e 6CRc9gJKqGuv7hQtKcyaVf --json --jq '{enabled,value}'; flagsmith flag get express_shipping -e TQYhV9e9YRdbFvekGeSt62 --json --jq '{enabled,value}'",
+    "flagsmith feature create express_shipping --description \"Gates the express shipping rollout\" --yes && flagsmith flag get express_shipping -e [env-9382bc40223e3cd6] --json --jq '{enabled,value}'; flagsmith flag get express_shipping -e [env-3d3eefa4e9fc432d] --json --jq '{enabled,value}'",
     "flagsmith environment list --json --jq '.[] | {name,key}' 2>&1; flagsmith feature list --json --jq '.[] | select(.name==\"express_shipping\") | {id,name,description}'"
   ],
   "transcript": [
@@ -121,7 +121,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith feature create express_shipping --description \"Gates the express shipping rollout\" --yes && flagsmith flag get express_shipping -e 6CRc9gJKqGuv7hQtKcyaVf --json --jq '{enabled,value}'; flagsmith flag get express_shipping -e TQYhV9e9YRdbFvekGeSt62 --json --jq '{enabled,value}'"
+            "command": "flagsmith feature create express_shipping --description \"Gates the express shipping rollout\" --yes && flagsmith flag get express_shipping -e [env-9382bc40223e3cd6] --json --jq '{enabled,value}'; flagsmith flag get express_shipping -e [env-3d3eefa4e9fc432d] --json --jq '{enabled,value}'"
           },
           "output": "Feature         express_shipping (580)\nDescription     Gates the express shipping rollout\nType            standard\nDefault value   -\nEnabled         false\n{\"enabled\":false,\"value\":null}\n{\"enabled\":false,\"value\":null}\n\n[stderr]\n✓ Created feature express_shipping (580)",
           "isError": false,

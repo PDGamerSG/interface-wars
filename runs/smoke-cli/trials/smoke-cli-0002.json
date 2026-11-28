@@ -35,9 +35,9 @@
     "flagsmith --help; echo; flagsmith features --help 2>&1 | head -50",
     "flagsmith feature --help; flagsmith feature update --help 2>&1; flagsmith flag --help 2>&1",
     "flagsmith flag update --help; flagsmith flag get --help | head -20; flagsmith config",
-    "flagsmith -e JjhTBswFdABGzeMQnhkBZg flag get gift_wrap; echo ---; flagsmith -e JjhTBswFdABGzeMQnhkBZg flag get gift_wrap --json",
-    "flagsmith -e JjhTBswFdABGzeMQnhkBZg flag update gift_wrap --value fast_lane && echo --- && flagsmith -e JjhTBswFdABGzeMQnhkBZg flag get gift_wrap --json",
-    "flagsmith -e JjhTBswFdABGzeMQnhkBZg flag update gift_wrap --value fast_lane --yes && echo --- && flagsmith -e JjhTBswFdABGzeMQnhkBZg flag get gift_wrap --json"
+    "flagsmith -e [env-0a6e9e82c4e9754e] flag get gift_wrap; echo ---; flagsmith -e [env-0a6e9e82c4e9754e] flag get gift_wrap --json",
+    "flagsmith -e [env-0a6e9e82c4e9754e] flag update gift_wrap --value fast_lane && echo --- && flagsmith -e [env-0a6e9e82c4e9754e] flag get gift_wrap --json",
+    "flagsmith -e [env-0a6e9e82c4e9754e] flag update gift_wrap --value fast_lane --yes && echo --- && flagsmith -e [env-0a6e9e82c4e9754e] flag get gift_wrap --json"
   ],
   "transcript": [
     {
@@ -116,7 +116,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith -e JjhTBswFdABGzeMQnhkBZg flag get gift_wrap; echo ---; flagsmith -e JjhTBswFdABGzeMQnhkBZg flag get gift_wrap --json"
+            "command": "flagsmith -e [env-0a6e9e82c4e9754e] flag get gift_wrap; echo ---; flagsmith -e [env-0a6e9e82c4e9754e] flag get gift_wrap --json"
           },
           "output": "Feature              gift_wrap\nDescription          \nType                 standard\nState                on\nValue                max_10\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\n{\n  \"feature\": \"gift_wrap\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"max_10\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}",
           "isError": false,
@@ -139,9 +139,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith -e JjhTBswFdABGzeMQnhkBZg flag update gift_wrap --value fast_lane && echo --- && flagsmith -e JjhTBswFdABGzeMQnhkBZg flag get gift_wrap --json"
+            "command": "flagsmith -e [env-0a6e9e82c4e9754e] flag update gift_wrap --value fast_lane && echo --- && flagsmith -e [env-0a6e9e82c4e9754e] flag get gift_wrap --json"
           },
-          "output": "[stderr]\nError: pass --yes to confirm \"Update gift_wrap in environment Development (JjhTBswFdABGzeMQnhkBZg)?\" without an interactive terminal\nUsage:\n  flagsmith flag update <feature> [flags]\n\nExamples:\n  # toggle the environment default\n  flagsmith flag update onboarding --enable\n  flagsmith flag update onboarding --disable\n\n  # set a value (type inferred, or forced with --type)\n  flagsmith flag update banner-text --value \"Welcome!\"\n  flagsmith flag update max-items --value 10 --type integer\n\n  # target a segment or identity override instead of the default\n  flagsmith flag update onboarding --enable --segment 12\n  flagsmith flag update onboarding --value beta --identifier user-123\n\n  # re-weight a multivariate flag's variants (by key or id)\n  flagsmith flag update banner-copy --weight hero=25 --weight sub=75\n  flagsmith flag update banner-copy --segment 12 --weight hero=100,sub=0\n\nFlags:\n      --disable              turn the flag off\n      --enable               turn the flag on\n  -h, --help                 help for update\n  -i, --identifier string    target this identity's override instead of the environment default\n      --priority int         move the segment override to this priority (0 is evaluated first)\n      --segment string       target this segment's override (id or name) instead of the environment default\n      --type string          force the value type: string, integer, or boolean\n      --value string         set the flag value\n      --weight stringArray   set a variant's weight, as <key|id>=<percentage> (repeatable, or comma-separated)\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n[exit code 2]",
+          "output": "[stderr]\nError: pass --yes to confirm \"Update gift_wrap in environment Development ([env-0a6e9e82c4e9754e])?\" without an interactive terminal\nUsage:\n  flagsmith flag update <feature> [flags]\n\nExamples:\n  # toggle the environment default\n  flagsmith flag update onboarding --enable\n  flagsmith flag update onboarding --disable\n\n  # set a value (type inferred, or forced with --type)\n  flagsmith flag update banner-text --value \"Welcome!\"\n  flagsmith flag update max-items --value 10 --type integer\n\n  # target a segment or identity override instead of the default\n  flagsmith flag update onboarding --enable --segment 12\n  flagsmith flag update onboarding --value beta --identifier user-123\n\n  # re-weight a multivariate flag's variants (by key or id)\n  flagsmith flag update banner-copy --weight hero=25 --weight sub=75\n  flagsmith flag update banner-copy --segment 12 --weight hero=100,sub=0\n\nFlags:\n      --disable              turn the flag off\n      --enable               turn the flag on\n  -h, --help                 help for update\n  -i, --identifier string    target this identity's override instead of the environment default\n      --priority int         move the segment override to this priority (0 is evaluated first)\n      --segment string       target this segment's override (id or name) instead of the environment default\n      --type string          force the value type: string, integer, or boolean\n      --value string         set the flag value\n      --weight stringArray   set a variant's weight, as <key|id>=<percentage> (repeatable, or comma-separated)\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n[exit code 2]",
           "isError": true,
           "ms": 771
         }
@@ -157,14 +157,14 @@
     },
     {
       "turn": 6,
-      "text": "The CLI wants explicit confirmation. The prompt names the Development environment (`JjhTBswFdABGzeMQnhkBZg`), so I'll confirm with `--yes` and re-check the result.",
+      "text": "The CLI wants explicit confirmation. The prompt names the Development environment (`[env-0a6e9e82c4e9754e]`), so I'll confirm with `--yes` and re-check the result.",
       "calls": [
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith -e JjhTBswFdABGzeMQnhkBZg flag update gift_wrap --value fast_lane --yes && echo --- && flagsmith -e JjhTBswFdABGzeMQnhkBZg flag get gift_wrap --json"
+            "command": "flagsmith -e [env-0a6e9e82c4e9754e] flag update gift_wrap --value fast_lane --yes && echo --- && flagsmith -e [env-0a6e9e82c4e9754e] flag get gift_wrap --json"
           },
-          "output": "Feature              gift_wrap\nDescription          \nType                 standard\nState                on\nValue                fast_lane\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\n{\n  \"feature\": \"gift_wrap\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"fast_lane\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\n\n[stderr]\n✓ Set gift_wrap to \"fast_lane\" in environment Development (JjhTBswFdABGzeMQnhkBZg)",
+          "output": "Feature              gift_wrap\nDescription          \nType                 standard\nState                on\nValue                fast_lane\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\n{\n  \"feature\": \"gift_wrap\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"fast_lane\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\n\n[stderr]\n✓ Set gift_wrap to \"fast_lane\" in environment Development ([env-0a6e9e82c4e9754e])",
           "isError": false,
           "ms": 1624
         }

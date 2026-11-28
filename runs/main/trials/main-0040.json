@@ -30,8 +30,8 @@
   "turns": 3,
   "ms": 10382,
   "commands": [
-    "create_metric {\"environment_api_key\":\"kmiBNC3SAbhwFzhJrg6DZE\",\"name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":\"checkout_completed\"}",
-    "create_metric {\"environment_api_key\":\"kmiBNC3SAbhwFzhJrg6DZE\",\"name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"event\":\"checkout_completed\"}}"
+    "create_metric {\"environment_api_key\":\"[env-1efc577f3ae53ce0]\",\"name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":\"checkout_completed\"}",
+    "create_metric {\"environment_api_key\":\"[env-1efc577f3ae53ce0]\",\"name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"event\":\"checkout_completed\"}}"
   ],
   "transcript": [
     {
@@ -41,7 +41,7 @@
         {
           "name": "create_metric",
           "input": {
-            "environment_api_key": "kmiBNC3SAbhwFzhJrg6DZE",
+            "environment_api_key": "[env-1efc577f3ae53ce0]",
             "name": "checkout_completed",
             "aggregation": "occurrence",
             "direction": "up",
@@ -68,7 +68,7 @@
         {
           "name": "create_metric",
           "input": {
-            "environment_api_key": "kmiBNC3SAbhwFzhJrg6DZE",
+            "environment_api_key": "[env-1efc577f3ae53ce0]",
             "name": "checkout_completed",
             "aggregation": "occurrence",
             "direction": "up",

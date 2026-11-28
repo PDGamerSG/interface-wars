@@ -24,7 +24,7 @@
     }
   ],
   "outcome": "done",
-  "finalText": "DONE: Removed the mobile_app_users (84) segment override of live_chat in Production (k5wUdh2ta8nNEz4Rws4Dvg), which now shows no segment overrides. Development (KrSz9A4PaSP6GFkkzioT25) still has its override (on, segment_copy). My first delete attempt was rejected for lack of confirmation and changed nothing; the second, with `--yes`, succeeded.",
+  "finalText": "DONE: Removed the mobile_app_users (84) segment override of live_chat in Production ([env-b9b9a33eb54f2a5c]), which now shows no segment overrides. Development ([env-cf09903691838e73]) still has its override (on, segment_copy). My first delete attempt was rejected for lack of confirmation and changed nothing; the second, with `--yes`, succeeded.",
   "costUsd": 0.00181,
   "usage": {
     "input": 16,
@@ -40,9 +40,9 @@
     "flagsmith --help; echo ---; flagsmith --help 2>&1 | head -0; flagsmith features --help 2>&1; flagsmith segments --help 2>&1",
     "flagsmith feature --help; echo ---; flagsmith flag --help; echo ---; flagsmith segment --help; echo ---; flagsmith config",
     "flagsmith flag delete --help; echo ---; flagsmith flag get --help; echo ---; flagsmith flag list --help",
-    "cd /tmp; for env in KrSz9A4PaSP6GFkkzioT25 k5wUdh2ta8nNEz4Rws4Dvg; do echo \"== env $env\"; flagsmith -e $env flag list --feature live_chat; echo; flagsmith -e $env flag list --feature live_chat --json | jq -c '.' ; done",
-    "cd /tmp; flagsmith -e k5wUdh2ta8nNEz4Rws4Dvg flag delete live_chat --segment 84; echo \"exit=$?\"; echo \"== Production after\"; flagsmith -e k5wUdh2ta8nNEz4Rws4Dvg flag list --feature live_chat; echo \"== Development after\"; flagsmith -e KrSz9A4PaSP6GFkkzioT25 flag list --feature live_chat",
-    "cd /tmp; flagsmith -e k5wUdh2ta8nNEz4Rws4Dvg flag delete live_chat --segment 84 --yes; echo \"exit=$?\"; echo \"== Production after\"; flagsmith -e k5wUdh2ta8nNEz4Rws4Dvg flag list --feature live_chat; echo \"== Development after\"; flagsmith -e KrSz9A4PaSP6GFkkzioT25 flag list --feature live_chat"
+    "cd /tmp; for env in [env-cf09903691838e73] [env-b9b9a33eb54f2a5c]; do echo \"== env $env\"; flagsmith -e $env flag list --feature live_chat; echo; flagsmith -e $env flag list --feature live_chat --json | jq -c '.' ; done",
+    "cd /tmp; flagsmith -e [env-b9b9a33eb54f2a5c] flag delete live_chat --segment 84; echo \"exit=$?\"; echo \"== Production after\"; flagsmith -e [env-b9b9a33eb54f2a5c] flag list --feature live_chat; echo \"== Development after\"; flagsmith -e [env-cf09903691838e73] flag list --feature live_chat",
+    "cd /tmp; flagsmith -e [env-b9b9a33eb54f2a5c] flag delete live_chat --segment 84 --yes; echo \"exit=$?\"; echo \"== Production after\"; flagsmith -e [env-b9b9a33eb54f2a5c] flag list --feature live_chat; echo \"== Development after\"; flagsmith -e [env-cf09903691838e73] flag list --feature live_chat"
   ],
   "transcript": [
     {
@@ -121,9 +121,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; for env in KrSz9A4PaSP6GFkkzioT25 k5wUdh2ta8nNEz4Rws4Dvg; do echo \"== env $env\"; flagsmith -e $env flag list --feature live_chat; echo; flagsmith -e $env flag list --feature live_chat --json | jq -c '.' ; done"
+            "command": "cd /tmp; for env in [env-cf09903691838e73] [env-b9b9a33eb54f2a5c]; do echo \"== env $env\"; flagsmith -e $env flag list --feature live_chat; echo; flagsmith -e $env flag list --feature live_chat --json | jq -c '.' ; done"
           },
-          "output": "== env KrSz9A4PaSP6GFkkzioT25\nPRIORITY   SEGMENT                 STATE   VALUE\n0          mobile_app_users (84)   on      segment_copy\n\n1 override\n\n[{\"feature\":\"live_chat\",\"type\":\"standard\",\"segment\":{\"id\":84,\"name\":\"mobile_app_users\"},\"priority\":0,\"enabled\":true,\"value\":\"segment_copy\"}]\n== env k5wUdh2ta8nNEz4Rws4Dvg\nPRIORITY   SEGMENT                 STATE   VALUE\n0          mobile_app_users (84)   on      segment_copy\n\n1 override\n\n[{\"feature\":\"live_chat\",\"type\":\"standard\",\"segment\":{\"id\":84,\"name\":\"mobile_app_users\"},\"priority\":0,\"enabled\":true,\"value\":\"segment_copy\"}]",
+          "output": "== env [env-cf09903691838e73]\nPRIORITY   SEGMENT                 STATE   VALUE\n0          mobile_app_users (84)   on      segment_copy\n\n1 override\n\n[{\"feature\":\"live_chat\",\"type\":\"standard\",\"segment\":{\"id\":84,\"name\":\"mobile_app_users\"},\"priority\":0,\"enabled\":true,\"value\":\"segment_copy\"}]\n== env [env-b9b9a33eb54f2a5c]\nPRIORITY   SEGMENT                 STATE   VALUE\n0          mobile_app_users (84)   on      segment_copy\n\n1 override\n\n[{\"feature\":\"live_chat\",\"type\":\"standard\",\"segment\":{\"id\":84,\"name\":\"mobile_app_users\"},\"priority\":0,\"enabled\":true,\"value\":\"segment_copy\"}]",
           "isError": false,
           "ms": 4943
         }
@@ -144,9 +144,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith -e k5wUdh2ta8nNEz4Rws4Dvg flag delete live_chat --segment 84; echo \"exit=$?\"; echo \"== Production after\"; flagsmith -e k5wUdh2ta8nNEz4Rws4Dvg flag list --feature live_chat; echo \"== Development after\"; flagsmith -e KrSz9A4PaSP6GFkkzioT25 flag list --feature live_chat"
+            "command": "cd /tmp; flagsmith -e [env-b9b9a33eb54f2a5c] flag delete live_chat --segment 84; echo \"exit=$?\"; echo \"== Production after\"; flagsmith -e [env-b9b9a33eb54f2a5c] flag list --feature live_chat; echo \"== Development after\"; flagsmith -e [env-cf09903691838e73] flag list --feature live_chat"
           },
-          "output": "exit=2\n== Production after\nPRIORITY   SEGMENT                 STATE   VALUE\n0          mobile_app_users (84)   on      segment_copy\n\n1 override\n== Development after\nPRIORITY   SEGMENT                 STATE   VALUE\n0          mobile_app_users (84)   on      segment_copy\n\n1 override\n\n[stderr]\nError: pass --yes to confirm \"delete live_chat override for segment mobile_app_users (84) in Production (k5wUdh2ta8nNEz4Rws4Dvg)?\" without an interactive terminal\nUsage:\n  flagsmith flag delete <feature> [flags]\n\nExamples:\n  # remove a segment or identity override (the flag itself is untouched)\n  flagsmith flag delete onboarding --segment 12\n  flagsmith flag delete onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for delete\n  -i, --identifier string   the identity whose override to delete\n      --segment string      the segment (id or name) whose override to delete\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively",
+          "output": "exit=2\n== Production after\nPRIORITY   SEGMENT                 STATE   VALUE\n0          mobile_app_users (84)   on      segment_copy\n\n1 override\n== Development after\nPRIORITY   SEGMENT                 STATE   VALUE\n0          mobile_app_users (84)   on      segment_copy\n\n1 override\n\n[stderr]\nError: pass --yes to confirm \"delete live_chat override for segment mobile_app_users (84) in Production ([env-b9b9a33eb54f2a5c])?\" without an interactive terminal\nUsage:\n  flagsmith flag delete <feature> [flags]\n\nExamples:\n  # remove a segment or identity override (the flag itself is untouched)\n  flagsmith flag delete onboarding --segment 12\n  flagsmith flag delete onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for delete\n  -i, --identifier string   the identity whose override to delete\n      --segment string      the segment (id or name) whose override to delete\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively",
           "isError": false,
           "ms": 4735
         }
@@ -167,9 +167,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith -e k5wUdh2ta8nNEz4Rws4Dvg flag delete live_chat --segment 84 --yes; echo \"exit=$?\"; echo \"== Production after\"; flagsmith -e k5wUdh2ta8nNEz4Rws4Dvg flag list --feature live_chat; echo \"== Development after\"; flagsmith -e KrSz9A4PaSP6GFkkzioT25 flag list --feature live_chat"
+            "command": "cd /tmp; flagsmith -e [env-b9b9a33eb54f2a5c] flag delete live_chat --segment 84 --yes; echo \"exit=$?\"; echo \"== Production after\"; flagsmith -e [env-b9b9a33eb54f2a5c] flag list --feature live_chat; echo \"== Development after\"; flagsmith -e [env-cf09903691838e73] flag list --feature live_chat"
           },
-          "output": "exit=0\n== Production after\nNo segment overrides.\n== Development after\nPRIORITY   SEGMENT                 STATE   VALUE\n0          mobile_app_users (84)   on      segment_copy\n\n1 override\n\n[stderr]\n✓ Deleted live_chat override for segment mobile_app_users (84) in environment Production (k5wUdh2ta8nNEz4Rws4Dvg)",
+          "output": "exit=0\n== Production after\nNo segment overrides.\n== Development after\nPRIORITY   SEGMENT                 STATE   VALUE\n0          mobile_app_users (84)   on      segment_copy\n\n1 override\n\n[stderr]\n✓ Deleted live_chat override for segment mobile_app_users (84) in environment Production ([env-b9b9a33eb54f2a5c])",
           "isError": false,
           "ms": 3609
         }
@@ -185,7 +185,7 @@
     },
     {
       "turn": 7,
-      "text": "DONE: Removed the mobile_app_users (84) segment override of live_chat in Production (k5wUdh2ta8nNEz4Rws4Dvg), which now shows no segment overrides. Development (KrSz9A4PaSP6GFkkzioT25) still has its override (on, segment_copy). My first delete attempt was rejected for lack of confirmation and changed nothing; the second, with `--yes`, succeeded.",
+      "text": "DONE: Removed the mobile_app_users (84) segment override of live_chat in Production ([env-b9b9a33eb54f2a5c]), which now shows no segment overrides. Development ([env-cf09903691838e73]) still has its override (on, segment_copy). My first delete attempt was rejected for lack of confirmation and changed nothing; the second, with `--yes`, succeeded.",
       "calls": [],
       "usage": {
         "input": 2,

@@ -33,12 +33,12 @@
   "ms": 29729,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "E=CgJAjZphFNRSW3kRsDbQwd; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'",
-    "E=CgJAjZphFNRSW3kRsDbQwd; flagsmith api api/v1/environments/$E/experiments/49/ | jq '{status,rollout_decision,metrics,experiment_rollout,feature}'; flagsmith flag get size_guide_copy -e $E --json --jq '{enabled,value,variants}'",
-    "E=CgJAjZphFNRSW3kRsDbQwd; flagsmith api api/v1/environments/$E/experiments/ | jq '.results[] | select(.id==49)'; echo ---; flagsmith flag get size_guide_copy -e $E --json --jq '{enabled,value,variants}'",
-    "E=CgJAjZphFNRSW3kRsDbQwd; flagsmith api \"api/v1/environments/$E/featurestates/?feature=1130\" | jq '.results[] | {id,enabled,feature_state_value,multivariate_feature_state_values}'",
-    "E=CgJAjZphFNRSW3kRsDbQwd; flagsmith api api/v1/environments/$E/experiments/49/start/ -X POST; echo; flagsmith api api/v1/environments/$E/experiments/ | jq '.results[] | select(.id==49) | {status,started_at,ended_at}'; flagsmith api \"api/v1/environments/$E/featurestates/?feature=1130\" | jq '.results[] | {enabled,feature_state_value,multivariate_feature_state_values}'",
-    "E=CgJAjZphFNRSW3kRsDbQwd; flagsmith flag get size_guide_copy -e $E --json --jq '{enabled,value,variants}'"
+    "E=[env-fce0f3d8991a95e5]; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'",
+    "E=[env-fce0f3d8991a95e5]; flagsmith api api/v1/environments/$E/experiments/49/ | jq '{status,rollout_decision,metrics,experiment_rollout,feature}'; flagsmith flag get size_guide_copy -e $E --json --jq '{enabled,value,variants}'",
+    "E=[env-fce0f3d8991a95e5]; flagsmith api api/v1/environments/$E/experiments/ | jq '.results[] | select(.id==49)'; echo ---; flagsmith flag get size_guide_copy -e $E --json --jq '{enabled,value,variants}'",
+    "E=[env-fce0f3d8991a95e5]; flagsmith api \"api/v1/environments/$E/featurestates/?feature=1130\" | jq '.results[] | {id,enabled,feature_state_value,multivariate_feature_state_values}'",
+    "E=[env-fce0f3d8991a95e5]; flagsmith api api/v1/environments/$E/experiments/49/start/ -X POST; echo; flagsmith api api/v1/environments/$E/experiments/ | jq '.results[] | select(.id==49) | {status,started_at,ended_at}'; flagsmith api \"api/v1/environments/$E/featurestates/?feature=1130\" | jq '.results[] | {enabled,feature_state_value,multivariate_feature_state_values}'",
+    "E=[env-fce0f3d8991a95e5]; flagsmith flag get size_guide_copy -e $E --json --jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -71,7 +71,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "E=CgJAjZphFNRSW3kRsDbQwd; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'"
+            "command": "E=[env-fce0f3d8991a95e5]; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'"
           },
           "output": "{\"feature\":{\"id\":1130,\"initial_value\":\"Buy now\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":95,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Get it today\",\"type\":\"unicode\",\"uuid\":\"566c8f43-5ba0-4ed5-b46c-0ec3e38ac760\"}],\"name\":\"size_guide_copy\",\"type\":\"MULTIVARIATE\"},\"id\":49,\"name\":\"size_guide_copy test\",\"rollout_decision\":null,\"status\":\"created\"}",
           "isError": false,
@@ -94,9 +94,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "E=CgJAjZphFNRSW3kRsDbQwd; flagsmith api api/v1/environments/$E/experiments/49/ | jq '{status,rollout_decision,metrics,experiment_rollout,feature}'; flagsmith flag get size_guide_copy -e $E --json --jq '{enabled,value,variants}'"
+            "command": "E=[env-fce0f3d8991a95e5]; flagsmith api api/v1/environments/$E/experiments/49/ | jq '{status,rollout_decision,metrics,experiment_rollout,feature}'; flagsmith flag get size_guide_copy -e $E --json --jq '{enabled,value,variants}'"
           },
-          "output": "[stderr]\n\n<!doctype html>\n<html lang=\"en\">\n<head>\n  <title>Server Error (500)</title>\n</head>\n<body>\n  <h1>Server Error (500)</h1><p></p>\n</body>\n</html>\nError: GET http://host.docker.internal:8300/api/v1/environments/CgJAjZphFNRSW3kRsDbQwd/experiments/49/ returned 500 Internal Server Error\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\nError: GET http://host.docker.internal:8300/api/v1/environments/?project=292&page_size=999 returned 500 Internal Server Error\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\n[exit code 1]",
+          "output": "[stderr]\n\n<!doctype html>\n<html lang=\"en\">\n<head>\n  <title>Server Error (500)</title>\n</head>\n<body>\n  <h1>Server Error (500)</h1><p></p>\n</body>\n</html>\nError: GET http://host.docker.internal:8300/api/v1/environments/[env-fce0f3d8991a95e5]/experiments/49/ returned 500 Internal Server Error\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\nError: GET http://host.docker.internal:8300/api/v1/environments/?project=292&page_size=999 returned 500 Internal Server Error\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\n[exit code 1]",
           "isError": true,
           "ms": 1319
         }
@@ -117,7 +117,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "E=CgJAjZphFNRSW3kRsDbQwd; flagsmith api api/v1/environments/$E/experiments/ | jq '.results[] | select(.id==49)'; echo ---; flagsmith flag get size_guide_copy -e $E --json --jq '{enabled,value,variants}'"
+            "command": "E=[env-fce0f3d8991a95e5]; flagsmith api api/v1/environments/$E/experiments/ | jq '.results[] | select(.id==49)'; echo ---; flagsmith flag get size_guide_copy -e $E --json --jq '{enabled,value,variants}'"
           },
           "output": "{\n  \"id\": 49,\n  \"feature\": {\n    \"id\": 1130,\n    \"name\": \"size_guide_copy\",\n    \"type\": \"MULTIVARIATE\",\n    \"initial_value\": \"Buy now\",\n    \"multivariate_options\": [\n      {\n        \"id\": 95,\n        \"uuid\": \"566c8f43-5ba0-4ed5-b46c-0ec3e38ac760\",\n        \"type\": \"unicode\",\n        \"integer_value\": null,\n        \"string_value\": \"Get it today\",\n        \"boolean_value\": null,\n        \"default_percentage_allocation\": 0.0,\n        \"key\": \"b\"\n      }\n    ]\n  },\n  \"name\": \"size_guide_copy test\",\n  \"hypothesis\": \"Get it today wins\",\n  \"status\": \"created\",\n  \"metrics\": [\n    {\n      \"id\": 64,\n      \"metric\": 88,\n      \"metric_name\": \"signup_completed\",\n      \"aggregation\": \"occurrence\",\n      \"direction\": \"up\",\n      \"expected_direction\": \"increase\",\n      \"created_at\": \"2026-11-27T20:11:32.820067Z\"\n    }\n  ],\n  \"created_at\": \"2026-11-27T20:11:32.818410Z\",\n  \"updated_at\": \"2026-11-27T20:11:32.837736Z\",\n  \"started_at\": null,\n  \"ended_at\": null,\n  \"rollout_decision\": null,\n  \"rollout_variant\": null\n}\n---\n{\"enabled\":true,\"value\":\"Buy now\",\"variants\":[{\"id\":95,\"key\":\"b\",\"value\":\"Get it today\",\"weight\":0}]}",
           "isError": false,
@@ -140,7 +140,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "E=CgJAjZphFNRSW3kRsDbQwd; flagsmith api \"api/v1/environments/$E/featurestates/?feature=1130\" | jq '.results[] | {id,enabled,feature_state_value,multivariate_feature_state_values}'"
+            "command": "E=[env-fce0f3d8991a95e5]; flagsmith api \"api/v1/environments/$E/featurestates/?feature=1130\" | jq '.results[] | {id,enabled,feature_state_value,multivariate_feature_state_values}'"
           },
           "output": "{\n  \"id\": 2350,\n  \"enabled\": true,\n  \"feature_state_value\": \"Buy now\",\n  \"multivariate_feature_state_values\": [\n    {\n      \"id\": 237,\n      \"multivariate_feature_option\": 95,\n      \"percentage_allocation\": 0.0\n    }\n  ]\n}",
           "isError": false,
@@ -163,7 +163,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "E=CgJAjZphFNRSW3kRsDbQwd; flagsmith api api/v1/environments/$E/experiments/49/start/ -X POST; echo; flagsmith api api/v1/environments/$E/experiments/ | jq '.results[] | select(.id==49) | {status,started_at,ended_at}'; flagsmith api \"api/v1/environments/$E/featurestates/?feature=1130\" | jq '.results[] | {enabled,feature_state_value,multivariate_feature_state_values}'"
+            "command": "E=[env-fce0f3d8991a95e5]; flagsmith api api/v1/environments/$E/experiments/49/start/ -X POST; echo; flagsmith api api/v1/environments/$E/experiments/ | jq '.results[] | select(.id==49) | {status,started_at,ended_at}'; flagsmith api \"api/v1/environments/$E/featurestates/?feature=1130\" | jq '.results[] | {enabled,feature_state_value,multivariate_feature_state_values}'"
           },
           "output": "{\"id\":49,\"feature\":{\"id\":1130,\"name\":\"size_guide_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Buy now\",\"multivariate_options\":[{\"id\":95,\"uuid\":\"566c8f43-5ba0-4ed5-b46c-0ec3e38ac760\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Get it today\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"size_guide_copy test\",\"hypothesis\":\"Get it today wins\",\"status\":\"running\",\"metrics\":[{\"id\":64,\"metric\":88,\"metric_name\":\"signup_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:11:32.820067Z\"}],\"created_at\":\"2026-11-27T20:11:32.818410Z\",\"updated_at\":\"2026-11-27T20:11:54.536822Z\",\"started_at\":\"2026-11-27T20:11:54.535916Z\",\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}\n{\n  \"status\": \"running\",\n  \"started_at\": \"2026-11-27T20:11:54.535916Z\",\n  \"ended_at\": null\n}\n{\n  \"enabled\": true,\n  \"feature_state_value\": \"Buy now\",\n  \"multivariate_feature_state_values\": [\n    {\n      \"id\": 237,\n      \"multivariate_feature_option\": 95,\n      \"percentage_allocation\": 0.0\n    }\n  ]\n}",
           "isError": false,
@@ -186,7 +186,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "E=CgJAjZphFNRSW3kRsDbQwd; flagsmith flag get size_guide_copy -e $E --json --jq '{enabled,value,variants}'"
+            "command": "E=[env-fce0f3d8991a95e5]; flagsmith flag get size_guide_copy -e $E --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"enabled\":true,\"value\":\"Buy now\",\"variants\":[{\"id\":95,\"key\":\"b\",\"value\":\"Get it today\",\"weight\":0}]}",
           "isError": false,

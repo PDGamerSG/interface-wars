@@ -24,7 +24,7 @@
     }
   ],
   "outcome": "done",
-  "finalText": "DONE: In Production (HxAw4d4q2XUAfrLW2M9ZrG), `loyalty_points` now has a segment override for `mobile_app_users` (id 44) that is enabled with value `v2`, verified by read-back. The environment default is unchanged (still disabled, value `off_copy`), and Development is unchanged (disabled, no overrides).",
+  "finalText": "DONE: In Production ([env-c9b077f7cdfdbed5]), `loyalty_points` now has a segment override for `mobile_app_users` (id 44) that is enabled with value `v2`, verified by read-back. The environment default is unchanged (still disabled, value `off_copy`), and Development is unchanged (disabled, no overrides).",
   "costUsd": 0.002384,
   "usage": {
     "input": 20,
@@ -38,13 +38,13 @@
   "ms": 28681,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "cd /tmp; flagsmith flag get loyalty_points -e HxAw4d4q2XUAfrLW2M9ZrG --json; echo; flagsmith segment list --json --jq '.[] | select(.name==\"mobile_app_users\") | {id,name}'; flagsmith feature variant list loyalty_points --json",
-    "cd /tmp; flagsmith flag update loyalty_points -e HxAw4d4q2XUAfrLW2M9ZrG --segment mobile_app_users --enable --value \"v2\" --yes; echo ---; flagsmith flag get loyalty_points -e HxAw4d4q2XUAfrLW2M9ZrG --json --jq '{enabled,value,segment_overrides}'; flagsmith api \"api/v1/environments/HxAw4d4q2XUAfrLW2M9ZrG/featurestates/?feature=$(flagsmith api \"api/v1/projects/105/features/?name=loyalty_points\" --jq '.results[0].id')\" --jq '.results[] | {segment: .segment, enabled: .enabled, value: .feature_state_value}'; echo ---; flagsmith flag get loyalty_points -e TnFPfcFSAUrA4BQp7YbG8D --json --jq '{enabled,value,segment_overrides}'",
-    "cd /tmp; flagsmith flag get loyalty_points -e HxAw4d4q2XUAfrLW2M9ZrG --json --jq '.segment_overrides'; flagsmith api \"api/v1/environments/HxAw4d4q2XUAfrLW2M9ZrG/featurestates/\" --jq '.results[] | select(.feature.name==\"loyalty_points\") | {id, segment: .segment, enabled, value: .feature_state_value}'",
-    "cd /tmp; flagsmith api \"api/v1/environments/HxAw4d4q2XUAfrLW2M9ZrG/featurestates/?page_size=500\" | jq -c '.results[] | select(.feature.name==\"loyalty_points\") | {id, segment: .segment, enabled, value: .feature_state_value}'",
-    "cd /tmp; flagsmith api \"api/v1/environments/HxAw4d4q2XUAfrLW2M9ZrG/featurestates/?page_size=500\" | jq -c '(.results // .)[] | select((.feature|type)==\"object\" and .feature.name==\"loyalty_points\") | {id, segment: .segment, enabled, value: .feature_state_value}'; flagsmith api \"api/v1/environments/HxAw4d4q2XUAfrLW2M9ZrG/featurestates/?feature=$(flagsmith api 'api/v1/projects/105/features/?name=loyalty_points' | jq '(.results//.)[0].id')\" | jq -c '(.results // .)[] | {id, segment, enabled, value: .feature_state_value}'",
-    "cd /tmp; flagsmith flag get loyalty_points -e HxAw4d4q2XUAfrLW2M9ZrG --json | jq '.'; flagsmith flag get --help | head -30",
-    "cd /tmp; flagsmith flag get loyalty_points -e HxAw4d4q2XUAfrLW2M9ZrG --segment mobile_app_users --json; echo; flagsmith flag get loyalty_points -e TnFPfcFSAUrA4BQp7YbG8D --json --jq '{enabled,value,segment_overrides}'"
+    "cd /tmp; flagsmith flag get loyalty_points -e [env-c9b077f7cdfdbed5] --json; echo; flagsmith segment list --json --jq '.[] | select(.name==\"mobile_app_users\") | {id,name}'; flagsmith feature variant list loyalty_points --json",
+    "cd /tmp; flagsmith flag update loyalty_points -e [env-c9b077f7cdfdbed5] --segment mobile_app_users --enable --value \"v2\" --yes; echo ---; flagsmith flag get loyalty_points -e [env-c9b077f7cdfdbed5] --json --jq '{enabled,value,segment_overrides}'; flagsmith api \"api/v1/environments/[env-c9b077f7cdfdbed5]/featurestates/?feature=$(flagsmith api \"api/v1/projects/105/features/?name=loyalty_points\" --jq '.results[0].id')\" --jq '.results[] | {segment: .segment, enabled: .enabled, value: .feature_state_value}'; echo ---; flagsmith flag get loyalty_points -e [env-7f9df21eb2fe3cbb] --json --jq '{enabled,value,segment_overrides}'",
+    "cd /tmp; flagsmith flag get loyalty_points -e [env-c9b077f7cdfdbed5] --json --jq '.segment_overrides'; flagsmith api \"api/v1/environments/[env-c9b077f7cdfdbed5]/featurestates/\" --jq '.results[] | select(.feature.name==\"loyalty_points\") | {id, segment: .segment, enabled, value: .feature_state_value}'",
+    "cd /tmp; flagsmith api \"api/v1/environments/[env-c9b077f7cdfdbed5]/featurestates/?page_size=500\" | jq -c '.results[] | select(.feature.name==\"loyalty_points\") | {id, segment: .segment, enabled, value: .feature_state_value}'",
+    "cd /tmp; flagsmith api \"api/v1/environments/[env-c9b077f7cdfdbed5]/featurestates/?page_size=500\" | jq -c '(.results // .)[] | select((.feature|type)==\"object\" and .feature.name==\"loyalty_points\") | {id, segment: .segment, enabled, value: .feature_state_value}'; flagsmith api \"api/v1/environments/[env-c9b077f7cdfdbed5]/featurestates/?feature=$(flagsmith api 'api/v1/projects/105/features/?name=loyalty_points' | jq '(.results//.)[0].id')\" | jq -c '(.results // .)[] | {id, segment, enabled, value: .feature_state_value}'",
+    "cd /tmp; flagsmith flag get loyalty_points -e [env-c9b077f7cdfdbed5] --json | jq '.'; flagsmith flag get --help | head -30",
+    "cd /tmp; flagsmith flag get loyalty_points -e [env-c9b077f7cdfdbed5] --segment mobile_app_users --json; echo; flagsmith flag get loyalty_points -e [env-7f9df21eb2fe3cbb] --json --jq '{enabled,value,segment_overrides}'"
   ],
   "transcript": [
     {
@@ -77,7 +77,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith flag get loyalty_points -e HxAw4d4q2XUAfrLW2M9ZrG --json; echo; flagsmith segment list --json --jq '.[] | select(.name==\"mobile_app_users\") | {id,name}'; flagsmith feature variant list loyalty_points --json"
+            "command": "cd /tmp; flagsmith flag get loyalty_points -e [env-c9b077f7cdfdbed5] --json; echo; flagsmith segment list --json --jq '.[] | select(.name==\"mobile_app_users\") | {id,name}'; flagsmith feature variant list loyalty_points --json"
           },
           "output": "{\n  \"feature\": \"loyalty_points\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": false,\n  \"value\": \"off_copy\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\n\n{\"id\":44,\"name\":\"mobile_app_users\"}\n[]",
           "isError": false,
@@ -100,9 +100,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith flag update loyalty_points -e HxAw4d4q2XUAfrLW2M9ZrG --segment mobile_app_users --enable --value \"v2\" --yes; echo ---; flagsmith flag get loyalty_points -e HxAw4d4q2XUAfrLW2M9ZrG --json --jq '{enabled,value,segment_overrides}'; flagsmith api \"api/v1/environments/HxAw4d4q2XUAfrLW2M9ZrG/featurestates/?feature=$(flagsmith api \"api/v1/projects/105/features/?name=loyalty_points\" --jq '.results[0].id')\" --jq '.results[] | {segment: .segment, enabled: .enabled, value: .feature_state_value}'; echo ---; flagsmith flag get loyalty_points -e TnFPfcFSAUrA4BQp7YbG8D --json --jq '{enabled,value,segment_overrides}'"
+            "command": "cd /tmp; flagsmith flag update loyalty_points -e [env-c9b077f7cdfdbed5] --segment mobile_app_users --enable --value \"v2\" --yes; echo ---; flagsmith flag get loyalty_points -e [env-c9b077f7cdfdbed5] --json --jq '{enabled,value,segment_overrides}'; flagsmith api \"api/v1/environments/[env-c9b077f7cdfdbed5]/featurestates/?feature=$(flagsmith api \"api/v1/projects/105/features/?name=loyalty_points\" --jq '.results[0].id')\" --jq '.results[] | {segment: .segment, enabled: .enabled, value: .feature_state_value}'; echo ---; flagsmith flag get loyalty_points -e [env-7f9df21eb2fe3cbb] --json --jq '{enabled,value,segment_overrides}'"
           },
-          "output": "Feature    loyalty_points\nType       standard\nSegment    mobile_app_users (44)\nPriority   0\nState      on\nValue      v2\n---\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"off_copy\"}\n{\"enabled\":false,\"segment\":null,\"value\":\"off_copy\"}\n---\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"off_copy\"}\n\n[stderr]\n✓ Set loyalty_points to \"v2\" for segment mobile_app_users (44) in environment Production (HxAw4d4q2XUAfrLW2M9ZrG)\n✓ Enabled loyalty_points for segment mobile_app_users (44) in environment Production (HxAw4d4q2XUAfrLW2M9ZrG)",
+          "output": "Feature    loyalty_points\nType       standard\nSegment    mobile_app_users (44)\nPriority   0\nState      on\nValue      v2\n---\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"off_copy\"}\n{\"enabled\":false,\"segment\":null,\"value\":\"off_copy\"}\n---\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"off_copy\"}\n\n[stderr]\n✓ Set loyalty_points to \"v2\" for segment mobile_app_users (44) in environment Production ([env-c9b077f7cdfdbed5])\n✓ Enabled loyalty_points for segment mobile_app_users (44) in environment Production ([env-c9b077f7cdfdbed5])",
           "isError": false,
           "ms": 3294
         }
@@ -123,7 +123,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith flag get loyalty_points -e HxAw4d4q2XUAfrLW2M9ZrG --json --jq '.segment_overrides'; flagsmith api \"api/v1/environments/HxAw4d4q2XUAfrLW2M9ZrG/featurestates/\" --jq '.results[] | select(.feature.name==\"loyalty_points\") | {id, segment: .segment, enabled, value: .feature_state_value}'"
+            "command": "cd /tmp; flagsmith flag get loyalty_points -e [env-c9b077f7cdfdbed5] --json --jq '.segment_overrides'; flagsmith api \"api/v1/environments/[env-c9b077f7cdfdbed5]/featurestates/\" --jq '.results[] | select(.feature.name==\"loyalty_points\") | {id, segment: .segment, enabled, value: .feature_state_value}'"
           },
           "output": "1\n\n[stderr]\nError: expected an object but got: number (407)\n[exit code 1]",
           "isError": true,
@@ -146,7 +146,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith api \"api/v1/environments/HxAw4d4q2XUAfrLW2M9ZrG/featurestates/?page_size=500\" | jq -c '.results[] | select(.feature.name==\"loyalty_points\") | {id, segment: .segment, enabled, value: .feature_state_value}'"
+            "command": "cd /tmp; flagsmith api \"api/v1/environments/[env-c9b077f7cdfdbed5]/featurestates/?page_size=500\" | jq -c '.results[] | select(.feature.name==\"loyalty_points\") | {id, segment: .segment, enabled, value: .feature_state_value}'"
           },
           "output": "[stderr]\njq: error (at <stdin>:0): Cannot index number with string (\"name\")\n[exit code 5]",
           "isError": true,
@@ -169,7 +169,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith api \"api/v1/environments/HxAw4d4q2XUAfrLW2M9ZrG/featurestates/?page_size=500\" | jq -c '(.results // .)[] | select((.feature|type)==\"object\" and .feature.name==\"loyalty_points\") | {id, segment: .segment, enabled, value: .feature_state_value}'; flagsmith api \"api/v1/environments/HxAw4d4q2XUAfrLW2M9ZrG/featurestates/?feature=$(flagsmith api 'api/v1/projects/105/features/?name=loyalty_points' | jq '(.results//.)[0].id')\" | jq -c '(.results // .)[] | {id, segment, enabled, value: .feature_state_value}'"
+            "command": "cd /tmp; flagsmith api \"api/v1/environments/[env-c9b077f7cdfdbed5]/featurestates/?page_size=500\" | jq -c '(.results // .)[] | select((.feature|type)==\"object\" and .feature.name==\"loyalty_points\") | {id, segment: .segment, enabled, value: .feature_state_value}'; flagsmith api \"api/v1/environments/[env-c9b077f7cdfdbed5]/featurestates/?feature=$(flagsmith api 'api/v1/projects/105/features/?name=loyalty_points' | jq '(.results//.)[0].id')\" | jq -c '(.results // .)[] | {id, segment, enabled, value: .feature_state_value}'"
           },
           "output": "{\"id\":850,\"segment\":null,\"enabled\":false,\"value\":\"off_copy\"}",
           "isError": false,
@@ -192,7 +192,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith flag get loyalty_points -e HxAw4d4q2XUAfrLW2M9ZrG --json | jq '.'; flagsmith flag get --help | head -30"
+            "command": "cd /tmp; flagsmith flag get loyalty_points -e [env-c9b077f7cdfdbed5] --json | jq '.'; flagsmith flag get --help | head -30"
           },
           "output": "{\n  \"feature\": \"loyalty_points\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": false,\n  \"value\": \"off_copy\",\n  \"segment_overrides\": 1,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\nShow a single flag's state in the current environment\n\nUsage:\n  flagsmith flag get <feature> [flags]\n\nExamples:\n  flagsmith flag get onboarding\n\n  # a segment or identity override\n  flagsmith flag get onboarding --segment 12\n  flagsmith flag get onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for get\n  -i, --identifier string   show the override for this identity\n      --segment string      show the override for this segment (id or name)\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively",
           "isError": false,
@@ -215,7 +215,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith flag get loyalty_points -e HxAw4d4q2XUAfrLW2M9ZrG --segment mobile_app_users --json; echo; flagsmith flag get loyalty_points -e TnFPfcFSAUrA4BQp7YbG8D --json --jq '{enabled,value,segment_overrides}'"
+            "command": "cd /tmp; flagsmith flag get loyalty_points -e [env-c9b077f7cdfdbed5] --segment mobile_app_users --json; echo; flagsmith flag get loyalty_points -e [env-7f9df21eb2fe3cbb] --json --jq '{enabled,value,segment_overrides}'"
           },
           "output": "{\n  \"feature\": \"loyalty_points\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 44,\n    \"name\": \"mobile_app_users\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"v2\"\n}\n\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"off_copy\"}",
           "isError": false,
@@ -233,7 +233,7 @@
     },
     {
       "turn": 9,
-      "text": "DONE: In Production (HxAw4d4q2XUAfrLW2M9ZrG), `loyalty_points` now has a segment override for `mobile_app_users` (id 44) that is enabled with value `v2`, verified by read-back. The environment default is unchanged (still disabled, value `off_copy`), and Development is unchanged (disabled, no overrides).",
+      "text": "DONE: In Production ([env-c9b077f7cdfdbed5]), `loyalty_points` now has a segment override for `mobile_app_users` (id 44) that is enabled with value `v2`, verified by read-back. The environment default is unchanged (still disabled, value `off_copy`), and Development is unchanged (disabled, no overrides).",
       "calls": [],
       "usage": {
         "input": 2,

@@ -66,7 +66,7 @@
     "flagsmith feature --help; flagsmith feature create --help; flagsmith config; flagsmith environment --help",
     "flagsmith feature list --json | jq -r '.[]?.name // empty' 2>/dev/null | grep -x promo_banner; echo \"---\"; flagsmith feature create promo_banner --description \"Gates the promo banner rollout\" --no-input; echo \"exit $?\"",
     "flagsmith feature get promo_banner --json 2>&1 | head -c 3000; echo; flagsmith environment list --json 2>&1 | head -c 2000",
-    "for k in JBtS2U8FtKiyKdpDCs7s3G 5qWJVfJ9V3jbjx4bMi2AGF; do echo \"== $k\"; flagsmith -e $k flag list --json 2>&1 | jq -c '.[] | select(.feature.name==\"promo_banner\" or .name==\"promo_banner\")' 2>/dev/null || flagsmith -e $k flag list 2>&1 | grep -i promo_banner; done"
+    "for k in [env-6ba71ef1391f0bf3] [env-0b9141726979c26a]; do echo \"== $k\"; flagsmith -e $k flag list --json 2>&1 | jq -c '.[] | select(.feature.name==\"promo_banner\" or .name==\"promo_banner\")' 2>/dev/null || flagsmith -e $k flag list 2>&1 | grep -i promo_banner; done"
   ],
   "transcript": [
     {
@@ -147,7 +147,7 @@
           "input": {
             "command": "flagsmith feature get promo_banner --json 2>&1 | head -c 3000; echo; flagsmith environment list --json 2>&1 | head -c 2000"
           },
-          "output": "{\n  \"id\": 765,\n  \"name\": \"promo_banner\",\n  \"description\": \"Gates the promo banner rollout\",\n  \"type\": \"standard\",\n  \"default_value\": null,\n  \"enabled\": false\n}\n\n[\n  {\n    \"id\": 386,\n    \"uuid\": \"47d058ed-0eac-4b34-a599-c700e19d0c48\",\n    \"name\": \"Development\",\n    \"api_key\": \"JBtS2U8FtKiyKdpDCs7s3G\",\n    \"description\": null,\n    \"project\": 194,\n    \"minimum_change_request_approvals\": null,\n    \"allow_client_traits\": true,\n    \"banner_text\": null,\n    \"banner_colour\": null,\n    \"hide_disabled_flags\": null,\n    \"use_mv_v2_evaluation\": true,\n    \"use_identity_composite_key_for_hashing\": true,\n    \"hide_sensitive_data\": false,\n    \"use_v2_feature_versioning\": false,\n    \"use_identity_overrides_in_local_eval\": true,\n    \"is_creating\": false,\n    \"metadata\": []\n  },\n  {\n    \"id\": 387,\n    \"uuid\": \"ecfec9c2-ce26-400e-ba11-bb7fe9a57e32\",\n    \"name\": \"Production\",\n    \"api_key\": \"5qWJVfJ9V3jbjx4bMi2AGF\",\n    \"description\": null,\n    \"project\": 194,\n    \"minimum_change_request_approvals\": null,\n    \"allow_client_traits\": true,\n    \"banner_text\": null,\n    \"banner_colour\": null,\n    \"hide_disabled_flags\": null,\n    \"use_mv_v2_evaluation\": true,\n    \"use_identity_composite_key_for_hashing\": true,\n    \"hide_sensitive_data\": false,\n    \"use_v2_feature_versioning\": false,\n    \"use_identity_overrides_in_local_eval\": true,\n    \"is_creating\": false,\n    \"metadata\": []\n  }\n]",
+          "output": "{\n  \"id\": 765,\n  \"name\": \"promo_banner\",\n  \"description\": \"Gates the promo banner rollout\",\n  \"type\": \"standard\",\n  \"default_value\": null,\n  \"enabled\": false\n}\n\n[\n  {\n    \"id\": 386,\n    \"uuid\": \"47d058ed-0eac-4b34-a599-c700e19d0c48\",\n    \"name\": \"Development\",\n    \"api_key\": \"[env-6ba71ef1391f0bf3]\",\n    \"description\": null,\n    \"project\": 194,\n    \"minimum_change_request_approvals\": null,\n    \"allow_client_traits\": true,\n    \"banner_text\": null,\n    \"banner_colour\": null,\n    \"hide_disabled_flags\": null,\n    \"use_mv_v2_evaluation\": true,\n    \"use_identity_composite_key_for_hashing\": true,\n    \"hide_sensitive_data\": false,\n    \"use_v2_feature_versioning\": false,\n    \"use_identity_overrides_in_local_eval\": true,\n    \"is_creating\": false,\n    \"metadata\": []\n  },\n  {\n    \"id\": 387,\n    \"uuid\": \"ecfec9c2-ce26-400e-ba11-bb7fe9a57e32\",\n    \"name\": \"Production\",\n    \"api_key\": \"[env-0b9141726979c26a]\",\n    \"description\": null,\n    \"project\": 194,\n    \"minimum_change_request_approvals\": null,\n    \"allow_client_traits\": true,\n    \"banner_text\": null,\n    \"banner_colour\": null,\n    \"hide_disabled_flags\": null,\n    \"use_mv_v2_evaluation\": true,\n    \"use_identity_composite_key_for_hashing\": true,\n    \"hide_sensitive_data\": false,\n    \"use_v2_feature_versioning\": false,\n    \"use_identity_overrides_in_local_eval\": true,\n    \"is_creating\": false,\n    \"metadata\": []\n  }\n]",
           "isError": false,
           "ms": 1049
         }
@@ -168,9 +168,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "for k in JBtS2U8FtKiyKdpDCs7s3G 5qWJVfJ9V3jbjx4bMi2AGF; do echo \"== $k\"; flagsmith -e $k flag list --json 2>&1 | jq -c '.[] | select(.feature.name==\"promo_banner\" or .name==\"promo_banner\")' 2>/dev/null || flagsmith -e $k flag list 2>&1 | grep -i promo_banner; done"
+            "command": "for k in [env-6ba71ef1391f0bf3] [env-0b9141726979c26a]; do echo \"== $k\"; flagsmith -e $k flag list --json 2>&1 | jq -c '.[] | select(.feature.name==\"promo_banner\" or .name==\"promo_banner\")' 2>/dev/null || flagsmith -e $k flag list 2>&1 | grep -i promo_banner; done"
           },
-          "output": "== JBtS2U8FtKiyKdpDCs7s3G\npromo_banner     standard   off     -        new\n== 5qWJVfJ9V3jbjx4bMi2AGF\npromo_banner     standard   off     -        new",
+          "output": "== [env-6ba71ef1391f0bf3]\npromo_banner     standard   off     -        new\n== [env-0b9141726979c26a]\npromo_banner     standard   off     -        new",
           "isError": false,
           "ms": 3529
         }

@@ -38,8 +38,8 @@
   "ms": 25082,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith flag get new_checkout -e JUjNguS69w9cGAzojSjQ7a --json; echo ----; flagsmith flag get new_checkout -e 7qcKEmSxRt4wg8U2QBQ2Ge --json",
-    "flagsmith flag update new_checkout -e 7qcKEmSxRt4wg8U2QBQ2Ge --enable --value \"tiered\" --yes && echo ---- && flagsmith flag get new_checkout -e 7qcKEmSxRt4wg8U2QBQ2Ge --json; echo ----; flagsmith flag get new_checkout -e JUjNguS69w9cGAzojSjQ7a --json --jq '{enabled,value}'"
+    "flagsmith flag get new_checkout -e [env-de3bc582f5b28d73] --json; echo ----; flagsmith flag get new_checkout -e [env-b01b4eebd5a2ca91] --json",
+    "flagsmith flag update new_checkout -e [env-b01b4eebd5a2ca91] --enable --value \"tiered\" --yes && echo ---- && flagsmith flag get new_checkout -e [env-b01b4eebd5a2ca91] --json; echo ----; flagsmith flag get new_checkout -e [env-de3bc582f5b28d73] --json --jq '{enabled,value}'"
   ],
   "transcript": [
     {
@@ -72,7 +72,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get new_checkout -e JUjNguS69w9cGAzojSjQ7a --json; echo ----; flagsmith flag get new_checkout -e 7qcKEmSxRt4wg8U2QBQ2Ge --json"
+            "command": "flagsmith flag get new_checkout -e [env-de3bc582f5b28d73] --json; echo ----; flagsmith flag get new_checkout -e [env-b01b4eebd5a2ca91] --json"
           },
           "output": "{\n  \"feature\": \"new_checkout\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"tiered\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\n----\n{\n  \"feature\": \"new_checkout\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": false,\n  \"value\": \"compact\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}",
           "isError": false,
@@ -95,9 +95,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update new_checkout -e 7qcKEmSxRt4wg8U2QBQ2Ge --enable --value \"tiered\" --yes && echo ---- && flagsmith flag get new_checkout -e 7qcKEmSxRt4wg8U2QBQ2Ge --json; echo ----; flagsmith flag get new_checkout -e JUjNguS69w9cGAzojSjQ7a --json --jq '{enabled,value}'"
+            "command": "flagsmith flag update new_checkout -e [env-b01b4eebd5a2ca91] --enable --value \"tiered\" --yes && echo ---- && flagsmith flag get new_checkout -e [env-b01b4eebd5a2ca91] --json; echo ----; flagsmith flag get new_checkout -e [env-de3bc582f5b28d73] --json --jq '{enabled,value}'"
           },
-          "output": "Feature              new_checkout\nDescription          \nType                 standard\nState                on\nValue                tiered\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n----\n{\n  \"feature\": \"new_checkout\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"tiered\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\n----\n{\"enabled\":true,\"value\":\"tiered\"}\n\n[stderr]\n✓ Set new_checkout to \"tiered\" in environment Production (7qcKEmSxRt4wg8U2QBQ2Ge)\n✓ Enabled new_checkout in environment Production (7qcKEmSxRt4wg8U2QBQ2Ge)",
+          "output": "Feature              new_checkout\nDescription          \nType                 standard\nState                on\nValue                tiered\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n----\n{\n  \"feature\": \"new_checkout\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"tiered\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\n----\n{\"enabled\":true,\"value\":\"tiered\"}\n\n[stderr]\n✓ Set new_checkout to \"tiered\" in environment Production ([env-b01b4eebd5a2ca91])\n✓ Enabled new_checkout in environment Production ([env-b01b4eebd5a2ca91])",
           "isError": false,
           "ms": 11012
         }

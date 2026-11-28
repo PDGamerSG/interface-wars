@@ -30,10 +30,10 @@
   "turns": 5,
   "ms": 27056,
   "commands": [
-    "create_metric {\"environment_api_key\":\"Qtwvk6aXzUVwy5H5h93SYX\",\"name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"description\":\"Whether the event add_to_cart_clicked happened at least once per user.\",\"definition\":\"add_to_cart_clicked\"}",
-    "create_metric {\"environment_api_key\":\"Qtwvk6aXzUVwy5H5h93SYX\",\"name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"description\":\"Whether the event add_to_cart_clicked happened at least once per user.\",\"definition\":{\"event\":\"add_to_cart_clicked\"}}",
-    "create_metric {\"environment_api_key\":\"Qtwvk6aXzUVwy5H5h93SYX\",\"name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"description\":\"Whether the event add_to_cart_clicked happened at least once per user.\",\"definition\":{\"event_name\":\"add_to_cart_clicked\",\"aggregation\":\"occurrence\"}}",
-    "list_metrics {\"environment_api_key\":\"Qtwvk6aXzUVwy5H5h93SYX\",\"q\":\"add_to_cart\"}"
+    "create_metric {\"environment_api_key\":\"[env-5cde1cfa9f71e25f]\",\"name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"description\":\"Whether the event add_to_cart_clicked happened at least once per user.\",\"definition\":\"add_to_cart_clicked\"}",
+    "create_metric {\"environment_api_key\":\"[env-5cde1cfa9f71e25f]\",\"name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"description\":\"Whether the event add_to_cart_clicked happened at least once per user.\",\"definition\":{\"event\":\"add_to_cart_clicked\"}}",
+    "create_metric {\"environment_api_key\":\"[env-5cde1cfa9f71e25f]\",\"name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"description\":\"Whether the event add_to_cart_clicked happened at least once per user.\",\"definition\":{\"event_name\":\"add_to_cart_clicked\",\"aggregation\":\"occurrence\"}}",
+    "list_metrics {\"environment_api_key\":\"[env-5cde1cfa9f71e25f]\",\"q\":\"add_to_cart\"}"
   ],
   "transcript": [
     {
@@ -43,7 +43,7 @@
         {
           "name": "create_metric",
           "input": {
-            "environment_api_key": "Qtwvk6aXzUVwy5H5h93SYX",
+            "environment_api_key": "[env-5cde1cfa9f71e25f]",
             "name": "add_to_cart",
             "aggregation": "occurrence",
             "direction": "up",
@@ -71,7 +71,7 @@
         {
           "name": "create_metric",
           "input": {
-            "environment_api_key": "Qtwvk6aXzUVwy5H5h93SYX",
+            "environment_api_key": "[env-5cde1cfa9f71e25f]",
             "name": "add_to_cart",
             "aggregation": "occurrence",
             "direction": "up",
@@ -101,7 +101,7 @@
         {
           "name": "create_metric",
           "input": {
-            "environment_api_key": "Qtwvk6aXzUVwy5H5h93SYX",
+            "environment_api_key": "[env-5cde1cfa9f71e25f]",
             "name": "add_to_cart",
             "aggregation": "occurrence",
             "direction": "up",
@@ -132,7 +132,7 @@
         {
           "name": "list_metrics",
           "input": {
-            "environment_api_key": "Qtwvk6aXzUVwy5H5h93SYX",
+            "environment_api_key": "[env-5cde1cfa9f71e25f]",
             "q": "add_to_cart"
           },
           "output": "{\"count\":0,\"next\":null,\"previous\":null,\"results\":[]}",

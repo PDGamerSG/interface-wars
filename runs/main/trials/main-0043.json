@@ -53,9 +53,9 @@
   "ms": 13156,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "E=FybYvBcFq6oHuZaNAdJ6KF; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'",
-    "E=FybYvBcFq6oHuZaNAdJ6KF; flagsmith api api/v1/environments/$E/experiments/9/ | jq '.'; flagsmith feature variant list saved_carts_copy --json 2>&1 | head -50",
-    "E=FybYvBcFq6oHuZaNAdJ6KF; flagsmith api api/v1/environments/$E/experiments/9/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":20}\nJSON\necho; flagsmith api api/v1/environments/$E/experiments/9/ --jq '{status,rollout_decision,rollout_variant,ended_at}'\necho; flagsmith flag get saved_carts_copy -e $E --json --jq '{enabled,value,variants}'"
+    "E=[env-b983f41ea6cbc68f]; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'",
+    "E=[env-b983f41ea6cbc68f]; flagsmith api api/v1/environments/$E/experiments/9/ | jq '.'; flagsmith feature variant list saved_carts_copy --json 2>&1 | head -50",
+    "E=[env-b983f41ea6cbc68f]; flagsmith api api/v1/environments/$E/experiments/9/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":20}\nJSON\necho; flagsmith api api/v1/environments/$E/experiments/9/ --jq '{status,rollout_decision,rollout_variant,ended_at}'\necho; flagsmith flag get saved_carts_copy -e $E --json --jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -83,12 +83,12 @@
     },
     {
       "turn": 2,
-      "text": "Let me find the experiment in Production (environment key FybYvBcFq6oHuZaNAdJ6KF).",
+      "text": "Let me find the experiment in Production (environment key [env-b983f41ea6cbc68f]).",
       "calls": [
         {
           "name": "bash",
           "input": {
-            "command": "E=FybYvBcFq6oHuZaNAdJ6KF; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'"
+            "command": "E=[env-b983f41ea6cbc68f]; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'"
           },
           "output": "{\"feature\":{\"id\":168,\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":20,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Pay securely\",\"type\":\"unicode\",\"uuid\":\"a5a9b141-f245-4e97-9445-83e395a6dd4e\"}],\"name\":\"saved_carts_copy\",\"type\":\"MULTIVARIATE\"},\"id\":9,\"name\":\"saved_carts_copy test\",\"rollout_decision\":null,\"status\":\"running\"}",
           "isError": false,
@@ -111,7 +111,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "E=FybYvBcFq6oHuZaNAdJ6KF; flagsmith api api/v1/environments/$E/experiments/9/ | jq '.'; flagsmith feature variant list saved_carts_copy --json 2>&1 | head -50"
+            "command": "E=[env-b983f41ea6cbc68f]; flagsmith api api/v1/environments/$E/experiments/9/ | jq '.'; flagsmith feature variant list saved_carts_copy --json 2>&1 | head -50"
           },
           "output": "{\n  \"id\": 9,\n  \"feature\": {\n    \"id\": 168,\n    \"name\": \"saved_carts_copy\",\n    \"type\": \"MULTIVARIATE\",\n    \"initial_value\": \"Checkout\",\n    \"multivariate_options\": [\n      {\n        \"id\": 20,\n        \"uuid\": \"a5a9b141-f245-4e97-9445-83e395a6dd4e\",\n        \"type\": \"unicode\",\n        \"integer_value\": null,\n        \"string_value\": \"Pay securely\",\n        \"boolean_value\": null,\n        \"default_percentage_allocation\": 0.0,\n        \"key\": \"b\"\n      }\n    ]\n  },\n  \"name\": \"saved_carts_copy test\",\n  \"hypothesis\": \"Pay securely wins\",\n  \"status\": \"running\",\n  \"metrics\": [\n    {\n      \"id\": 13,\n      \"metric\": 16,\n      \"metric_name\": \"checkout_completed\",\n      \"aggregation\": \"occurrence\",\n      \"direction\": \"up\",\n      \"expected_direction\": \"increase\",\n      \"created_at\": \"2026-11-27T20:19:41.074258Z\"\n    }\n  ],\n  \"experiment_rollout\": {\n    \"enabled\": true,\n    \"rollout_percentage\": 100.0,\n    \"feature_state_value\": {\n      \"type\": \"string\",\n      \"value\": \"Checkout\"\n    },\n    \"multivariate_feature_state_values\": [\n      {\n        \"multivariate_feature_option\": 20,\n        \"percentage_allocation\": 50.0\n      }\n    ],\n    \"audience\": {\n      \"match\": \"any\",\n      \"segments\": []\n    }\n  },\n  \"created_at\": \"2026-11-27T20:19:41.072312Z\",\n  \"updated_at\": \"2026-11-27T20:19:41.259872Z\",\n  \"started_at\": \"2026-11-27T20:19:41.259076Z\",\n  \"ended_at\": null,\n  \"rollout_decision\": null,\n  \"rollout_variant\": null\n}\n[\n  {\n    \"id\": 20,\n    \"value\": \"Pay securely\",\n    \"weight\": 0,\n    \"key\": \"b\"\n  }\n]",
           "isError": false,
@@ -134,7 +134,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "E=FybYvBcFq6oHuZaNAdJ6KF; flagsmith api api/v1/environments/$E/experiments/9/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":20}\nJSON\necho; flagsmith api api/v1/environments/$E/experiments/9/ --jq '{status,rollout_decision,rollout_variant,ended_at}'\necho; flagsmith flag get saved_carts_copy -e $E --json --jq '{enabled,value,variants}'"
+            "command": "E=[env-b983f41ea6cbc68f]; flagsmith api api/v1/environments/$E/experiments/9/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":20}\nJSON\necho; flagsmith api api/v1/environments/$E/experiments/9/ --jq '{status,rollout_decision,rollout_variant,ended_at}'\necho; flagsmith flag get saved_carts_copy -e $E --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"id\":9,\"feature\":{\"id\":168,\"name\":\"saved_carts_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"id\":20,\"uuid\":\"a5a9b141-f245-4e97-9445-83e395a6dd4e\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Pay securely\",\"boolean_value\":null,\"default_percentage_allocation\":100.0,\"key\":\"b\"}]},\"name\":\"saved_carts_copy test\",\"hypothesis\":\"Pay securely wins\",\"status\":\"completed\",\"metrics\":[{\"id\":13,\"metric\":16,\"metric_name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:19:41.074258Z\"}],\"created_at\":\"2026-11-27T20:19:41.072312Z\",\"updated_at\":\"2026-11-27T20:19:51.172425Z\",\"started_at\":\"2026-11-27T20:19:41.259076Z\",\"ended_at\":\"2026-11-27T20:19:51.098092Z\",\"rollout_decision\":\"variant\",\"rollout_variant\":20}\n{\"ended_at\":\"2026-11-27T20:19:51.098092Z\",\"rollout_decision\":\"variant\",\"rollout_variant\":20,\"status\":\"completed\"}\n\n{\"enabled\":true,\"value\":\"Checkout\",\"variants\":[{\"id\":20,\"key\":\"b\",\"value\":\"Pay securely\",\"weight\":100}]}",
           "isError": false,

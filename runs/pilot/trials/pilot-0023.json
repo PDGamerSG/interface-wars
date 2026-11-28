@@ -38,12 +38,12 @@
   "ms": 27345,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "P=RvtJUr9qmf6Ytp3N9EF22F\nflagsmith flag get smart_reorder -e $P --json | jq '{enabled,value,variants,segment_overrides}'\nflagsmith segment list --json | jq '.[] | select(.name==\"enterprise_accounts\") | {id,name}'",
-    "P=RvtJUr9qmf6Ytp3N9EF22F\nflagsmith flag update smart_reorder -e $P --segment enterprise_accounts --enable --value \"grid\" --yes\necho \"--- after ---\"\nflagsmith flag get smart_reorder -e $P --json | jq '{enabled,value,segment_overrides}'\nFID=$(flagsmith flag get smart_reorder -e $P --json | jq -r '.id // empty')\nflagsmith api \"api/v1/environments/$P/featurestates/\" --jq '.results[] | select(.feature.name==\"smart_reorder\") | {segment:.feature_segment, enabled, value:.feature_state_value}' 2>/dev/null || true",
-    "P=RvtJUr9qmf6Ytp3N9EF22F\nflagsmith flag get smart_reorder -e $P --json | jq '.segment_overrides'\nflagsmith flag get smart_reorder -e $P --json | jq '{enabled,value}'",
-    "P=RvtJUr9qmf6Ytp3N9EF22F\nflagsmith flag get smart_reorder -e $P 2>&1 | head -40",
-    "P=RvtJUr9qmf6Ytp3N9EF22F\nflagsmith flag get smart_reorder -e $P --json | jq '.' | head -60",
-    "P=RvtJUr9qmf6Ytp3N9EF22F\nflagsmith flag get smart_reorder -e $P --segment enterprise_accounts 2>&1 | head -20\nflagsmith flag get smart_reorder -e $P --segment enterprise_accounts --json 2>/dev/null | jq '{enabled,value}'"
+    "P=[env-8deea1745babf3bf]\nflagsmith flag get smart_reorder -e $P --json | jq '{enabled,value,variants,segment_overrides}'\nflagsmith segment list --json | jq '.[] | select(.name==\"enterprise_accounts\") | {id,name}'",
+    "P=[env-8deea1745babf3bf]\nflagsmith flag update smart_reorder -e $P --segment enterprise_accounts --enable --value \"grid\" --yes\necho \"--- after ---\"\nflagsmith flag get smart_reorder -e $P --json | jq '{enabled,value,segment_overrides}'\nFID=$(flagsmith flag get smart_reorder -e $P --json | jq -r '.id // empty')\nflagsmith api \"api/v1/environments/$P/featurestates/\" --jq '.results[] | select(.feature.name==\"smart_reorder\") | {segment:.feature_segment, enabled, value:.feature_state_value}' 2>/dev/null || true",
+    "P=[env-8deea1745babf3bf]\nflagsmith flag get smart_reorder -e $P --json | jq '.segment_overrides'\nflagsmith flag get smart_reorder -e $P --json | jq '{enabled,value}'",
+    "P=[env-8deea1745babf3bf]\nflagsmith flag get smart_reorder -e $P 2>&1 | head -40",
+    "P=[env-8deea1745babf3bf]\nflagsmith flag get smart_reorder -e $P --json | jq '.' | head -60",
+    "P=[env-8deea1745babf3bf]\nflagsmith flag get smart_reorder -e $P --segment enterprise_accounts 2>&1 | head -20\nflagsmith flag get smart_reorder -e $P --segment enterprise_accounts --json 2>/dev/null | jq '{enabled,value}'"
   ],
   "transcript": [
     {
@@ -76,7 +76,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=RvtJUr9qmf6Ytp3N9EF22F\nflagsmith flag get smart_reorder -e $P --json | jq '{enabled,value,variants,segment_overrides}'\nflagsmith segment list --json | jq '.[] | select(.name==\"enterprise_accounts\") | {id,name}'"
+            "command": "P=[env-8deea1745babf3bf]\nflagsmith flag get smart_reorder -e $P --json | jq '{enabled,value,variants,segment_overrides}'\nflagsmith segment list --json | jq '.[] | select(.name==\"enterprise_accounts\") | {id,name}'"
           },
           "output": "{\n  \"enabled\": false,\n  \"value\": \"off_copy\",\n  \"variants\": null,\n  \"segment_overrides\": 0\n}\n{\n  \"id\": 111,\n  \"name\": \"enterprise_accounts\"\n}",
           "isError": false,
@@ -99,9 +99,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=RvtJUr9qmf6Ytp3N9EF22F\nflagsmith flag update smart_reorder -e $P --segment enterprise_accounts --enable --value \"grid\" --yes\necho \"--- after ---\"\nflagsmith flag get smart_reorder -e $P --json | jq '{enabled,value,segment_overrides}'\nFID=$(flagsmith flag get smart_reorder -e $P --json | jq -r '.id // empty')\nflagsmith api \"api/v1/environments/$P/featurestates/\" --jq '.results[] | select(.feature.name==\"smart_reorder\") | {segment:.feature_segment, enabled, value:.feature_state_value}' 2>/dev/null || true"
+            "command": "P=[env-8deea1745babf3bf]\nflagsmith flag update smart_reorder -e $P --segment enterprise_accounts --enable --value \"grid\" --yes\necho \"--- after ---\"\nflagsmith flag get smart_reorder -e $P --json | jq '{enabled,value,segment_overrides}'\nFID=$(flagsmith flag get smart_reorder -e $P --json | jq -r '.id // empty')\nflagsmith api \"api/v1/environments/$P/featurestates/\" --jq '.results[] | select(.feature.name==\"smart_reorder\") | {segment:.feature_segment, enabled, value:.feature_state_value}' 2>/dev/null || true"
           },
-          "output": "Feature    smart_reorder\nType       standard\nSegment    enterprise_accounts (111)\nPriority   0\nState      on\nValue      grid\n--- after ---\n{\n  \"enabled\": false,\n  \"value\": \"off_copy\",\n  \"segment_overrides\": 1\n}\n\n[stderr]\n✓ Set smart_reorder to \"grid\" for segment enterprise_accounts (111) in environment Production (RvtJUr9qmf6Ytp3N9EF22F)\n✓ Enabled smart_reorder for segment enterprise_accounts (111) in environment Production (RvtJUr9qmf6Ytp3N9EF22F)",
+          "output": "Feature    smart_reorder\nType       standard\nSegment    enterprise_accounts (111)\nPriority   0\nState      on\nValue      grid\n--- after ---\n{\n  \"enabled\": false,\n  \"value\": \"off_copy\",\n  \"segment_overrides\": 1\n}\n\n[stderr]\n✓ Set smart_reorder to \"grid\" for segment enterprise_accounts (111) in environment Production ([env-8deea1745babf3bf])\n✓ Enabled smart_reorder for segment enterprise_accounts (111) in environment Production ([env-8deea1745babf3bf])",
           "isError": false,
           "ms": 2782
         }
@@ -122,7 +122,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=RvtJUr9qmf6Ytp3N9EF22F\nflagsmith flag get smart_reorder -e $P --json | jq '.segment_overrides'\nflagsmith flag get smart_reorder -e $P --json | jq '{enabled,value}'"
+            "command": "P=[env-8deea1745babf3bf]\nflagsmith flag get smart_reorder -e $P --json | jq '.segment_overrides'\nflagsmith flag get smart_reorder -e $P --json | jq '{enabled,value}'"
           },
           "output": "1\n{\n  \"enabled\": false,\n  \"value\": \"off_copy\"\n}",
           "isError": false,
@@ -145,7 +145,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=RvtJUr9qmf6Ytp3N9EF22F\nflagsmith flag get smart_reorder -e $P 2>&1 | head -40"
+            "command": "P=[env-8deea1745babf3bf]\nflagsmith flag get smart_reorder -e $P 2>&1 | head -40"
           },
           "output": "Feature              smart_reorder\nDescription          \nType                 standard\nState                off\nValue                off_copy\nSegment overrides    1\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
           "isError": false,
@@ -168,7 +168,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=RvtJUr9qmf6Ytp3N9EF22F\nflagsmith flag get smart_reorder -e $P --json | jq '.' | head -60"
+            "command": "P=[env-8deea1745babf3bf]\nflagsmith flag get smart_reorder -e $P --json | jq '.' | head -60"
           },
           "output": "{\n  \"feature\": \"smart_reorder\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": false,\n  \"value\": \"off_copy\",\n  \"segment_overrides\": 1,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}",
           "isError": false,
@@ -191,7 +191,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=RvtJUr9qmf6Ytp3N9EF22F\nflagsmith flag get smart_reorder -e $P --segment enterprise_accounts 2>&1 | head -20\nflagsmith flag get smart_reorder -e $P --segment enterprise_accounts --json 2>/dev/null | jq '{enabled,value}'"
+            "command": "P=[env-8deea1745babf3bf]\nflagsmith flag get smart_reorder -e $P --segment enterprise_accounts 2>&1 | head -20\nflagsmith flag get smart_reorder -e $P --segment enterprise_accounts --json 2>/dev/null | jq '{enabled,value}'"
           },
           "output": "Feature    smart_reorder\nType       standard\nSegment    enterprise_accounts (111)\nPriority   0\nState      on\nValue      grid",
           "isError": false,

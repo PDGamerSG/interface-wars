@@ -33,7 +33,7 @@
   "ms": 23553,
   "commands": [
     "list_project_features {\"project_pk\":147,\"environment\":293,\"search\":\"size_guide\"}",
-    "update_environment_feature_state {\"id__path\":1198,\"environment_api_key\":\"EvnyZSEupjJs5aPcoiqkEz\",\"feature\":572,\"enabled\":true,\"feature_state_value\":\"compact\"}",
+    "update_environment_feature_state {\"id__path\":1198,\"environment_api_key\":\"[env-e426ae657fb36a68]\",\"feature\":572,\"enabled\":true,\"feature_state_value\":\"compact\"}",
     "list_project_features {\"project_pk\":147,\"environment\":293,\"search\":\"size_guide\"}",
     "list_project_features {\"project_pk\":147,\"environment\":292,\"search\":\"size_guide\"}"
   ],
@@ -71,7 +71,7 @@
           "name": "update_environment_feature_state",
           "input": {
             "id__path": 1198,
-            "environment_api_key": "EvnyZSEupjJs5aPcoiqkEz",
+            "environment_api_key": "[env-e426ae657fb36a68]",
             "feature": 572,
             "enabled": true,
             "feature_state_value": "compact"

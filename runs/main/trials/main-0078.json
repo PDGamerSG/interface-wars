@@ -35,7 +35,7 @@
     "cat /skills/flagsmith-ops/SKILL.md; echo ---; flagsmith --help",
     "flagsmith api \"api/v1/projects/80/tags/\" --jq '.' ; echo ---; flagsmith feature list --json | jq '.[] | {id,name,tags,is_archived}' | head -200",
     "flagsmith api \"api/v1/projects/80/features/?page_size=100\" --jq '.results[] | {id,name,tags,is_archived}'",
-    "flagsmith feature list --json | jq '.[] | select(.name==\"live_chat\")'; flagsmith flag get live_chat -e i3zhTRh6qP8gDABNUXhrp8 --json --jq '{enabled,value}' 2>&1 | head -5",
+    "flagsmith feature list --json | jq '.[] | select(.name==\"live_chat\")'; flagsmith flag get live_chat -e [env-97c9b380fa68c5b4] --json --jq '{enabled,value}' 2>&1 | head -5",
     "flagsmith feature update live_chat --archive --yes; echo ---; flagsmith api \"api/v1/projects/80/features/308/\" --jq '{id,name,is_archived,tags}'; flagsmith api \"api/v1/projects/80/features/?page_size=100\" --jq '.results[] | {id,name,is_archived}'"
   ],
   "transcript": [
@@ -115,7 +115,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith feature list --json | jq '.[] | select(.name==\"live_chat\")'; flagsmith flag get live_chat -e i3zhTRh6qP8gDABNUXhrp8 --json --jq '{enabled,value}' 2>&1 | head -5"
+            "command": "flagsmith feature list --json | jq '.[] | select(.name==\"live_chat\")'; flagsmith flag get live_chat -e [env-97c9b380fa68c5b4] --json --jq '{enabled,value}' 2>&1 | head -5"
           },
           "output": "{\n  \"id\": 308,\n  \"name\": \"live_chat\",\n  \"type\": \"standard\",\n  \"default_value\": \"eu_west\",\n  \"enabled\": false\n}\n{\"enabled\":false,\"value\":\"eu_west\"}",
           "isError": false,

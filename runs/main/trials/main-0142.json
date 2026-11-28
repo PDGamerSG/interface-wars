@@ -35,7 +35,7 @@
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
     "flagsmith api \"api/v1/projects/144/tags/\" --json | jq '.'; flagsmith feature list --json | jq '.[] | {id,name,tags,is_archived}' | head -200",
     "flagsmith api \"api/v1/projects/144/features/?page_size=100\" --json | jq '.results[] | {id,name,tags,is_archived}'",
-    "flagsmith feature list --json | jq -r '.[] | select(.name==\"bulk_discounts\")' | head -5; flagsmith flag get bulk_discounts -e WpGgifxvVgDKHWEnLuTjSq --json --jq '{name,enabled,value}'",
+    "flagsmith feature list --json | jq -r '.[] | select(.name==\"bulk_discounts\")' | head -5; flagsmith flag get bulk_discounts -e [env-543f6f667dd3dc72] --json --jq '{name,enabled,value}'",
     "flagsmith feature update bulk_discounts --archive --yes; echo \"exit=$?\"; flagsmith api \"api/v1/projects/144/features/?page_size=100\" --json | jq '.results[] | {id,name,is_archived,tags}'"
   ],
   "transcript": [
@@ -115,7 +115,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith feature list --json | jq -r '.[] | select(.name==\"bulk_discounts\")' | head -5; flagsmith flag get bulk_discounts -e WpGgifxvVgDKHWEnLuTjSq --json --jq '{name,enabled,value}'"
+            "command": "flagsmith feature list --json | jq -r '.[] | select(.name==\"bulk_discounts\")' | head -5; flagsmith flag get bulk_discounts -e [env-543f6f667dd3dc72] --json --jq '{name,enabled,value}'"
           },
           "output": "{\n  \"id\": 560,\n  \"name\": \"bulk_discounts\",\n  \"type\": \"standard\",\n  \"default_value\": \"fast_lane\",\n{\"enabled\":false,\"name\":null,\"value\":\"fast_lane\"}",
           "isError": false,

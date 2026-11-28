@@ -33,9 +33,9 @@
   "ms": 16858,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; echo ---; flagsmith --help",
-    "E=RwcQwXqYCmUaDR24vs6Vre; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'",
-    "E=RwcQwXqYCmUaDR24vs6Vre; flagsmith api api/v1/environments/$E/experiments/24/ | jq '.'",
-    "E=RwcQwXqYCmUaDR24vs6Vre; flagsmith api api/v1/environments/$E/experiments/24/start/ -X POST | jq '{id,status,started_at}'; echo ---; flagsmith api api/v1/environments/$E/experiments/24/ --jq '{status,started_at,ended_at,rollout_decision}'"
+    "E=[env-1fa2269cdd509a87]; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'",
+    "E=[env-1fa2269cdd509a87]; flagsmith api api/v1/environments/$E/experiments/24/ | jq '.'",
+    "E=[env-1fa2269cdd509a87]; flagsmith api api/v1/environments/$E/experiments/24/start/ -X POST | jq '{id,status,started_at}'; echo ---; flagsmith api api/v1/environments/$E/experiments/24/ --jq '{status,started_at,ended_at,rollout_decision}'"
   ],
   "transcript": [
     {
@@ -68,7 +68,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "E=RwcQwXqYCmUaDR24vs6Vre; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'"
+            "command": "E=[env-1fa2269cdd509a87]; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'"
           },
           "output": "{\"feature\":{\"id\":480,\"initial_value\":\"Buy now\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":49,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Get it today\",\"type\":\"unicode\",\"uuid\":\"1e51df1d-0757-4bee-b7be-ce1248715a0e\"}],\"name\":\"guest_checkout_copy\",\"type\":\"MULTIVARIATE\"},\"id\":24,\"name\":\"guest_checkout_copy test\",\"rollout_decision\":null,\"status\":\"created\"}",
           "isError": false,
@@ -91,7 +91,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "E=RwcQwXqYCmUaDR24vs6Vre; flagsmith api api/v1/environments/$E/experiments/24/ | jq '.'"
+            "command": "E=[env-1fa2269cdd509a87]; flagsmith api api/v1/environments/$E/experiments/24/ | jq '.'"
           },
           "output": "{\n  \"id\": 24,\n  \"feature\": {\n    \"id\": 480,\n    \"name\": \"guest_checkout_copy\",\n    \"type\": \"MULTIVARIATE\",\n    \"initial_value\": \"Buy now\",\n    \"multivariate_options\": [\n      {\n        \"id\": 49,\n        \"uuid\": \"1e51df1d-0757-4bee-b7be-ce1248715a0e\",\n        \"type\": \"unicode\",\n        \"integer_value\": null,\n        \"string_value\": \"Get it today\",\n        \"boolean_value\": null,\n        \"default_percentage_allocation\": 0.0,\n        \"key\": \"b\"\n      }\n    ]\n  },\n  \"name\": \"guest_checkout_copy test\",\n  \"hypothesis\": \"Get it today wins\",\n  \"status\": \"created\",\n  \"metrics\": [\n    {\n      \"id\": 34,\n      \"metric\": 39,\n      \"metric_name\": \"signup_completed\",\n      \"aggregation\": \"occurrence\",\n      \"direction\": \"up\",\n      \"expected_direction\": \"increase\",\n      \"created_at\": \"2026-11-27T20:24:56.715797Z\"\n    }\n  ],\n  \"experiment_rollout\": {\n    \"enabled\": true,\n    \"rollout_percentage\": 100.0,\n    \"feature_state_value\": {\n      \"type\": \"string\",\n      \"value\": \"Buy now\"\n    },\n    \"multivariate_feature_state_values\": [\n      {\n        \"multivariate_feature_option\": 49,\n        \"percentage_allocation\": 50.0\n      }\n    ],\n    \"audience\": {\n      \"match\": \"any\",\n      \"segments\": []\n    }\n  },\n  \"created_at\": \"2026-11-27T20:24:56.712213Z\",\n  \"updated_at\": \"2026-11-27T20:24:56.736268Z\",\n  \"started_at\": null,\n  \"ended_at\": null,\n  \"rollout_decision\": null,\n  \"rollout_variant\": null\n}",
           "isError": false,
@@ -114,7 +114,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "E=RwcQwXqYCmUaDR24vs6Vre; flagsmith api api/v1/environments/$E/experiments/24/start/ -X POST | jq '{id,status,started_at}'; echo ---; flagsmith api api/v1/environments/$E/experiments/24/ --jq '{status,started_at,ended_at,rollout_decision}'"
+            "command": "E=[env-1fa2269cdd509a87]; flagsmith api api/v1/environments/$E/experiments/24/start/ -X POST | jq '{id,status,started_at}'; echo ---; flagsmith api api/v1/environments/$E/experiments/24/ --jq '{status,started_at,ended_at,rollout_decision}'"
           },
           "output": "{\n  \"id\": 24,\n  \"status\": \"running\",\n  \"started_at\": \"2026-11-27T20:25:14.683846Z\"\n}\n---\n{\"ended_at\":null,\"rollout_decision\":null,\"started_at\":\"2026-11-27T20:25:14.683846Z\",\"status\":\"running\"}",
           "isError": false,

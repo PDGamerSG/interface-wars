@@ -30,10 +30,10 @@
   "turns": 5,
   "ms": 38247,
   "commands": [
-    "create_metric {\"environment_api_key\":\"VkbjVMJSTcB9Mm8AKwAkkj\",\"name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":\"checkout_completed\",\"description\":\"Whether the checkout_completed event happened at least once per user.\"}",
-    "create_metric {\"environment_api_key\":\"VkbjVMJSTcB9Mm8AKwAkkj\",\"name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"event\":\"checkout_completed\"},\"description\":\"Whether the checkout_completed event happened at least once per user.\"}",
-    "list_metrics {\"environment_api_key\":\"VkbjVMJSTcB9Mm8AKwAkkj\",\"page_size\":5}",
-    "create_metric {\"environment_api_key\":\"VkbjVMJSTcB9Mm8AKwAkkj\",\"name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"event_name\":\"checkout_completed\",\"aggregation\":\"occurrence\"},\"description\":\"Whether the checkout_completed event happened at least once per user.\"}"
+    "create_metric {\"environment_api_key\":\"[env-13cc2be9d2b32fe2]\",\"name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":\"checkout_completed\",\"description\":\"Whether the checkout_completed event happened at least once per user.\"}",
+    "create_metric {\"environment_api_key\":\"[env-13cc2be9d2b32fe2]\",\"name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"event\":\"checkout_completed\"},\"description\":\"Whether the checkout_completed event happened at least once per user.\"}",
+    "list_metrics {\"environment_api_key\":\"[env-13cc2be9d2b32fe2]\",\"page_size\":5}",
+    "create_metric {\"environment_api_key\":\"[env-13cc2be9d2b32fe2]\",\"name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"event_name\":\"checkout_completed\",\"aggregation\":\"occurrence\"},\"description\":\"Whether the checkout_completed event happened at least once per user.\"}"
   ],
   "transcript": [
     {
@@ -43,7 +43,7 @@
         {
           "name": "create_metric",
           "input": {
-            "environment_api_key": "VkbjVMJSTcB9Mm8AKwAkkj",
+            "environment_api_key": "[env-13cc2be9d2b32fe2]",
             "name": "checkout_completed",
             "aggregation": "occurrence",
             "direction": "up",
@@ -71,7 +71,7 @@
         {
           "name": "create_metric",
           "input": {
-            "environment_api_key": "VkbjVMJSTcB9Mm8AKwAkkj",
+            "environment_api_key": "[env-13cc2be9d2b32fe2]",
             "name": "checkout_completed",
             "aggregation": "occurrence",
             "direction": "up",
@@ -101,7 +101,7 @@
         {
           "name": "list_metrics",
           "input": {
-            "environment_api_key": "VkbjVMJSTcB9Mm8AKwAkkj",
+            "environment_api_key": "[env-13cc2be9d2b32fe2]",
             "page_size": 5
           },
           "output": "{\"count\":0,\"next\":null,\"previous\":null,\"results\":[]}",
@@ -125,7 +125,7 @@
         {
           "name": "create_metric",
           "input": {
-            "environment_api_key": "VkbjVMJSTcB9Mm8AKwAkkj",
+            "environment_api_key": "[env-13cc2be9d2b32fe2]",
             "name": "checkout_completed",
             "aggregation": "occurrence",
             "direction": "up",

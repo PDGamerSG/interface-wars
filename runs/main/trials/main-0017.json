@@ -33,8 +33,8 @@
   "ms": 15026,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith flag get review_photos -e 4p7fySQox7SaDxUkNnYWzW --json --jq '{enabled,value,variants,segment_overrides}'; echo ---; flagsmith flag get review_photos -e jZmXj7cGeGtBzyphNdbASW --json --jq '{enabled,value,variants,segment_overrides}'",
-    "flagsmith flag update review_photos -e 4p7fySQox7SaDxUkNnYWzW --enable --yes && flagsmith flag get review_photos -e 4p7fySQox7SaDxUkNnYWzW --json --jq '{enabled,value,variants,segment_overrides}'; echo ---; flagsmith flag get review_photos -e jZmXj7cGeGtBzyphNdbASW --json --jq '{enabled,value,segment_overrides}'"
+    "flagsmith flag get review_photos -e [env-70e53ec65d0c31aa] --json --jq '{enabled,value,variants,segment_overrides}'; echo ---; flagsmith flag get review_photos -e [env-ee399f3543899c1b] --json --jq '{enabled,value,variants,segment_overrides}'",
+    "flagsmith flag update review_photos -e [env-70e53ec65d0c31aa] --enable --yes && flagsmith flag get review_photos -e [env-70e53ec65d0c31aa] --json --jq '{enabled,value,variants,segment_overrides}'; echo ---; flagsmith flag get review_photos -e [env-ee399f3543899c1b] --json --jq '{enabled,value,segment_overrides}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get review_photos -e 4p7fySQox7SaDxUkNnYWzW --json --jq '{enabled,value,variants,segment_overrides}'; echo ---; flagsmith flag get review_photos -e jZmXj7cGeGtBzyphNdbASW --json --jq '{enabled,value,variants,segment_overrides}'"
+            "command": "flagsmith flag get review_photos -e [env-70e53ec65d0c31aa] --json --jq '{enabled,value,variants,segment_overrides}'; echo ---; flagsmith flag get review_photos -e [env-ee399f3543899c1b] --json --jq '{enabled,value,variants,segment_overrides}'"
           },
           "output": "{\"enabled\":false,\"segment_overrides\":0,\"value\":\"rounded\",\"variants\":null}\n---\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"rounded\",\"variants\":null}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update review_photos -e 4p7fySQox7SaDxUkNnYWzW --enable --yes && flagsmith flag get review_photos -e 4p7fySQox7SaDxUkNnYWzW --json --jq '{enabled,value,variants,segment_overrides}'; echo ---; flagsmith flag get review_photos -e jZmXj7cGeGtBzyphNdbASW --json --jq '{enabled,value,segment_overrides}'"
+            "command": "flagsmith flag update review_photos -e [env-70e53ec65d0c31aa] --enable --yes && flagsmith flag get review_photos -e [env-70e53ec65d0c31aa] --json --jq '{enabled,value,variants,segment_overrides}'; echo ---; flagsmith flag get review_photos -e [env-ee399f3543899c1b] --json --jq '{enabled,value,segment_overrides}'"
           },
-          "output": "Feature              review_photos\nDescription          \nType                 standard\nState                on\nValue                rounded\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"segment_overrides\":0,\"value\":\"rounded\",\"variants\":null}\n---\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"rounded\"}\n\n[stderr]\n✓ Enabled review_photos in environment Production (4p7fySQox7SaDxUkNnYWzW)",
+          "output": "Feature              review_photos\nDescription          \nType                 standard\nState                on\nValue                rounded\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"segment_overrides\":0,\"value\":\"rounded\",\"variants\":null}\n---\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"rounded\"}\n\n[stderr]\n✓ Enabled review_photos in environment Production ([env-70e53ec65d0c31aa])",
           "isError": false,
           "ms": 2336
         }

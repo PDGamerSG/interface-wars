@@ -161,6 +161,8 @@ The repository includes a small read-only static presentation in `judge-site/`. 
 
 Open the live judge site at [interfacewars.pallabdas.me](https://interfacewars.pallabdas.me/). It is deployed from `main` on Render and uses the same static build described above.
 
+Published trial records pass through the same field-aware redactor before they are written to `runs/` or exported to the site. Historical Flagsmith environment keys become stable `[env-…]` labels for trace matching, while server keys and other credential fields become `[REDACTED]`. The exporter fails if a credential-shaped value remains.
+
 ## Staged release gate
 
 Track 04 now includes `skills/flagsmith-release-gate/`, a separate production-safety workflow for a future rollout. It binds the target and disabled pre-state to a signed digest, requires two distinct approvals, checks the kill switch and lower spend cap before every write, promotes one stage at a time, evaluates member and nonmember probes, and records rollback receipts. The archived `agent_interface` experiment is unchanged.

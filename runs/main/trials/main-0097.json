@@ -33,8 +33,8 @@
   "ms": 15502,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; echo ---; flagsmith --help",
-    "cd /; flagsmith flag get dark_mode -e PinqZ9RPbSdCJxbEfafkJB --json --jq '{enabled,value,segment_overrides}'; echo ---; flagsmith flag get dark_mode -e hp5qPwYU8xLBhkqzjb2f5n --json --jq '{enabled,value,segment_overrides}'",
-    "cd /; flagsmith flag update dark_mode -e PinqZ9RPbSdCJxbEfafkJB --enable --yes; echo ---; flagsmith flag get dark_mode -e PinqZ9RPbSdCJxbEfafkJB --json --jq '{enabled,value,segment_overrides}'; echo ---; flagsmith flag get dark_mode -e hp5qPwYU8xLBhkqzjb2f5n --json --jq '{enabled,value,segment_overrides}'"
+    "cd /; flagsmith flag get dark_mode -e [env-3afe319496c27778] --json --jq '{enabled,value,segment_overrides}'; echo ---; flagsmith flag get dark_mode -e [env-2b068d0b5ddbb9d7] --json --jq '{enabled,value,segment_overrides}'",
+    "cd /; flagsmith flag update dark_mode -e [env-3afe319496c27778] --enable --yes; echo ---; flagsmith flag get dark_mode -e [env-3afe319496c27778] --json --jq '{enabled,value,segment_overrides}'; echo ---; flagsmith flag get dark_mode -e [env-2b068d0b5ddbb9d7] --json --jq '{enabled,value,segment_overrides}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /; flagsmith flag get dark_mode -e PinqZ9RPbSdCJxbEfafkJB --json --jq '{enabled,value,segment_overrides}'; echo ---; flagsmith flag get dark_mode -e hp5qPwYU8xLBhkqzjb2f5n --json --jq '{enabled,value,segment_overrides}'"
+            "command": "cd /; flagsmith flag get dark_mode -e [env-3afe319496c27778] --json --jq '{enabled,value,segment_overrides}'; echo ---; flagsmith flag get dark_mode -e [env-2b068d0b5ddbb9d7] --json --jq '{enabled,value,segment_overrides}'"
           },
           "output": "{\"enabled\":false,\"segment_overrides\":0,\"value\":\"compact\"}\n---\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"compact\"}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /; flagsmith flag update dark_mode -e PinqZ9RPbSdCJxbEfafkJB --enable --yes; echo ---; flagsmith flag get dark_mode -e PinqZ9RPbSdCJxbEfafkJB --json --jq '{enabled,value,segment_overrides}'; echo ---; flagsmith flag get dark_mode -e hp5qPwYU8xLBhkqzjb2f5n --json --jq '{enabled,value,segment_overrides}'"
+            "command": "cd /; flagsmith flag update dark_mode -e [env-3afe319496c27778] --enable --yes; echo ---; flagsmith flag get dark_mode -e [env-3afe319496c27778] --json --jq '{enabled,value,segment_overrides}'; echo ---; flagsmith flag get dark_mode -e [env-2b068d0b5ddbb9d7] --json --jq '{enabled,value,segment_overrides}'"
           },
-          "output": "Feature              dark_mode\nDescription          \nType                 standard\nState                on\nValue                compact\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\n{\"enabled\":true,\"segment_overrides\":0,\"value\":\"compact\"}\n---\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"compact\"}\n\n[stderr]\n✓ Enabled dark_mode in environment Production (PinqZ9RPbSdCJxbEfafkJB)",
+          "output": "Feature              dark_mode\nDescription          \nType                 standard\nState                on\nValue                compact\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\n{\"enabled\":true,\"segment_overrides\":0,\"value\":\"compact\"}\n---\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"compact\"}\n\n[stderr]\n✓ Enabled dark_mode in environment Production ([env-3afe319496c27778])",
           "isError": false,
           "ms": 7296
         }

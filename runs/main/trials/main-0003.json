@@ -19,7 +19,7 @@
     }
   ],
   "outcome": "done",
-  "finalText": "DONE: `bulk_discounts` is now off in Production (fZc346DgT4LUQZkXGwkPcT). Read-back confirms enabled=false, and it was true before the change. Its value (`eu_west`), segment overrides, and the Development environment were not touched.",
+  "finalText": "DONE: `bulk_discounts` is now off in Production ([env-61415bc1d4533aca]). Read-back confirms enabled=false, and it was true before the change. Its value (`eu_west`), segment overrides, and the Development environment were not touched.",
   "costUsd": 0.000938,
   "usage": {
     "input": 10,
@@ -33,8 +33,8 @@
   "ms": 9590,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; echo ---; flagsmith --help",
-    "flagsmith config; echo ---; flagsmith flag get bulk_discounts -e fZc346DgT4LUQZkXGwkPcT --json --jq '{enabled,value,variants}'",
-    "flagsmith flag update bulk_discounts -e fZc346DgT4LUQZkXGwkPcT --disable --yes && echo ---READBACK && flagsmith flag get bulk_discounts -e fZc346DgT4LUQZkXGwkPcT --json --jq '{enabled,value}'"
+    "flagsmith config; echo ---; flagsmith flag get bulk_discounts -e [env-61415bc1d4533aca] --json --jq '{enabled,value,variants}'",
+    "flagsmith flag update bulk_discounts -e [env-61415bc1d4533aca] --disable --yes && echo ---READBACK && flagsmith flag get bulk_discounts -e [env-61415bc1d4533aca] --json --jq '{enabled,value}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith config; echo ---; flagsmith flag get bulk_discounts -e fZc346DgT4LUQZkXGwkPcT --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith config; echo ---; flagsmith flag get bulk_discounts -e [env-61415bc1d4533aca] --json --jq '{enabled,value,variants}'"
           },
           "output": "Config file    -                                  default\nProject        2                                  env\nOrganisation   2                                  env\nEnvironment    -                                  default\nAPI            http://host.docker.internal:8300   env\nSDK API        http://host.docker.internal:8300   default\n---\n{\"enabled\":true,\"value\":\"eu_west\",\"variants\":null}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update bulk_discounts -e fZc346DgT4LUQZkXGwkPcT --disable --yes && echo ---READBACK && flagsmith flag get bulk_discounts -e fZc346DgT4LUQZkXGwkPcT --json --jq '{enabled,value}'"
+            "command": "flagsmith flag update bulk_discounts -e [env-61415bc1d4533aca] --disable --yes && echo ---READBACK && flagsmith flag get bulk_discounts -e [env-61415bc1d4533aca] --json --jq '{enabled,value}'"
           },
-          "output": "Feature              bulk_discounts\nDescription          \nType                 standard\nState                off\nValue                eu_west\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---READBACK\n{\"enabled\":false,\"value\":\"eu_west\"}\n\n[stderr]\n✓ Disabled bulk_discounts in environment Production (fZc346DgT4LUQZkXGwkPcT)",
+          "output": "Feature              bulk_discounts\nDescription          \nType                 standard\nState                off\nValue                eu_west\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---READBACK\n{\"enabled\":false,\"value\":\"eu_west\"}\n\n[stderr]\n✓ Disabled bulk_discounts in environment Production ([env-61415bc1d4533aca])",
           "isError": false,
           "ms": 1361
         }
@@ -108,7 +108,7 @@
     },
     {
       "turn": 4,
-      "text": "DONE: `bulk_discounts` is now off in Production (fZc346DgT4LUQZkXGwkPcT). Read-back confirms enabled=false, and it was true before the change. Its value (`eu_west`), segment overrides, and the Development environment were not touched.",
+      "text": "DONE: `bulk_discounts` is now off in Production ([env-61415bc1d4533aca]). Read-back confirms enabled=false, and it was true before the change. Its value (`eu_west`), segment overrides, and the Development environment were not touched.",
       "calls": [],
       "usage": {
         "input": 2,

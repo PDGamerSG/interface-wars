@@ -33,11 +33,11 @@
   "ms": 16269,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith flag list -e BKJ869p4W282tPVfXfnxwX --json --jq '.[] | select(.enabled==true) | {feature: .feature.name, value, enabled}' 2>&1 | head -100",
-    "flagsmith flag list -e BKJ869p4W282tPVfXfnxwX --json | jq 'if type==\"array\" then .[0] else . end' | head -40",
-    "flagsmith flag list -e BKJ869p4W282tPVfXfnxwX --json | jq -c '.[] | select(.enabled==true and .value==\"maintenance\") | .feature'; echo ---; flagsmith flag list -e BKJ869p4W282tPVfXfnxwX --json | jq -c '[.[] | select(.enabled==true)] | length'",
-    "flagsmith flag get loyalty_points -e BKJ869p4W282tPVfXfnxwX --json --jq '{enabled,value,variants,segment_overrides}'",
-    "flagsmith flag update loyalty_points -e BKJ869p4W282tPVfXfnxwX --disable --yes && flagsmith flag get loyalty_points -e BKJ869p4W282tPVfXfnxwX --json --jq '{enabled,value,segment_overrides}'"
+    "flagsmith flag list -e [env-f13ae7b2d5f78889] --json --jq '.[] | select(.enabled==true) | {feature: .feature.name, value, enabled}' 2>&1 | head -100",
+    "flagsmith flag list -e [env-f13ae7b2d5f78889] --json | jq 'if type==\"array\" then .[0] else . end' | head -40",
+    "flagsmith flag list -e [env-f13ae7b2d5f78889] --json | jq -c '.[] | select(.enabled==true and .value==\"maintenance\") | .feature'; echo ---; flagsmith flag list -e [env-f13ae7b2d5f78889] --json | jq -c '[.[] | select(.enabled==true)] | length'",
+    "flagsmith flag get loyalty_points -e [env-f13ae7b2d5f78889] --json --jq '{enabled,value,variants,segment_overrides}'",
+    "flagsmith flag update loyalty_points -e [env-f13ae7b2d5f78889] --disable --yes && flagsmith flag get loyalty_points -e [env-f13ae7b2d5f78889] --json --jq '{enabled,value,segment_overrides}'"
   ],
   "transcript": [
     {
@@ -70,7 +70,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag list -e BKJ869p4W282tPVfXfnxwX --json --jq '.[] | select(.enabled==true) | {feature: .feature.name, value, enabled}' 2>&1 | head -100"
+            "command": "flagsmith flag list -e [env-f13ae7b2d5f78889] --json --jq '.[] | select(.enabled==true) | {feature: .feature.name, value, enabled}' 2>&1 | head -100"
           },
           "output": "Error: expected an object but got: string (\"loyalty_points\")",
           "isError": false,
@@ -93,7 +93,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag list -e BKJ869p4W282tPVfXfnxwX --json | jq 'if type==\"array\" then .[0] else . end' | head -40"
+            "command": "flagsmith flag list -e [env-f13ae7b2d5f78889] --json | jq 'if type==\"array\" then .[0] else . end' | head -40"
           },
           "output": "{\n  \"feature\": \"loyalty_points\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"maintenance\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}",
           "isError": false,
@@ -116,7 +116,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag list -e BKJ869p4W282tPVfXfnxwX --json | jq -c '.[] | select(.enabled==true and .value==\"maintenance\") | .feature'; echo ---; flagsmith flag list -e BKJ869p4W282tPVfXfnxwX --json | jq -c '[.[] | select(.enabled==true)] | length'"
+            "command": "flagsmith flag list -e [env-f13ae7b2d5f78889] --json | jq -c '.[] | select(.enabled==true and .value==\"maintenance\") | .feature'; echo ---; flagsmith flag list -e [env-f13ae7b2d5f78889] --json | jq -c '[.[] | select(.enabled==true)] | length'"
           },
           "output": "\"loyalty_points\"\n---\n5",
           "isError": false,
@@ -139,7 +139,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get loyalty_points -e BKJ869p4W282tPVfXfnxwX --json --jq '{enabled,value,variants,segment_overrides}'"
+            "command": "flagsmith flag get loyalty_points -e [env-f13ae7b2d5f78889] --json --jq '{enabled,value,variants,segment_overrides}'"
           },
           "output": "{\"enabled\":true,\"segment_overrides\":0,\"value\":\"maintenance\",\"variants\":null}",
           "isError": false,
@@ -162,9 +162,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update loyalty_points -e BKJ869p4W282tPVfXfnxwX --disable --yes && flagsmith flag get loyalty_points -e BKJ869p4W282tPVfXfnxwX --json --jq '{enabled,value,segment_overrides}'"
+            "command": "flagsmith flag update loyalty_points -e [env-f13ae7b2d5f78889] --disable --yes && flagsmith flag get loyalty_points -e [env-f13ae7b2d5f78889] --json --jq '{enabled,value,segment_overrides}'"
           },
-          "output": "Feature              loyalty_points\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"maintenance\"}\n\n[stderr]\n✓ Disabled loyalty_points in environment Production (BKJ869p4W282tPVfXfnxwX)",
+          "output": "Feature              loyalty_points\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"maintenance\"}\n\n[stderr]\n✓ Disabled loyalty_points in environment Production ([env-f13ae7b2d5f78889])",
           "isError": false,
           "ms": 1424
         }
