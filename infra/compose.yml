@@ -17,6 +17,9 @@ x-flagsmith-env: &flagsmith-env
 services:
   postgres:
     image: postgres:17-alpine
+    # Postgres's default limit is 100 connections. During a verifier run the task processor held 73 idle
+    # connections, Postgres refused new ones ("too many clients") and audit tasks failed without writing rows.
+    command: [postgres, -c, max_connections=500]
     environment:
       POSTGRES_PASSWORD: interfacewars
       POSTGRES_DB: flagsmith

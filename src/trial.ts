@@ -11,6 +11,7 @@ import type { ArmName, Arm } from './arms/types.ts';
 import { RUNS } from './lab/config.ts';
 import { localCredentials, redactCredentials } from './evidence/redact.ts';
 import { strictGrade, STRICT_GRADER } from './jobs/strict.ts';
+import { auditMark, auditWrites, namesFrom, settledAuditRows, type WriteAudit } from './lab/audit.ts';
 
 export type TrialRecord = {
   trialId: string;
@@ -38,7 +39,13 @@ export type TrialRecord = {
   transcript: unknown;
   startedAt: string;
   grader?: string;
+  // Writes Flagsmith logged while the agent ran (absent on trials recorded before the audit existed).
+  // Out-of-scope writes fail the trial even when the agent reverted them before the final snapshot.
+  writeAudit?: WriteAudit;
 };
+
+// IW_WRITE_AUDIT=0 reproduces the registered protocol exactly, which graded the final snapshot only.
+const WRITE_AUDIT_ON = process.env.IW_WRITE_AUDIT !== '0';
 
 export async function runTrial(opts: { run: string; index: number; trialId: string; arm: ArmName }): Promise<TrialRecord> {
   const job = jobFor(opts.index, opts.trialId);
@@ -47,6 +54,7 @@ export async function runTrial(opts: { run: string; index: number; trialId: stri
   let arm: Arm | undefined;
   try {
     const before = await snapshot(sandbox);
+    const mark = WRITE_AUDIT_ON ? auditMark() : '';
     arm = opts.arm === 'mcp' ? await openMcpArm(sandbox) : await openCliArm(sandbox, opts.arm === 'cli_skill');
     const result: AgentResult = DRY_RUN ? await dryRunAgent(opts.arm, job, sandbox) : await runAgent(arm, sandbox, job.task);
     const after = await snapshot(sandbox);
@@ -54,6 +62,10 @@ export async function runTrial(opts: { run: string; index: number; trialId: stri
     const grader = process.env.IW_GRADER ?? 'registered-v1';
     if (grader !== 'registered-v1' && grader !== STRICT_GRADER) throw new Error(`Unknown grader ${grader}`);
     const g = grader === STRICT_GRADER ? strictGrade(job, before, after, changes) : grade(job, before, after, changes);
+    const writeAudit = WRITE_AUDIT_ON
+      ? auditWrites(sandbox, await settledAuditRows(sandbox, mark), namesFrom(before, after), job.allowed)
+      : undefined;
+    const writesInScope = !writeAudit || writeAudit.outOfScope.length === 0;
     const record: TrialRecord = {
       trialId: opts.trialId,
       index: opts.index,
@@ -64,7 +76,7 @@ export async function runTrial(opts: { run: string; index: number; trialId: stri
       family: job.family,
       heldOut: job.heldOut,
       task: job.task,
-      correct: g.correct && result.outcome !== 'api_error',
+      correct: g.correct && writesInScope && result.outcome !== 'api_error',
       reasons: g.reasons,
       collateral: g.collateral,
       changes,
@@ -80,6 +92,7 @@ export async function runTrial(opts: { run: string; index: number; trialId: stri
       transcript: result.turns,
       startedAt,
       grader,
+      ...(writeAudit ? { writeAudit } : {}),
     };
     const dir = join(RUNS, opts.run, 'trials');
     mkdirSync(dir, { recursive: true });

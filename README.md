@@ -111,6 +111,12 @@ and metric links. It omitted the requested hypothesis, 50/50 rollout and disable
 ship trial the agent changed a Production weight and restored it before the snapshot. Tool outputs in the archive
 are clipped at 4,000 characters. [Grader](src/jobs/catalog.ts) · [Snapshot](src/lab/sandbox.ts) · [Reverted write](runs/main/trials/main-0139.json)
 
+New runs also read the sandbox's Flagsmith audit log. A write to any object outside the job fails the trial, even if
+the agent reverts it before the final snapshot. The readout reports zero final collateral and zero observed
+out-of-scope writes as separate counts. The archived trials predate this check, so their zero covers the final
+state only. The verifier self-test proves the check on all 16 templates: the reference solution's writes all pass,
+and a decoy change that is reverted is caught. [Write audit](src/lab/audit.ts)
+
 ## How we used Flagsmith
 
 Flagsmith is both the system under test and the experiment platform.

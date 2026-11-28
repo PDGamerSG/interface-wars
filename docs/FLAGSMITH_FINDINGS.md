@@ -7,7 +7,7 @@ The limit was reached by 203 tool results in 155 main trials.
 
 ## Upstream status
 
-Seven of the ten findings are now tracked in Flagsmith/flagsmith. The others are documented here only.
+Seven of the twelve findings are now tracked in Flagsmith/flagsmith. The others are documented here only.
 
 | Finding | Upstream | Opened by |
 |---|---|---|
@@ -107,6 +107,35 @@ let it compute results from the local event store. The driver reads `EXPERIMENTA
 - **Workaround in this repo:** sandboxes skip the warehouse (`IW_SANDBOX_WAREHOUSE=1` turns it back on).
 - **Fix:** make the rate configurable for self-hosted instances.
 
+## Audit log
+
+These two came from the write audit added after the main run (`src/lab/audit.ts`). They affect any client that
+uses the audit log to check what an agent changed.
+
+### 11. The audit log API returns an empty list on an unlicensed self-hosted install
+
+- **Effect:** with a valid admin token, `GET /api/v1/projects/<id>/audit/`, `/api/v1/organisations/<id>/audit/` and
+  `/api/v1/audit/?project=<id>` each returned `count: 0` while the database held the project's audit rows.
+- **Cause:** self-hosted organisations without a licence get the free-plan metadata, whose
+  `audit_log_visibility_days` defaults to 0. The view then keeps only rows created after the current time.
+  [Visibility filter](https://github.com/Flagsmith/flagsmith/blob/5369ece3ff3aefbd021d2496f82a7ce0e9cd04d6/api/audit/views.py#L77-L93) · [Self-hosted metadata](https://github.com/Flagsmith/flagsmith/blob/5369ece3ff3aefbd021d2496f82a7ce0e9cd04d6/api/organisations/models.py#L474-L495)
+- **Why it matters:** an empty list looks the same as "no writes". A plan error would tell an operator or an
+  agent that the audit trail exists but is not visible.
+- **Workaround in this repo:** the harness reads the sandbox's rows from the lab database in a read-only transaction.
+
+### 12. An audit row is lost when its object is gone before the task processor runs
+
+- **Effect:** in our lab, 6 audit tasks for segment-override feature states raised `FeatureSegment.DoesNotExist`.
+  After three attempts, Flagsmith gave up and wrote no audit row for those writes. Other audit tasks failed with
+  database connection errors when Postgres reached its default limit of 100 connections. At that point the task
+  processor held 73 idle connections.
+- **Cause:** the audit row is built later from the historical record. The task resolves the live object's
+  environment and project, which fails after the segment override has been deleted. [Audit task](https://github.com/Flagsmith/flagsmith/blob/5369ece3ff3aefbd021d2496f82a7ce0e9cd04d6/api/audit/tasks.py#L81-L137)
+- **Why it matters:** an agent that creates or changes a segment override and deletes it soon after can leave
+  no audit row for that write.
+- **Workaround in this repo:** the harness counts failed audit tasks whose historical record belongs to the sandbox
+  and reports them as `lostRows`. The lab raises `max_connections` to 500.
+
 ## Agent behaviour worth knowing
 
 - All 19 failed MCP trials reported `FAILED` and had an empty final snapshot diff.
@@ -115,6 +144,7 @@ let it compute results from the local event store. The driver reads `EXPERIMENTA
   was classified as `done` for a response beginning “DONE? No.” [Claimed live](https://github.com/PDGamerSG/interface-wars/blob/main/runs/main/trials/main-0074.json) · [Partial rollout](https://github.com/PDGamerSG/interface-wars/blob/main/runs/main/trials/main-0075.json) · [“DONE? No”](https://github.com/PDGamerSG/interface-wars/blob/main/runs/main/trials/main-0202.json)
 - The verifier detected zero out-of-scope final changes in 255 trials. It misses temporary writes and fields
   outside its snapshot, including identity overrides. One CLI agent changed a Production weight and restored it.
+  New runs add an audit-log check for writes outside the job, including reverted ones (findings 11 and 12 list its gaps).
   [Recorded calls](https://github.com/PDGamerSG/interface-wars/blob/main/runs/main/trials/main-0139.json) · [Snapshot fields](https://github.com/PDGamerSG/interface-wars/blob/main/src/lab/sandbox.ts)
 - Ten registered passes on setup-only tasks had enrollment enabled at the end. All six skill trials on that
   template were affected. [Sensitivity analysis](https://github.com/PDGamerSG/interface-wars/blob/main/runs/main/sensitivity.md)

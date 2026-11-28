@@ -37,6 +37,24 @@ function stats(trials: TrialRecord[]): ArmStats {
   };
 }
 
+// Final collateral (the snapshot diff) and observed out-of-scope writes (the audit log) are separate claims.
+// Trials recorded before the write audit existed have no audit data, so this section is omitted for them.
+export function writeAuditSummary(trials: TrialRecord[], arms: string[]) {
+  if (!trials.some((t) => t.writeAudit)) return undefined;
+  return Object.fromEntries(arms.map((a) => {
+    const mine = trials.filter((t) => t.arm === a);
+    const audited = mine.filter((t) => t.writeAudit);
+    return [a, {
+      trials: mine.length,
+      audited: audited.length,
+      noFinalCollateral: mine.filter((t) => t.collateral.length === 0).length,
+      noOutOfScopeWrites: audited.filter((t) => t.writeAudit!.outOfScope.length === 0).length,
+      revertedOutOfScope: audited.filter((t) => t.writeAudit!.outOfScope.length > 0 && t.collateral.length === 0).length,
+      lostAuditRows: audited.filter((t) => t.writeAudit!.lostRows > 0).length,
+    }];
+  }));
+}
+
 // Difference in a per-trial metric (arm minus control), resampling job templates with replacement.
 export function clusterBootstrap(trials: TrialRecord[], arm: string, control: string, metric: (t: TrialRecord) => number, iterations = 4000) {
   const templates = [...new Set(trials.map((t) => t.template))].sort();
@@ -147,6 +165,7 @@ export async function buildReadout(run: string, opts: { withFlagsmith?: boolean 
   const perFamily = Object.fromEntries(families.map((f) => [f, Object.fromEntries(arms.map((a) => [a, stats(trials.filter((t) => t.family === f && t.arm === a))]))]));
   const perTemplate = Object.fromEntries([...new Set(trials.map((t) => t.template))].sort().map((tpl) => [tpl, Object.fromEntries(arms.map((a) => [a, stats(trials.filter((t) => t.template === tpl && t.arm === a))]))]));
   const heldOut = Object.fromEntries(arms.map((a) => [a, stats(trials.filter((t) => t.heldOut && t.arm === a))]));
+  const writeAudit = writeAuditSummary(trials, arms);
   const srm = sampleRatioCheck(Object.fromEntries(arms.map((a) => [a, perArm[a].n])));
 
   const bootstrap: Record<string, any> = {};
@@ -203,6 +222,7 @@ export async function buildReadout(run: string, opts: { withFlagsmith?: boolean 
     run, generatedAt: new Date().toISOString(), trials: trials.length,
     model: trials[0]?.model ?? null, effort: trials[0]?.effort ?? null,
     perArm, perFamily, perTemplate, heldOut, srm, bootstrap, flagsmith, decisions, recommendation,
+    ...(writeAudit ? { writeAudit } : {}),
     metrics: METRICS,
   };
   const basename = offline ? 'readout.offline' : 'readout';
@@ -219,6 +239,12 @@ export function renderMarkdown(r: any) {
   lines.push(`# Interface Wars readout: ${r.run}`, '', `${r.trials} trials, model \`${r.model}\` at effort \`${r.effort}\`. Generated ${r.generatedAt}.`, '');
   lines.push('| Arm | Trials | Jobs correct | Out-of-scope changes | Mean cost | Cost per correct job | Mean input tokens |', '|---|---:|---:|---:|---:|---:|---:|');
   for (const [a, s] of Object.entries<any>(r.perArm)) lines.push(`| ${a} | ${s.n} | ${s.correct} (${pct(s.correctRate)}) | ${s.collateral} (${pct(s.collateralRate)}) | ${usd(s.meanCost)} | ${usd(s.costPerCorrect)} | ${Math.round(s.meanTokensIn).toLocaleString()} |`);
+  if (r.writeAudit) {
+    lines.push('', '## Change scope: final state and observed writes', '',
+      'Zero final collateral means the final snapshot shows no change outside the job. Zero observed out-of-scope writes means Flagsmith\'s audit log shows no write to an object outside the job at any point, including writes reverted before the snapshot. A trial with lost audit rows had a write whose audit row Flagsmith failed to create.', '',
+      '| Arm | Audited trials | Zero final collateral | Zero observed out-of-scope writes | Reverted out-of-scope writes | Trials with lost audit rows |', '|---|---:|---:|---:|---:|---:|');
+    for (const [a, w] of Object.entries<any>(r.writeAudit)) lines.push(`| ${a} | ${w.audited}/${w.trials} | ${w.noFinalCollateral} | ${w.noOutOfScopeWrites} | ${w.revertedOutOfScope} | ${w.lostAuditRows} |`);
+  }
   lines.push('', '## Decision (pre-registered rule)', '');
   for (const [a, d] of Object.entries<any>(r.decisions)) {
     const f = d.flagsmith;
