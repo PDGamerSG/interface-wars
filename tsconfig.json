@@ -13,5 +13,5 @@
     "skipLibCheck": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*.ts", "scripts/**/*.ts", "test/**/*.ts"]
+  "include": ["src/**/*.ts", "scripts/**/*.ts", "skills/flagsmith-release-gate/scripts/**/*.ts", "test/**/*.ts"]
 }

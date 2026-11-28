@@ -29,6 +29,10 @@ commit dates.** The user records the demo video. The website is the next piece o
 
 Spend so far: $1.00 of the $15 cap (`runs/spend.local.json`). The API key is only in `.env`.
 
+## 3.1 Release gate
+
+A separate `flagsmith-release-gate` Agent Skill is available for production-style staged rollouts. It is tested offline and against one disposable local Flagsmith organization with the official CLI. The gate requires a disabled zero-percent experiment draft, two distinct signed approvals, policy and spend checks before each write, matched cohort probes, read-back hashes and reverse rollback. Flagsmith 2.295.2 keeps the experiment `running` after rollback because its lifecycle cannot return to `created`; enrollment is disabled at zero percent.
+
 ## 3. Next
 
 1. **Operational controls** are now available through `ops:setup`, `ops:pause` and `ops:resume`. The control
