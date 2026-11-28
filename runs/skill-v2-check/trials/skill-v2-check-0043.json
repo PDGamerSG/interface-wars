@@ -1,0 +1,209 @@
+{
+  "trialId": "skill-v2-check-0043",
+  "index": 43,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "ship_winner",
+  "family": "experiments",
+  "heldOut": true,
+  "task": "The experiment \"one_click_buy_copy test\" in Production has finished and the variation \"Get it today\" won. Complete the experiment and roll the winning variation out to everyone.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.experiment.one_click_buy_copy test.rollout_decision",
+      "before": null,
+      "after": "variant"
+    },
+    {
+      "path": "env.Production.experiment.one_click_buy_copy test.status",
+      "before": "running",
+      "after": "completed"
+    },
+    {
+      "path": "env.Production.flag.one_click_buy_copy.split.Get it today",
+      "before": 0,
+      "after": 100
+    },
+    {
+      "path": "env.Production.override.one_click_buy_copy.experiment-100-rollout.enabled",
+      "before": true,
+      "after": null
+    },
+    {
+      "path": "env.Production.override.one_click_buy_copy.experiment-100-rollout.split.Get it today",
+      "before": 50,
+      "after": null
+    },
+    {
+      "path": "env.Production.override.one_click_buy_copy.experiment-100-rollout.value",
+      "before": "Buy now",
+      "after": null
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Experiment \"one_click_buy_copy test\" (id 100) in Production is completed with rollout decision \"variant\" (option 199, \"Get it today\"). The flag `one_click_buy_copy` is enabled with that variant at weight 100, so all traffic gets \"Get it today\". The control value stays \"Buy now\", as the rollout kept it.",
+  "costUsd": 0.001541,
+  "usage": {
+    "input": 14,
+    "output": 1128,
+    "cacheRead": 20170,
+    "cacheWrite": 6192
+  },
+  "toolCalls": 5,
+  "toolErrors": 0,
+  "turns": 6,
+  "ms": 12605,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "E=[env-44302c3dc30b2d40]; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status}'",
+    "E=[env-44302c3dc30b2d40]; flagsmith api api/v1/environments/$E/experiments/100/ --json | jq '{id,status,feature,rollout_decision,experiment_rollout,multivariate_feature_state_values:(.experiment_rollout.multivariate_feature_state_values // null)}'; flagsmith api api/v1/environments/$E/experiments/100/ --json | jq 'keys'",
+    "E=[env-44302c3dc30b2d40]; flagsmith flag get one_click_buy_copy -e $E --json --jq '{enabled,value,variants}'; flagsmith feature variant list one_click_buy_copy --json",
+    "E=[env-44302c3dc30b2d40]; flagsmith api api/v1/environments/$E/experiments/100/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":199}\nJSON\necho \"---\"; flagsmith api api/v1/environments/$E/experiments/100/ --jq '{status,rollout_decision,rollout_variant,rollout:(.experiment_rollout|{enabled,rollout_percentage})}'; flagsmith flag get one_click_buy_copy -e $E --json --jq '{enabled,value,variants}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops-v2\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Stages experiment drafts with enrollment off. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI (revision 2)\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment draft (created, not started). Needs the feature id, metric ids and multivariate option ids.\n# Stage it with enrollment off: Flagsmith can enroll identities from an enabled rollout before the experiment starts.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":0,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n",
+          "isError": false,
+          "ms": 75
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 89,
+        "cacheRead": 0,
+        "cacheWrite": 1100
+      },
+      "costUsd": 0.00018240000000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=[env-44302c3dc30b2d40]; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status}'"
+          },
+          "output": "{\"id\":100,\"name\":\"one_click_buy_copy test\",\"status\":\"running\"}",
+          "isError": false,
+          "ms": 559
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 108,
+        "cacheRead": 1100,
+        "cacheWrite": 3104
+      },
+      "costUsd": 0.00045320000000000007,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=[env-44302c3dc30b2d40]; flagsmith api api/v1/environments/$E/experiments/100/ --json | jq '{id,status,feature,rollout_decision,experiment_rollout,multivariate_feature_state_values:(.experiment_rollout.multivariate_feature_state_values // null)}'; flagsmith api api/v1/environments/$E/experiments/100/ --json | jq 'keys'"
+          },
+          "output": "{\n  \"id\": 100,\n  \"status\": \"running\",\n  \"feature\": {\n    \"id\": 1963,\n    \"name\": \"one_click_buy_copy\",\n    \"type\": \"MULTIVARIATE\",\n    \"initial_value\": \"Buy now\",\n    \"multivariate_options\": [\n      {\n        \"id\": 199,\n        \"uuid\": \"9627ea2d-2acf-49a1-aad3-61471e0e5b3c\",\n        \"type\": \"unicode\",\n        \"integer_value\": null,\n        \"string_value\": \"Get it today\",\n        \"boolean_value\": null,\n        \"default_percentage_allocation\": 0.0,\n        \"key\": \"b\"\n      }\n    ]\n  },\n  \"rollout_decision\": null,\n  \"experiment_rollout\": {\n    \"enabled\": true,\n    \"rollout_percentage\": 100.0,\n    \"feature_state_value\": {\n      \"type\": \"string\",\n      \"value\": \"Buy now\"\n    },\n    \"multivariate_feature_state_values\": [\n      {\n        \"multivariate_feature_option\": 199,\n        \"percentage_allocation\": 50.0\n      }\n    ],\n    \"audience\": {\n      \"match\": \"any\",\n      \"segments\": []\n    }\n  },\n  \"multivariate_feature_state_values\": [\n    {\n      \"multivariate_feature_option\": 199,\n      \"percentage_allocation\": 50.0\n    }\n  ]\n}\n[\n  \"created_at\",\n  \"ended_at\",\n  \"experiment_rollout\",\n  \"feature\",\n  \"hypothesis\",\n  \"id\",\n  \"metrics\",\n  \"name\",\n  \"rollout_decision\",\n  \"rollout_variant\",\n  \"started_at\",\n  \"status\",\n  \"updated_at\"\n]",
+          "isError": false,
+          "ms": 586
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 195,
+        "cacheRead": 4204,
+        "cacheWrite": 140
+      },
+      "costUsd": 0.00015724,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "The variation \"Get it today\" is option 199 (key b). Before completing, I'll read the flag's current state in Production.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=[env-44302c3dc30b2d40]; flagsmith flag get one_click_buy_copy -e $E --json --jq '{enabled,value,variants}'; flagsmith feature variant list one_click_buy_copy --json"
+          },
+          "output": "{\"enabled\":true,\"value\":\"Buy now\",\"variants\":[{\"id\":199,\"key\":\"b\",\"value\":\"Get it today\",\"weight\":0}]}\n[\n  {\n    \"id\": 199,\n    \"value\": \"Get it today\",\n    \"weight\": 0,\n    \"key\": \"b\"\n  }\n]",
+          "isError": false,
+          "ms": 1344
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 243,
+        "cacheRead": 4344,
+        "cacheWrite": 746
+      },
+      "costUsd": 0.00025839,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=[env-44302c3dc30b2d40]; flagsmith api api/v1/environments/$E/experiments/100/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":199}\nJSON\necho \"---\"; flagsmith api api/v1/environments/$E/experiments/100/ --jq '{status,rollout_decision,rollout_variant,rollout:(.experiment_rollout|{enabled,rollout_percentage})}'; flagsmith flag get one_click_buy_copy -e $E --json --jq '{enabled,value,variants}'"
+          },
+          "output": "{\"id\":100,\"feature\":{\"id\":1963,\"name\":\"one_click_buy_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Buy now\",\"multivariate_options\":[{\"id\":199,\"uuid\":\"9627ea2d-2acf-49a1-aad3-61471e0e5b3c\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Get it today\",\"boolean_value\":null,\"default_percentage_allocation\":100.0,\"key\":\"b\"}]},\"name\":\"one_click_buy_copy test\",\"hypothesis\":\"Get it today wins\",\"status\":\"completed\",\"metrics\":[{\"id\":134,\"metric\":163,\"metric_name\":\"signup_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-28T16:01:05.480036Z\"}],\"created_at\":\"2026-11-28T16:01:05.479553Z\",\"updated_at\":\"2026-11-28T16:01:15.507896Z\",\"started_at\":\"2026-11-28T16:01:05.551703Z\",\"ended_at\":\"2026-11-28T16:01:15.450590Z\",\"rollout_decision\":\"variant\",\"rollout_variant\":199}---\n{\"rollout\":{\"enabled\":null,\"rollout_percentage\":null},\"rollout_decision\":\"variant\",\"rollout_variant\":199,\"status\":\"completed\"}\n{\"enabled\":true,\"value\":\"Buy now\",\"variants\":[{\"id\":199,\"key\":\"b\",\"value\":\"Get it today\",\"weight\":100}]}",
+          "isError": false,
+          "ms": 1544
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 257,
+        "cacheRead": 5090,
+        "cacheWrite": 342
+      },
+      "costUsd": 0.00022234999999999998,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "DONE: Experiment \"one_click_buy_copy test\" (id 100) in Production is completed with rollout decision \"variant\" (option 199, \"Get it today\"). The flag `one_click_buy_copy` is enabled with that variant at weight 100, so all traffic gets \"Get it today\". The control value stays \"Buy now\", as the rollout kept it.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 236,
+        "cacheRead": 5432,
+        "cacheWrite": 760
+      },
+      "costUsd": 0.00026752,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T16:01:04.430Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 3,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops-v2",
+    "sha256": "19b412bfdfa744c5b694bd65148ef45c5575db3d426f1dcba5e64146c94f6de8"
+  }
+}

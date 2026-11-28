@@ -1,0 +1,160 @@
+{
+  "trialId": "skill-v1-check-0106",
+  "index": 106,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "start_experiment",
+  "family": "experiments",
+  "heldOut": false,
+  "task": "The experiment \"live_chat_copy test\" in Production is set up but not running. Start it.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.experiment.live_chat_copy test.status",
+      "before": "created",
+      "after": "running"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: The Production experiment \"live_chat_copy test\" (id 87) is now running, confirmed by reading back status \"running\" with a started_at timestamp. The flag itself still reads enabled with value \"Sign up\" in Production. Its variant \"b\" (Create account) has a 50% allocation in the experiment, so the split will apply once the experiment's rollout takes effect.",
+  "costUsd": 0.001283,
+  "usage": {
+    "input": 12,
+    "output": 861,
+    "cacheRead": 14056,
+    "cacheWrite": 5687
+  },
+  "toolCalls": 4,
+  "toolErrors": 0,
+  "turns": 5,
+  "ms": 10807,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; echo ----; flagsmith --help",
+    "P=[env-2b341a40beff49f9]; flagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'",
+    "P=[env-2b341a40beff49f9]; flagsmith api api/v1/environments/$P/experiments/87/ | jq '{id,name,status,start_date,end_date,metrics,experiment_rollout,feature}'; echo ---; flagsmith flag get live_chat_copy -e $P --json --jq '{enabled,value,variants}'",
+    "P=[env-2b341a40beff49f9]; flagsmith api api/v1/environments/$P/experiments/87/start/ -X POST; echo; flagsmith api api/v1/environments/$P/experiments/87/ --jq '{status,rollout_decision}'; flagsmith flag get live_chat_copy -e $P --json --jq '{enabled,value,variants}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; echo ----; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 73
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 98,
+        "cacheRead": 0,
+        "cacheWrite": 1073
+      },
+      "costUsd": 0.000183525,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=[env-2b341a40beff49f9]; flagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'"
+          },
+          "output": "{\"feature\":{\"id\":1779,\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":176,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Create account\",\"type\":\"unicode\",\"uuid\":\"a4c61521-faa2-4199-aa93-937396843824\"}],\"name\":\"live_chat_copy\",\"type\":\"MULTIVARIATE\"},\"id\":87,\"name\":\"live_chat_copy test\",\"rollout_decision\":null,\"status\":\"created\"}",
+          "isError": false,
+          "ms": 323
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 119,
+        "cacheRead": 1073,
+        "cacheWrite": 2790
+      },
+      "costUsd": 0.00041918,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=[env-2b341a40beff49f9]; flagsmith api api/v1/environments/$P/experiments/87/ | jq '{id,name,status,start_date,end_date,metrics,experiment_rollout,feature}'; echo ---; flagsmith flag get live_chat_copy -e $P --json --jq '{enabled,value,variants}'"
+          },
+          "output": "{\n  \"id\": 87,\n  \"name\": \"live_chat_copy test\",\n  \"status\": \"created\",\n  \"start_date\": null,\n  \"end_date\": null,\n  \"metrics\": [\n    {\n      \"id\": 119,\n      \"metric\": 143,\n      \"metric_name\": \"signup_completed\",\n      \"aggregation\": \"occurrence\",\n      \"direction\": \"up\",\n      \"expected_direction\": \"increase\",\n      \"created_at\": \"2026-11-28T15:58:57.501841Z\"\n    }\n  ],\n  \"experiment_rollout\": {\n    \"enabled\": true,\n    \"rollout_percentage\": 100.0,\n    \"feature_state_value\": {\n      \"type\": \"string\",\n      \"value\": \"Sign up\"\n    },\n    \"multivariate_feature_state_values\": [\n      {\n        \"multivariate_feature_option\": 176,\n        \"percentage_allocation\": 50.0\n      }\n    ],\n    \"audience\": {\n      \"match\": \"any\",\n      \"segments\": []\n    }\n  },\n  \"feature\": {\n    \"id\": 1779,\n    \"name\": \"live_chat_copy\",\n    \"type\": \"MULTIVARIATE\",\n    \"initial_value\": \"Sign up\",\n    \"multivariate_options\": [\n      {\n        \"id\": 176,\n        \"uuid\": \"a4c61521-faa2-4199-aa93-937396843824\",\n        \"type\": \"unicode\",\n        \"integer_value\": null,\n        \"string_value\": \"Create account\",\n        \"boolean_value\": null,\n        \"default_percentage_allocation\": 0.0,\n        \"key\": \"b\"\n      }\n    ]\n  }\n}\n---\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":176,\"key\":\"b\",\"value\":\"Create account\",\"weight\":0}]}",
+          "isError": false,
+          "ms": 1564
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 223,
+        "cacheRead": 3863,
+        "cacheWrite": 303
+      },
+      "costUsd": 0.00018820500000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "The experiment is configured as expected: one primary metric, 100% rollout, and a 50% split to variant \"b\". Starting it now.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=[env-2b341a40beff49f9]; flagsmith api api/v1/environments/$P/experiments/87/start/ -X POST; echo; flagsmith api api/v1/environments/$P/experiments/87/ --jq '{status,rollout_decision}'; flagsmith flag get live_chat_copy -e $P --json --jq '{enabled,value,variants}'"
+          },
+          "output": "{\"id\":87,\"feature\":{\"id\":1779,\"name\":\"live_chat_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"id\":176,\"uuid\":\"a4c61521-faa2-4199-aa93-937396843824\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Create account\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"live_chat_copy test\",\"hypothesis\":\"Create account wins\",\"status\":\"running\",\"metrics\":[{\"id\":119,\"metric\":143,\"metric_name\":\"signup_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-28T15:58:57.501841Z\"}],\"created_at\":\"2026-11-28T15:58:57.501191Z\",\"updated_at\":\"2026-11-28T15:59:07.148027Z\",\"started_at\":\"2026-11-28T15:59:07.147116Z\",\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}\n{\"rollout_decision\":null,\"status\":\"running\"}\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":176,\"key\":\"b\",\"value\":\"Create account\",\"weight\":0}]}",
+          "isError": false,
+          "ms": 1524
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 299,
+        "cacheRead": 4166,
+        "cacheWrite": 788
+      },
+      "costUsd": 0.00028986,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "DONE: The Production experiment \"live_chat_copy test\" (id 87) is now running, confirmed by reading back status \"running\" with a started_at timestamp. The flag itself still reads enabled with value \"Sign up\" in Production. Its variant \"b\" (Create account) has a 50% allocation in the experiment, so the split will apply once the experiment's rollout takes effect.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 122,
+        "cacheRead": 4954,
+        "cacheWrite": 733
+      },
+      "costUsd": 0.000202365,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:58:56.028Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 1,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops",
+    "sha256": "f6f350aec5da331637eaf740f37da39445b693b57967531bd377fca89c509328"
+  }
+}

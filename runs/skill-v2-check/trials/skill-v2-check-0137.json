@@ -1,0 +1,221 @@
+{
+  "trialId": "skill-v2-check-0137",
+  "index": 137,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "create_experiment",
+  "family": "experiments",
+  "heldOut": false,
+  "task": "In Production, set up (but do not start) an experiment named \"store_locator_copy test\" on the multivariate flag \"store_locator_copy\". Hypothesis: \"Create account\" increases checkout completed versus \"Sign up\". The primary metric \"checkout_completed\" should increase, and \"refund_requested\" is a guardrail that should not increase. Split users evenly between the control and the variation.",
+  "correct": false,
+  "reasons": [
+    "strict draft: hypothesis does not match the registered text"
+  ],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.experiment.store_locator_copy test.feature",
+      "before": null,
+      "after": "store_locator_copy"
+    },
+    {
+      "path": "env.Production.experiment.store_locator_copy test.hypothesis",
+      "before": null,
+      "after": "\"Create account\" increases checkout completed versus \"Sign up\"."
+    },
+    {
+      "path": "env.Production.experiment.store_locator_copy test.metric.checkout_completed",
+      "before": null,
+      "after": "increase"
+    },
+    {
+      "path": "env.Production.experiment.store_locator_copy test.metric.refund_requested",
+      "before": null,
+      "after": "not_increase"
+    },
+    {
+      "path": "env.Production.experiment.store_locator_copy test.status",
+      "before": null,
+      "after": "created"
+    },
+    {
+      "path": "env.Production.override.store_locator_copy.experiment-107-rollout.enabled",
+      "before": null,
+      "after": false
+    },
+    {
+      "path": "env.Production.override.store_locator_copy.experiment-107-rollout.split.Create account",
+      "before": null,
+      "after": 50
+    },
+    {
+      "path": "env.Production.override.store_locator_copy.experiment-107-rollout.value",
+      "before": null,
+      "after": "Sign up"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Created draft experiment \"store_locator_copy test\" (id 107) in Production, status `created` and not started. Control is \"Sign up\" at 50% and variation \"Create account\" (option 203) at 50%. Primary metric checkout_completed is set to increase, and guardrail refund_requested to not_increase. Enrollment is off (rollout disabled, 0%). The flag itself is unchanged (still enabled, value \"Sign up\", variant weight 0).",
+  "costUsd": 0.001866,
+  "usage": {
+    "input": 14,
+    "output": 1682,
+    "cacheRead": 21443,
+    "cacheWrite": 6473
+  },
+  "toolCalls": 5,
+  "toolErrors": 0,
+  "turns": 6,
+  "ms": 16085,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "P=[env-702617d47249ea1b]\nflagsmith flag get store_locator_copy -e $P --json --jq '{enabled,value,variants}'\nflagsmith feature variant list store_locator_copy --json\nflagsmith api api/v1/environments/$P/experiment-metrics/ --jq '.results[] | {id,name,definition,direction,aggregation}'\nflagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status}'",
+    "P=[env-702617d47249ea1b]\nflagsmith feature list --json --jq '.[] | select(.name==\"store_locator_copy\") | {id,name,type,tags}'\nflagsmith api \"api/v1/environments/$P/featurestates/?feature=$(flagsmith feature list --json --jq '.[] | select(.name==\"store_locator_copy\") | .id')\" --jq '.results[] | {id,enabled,value:.feature_state_value,mv:[.multivariate_feature_state_values[]?|{id,percentage_allocation,mvfo:.multivariate_feature_option}]}'",
+    "P=[env-702617d47249ea1b]\nflagsmith api api/v1/environments/$P/experiments/ -X POST --input - <<'JSON'\n{\"feature\":1989,\"name\":\"store_locator_copy test\",\"hypothesis\":\"\\\"Create account\\\" increases checkout completed versus \\\"Sign up\\\".\",\n \"metrics\":[{\"metric\":164,\"expected_direction\":\"increase\"},{\"metric\":165,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":0,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":203,\"percentage_allocation\":50}]}}\nJSON",
+    "P=[env-702617d47249ea1b]\nflagsmith api api/v1/environments/$P/experiments/107/ --jq '{name,status,hypothesis,metrics,rollout:(.experiment_rollout|{enabled,rollout_percentage,feature_state_value,mv:.multivariate_feature_state_values})}'\nflagsmith flag get store_locator_copy -e $P --json --jq '{enabled,value,variants}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops-v2\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Stages experiment drafts with enrollment off. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI (revision 2)\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment draft (created, not started). Needs the feature id, metric ids and multivariate option ids.\n# Stage it with enrollment off: Flagsmith can enroll identities from an enabled rollout before the experiment starts.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":0,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n",
+          "isError": false,
+          "ms": 103
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 89,
+        "cacheRead": 0,
+        "cacheWrite": 1171
+      },
+      "costUsd": 0.000191275,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=[env-702617d47249ea1b]\nflagsmith flag get store_locator_copy -e $P --json --jq '{enabled,value,variants}'\nflagsmith feature variant list store_locator_copy --json\nflagsmith api api/v1/environments/$P/experiment-metrics/ --jq '.results[] | {id,name,definition,direction,aggregation}'\nflagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status}'"
+          },
+          "output": "{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":203,\"key\":\"b\",\"value\":\"Create account\",\"weight\":0}]}\n[\n  {\n    \"id\": 203,\n    \"value\": \"Create account\",\n    \"weight\": 0,\n    \"key\": \"b\"\n  }\n]\n{\"aggregation\":\"occurrence\",\"definition\":{\"event\":\"checkout_completed\",\"version\":1},\"direction\":\"up\",\"id\":164,\"name\":\"checkout_completed\"}\n{\"aggregation\":\"occurrence\",\"definition\":{\"event\":\"refund_requested\",\"version\":1},\"direction\":\"down\",\"id\":165,\"name\":\"refund_requested\"}",
+          "isError": false,
+          "ms": 2220
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 271,
+        "cacheRead": 1171,
+        "cacheWrite": 3104
+      },
+      "costUsd": 0.00053541,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=[env-702617d47249ea1b]\nflagsmith feature list --json --jq '.[] | select(.name==\"store_locator_copy\") | {id,name,type,tags}'\nflagsmith api \"api/v1/environments/$P/featurestates/?feature=$(flagsmith feature list --json --jq '.[] | select(.name==\"store_locator_copy\") | .id')\" --jq '.results[] | {id,enabled,value:.feature_state_value,mv:[.multivariate_feature_state_values[]?|{id,percentage_allocation,mvfo:.multivariate_feature_option}]}'"
+          },
+          "output": "{\"id\":1989,\"name\":\"store_locator_copy\",\"tags\":null,\"type\":\"multivariate\"}\n{\"enabled\":true,\"id\":4158,\"mv\":[{\"id\":506,\"mvfo\":203,\"percentage_allocation\":0}],\"value\":\"Sign up\"}",
+          "isError": false,
+          "ms": 829
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 471,
+        "cacheRead": 4275,
+        "cacheWrite": 478
+      },
+      "costUsd": 0.0003382,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "Production has no experiments yet. The flag is at id 1989, the variant \"Create account\" is option 203, and the existing metrics are checkout_completed (164) and refund_requested (165). I'll create the draft with enrollment off.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=[env-702617d47249ea1b]\nflagsmith api api/v1/environments/$P/experiments/ -X POST --input - <<'JSON'\n{\"feature\":1989,\"name\":\"store_locator_copy test\",\"hypothesis\":\"\\\"Create account\\\" increases checkout completed versus \\\"Sign up\\\".\",\n \"metrics\":[{\"metric\":164,\"expected_direction\":\"increase\"},{\"metric\":165,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":0,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":203,\"percentage_allocation\":50}]}}\nJSON"
+          },
+          "output": "{\"id\":107,\"feature\":1989,\"name\":\"store_locator_copy test\",\"hypothesis\":\"\\\"Create account\\\" increases checkout completed versus \\\"Sign up\\\".\",\"status\":\"created\",\"created_at\":\"2026-11-28T16:02:04.910507Z\",\"updated_at\":\"2026-11-28T16:02:04.930571Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
+          "isError": false,
+          "ms": 557
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 457,
+        "cacheRead": 4753,
+        "cacheWrite": 566
+      },
+      "costUsd": 0.00034698000000000004,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=[env-702617d47249ea1b]\nflagsmith api api/v1/environments/$P/experiments/107/ --jq '{name,status,hypothesis,metrics,rollout:(.experiment_rollout|{enabled,rollout_percentage,feature_state_value,mv:.multivariate_feature_state_values})}'\nflagsmith flag get store_locator_copy -e $P --json --jq '{enabled,value,variants}'"
+          },
+          "output": "{\"hypothesis\":\"\\\"Create account\\\" increases checkout completed versus \\\"Sign up\\\".\",\"metrics\":[{\"aggregation\":\"occurrence\",\"created_at\":\"2026-11-28T16:02:04.911714Z\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"id\":147,\"metric\":164,\"metric_name\":\"checkout_completed\"},{\"aggregation\":\"occurrence\",\"created_at\":\"2026-11-28T16:02:04.911724Z\",\"direction\":\"down\",\"expected_direction\":\"not_increase\",\"id\":148,\"metric\":165,\"metric_name\":\"refund_requested\"}],\"name\":\"store_locator_copy test\",\"rollout\":{\"enabled\":false,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\"mv\":[{\"multivariate_feature_option\":203,\"percentage_allocation\":50}],\"rollout_percentage\":0},\"status\":\"created\"}\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":203,\"key\":\"b\",\"value\":\"Create account\",\"weight\":0}]}",
+          "isError": false,
+          "ms": 1101
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 202,
+        "cacheRead": 5319,
+        "cacheWrite": 606
+      },
+      "costUsd": 0.00023014,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "DONE: Created draft experiment \"store_locator_copy test\" (id 107) in Production, status `created` and not started. Control is \"Sign up\" at 50% and variation \"Create account\" (option 203) at 50%. Primary metric checkout_completed is set to increase, and guardrail refund_requested to not_increase. Enrollment is off (rollout disabled, 0%). The flag itself is unchanged (still enabled, value \"Sign up\", variant weight 0).",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 192,
+        "cacheRead": 5925,
+        "cacheWrite": 548
+      },
+      "costUsd": 0.00022395,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T16:01:50.750Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 3,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops-v2",
+    "sha256": "19b412bfdfa744c5b694bd65148ef45c5575db3d426f1dcba5e64146c94f6de8"
+  }
+}

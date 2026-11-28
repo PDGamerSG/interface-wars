@@ -1,0 +1,221 @@
+{
+  "trialId": "skill-v1-check-0121",
+  "index": 121,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "create_experiment",
+  "family": "experiments",
+  "heldOut": false,
+  "task": "In Production, set up (but do not start) an experiment named \"search_v2_copy test\" on the multivariate flag \"search_v2_copy\". Hypothesis: \"Pay securely\" increases trial started versus \"Checkout\". The primary metric \"trial_started\" should increase, and \"refund_requested\" is a guardrail that should not increase. Split users evenly between the control and the variation.",
+  "correct": false,
+  "reasons": [
+    "strict draft: enrollment must be disabled while the experiment is created"
+  ],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.experiment.search_v2_copy test.feature",
+      "before": null,
+      "after": "search_v2_copy"
+    },
+    {
+      "path": "env.Production.experiment.search_v2_copy test.hypothesis",
+      "before": null,
+      "after": "\"Pay securely\" increases trial started versus \"Checkout\""
+    },
+    {
+      "path": "env.Production.experiment.search_v2_copy test.metric.refund_requested",
+      "before": null,
+      "after": "not_increase"
+    },
+    {
+      "path": "env.Production.experiment.search_v2_copy test.metric.trial_started",
+      "before": null,
+      "after": "increase"
+    },
+    {
+      "path": "env.Production.experiment.search_v2_copy test.status",
+      "before": null,
+      "after": "created"
+    },
+    {
+      "path": "env.Production.override.search_v2_copy.experiment-84-rollout.enabled",
+      "before": null,
+      "after": true
+    },
+    {
+      "path": "env.Production.override.search_v2_copy.experiment-84-rollout.split.Pay securely",
+      "before": null,
+      "after": 50
+    },
+    {
+      "path": "env.Production.override.search_v2_copy.experiment-84-rollout.value",
+      "before": null,
+      "after": "Checkout"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Created experiment \"search_v2_copy test\" (id 84) in Production on the multivariate flag search_v2_copy, status \"created\" and not started. The control is \"Checkout\" and the variant is \"Pay securely\", each at 50%. The primary metric is trial_started (expected increase) and the guardrail is refund_requested (expected not_increase). Read-back confirmed these settings. The flag itself is unchanged (enabled, value \"Checkout\", variant weight 0).",
+  "costUsd": 0.001835,
+  "usage": {
+    "input": 14,
+    "output": 1641,
+    "cacheRead": 20058,
+    "cacheWrite": 6503
+  },
+  "toolCalls": 5,
+  "toolErrors": 0,
+  "turns": 6,
+  "ms": 16299,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "P=[env-44e1712a726a927d]\nflagsmith flag get search_v2_copy -e $P --json --jq '{id,enabled,value,variants}'\nflagsmith feature variant list search_v2_copy --json\nflagsmith api api/v1/environments/$P/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'\nflagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status,feature}'",
+    "P=[env-44e1712a726a927d]\nflagsmith feature list --json --jq '.[] | select(.name==\"search_v2_copy\") | {id,name,type,tags}'\nflagsmith api \"api/v1/environments/$P/featurestates/?feature=$(flagsmith feature list --json --jq '.[] | select(.name==\"search_v2_copy\") | .id')\" --jq '.results[] | {id,enabled,feature_state_value,multivariate_feature_state_values}'",
+    "P=[env-44e1712a726a927d]\nflagsmith api api/v1/environments/$P/experiments/ -X POST --input - <<'JSON'\n{\"feature\":1761,\"name\":\"search_v2_copy test\",\"hypothesis\":\"\\\"Pay securely\\\" increases trial started versus \\\"Checkout\\\"\",\n \"metrics\":[{\"metric\":131,\"expected_direction\":\"increase\"},{\"metric\":132,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":170,\"percentage_allocation\":50}]}}\nJSON",
+    "P=[env-44e1712a726a927d]\nflagsmith api api/v1/environments/$P/experiments/84/ --json | jq '{name,status,feature,hypothesis,started_at,metrics,experiment_rollout}' 2>/dev/null || flagsmith api api/v1/environments/$P/experiments/84/\necho ---\nflagsmith flag get search_v2_copy -e $P --json --jq '{enabled,value,variants}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 93
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 89,
+        "cacheRead": 0,
+        "cacheWrite": 1165
+      },
+      "costUsd": 0.000190525,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "Let me look at the current state: the flag, its variants, and existing metrics and experiments in Production.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=[env-44e1712a726a927d]\nflagsmith flag get search_v2_copy -e $P --json --jq '{id,enabled,value,variants}'\nflagsmith feature variant list search_v2_copy --json\nflagsmith api api/v1/environments/$P/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'\nflagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status,feature}'"
+          },
+          "output": "{\"enabled\":true,\"id\":null,\"value\":\"Checkout\",\"variants\":[{\"id\":170,\"key\":\"b\",\"value\":\"Pay securely\",\"weight\":0}]}\n[\n  {\n    \"id\": 170,\n    \"value\": \"Pay securely\",\n    \"weight\": 0,\n    \"key\": \"b\"\n  }\n]\n{\"aggregation\":\"occurrence\",\"definition\":{\"event\":\"trial_started\",\"version\":1},\"direction\":\"up\",\"id\":131,\"name\":\"trial_started\"}\n{\"aggregation\":\"occurrence\",\"definition\":{\"event\":\"refund_requested\",\"version\":1},\"direction\":\"down\",\"id\":132,\"name\":\"refund_requested\"}",
+          "isError": false,
+          "ms": 3312
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 256,
+        "cacheRead": 1165,
+        "cacheWrite": 2779
+      },
+      "costUsd": 0.00048722500000000004,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "The metrics `trial_started` (id 131) and `refund_requested` (id 132) already exist, and there are no experiments yet. I still need the feature id and the feature state details.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=[env-44e1712a726a927d]\nflagsmith feature list --json --jq '.[] | select(.name==\"search_v2_copy\") | {id,name,type,tags}'\nflagsmith api \"api/v1/environments/$P/featurestates/?feature=$(flagsmith feature list --json --jq '.[] | select(.name==\"search_v2_copy\") | .id')\" --jq '.results[] | {id,enabled,feature_state_value,multivariate_feature_state_values}'"
+          },
+          "output": "{\"id\":1761,\"name\":\"search_v2_copy\",\"tags\":null,\"type\":\"multivariate\"}\n{\"enabled\":true,\"feature_state_value\":\"Checkout\",\"id\":3672,\"multivariate_feature_state_values\":[{\"id\":419,\"multivariate_feature_option\":170,\"percentage_allocation\":0}]}",
+          "isError": false,
+          "ms": 862
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 440,
+        "cacheRead": 3944,
+        "cacheWrite": 468
+      },
+      "costUsd": 0.00031813999999999996,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "Feature id is 1761, the control value is \"Checkout\", and the \"Pay securely\" option is 170. I'll create the experiment without starting it.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=[env-44e1712a726a927d]\nflagsmith api api/v1/environments/$P/experiments/ -X POST --input - <<'JSON'\n{\"feature\":1761,\"name\":\"search_v2_copy test\",\"hypothesis\":\"\\\"Pay securely\\\" increases trial started versus \\\"Checkout\\\"\",\n \"metrics\":[{\"metric\":131,\"expected_direction\":\"increase\"},{\"metric\":132,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":170,\"percentage_allocation\":50}]}}\nJSON"
+          },
+          "output": "{\"id\":84,\"feature\":1761,\"name\":\"search_v2_copy test\",\"hypothesis\":\"\\\"Pay securely\\\" increases trial started versus \\\"Checkout\\\"\",\"status\":\"created\",\"created_at\":\"2026-11-28T15:58:49.642096Z\",\"updated_at\":\"2026-11-28T15:58:49.649133Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
+          "isError": false,
+          "ms": 361
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 458,
+        "cacheRead": 4412,
+        "cacheWrite": 553
+      },
+      "costUsd": 0.000342445,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "Experiment 84 was created with status \"created\". Next I'll read it back and confirm the flag is unchanged.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=[env-44e1712a726a927d]\nflagsmith api api/v1/environments/$P/experiments/84/ --json | jq '{name,status,feature,hypothesis,started_at,metrics,experiment_rollout}' 2>/dev/null || flagsmith api api/v1/environments/$P/experiments/84/\necho ---\nflagsmith flag get search_v2_copy -e $P --json --jq '{enabled,value,variants}'"
+          },
+          "output": "{\n  \"name\": \"search_v2_copy test\",\n  \"status\": \"created\",\n  \"feature\": {\n    \"id\": 1761,\n    \"name\": \"search_v2_copy\",\n    \"type\": \"MULTIVARIATE\",\n    \"initial_value\": \"Checkout\",\n    \"multivariate_options\": [\n      {\n        \"id\": 170,\n        \"uuid\": \"8881f14a-7910-4c92-9fdb-45995c605536\",\n        \"type\": \"unicode\",\n        \"integer_value\": null,\n        \"string_value\": \"Pay securely\",\n        \"boolean_value\": null,\n        \"default_percentage_allocation\": 0.0,\n        \"key\": \"b\"\n      }\n    ]\n  },\n  \"hypothesis\": \"\\\"Pay securely\\\" increases trial started versus \\\"Checkout\\\"\",\n  \"started_at\": null,\n  \"metrics\": [\n    {\n      \"id\": 113,\n      \"metric\": 131,\n      \"metric_name\": \"trial_started\",\n      \"aggregation\": \"occurrence\",\n      \"direction\": \"up\",\n      \"expected_direction\": \"increase\",\n      \"created_at\": \"2026-11-28T15:58:49.642640Z\"\n    },\n    {\n      \"id\": 114,\n      \"metric\": 132,\n      \"metric_name\": \"refund_requested\",\n      \"aggregation\": \"occurrence\",\n      \"direction\": \"down\",\n      \"expected_direction\": \"not_increase\",\n      \"created_at\": \"2026-11-28T15:58:49.642648Z\"\n    }\n  ],\n  \"experiment_rollout\": {\n    \"enabled\": true,\n    \"rollout_percentage\": 100.0,\n    \"feature_state_value\": {\n      \"type\": \"string\",\n      \"value\": \"Checkout\"\n    },\n    \"multivariate_feature_state_values\": [\n      {\n        \"multivariate_feature_option\": 170,\n        \"percentage_allocation\": 50.0\n      }\n    ],\n    \"audience\": {\n      \"match\": \"any\",\n      \"segments\": []\n    }\n  }\n}\n---\n{\"enabled\":true,\"value\":\"Checkout\",\"variants\":[{\"id\":170,\"key\":\"b\",\"value\":\"Pay securely\",\"weight\":0}]}",
+          "isError": false,
+          "ms": 1104
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 241,
+        "cacheRead": 4965,
+        "cacheWrite": 607
+      },
+      "costUsd": 0.000246225,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "DONE: Created experiment \"search_v2_copy test\" (id 84) in Production on the multivariate flag search_v2_copy, status \"created\" and not started. The control is \"Checkout\" and the variant is \"Pay securely\", each at 50%. The primary metric is trial_started (expected increase) and the guardrail is refund_requested (expected not_increase). Read-back confirmed these settings. The flag itself is unchanged (enabled, value \"Checkout\", variant weight 0).",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 157,
+        "cacheRead": 5572,
+        "cacheWrite": 931
+      },
+      "costUsd": 0.000250795,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:58:35.589Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 2,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops",
+    "sha256": "f6f350aec5da331637eaf740f37da39445b693b57967531bd377fca89c509328"
+  }
+}

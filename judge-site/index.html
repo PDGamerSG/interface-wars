@@ -51,7 +51,16 @@
     .footer { border-top:1px solid var(--line); color:var(--muted); font-size:13px; padding:25px 0; }
     .footer a { color:var(--lime); }
     .error { color:#ffb39a; }
-    @media (max-width:780px) { .hero,.grid,.arms { grid-template-columns:1fr; } .nav { display:none; } .wrap { padding:0 18px; } main { padding-top:46px; } h1 { font-size:56px; } .panel { overflow:auto; padding:20px; } }
+    @media (max-width:780px) {
+      .hero,.grid,.arms { grid-template-columns:1fr; }
+      .top .wrap { flex-wrap:wrap; gap:4px 20px; }
+      .nav { flex-wrap:wrap; gap:4px 14px; }
+      .nav a { padding:5px 0; }
+      .wrap { padding:0 18px; }
+      main { padding-top:46px; }
+      h1 { font-size:56px; }
+      .panel { overflow:auto; padding:20px; }
+    }
   </style>
 </head>
 <body>
@@ -60,7 +69,10 @@
     <section class="hero"><div><div class="kicker">Flagsmith experimentation / Toggle Wars 2026</div><h1>Which interface lets agents <em>ship safely?</em></h1><p class="lede">255 Claude Haiku jobs. One fresh Flagsmith sandbox per trial. The CLI with the Agent Skill completed every registered job and used the least model cost.</p></div><aside class="stamp"><div class="kicker">Human-approved rollout</div><strong>CLI + skill</strong><p>Approved by Pallab Das. Flagsmith recorded <code>rollout_decision=variant</code>. The stricter disabled-enrollment sensitivity is published alongside the registered result.</p></aside></section>
     <section class="arms" id="verdict"></section>
     <div class="grid"><section class="panel"><h2>Registered comparison</h2><table><thead><tr><th>Arm</th><th>Passes</th><th>Rate</th><th>Mean cost</th><th>Input tokens</th></tr></thead><tbody id="arm-table"></tbody></table><p class="note">MCP received 54 official tools, contributing 29,270 tokens per request. The skill file was 1,950 tokens.</p></section><section class="panel"><h2>What the archive says</h2><p>On the five templates with documented MCP capability gaps, MCP passed 1/20 attempts. On the other eleven templates it passed 67/67. Four of the seven failed bare-CLI trials opened their final answer with <code>DONE:</code>. Three of those four admitted the work was incomplete.</p><p class="note">Under the registered grader the skill wins. If staged experiments must keep enrollment disabled, its lead over MCP becomes +19.5 points [0.0, +42.6], which is inconclusive. No arm made a detected out-of-scope final change.</p><div class="trace-list"><a class="trace" href="https://github.com/PDGamerSG/interface-wars/blob/main/docs/FLAGSMITH_FINDINGS.md"><span>evidence</span><b>Flagsmith findings</b><small>Capability gaps with pinned trial evidence</small></a><a class="trace" href="https://github.com/PDGamerSG/interface-wars/blob/main/docs/EVIDENCE_INDEX.md"><span>query</span><b>Read-only index</b><small>Cross-trial recipes and provenance</small></a><a class="trace" href="https://github.com/PDGamerSG/interface-wars/blob/main/docs/FLAGSMITH_FINDINGS.md#upstream-status"><span>upstream</span><b>Fixes sent to Flagsmith</b><small>MCP schema, MCP tool and audit task PRs; API issues</small></a></div></section></div>
-    <section class="panel" id="evidence" style="margin-top:24px"><h2>Cross-trial evidence</h2><div class="grid" style="margin-top:0"><div><table><thead><tr><th>Recorded condition</th><th>Trials</th></tr></thead><tbody id="error-table"></tbody></table></div><p class="note">The read-only SQLite evidence index preserves source paths, SHA-256 digests, JSON pointers and tool-call relationships. Named recipes answer which errors recover and where the metric schema defect appears. <a href="https://github.com/PDGamerSG/interface-wars/blob/main/docs/EVIDENCE_INDEX.md">Read the evidence guide</a>.</p></div></section>
+    <section class="panel" id="evidence" style="margin-top:24px"><h2>Cross-trial evidence</h2><div class="grid" style="margin-top:0"><div><table><thead><tr><th>Recorded condition</th><th>Trials</th></tr></thead><tbody id="error-table"></tbody></table></div><p class="note">The read-only SQLite evidence index preserves source paths, SHA-256 digests, JSON pointers and tool-call relationships. Named recipes answer which errors recover and where the metric schema defect appears. <a href="https://github.com/PDGamerSG/interface-wars/blob/main/docs/EVIDENCE_INDEX.md">Read the evidence guide</a>.</p></div>
+      <h3>Did the revised skill stage drafts safely?</h3>
+      <p>In a separate 120-trial check, revision 1 left enrollment on in all nine new drafts. Revision 2 left it off in all nine. Three revision 2 drafts passed every strict check. The other six changed punctuation in the requested hypothesis. <a href="https://github.com/PDGamerSG/interface-wars/blob/main/runs/skill-check.md">Read the follow-up and inspect its trial records</a>.</p>
+    </section>
     <section class="panel" id="method" style="margin-top:24px"><h2>16 templates, three arms, one flag</h2><p class="note">Flagsmith assigned each trial through <code>agent_interface</code>, recorded outcome events, computed Bayesian results, and served the human-approved winner to later sessions. Every sandbox was fresh and the verifier checked the task-scoped state diff.</p><table><thead><tr><th>Template</th><th>MCP</th><th>CLI</th><th>CLI + skill</th></tr></thead><tbody id="template-table"></tbody></table><p class="footer">Archive model <span id="model"></span> · Flagsmith <span id="version"></span> · <span id="trial-count"></span> trials · <a href="https://github.com/PDGamerSG/interface-wars/blob/main/prereg/PREREGISTRATION.md">Pre-registration</a> · <a href="https://github.com/PDGamerSG/interface-wars/blob/main/docs/FLAGSMITH_FINDINGS.md">Flagsmith findings</a></p></section>
     <p id="load-error" class="error" hidden>Aggregate data could not be loaded. The source archive is linked above.</p>
   </div></main>

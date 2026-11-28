@@ -1,0 +1,219 @@
+{
+  "trialId": "skill-v2-check-0025",
+  "index": 25,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "create_experiment",
+  "family": "experiments",
+  "heldOut": false,
+  "task": "In Production, set up (but do not start) an experiment named \"one_click_buy_copy test\" on the multivariate flag \"one_click_buy_copy\". Hypothesis: \"Try it free\" increases trial started versus \"Start free trial\". The primary metric \"trial_started\" should increase, and \"refund_requested\" is a guardrail that should not increase. Split users evenly between the control and the variation.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.experiment.one_click_buy_copy test.feature",
+      "before": null,
+      "after": "one_click_buy_copy"
+    },
+    {
+      "path": "env.Production.experiment.one_click_buy_copy test.hypothesis",
+      "before": null,
+      "after": "\"Try it free\" increases trial started versus \"Start free trial\""
+    },
+    {
+      "path": "env.Production.experiment.one_click_buy_copy test.metric.refund_requested",
+      "before": null,
+      "after": "not_increase"
+    },
+    {
+      "path": "env.Production.experiment.one_click_buy_copy test.metric.trial_started",
+      "before": null,
+      "after": "increase"
+    },
+    {
+      "path": "env.Production.experiment.one_click_buy_copy test.status",
+      "before": null,
+      "after": "created"
+    },
+    {
+      "path": "env.Production.override.one_click_buy_copy.experiment-98-rollout.enabled",
+      "before": null,
+      "after": false
+    },
+    {
+      "path": "env.Production.override.one_click_buy_copy.experiment-98-rollout.split.Try it free",
+      "before": null,
+      "after": 50
+    },
+    {
+      "path": "env.Production.override.one_click_buy_copy.experiment-98-rollout.value",
+      "before": null,
+      "after": "Start free trial"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Created experiment \"one_click_buy_copy test\" (id 98) in Production as a draft, not started. Primary metric trial_started (154) is set to increase and refund_requested (155) to not_increase as a guardrail. Control is \"Start free trial\" and the variation \"Try it free\" (option 191) is allocated 50%, with rollout disabled at 0%. Read-back confirms the draft. The flag itself is unchanged: it is still enabled with \"Start free trial\" as the value and the variant weight at 0.",
+  "costUsd": 0.001881,
+  "usage": {
+    "input": 14,
+    "output": 1735,
+    "cacheRead": 21396,
+    "cacheWrite": 6387
+  },
+  "toolCalls": 5,
+  "toolErrors": 0,
+  "turns": 6,
+  "ms": 16351,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "P=[env-ed03123ab011688f]\nflagsmith flag get one_click_buy_copy -e $P --json --jq '{id,enabled,value,variants}'\nflagsmith feature variant list one_click_buy_copy --json\nflagsmith api api/v1/environments/$P/experiment-metrics/ --jq '.results[] | {id,name,definition,direction,aggregation}'\nflagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status}'",
+    "P=[env-ed03123ab011688f]\nflagsmith feature list --json --jq '.[] | select(.name==\"one_click_buy_copy\") | {id,name,type}'\nflagsmith api \"api/v1/environments/$P/featurestates/?feature=$(flagsmith feature list --json --jq '.[] | select(.name==\"one_click_buy_copy\") | .id')\" --jq '.results[] | {id,enabled,value:.feature_state_value,mv:.multivariate_feature_state_values}'\nflagsmith api api/v1/environments/$P/experiments/ --jq '.count'",
+    "P=[env-ed03123ab011688f]\nflagsmith api api/v1/environments/$P/experiments/ -X POST --input - <<'JSON'\n{\"feature\":1893,\"name\":\"one_click_buy_copy test\",\"hypothesis\":\"\\\"Try it free\\\" increases trial started versus \\\"Start free trial\\\"\",\n \"metrics\":[{\"metric\":154,\"expected_direction\":\"increase\"},{\"metric\":155,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":0,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"Start free trial\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":191,\"percentage_allocation\":50}]}}\nJSON\n",
+    "P=[env-ed03123ab011688f]\nflagsmith api api/v1/environments/$P/experiments/98/ --jq '{name,status,hypothesis,metrics:[.metrics[]?|{metric,expected_direction}],rollout:(.experiment_rollout|{enabled,rollout_percentage,feature_state_value,mv:.multivariate_feature_state_values})}'\nflagsmith flag get one_click_buy_copy -e $P --json --jq '{enabled,value,variants}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops-v2\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Stages experiment drafts with enrollment off. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI (revision 2)\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment draft (created, not started). Needs the feature id, metric ids and multivariate option ids.\n# Stage it with enrollment off: Flagsmith can enroll identities from an enabled rollout before the experiment starts.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":0,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n",
+          "isError": false,
+          "ms": 62
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 89,
+        "cacheRead": 0,
+        "cacheWrite": 1168
+      },
+      "costUsd": 0.0001909,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=[env-ed03123ab011688f]\nflagsmith flag get one_click_buy_copy -e $P --json --jq '{id,enabled,value,variants}'\nflagsmith feature variant list one_click_buy_copy --json\nflagsmith api api/v1/environments/$P/experiment-metrics/ --jq '.results[] | {id,name,definition,direction,aggregation}'\nflagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status}'"
+          },
+          "output": "{\"enabled\":true,\"id\":null,\"value\":\"Start free trial\",\"variants\":[{\"id\":191,\"key\":\"b\",\"value\":\"Try it free\",\"weight\":0}]}\n[\n  {\n    \"id\": 191,\n    \"value\": \"Try it free\",\n    \"weight\": 0,\n    \"key\": \"b\"\n  }\n]\n{\"aggregation\":\"occurrence\",\"definition\":{\"event\":\"trial_started\",\"version\":1},\"direction\":\"up\",\"id\":154,\"name\":\"trial_started\"}\n{\"aggregation\":\"occurrence\",\"definition\":{\"event\":\"refund_requested\",\"version\":1},\"direction\":\"down\",\"id\":155,\"name\":\"refund_requested\"}",
+          "isError": false,
+          "ms": 1952
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 224,
+        "cacheRead": 1168,
+        "cacheWrite": 3104
+      },
+      "costUsd": 0.00051188,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=[env-ed03123ab011688f]\nflagsmith feature list --json --jq '.[] | select(.name==\"one_click_buy_copy\") | {id,name,type}'\nflagsmith api \"api/v1/environments/$P/featurestates/?feature=$(flagsmith feature list --json --jq '.[] | select(.name==\"one_click_buy_copy\") | .id')\" --jq '.results[] | {id,enabled,value:.feature_state_value,mv:.multivariate_feature_state_values}'\nflagsmith api api/v1/environments/$P/experiments/ --jq '.count'"
+          },
+          "output": "{\"id\":1893,\"name\":\"one_click_buy_copy\",\"type\":\"multivariate\"}\n{\"enabled\":true,\"id\":3954,\"mv\":[{\"id\":476,\"multivariate_feature_option\":191,\"percentage_allocation\":0}],\"value\":\"Start free trial\"}\n0",
+          "isError": false,
+          "ms": 1372
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 511,
+        "cacheRead": 4272,
+        "cacheWrite": 435
+      },
+      "costUsd": 0.000352795,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "Feature id is 1893, the variant option is 191 (\"Try it free\"), and both metrics already exist (154 trial_started, 155 refund_requested). No experiments exist yet. Creating the draft with enrollment off:",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=[env-ed03123ab011688f]\nflagsmith api api/v1/environments/$P/experiments/ -X POST --input - <<'JSON'\n{\"feature\":1893,\"name\":\"one_click_buy_copy test\",\"hypothesis\":\"\\\"Try it free\\\" increases trial started versus \\\"Start free trial\\\"\",\n \"metrics\":[{\"metric\":154,\"expected_direction\":\"increase\"},{\"metric\":155,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":0,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"Start free trial\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":191,\"percentage_allocation\":50}]}}\nJSON\n"
+          },
+          "output": "{\"id\":98,\"feature\":1893,\"name\":\"one_click_buy_copy test\",\"hypothesis\":\"\\\"Try it free\\\" increases trial started versus \\\"Start free trial\\\"\",\"status\":\"created\",\"created_at\":\"2026-11-28T16:00:28.182253Z\",\"updated_at\":\"2026-11-28T16:00:28.192066Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
+          "isError": false,
+          "ms": 540
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 464,
+        "cacheRead": 4707,
+        "cacheWrite": 610
+      },
+      "costUsd": 0.00035551999999999996,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=[env-ed03123ab011688f]\nflagsmith api api/v1/environments/$P/experiments/98/ --jq '{name,status,hypothesis,metrics:[.metrics[]?|{metric,expected_direction}],rollout:(.experiment_rollout|{enabled,rollout_percentage,feature_state_value,mv:.multivariate_feature_state_values})}'\nflagsmith flag get one_click_buy_copy -e $P --json --jq '{enabled,value,variants}'"
+          },
+          "output": "{\"hypothesis\":\"\\\"Try it free\\\" increases trial started versus \\\"Start free trial\\\"\",\"metrics\":[{\"expected_direction\":\"increase\",\"metric\":154},{\"expected_direction\":\"not_increase\",\"metric\":155}],\"name\":\"one_click_buy_copy test\",\"rollout\":{\"enabled\":false,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Start free trial\"},\"mv\":[{\"multivariate_feature_option\":191,\"percentage_allocation\":50}],\"rollout_percentage\":0},\"status\":\"created\"}\n{\"enabled\":true,\"value\":\"Start free trial\",\"variants\":[{\"id\":191,\"key\":\"b\",\"value\":\"Try it free\",\"weight\":0}]}",
+          "isError": false,
+          "ms": 1107
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 223,
+        "cacheRead": 5317,
+        "cacheWrite": 615
+      },
+      "costUsd": 0.000241745,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "DONE: Created experiment \"one_click_buy_copy test\" (id 98) in Production as a draft, not started. Primary metric trial_started (154) is set to increase and refund_requested (155) to not_increase as a guardrail. Control is \"Start free trial\" and the variation \"Try it free\" (option 191) is allocated 50%, with rollout disabled at 0%. Read-back confirms the draft. The flag itself is unchanged: it is still enabled with \"Start free trial\" as the value and the variant weight at 0.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 224,
+        "cacheRead": 5932,
+        "cacheWrite": 455
+      },
+      "costUsd": 0.000228395,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T16:00:14.807Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 3,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops-v2",
+    "sha256": "19b412bfdfa744c5b694bd65148ef45c5575db3d426f1dcba5e64146c94f6de8"
+  }
+}

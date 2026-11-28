@@ -1,0 +1,221 @@
+{
+  "trialId": "skill-v1-check-0009",
+  "index": 9,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "create_experiment",
+  "family": "experiments",
+  "heldOut": false,
+  "task": "In Production, set up (but do not start) an experiment named \"dark_mode_copy test\" on the multivariate flag \"dark_mode_copy\". Hypothesis: \"Pay securely\" increases signup completed versus \"Checkout\". The primary metric \"signup_completed\" should increase, and \"payment_error\" is a guardrail that should not increase. Split users evenly between the control and the variation.",
+  "correct": false,
+  "reasons": [
+    "strict draft: enrollment must be disabled while the experiment is created"
+  ],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.experiment.dark_mode_copy test.feature",
+      "before": null,
+      "after": "dark_mode_copy"
+    },
+    {
+      "path": "env.Production.experiment.dark_mode_copy test.hypothesis",
+      "before": null,
+      "after": "\"Pay securely\" increases signup completed versus \"Checkout\""
+    },
+    {
+      "path": "env.Production.experiment.dark_mode_copy test.metric.payment_error",
+      "before": null,
+      "after": "not_increase"
+    },
+    {
+      "path": "env.Production.experiment.dark_mode_copy test.metric.signup_completed",
+      "before": null,
+      "after": "increase"
+    },
+    {
+      "path": "env.Production.experiment.dark_mode_copy test.status",
+      "before": null,
+      "after": "created"
+    },
+    {
+      "path": "env.Production.override.dark_mode_copy.experiment-74-rollout.enabled",
+      "before": null,
+      "after": true
+    },
+    {
+      "path": "env.Production.override.dark_mode_copy.experiment-74-rollout.split.Pay securely",
+      "before": null,
+      "after": 50
+    },
+    {
+      "path": "env.Production.override.dark_mode_copy.experiment-74-rollout.value",
+      "before": null,
+      "after": "Checkout"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: In Production, created experiment \"dark_mode_copy test\" (id 74) on flag `dark_mode_copy`, status `created` and not started. Hypothesis: \"Pay securely\" increases signup completed vs \"Checkout\". Primary metric `signup_completed` (expected increase), guardrail `payment_error` (expected not_increase). Control \"Checkout\" and variation \"Pay securely\" each get 50% of users. The flag's live value is unchanged (still enabled, value \"Checkout\").",
+  "costUsd": 0.001825,
+  "usage": {
+    "input": 14,
+    "output": 1664,
+    "cacheRead": 20140,
+    "cacheWrite": 6325
+  },
+  "toolCalls": 5,
+  "toolErrors": 0,
+  "turns": 6,
+  "ms": 14464,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "PK=[env-24a32bde6d9be14b]\nflagsmith flag get dark_mode_copy -e $PK --json --jq '{id,enabled,value,variants}'\nflagsmith api api/v1/environments/$PK/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'\nflagsmith api api/v1/environments/$PK/experiments/ --jq '.results[] | {id,name,status}'\nflagsmith feature variant list dark_mode_copy --json",
+    "PK=[env-24a32bde6d9be14b]\nflagsmith feature list --json --jq '.[] | select(.name==\"dark_mode_copy\") | {id,name}'\nflagsmith api \"api/v1/environments/$PK/featurestates/?feature=$(flagsmith feature list --json --jq '.[] | select(.name==\"dark_mode_copy\") | .id')\" --jq '.results[] | {id,enabled,feature_state_value,multivariate_feature_state_values}'",
+    "PK=[env-24a32bde6d9be14b]\nflagsmith api api/v1/environments/$PK/experiments/ -X POST --input - <<'JSON'\n{\"feature\":1606,\"name\":\"dark_mode_copy test\",\n \"hypothesis\":\"\\\"Pay securely\\\" increases signup completed versus \\\"Checkout\\\"\",\n \"metrics\":[{\"metric\":117,\"expected_direction\":\"increase\"},{\"metric\":119,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":156,\"percentage_allocation\":50}]}}\nJSON",
+    "PK=[env-24a32bde6d9be14b]\nflagsmith api api/v1/environments/$PK/experiments/74/ --jq '{id,name,status,hypothesis,feature,metrics,experiment_rollout}'\nflagsmith flag get dark_mode_copy -e $PK --json --jq '{enabled,value}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 44
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 89,
+        "cacheRead": 0,
+        "cacheWrite": 1169
+      },
+      "costUsd": 0.000191025,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "Let me read the target flag and check existing metrics and experiments in Production.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "PK=[env-24a32bde6d9be14b]\nflagsmith flag get dark_mode_copy -e $PK --json --jq '{id,enabled,value,variants}'\nflagsmith api api/v1/environments/$PK/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'\nflagsmith api api/v1/environments/$PK/experiments/ --jq '.results[] | {id,name,status}'\nflagsmith feature variant list dark_mode_copy --json"
+          },
+          "output": "{\"enabled\":true,\"id\":null,\"value\":\"Checkout\",\"variants\":[{\"id\":156,\"key\":\"b\",\"value\":\"Pay securely\",\"weight\":0}]}\n{\"aggregation\":\"occurrence\",\"definition\":{\"event\":\"signup_completed\",\"version\":1},\"direction\":\"up\",\"id\":117,\"name\":\"signup_completed\"}\n{\"aggregation\":\"occurrence\",\"definition\":{\"event\":\"payment_error\",\"version\":1},\"direction\":\"down\",\"id\":119,\"name\":\"payment_error\"}\n[\n  {\n    \"id\": 156,\n    \"value\": \"Pay securely\",\n    \"weight\": 0,\n    \"key\": \"b\"\n  }\n]",
+          "isError": false,
+          "ms": 1953
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 250,
+        "cacheRead": 1169,
+        "cacheWrite": 2779
+      },
+      "costUsd": 0.0004842650000000001,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "PK=[env-24a32bde6d9be14b]\nflagsmith feature list --json --jq '.[] | select(.name==\"dark_mode_copy\") | {id,name}'\nflagsmith api \"api/v1/environments/$PK/featurestates/?feature=$(flagsmith feature list --json --jq '.[] | select(.name==\"dark_mode_copy\") | .id')\" --jq '.results[] | {id,enabled,feature_state_value,multivariate_feature_state_values}'"
+          },
+          "output": "{\"id\":1606,\"name\":\"dark_mode_copy\"}\n{\"enabled\":true,\"feature_state_value\":\"Checkout\",\"id\":3346,\"multivariate_feature_state_values\":[{\"id\":383,\"multivariate_feature_option\":156,\"percentage_allocation\":0}]}",
+          "isError": false,
+          "ms": 813
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 447,
+        "cacheRead": 3948,
+        "cacheWrite": 462
+      },
+      "costUsd": 0.00032093000000000003,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "Production already has the `signup_completed` (id 117) and `payment_error` (id 119) metrics, so I'll reuse them rather than create duplicates. Creating the experiment now, not started.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "PK=[env-24a32bde6d9be14b]\nflagsmith api api/v1/environments/$PK/experiments/ -X POST --input - <<'JSON'\n{\"feature\":1606,\"name\":\"dark_mode_copy test\",\n \"hypothesis\":\"\\\"Pay securely\\\" increases signup completed versus \\\"Checkout\\\"\",\n \"metrics\":[{\"metric\":117,\"expected_direction\":\"increase\"},{\"metric\":119,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":156,\"percentage_allocation\":50}]}}\nJSON"
+          },
+          "output": "{\"id\":74,\"feature\":1606,\"name\":\"dark_mode_copy test\",\"hypothesis\":\"\\\"Pay securely\\\" increases signup completed versus \\\"Checkout\\\"\",\"status\":\"created\",\"created_at\":\"2026-11-28T15:56:28.456999Z\",\"updated_at\":\"2026-11-28T15:56:28.464198Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
+          "isError": false,
+          "ms": 374
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 548,
+        "cacheRead": 4410,
+        "cacheWrite": 547
+      },
+      "costUsd": 0.000386675,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "PK=[env-24a32bde6d9be14b]\nflagsmith api api/v1/environments/$PK/experiments/74/ --jq '{id,name,status,hypothesis,feature,metrics,experiment_rollout}'\nflagsmith flag get dark_mode_copy -e $PK --json --jq '{enabled,value}'"
+          },
+          "output": "{\"experiment_rollout\":{\"audience\":{\"match\":\"any\",\"segments\":[]},\"enabled\":true,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":156,\"percentage_allocation\":50}],\"rollout_percentage\":100},\"feature\":{\"id\":1606,\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":156,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Pay securely\",\"type\":\"unicode\",\"uuid\":\"092eb604-0f95-4fe6-9ca3-106cc2b896c4\"}],\"name\":\"dark_mode_copy\",\"type\":\"MULTIVARIATE\"},\"hypothesis\":\"\\\"Pay securely\\\" increases signup completed versus \\\"Checkout\\\"\",\"id\":74,\"metrics\":[{\"aggregation\":\"occurrence\",\"created_at\":\"2026-11-28T15:56:28.457614Z\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"id\":97,\"metric\":117,\"metric_name\":\"signup_completed\"},{\"aggregation\":\"occurrence\",\"created_at\":\"2026-11-28T15:56:28.457624Z\",\"direction\":\"down\",\"expected_direction\":\"not_increase\",\"id\":98,\"metric\":119,\"metric_name\":\"payment_error\"}],\"name\":\"dark_mode_copy test\",\"status\":\"created\"}\n{\"enabled\":true,\"value\":\"Checkout\"}",
+          "isError": false,
+          "ms": 1122
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 164,
+        "cacheRead": 4957,
+        "cacheWrite": 699
+      },
+      "costUsd": 0.00021914500000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "DONE: In Production, created experiment \"dark_mode_copy test\" (id 74) on flag `dark_mode_copy`, status `created` and not started. Hypothesis: \"Pay securely\" increases signup completed vs \"Checkout\". Primary metric `signup_completed` (expected increase), guardrail `payment_error` (expected not_increase). Control \"Checkout\" and variation \"Pay securely\" each get 50% of users. The flag's live value is unchanged (still enabled, value \"Checkout\").",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 166,
+        "cacheRead": 5656,
+        "cacheWrite": 669
+      },
+      "costUsd": 0.000223385,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:56:16.468Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 2,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops",
+    "sha256": "f6f350aec5da331637eaf740f37da39445b693b57967531bd377fca89c509328"
+  }
+}

@@ -1,0 +1,221 @@
+{
+  "trialId": "skill-v1-check-0025",
+  "index": 25,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "create_experiment",
+  "family": "experiments",
+  "heldOut": false,
+  "task": "In Production, set up (but do not start) an experiment named \"one_click_buy_copy test\" on the multivariate flag \"one_click_buy_copy\". Hypothesis: \"Pay securely\" increases signup completed versus \"Checkout\". The primary metric \"signup_completed\" should increase, and \"support_ticket_opened\" is a guardrail that should not increase. Split users evenly between the control and the variation.",
+  "correct": false,
+  "reasons": [
+    "strict draft: enrollment must be disabled while the experiment is created"
+  ],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.experiment.one_click_buy_copy test.feature",
+      "before": null,
+      "after": "one_click_buy_copy"
+    },
+    {
+      "path": "env.Production.experiment.one_click_buy_copy test.hypothesis",
+      "before": null,
+      "after": "\"Pay securely\" increases signup completed versus \"Checkout\""
+    },
+    {
+      "path": "env.Production.experiment.one_click_buy_copy test.metric.signup_completed",
+      "before": null,
+      "after": "increase"
+    },
+    {
+      "path": "env.Production.experiment.one_click_buy_copy test.metric.support_ticket_opened",
+      "before": null,
+      "after": "not_increase"
+    },
+    {
+      "path": "env.Production.experiment.one_click_buy_copy test.status",
+      "before": null,
+      "after": "created"
+    },
+    {
+      "path": "env.Production.override.one_click_buy_copy.experiment-77-rollout.enabled",
+      "before": null,
+      "after": true
+    },
+    {
+      "path": "env.Production.override.one_click_buy_copy.experiment-77-rollout.split.Pay securely",
+      "before": null,
+      "after": 50
+    },
+    {
+      "path": "env.Production.override.one_click_buy_copy.experiment-77-rollout.value",
+      "before": null,
+      "after": "Checkout"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Created experiment \"one_click_buy_copy test\" (id 77) in Production in status \"created\", not started. Control is \"Checkout\" and variation \"Pay securely\" at 50/50. Primary metric is signup_completed (increase) and guardrail is support_ticket_opened (not_increase). Read-back matches. The flag itself is unchanged (still \"Checkout\", variant weight 0), so no user traffic is affected until the experiment is started.",
+  "costUsd": 0.001904,
+  "usage": {
+    "input": 14,
+    "output": 1753,
+    "cacheRead": 20355,
+    "cacheWrite": 6584
+  },
+  "toolCalls": 5,
+  "toolErrors": 0,
+  "turns": 6,
+  "ms": 15570,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "P=[env-19eb2fe350d32804]; E=[env-19eb2fe350d32804]\nflagsmith flag get one_click_buy_copy -e $P --json --jq '{id,enabled,value,variants}'\nflagsmith feature variant list one_click_buy_copy --json\nflagsmith api api/v1/environments/$E/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'\nflagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature}'",
+    "P=[env-19eb2fe350d32804]; E=[env-19eb2fe350d32804]\nflagsmith feature list --json --jq '.[] | select(.name==\"one_click_buy_copy\") | {id,name,type,initial_value}'\nflagsmith api \"api/v1/environments/$E/featurestates/?feature=$(flagsmith feature list --json --jq '.[] | select(.name==\"one_click_buy_copy\") | .id')\" --jq '.results[] | {id,enabled,feature_state_value,multivariate_feature_state_values}'\nflagsmith api api/v1/environments/$E/experiments/ --jq '.'",
+    "E=[env-19eb2fe350d32804]\nflagsmith api api/v1/environments/$E/experiments/ -X POST --input - <<'JSON'\n{\"feature\":1669,\"name\":\"one_click_buy_copy test\",\"hypothesis\":\"\\\"Pay securely\\\" increases signup completed versus \\\"Checkout\\\"\",\n \"metrics\":[{\"metric\":121,\"expected_direction\":\"increase\"},{\"metric\":122,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":161,\"percentage_allocation\":50}]}}\nJSON",
+    "E=[env-19eb2fe350d32804]\nflagsmith api api/v1/environments/$E/experiments/77/ --json | jq '{name,status,hypothesis,feature,metrics,experiment_rollout}'\nflagsmith flag get one_click_buy_copy -e $E --json --jq '{enabled,value,variants}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 60
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 89,
+        "cacheRead": 0,
+        "cacheWrite": 1176
+      },
+      "costUsd": 0.0001919,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=[env-19eb2fe350d32804]; E=[env-19eb2fe350d32804]\nflagsmith flag get one_click_buy_copy -e $P --json --jq '{id,enabled,value,variants}'\nflagsmith feature variant list one_click_buy_copy --json\nflagsmith api api/v1/environments/$E/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'\nflagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature}'"
+          },
+          "output": "{\"enabled\":true,\"id\":null,\"value\":\"Checkout\",\"variants\":[{\"id\":161,\"key\":\"b\",\"value\":\"Pay securely\",\"weight\":0}]}\n[\n  {\n    \"id\": 161,\n    \"value\": \"Pay securely\",\n    \"weight\": 0,\n    \"key\": \"b\"\n  }\n]\n{\"aggregation\":\"occurrence\",\"definition\":{\"event\":\"signup_completed\",\"version\":1},\"direction\":\"up\",\"id\":121,\"name\":\"signup_completed\"}\n{\"aggregation\":\"occurrence\",\"definition\":{\"event\":\"support_ticket_opened\",\"version\":1},\"direction\":\"down\",\"id\":122,\"name\":\"support_ticket_opened\"}",
+          "isError": false,
+          "ms": 2040
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 253,
+        "cacheRead": 1176,
+        "cacheWrite": 2779
+      },
+      "costUsd": 0.00048583500000000005,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "P=[env-19eb2fe350d32804]; E=[env-19eb2fe350d32804]\nflagsmith feature list --json --jq '.[] | select(.name==\"one_click_buy_copy\") | {id,name,type,initial_value}'\nflagsmith api \"api/v1/environments/$E/featurestates/?feature=$(flagsmith feature list --json --jq '.[] | select(.name==\"one_click_buy_copy\") | .id')\" --jq '.results[] | {id,enabled,feature_state_value,multivariate_feature_state_values}'\nflagsmith api api/v1/environments/$E/experiments/ --jq '.'"
+          },
+          "output": "{\"id\":1669,\"initial_value\":null,\"name\":\"one_click_buy_copy\",\"type\":\"multivariate\"}\n{\"enabled\":true,\"feature_state_value\":\"Checkout\",\"id\":3476,\"multivariate_feature_state_values\":[{\"id\":395,\"multivariate_feature_option\":161,\"percentage_allocation\":0}]}\n{\"count\":0,\"next\":null,\"previous\":null,\"results\":[],\"status_counts\":{\"completed\":0,\"created\":0,\"paused\":0,\"running\":0}}",
+          "isError": false,
+          "ms": 1270
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 472,
+        "cacheRead": 3955,
+        "cacheWrite": 473
+      },
+      "costUsd": 0.000334875,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "The flag, metrics and option IDs are all in place (feature 1669, variant \"Pay securely\" = option 161, existing metrics 121 and 122, no experiments yet). Creating the experiment now, without starting it.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=[env-19eb2fe350d32804]\nflagsmith api api/v1/environments/$E/experiments/ -X POST --input - <<'JSON'\n{\"feature\":1669,\"name\":\"one_click_buy_copy test\",\"hypothesis\":\"\\\"Pay securely\\\" increases signup completed versus \\\"Checkout\\\"\",\n \"metrics\":[{\"metric\":121,\"expected_direction\":\"increase\"},{\"metric\":122,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":161,\"percentage_allocation\":50}]}}\nJSON"
+          },
+          "output": "{\"id\":77,\"feature\":1669,\"name\":\"one_click_buy_copy test\",\"hypothesis\":\"\\\"Pay securely\\\" increases signup completed versus \\\"Checkout\\\"\",\"status\":\"created\",\"created_at\":\"2026-11-28T15:57:09.283629Z\",\"updated_at\":\"2026-11-28T15:57:09.296987Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
+          "isError": false,
+          "ms": 444
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 504,
+        "cacheRead": 4428,
+        "cacheWrite": 642
+      },
+      "costUsd": 0.00037673000000000003,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=[env-19eb2fe350d32804]\nflagsmith api api/v1/environments/$E/experiments/77/ --json | jq '{name,status,hypothesis,feature,metrics,experiment_rollout}'\nflagsmith flag get one_click_buy_copy -e $E --json --jq '{enabled,value,variants}'"
+          },
+          "output": "{\n  \"name\": \"one_click_buy_copy test\",\n  \"status\": \"created\",\n  \"hypothesis\": \"\\\"Pay securely\\\" increases signup completed versus \\\"Checkout\\\"\",\n  \"feature\": {\n    \"id\": 1669,\n    \"name\": \"one_click_buy_copy\",\n    \"type\": \"MULTIVARIATE\",\n    \"initial_value\": \"Checkout\",\n    \"multivariate_options\": [\n      {\n        \"id\": 161,\n        \"uuid\": \"821b1c6f-fbee-4208-9c33-c02c9a677fc1\",\n        \"type\": \"unicode\",\n        \"integer_value\": null,\n        \"string_value\": \"Pay securely\",\n        \"boolean_value\": null,\n        \"default_percentage_allocation\": 0.0,\n        \"key\": \"b\"\n      }\n    ]\n  },\n  \"metrics\": [\n    {\n      \"id\": 101,\n      \"metric\": 121,\n      \"metric_name\": \"signup_completed\",\n      \"aggregation\": \"occurrence\",\n      \"direction\": \"up\",\n      \"expected_direction\": \"increase\",\n      \"created_at\": \"2026-11-28T15:57:09.284547Z\"\n    },\n    {\n      \"id\": 102,\n      \"metric\": 122,\n      \"metric_name\": \"support_ticket_opened\",\n      \"aggregation\": \"occurrence\",\n      \"direction\": \"down\",\n      \"expected_direction\": \"not_increase\",\n      \"created_at\": \"2026-11-28T15:57:09.284557Z\"\n    }\n  ],\n  \"experiment_rollout\": {\n    \"enabled\": true,\n    \"rollout_percentage\": 100.0,\n    \"feature_state_value\": {\n      \"type\": \"string\",\n      \"value\": \"Checkout\"\n    },\n    \"multivariate_feature_state_values\": [\n      {\n        \"multivariate_feature_option\": 161,\n        \"percentage_allocation\": 50.0\n      }\n    ],\n    \"audience\": {\n      \"match\": \"any\",\n      \"segments\": []\n    }\n  }\n}\n{\"enabled\":true,\"value\":\"Checkout\",\"variants\":[{\"id\":161,\"key\":\"b\",\"value\":\"Pay securely\",\"weight\":0}]}",
+          "isError": false,
+          "ms": 1162
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 166,
+        "cacheRead": 5070,
+        "cacheWrite": 656
+      },
+      "costUsd": 0.00021590000000000004,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "DONE: Created experiment \"one_click_buy_copy test\" (id 77) in Production in status \"created\", not started. Control is \"Checkout\" and variation \"Pay securely\" at 50/50. Primary metric is signup_completed (increase) and guardrail is support_ticket_opened (not_increase). Read-back matches. The flag itself is unchanged (still \"Checkout\", variant weight 0), so no user traffic is affected until the experiment is started.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 269,
+        "cacheRead": 5726,
+        "cacheWrite": 858
+      },
+      "costUsd": 0.00029921,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:56:56.949Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 2,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops",
+    "sha256": "f6f350aec5da331637eaf740f37da39445b693b57967531bd377fca89c509328"
+  }
+}

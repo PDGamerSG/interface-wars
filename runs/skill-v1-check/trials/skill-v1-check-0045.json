@@ -1,0 +1,184 @@
+{
+  "trialId": "skill-v1-check-0045",
+  "index": 45,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "find_maintenance_flag",
+  "family": "repair",
+  "heldOut": false,
+  "task": "One flag in Production is enabled and serving the value \"maintenance\". Find it and turn it off in Production. Leave every other flag alone.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.flag.bulk_discounts.enabled",
+      "before": true,
+      "after": false
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: In Production, I turned off `bulk_discounts`, the only enabled flag serving \"maintenance\". Read-back shows enabled=false with its value unchanged; the other flags are untouched.",
+  "costUsd": 0.001303,
+  "usage": {
+    "input": 14,
+    "output": 905,
+    "cacheRead": 18514,
+    "cacheWrite": 5310
+  },
+  "toolCalls": 5,
+  "toolErrors": 0,
+  "turns": 6,
+  "ms": 15576,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "flagsmith flag list -e [env-7439573478081079] --json --jq '.[] | select(.enabled==true and .value==\"maintenance\") | {name,id,enabled,value}'; echo ---; flagsmith flag list -e [env-7439573478081079] --json --jq '.[] | select(.value|tostring|test(\"maintenance\")) | {name,enabled,value}'",
+    "flagsmith flag list -e [env-7439573478081079] --json | jq '.[0]'; flagsmith flag list -e [env-7439573478081079] --json | jq -c '.[] | select(.value==\"maintenance\")'",
+    "flagsmith flag get bulk_discounts -e [env-7439573478081079] --json --jq '{enabled,value,segment_overrides}'",
+    "flagsmith flag update bulk_discounts -e [env-7439573478081079] --disable --yes && flagsmith flag get bulk_discounts -e [env-7439573478081079] --json --jq '{enabled,value}'; flagsmith flag list -e [env-7439573478081079] --json | jq -c '[.[] | {feature,enabled,value}]'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 50
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 101,
+        "cacheRead": 0,
+        "cacheWrite": 1086
+      },
+      "costUsd": 0.00018665,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag list -e [env-7439573478081079] --json --jq '.[] | select(.enabled==true and .value==\"maintenance\") | {name,id,enabled,value}'; echo ---; flagsmith flag list -e [env-7439573478081079] --json --jq '.[] | select(.value|tostring|test(\"maintenance\")) | {name,enabled,value}'"
+          },
+          "output": "{\"enabled\":true,\"id\":null,\"name\":null,\"value\":\"maintenance\"}\n---\n{\"enabled\":true,\"name\":null,\"value\":\"maintenance\"}\n{\"enabled\":false,\"name\":null,\"value\":\"maintenance\"}",
+          "isError": false,
+          "ms": 1103
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 192,
+        "cacheRead": 1086,
+        "cacheWrite": 2791
+      },
+      "costUsd": 0.000455935,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "The list output has null names, so I'll look at the raw structure.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag list -e [env-7439573478081079] --json | jq '.[0]'; flagsmith flag list -e [env-7439573478081079] --json | jq -c '.[] | select(.value==\"maintenance\")'"
+          },
+          "output": "{\n  \"feature\": \"bulk_discounts\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"maintenance\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\n{\"feature\":\"bulk_discounts\",\"type\":\"standard\",\"description\":\"\",\"enabled\":true,\"value\":\"maintenance\",\"segment_overrides\":0,\"identity_overrides\":0,\"code_references\":0,\"lifecycle_stage\":\"new\"}\n{\"feature\":\"loyalty_points\",\"type\":\"standard\",\"description\":\"\",\"enabled\":false,\"value\":\"maintenance\",\"segment_overrides\":0,\"identity_overrides\":0,\"code_references\":0,\"lifecycle_stage\":\"new\"}",
+          "isError": false,
+          "ms": 1350
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 178,
+        "cacheRead": 3877,
+        "cacheWrite": 275
+      },
+      "costUsd": 0.000162345,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "The only enabled flag serving \"maintenance\" is `bulk_discounts`. I'll read it before changing it.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag get bulk_discounts -e [env-7439573478081079] --json --jq '{enabled,value,segment_overrides}'"
+          },
+          "output": "{\"enabled\":true,\"segment_overrides\":0,\"value\":\"maintenance\"}",
+          "isError": false,
+          "ms": 589
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 168,
+        "cacheRead": 4152,
+        "cacheWrite": 447
+      },
+      "costUsd": 0.000181595,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag update bulk_discounts -e [env-7439573478081079] --disable --yes && flagsmith flag get bulk_discounts -e [env-7439573478081079] --json --jq '{enabled,value}'; flagsmith flag list -e [env-7439573478081079] --json | jq -c '[.[] | {feature,enabled,value}]'"
+          },
+          "output": "Feature              bulk_discounts\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":false,\"value\":\"maintenance\"}\n[{\"feature\":\"bulk_discounts\",\"enabled\":false,\"value\":\"maintenance\"},{\"feature\":\"loyalty_points\",\"enabled\":false,\"value\":\"maintenance\"},{\"feature\":\"store_locator\",\"enabled\":true,\"value\":\"compact\"},{\"feature\":\"wishlist_sync\",\"enabled\":true,\"value\":\"tiered\"},{\"feature\":\"price_alerts\",\"enabled\":true,\"value\":\"grid\"},{\"feature\":\"size_guide\",\"enabled\":true,\"value\":\"eu_west\"}]\n\n[stderr]\n✓ Disabled bulk_discounts in environment Production ([env-7439573478081079])",
+          "isError": false,
+          "ms": 1869
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 199,
+        "cacheRead": 4599,
+        "cacheWrite": 201
+      },
+      "costUsd": 0.000170815,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "DONE: In Production, I turned off `bulk_discounts`, the only enabled flag serving \"maintenance\". Read-back shows enabled=false with its value unchanged; the other flags are untouched.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 67,
+        "cacheRead": 4800,
+        "cacheWrite": 510
+      },
+      "costUsd": 0.00014544999999999998,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:57:55.224Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 1,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops",
+    "sha256": "f6f350aec5da331637eaf740f37da39445b693b57967531bd377fca89c509328"
+  }
+}

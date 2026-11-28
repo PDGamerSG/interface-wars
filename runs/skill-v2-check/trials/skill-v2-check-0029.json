@@ -1,0 +1,208 @@
+{
+  "trialId": "skill-v2-check-0029",
+  "index": 29,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "find_maintenance_flag",
+  "family": "repair",
+  "heldOut": false,
+  "task": "One flag in Production is enabled and serving the value \"maintenance\". Find it and turn it off in Production. Leave every other flag alone.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.flag.guest_checkout.enabled",
+      "before": true,
+      "after": false
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: In Production, `guest_checkout` was the only enabled flag serving \"maintenance\"; I turned it off and read it back as disabled (value unchanged at \"maintenance\"). The other five flags are unchanged.",
+  "costUsd": 0.001384,
+  "usage": {
+    "input": 16,
+    "output": 886,
+    "cacheRead": 24185,
+    "cacheWrite": 5583
+  },
+  "toolCalls": 6,
+  "toolErrors": 0,
+  "turns": 7,
+  "ms": 13721,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "flagsmith flag list -e [env-b1069adf2d6117ad] --json --jq '.[] | select(.enabled==true and .value==\"maintenance\") | {name,id,enabled,value}'",
+    "flagsmith flag list -e [env-b1069adf2d6117ad] --json | jq '.[0]'; flagsmith flag list -e [env-b1069adf2d6117ad] --json | jq 'length'",
+    "flagsmith flag list -e [env-b1069adf2d6117ad] --json | jq -c '.[] | {feature,enabled,value}'",
+    "flagsmith flag get guest_checkout -e [env-b1069adf2d6117ad] --json --jq '{enabled,value,segment_overrides,identity_overrides}'",
+    "flagsmith flag update guest_checkout -e [env-b1069adf2d6117ad] --disable --yes && flagsmith flag get guest_checkout -e [env-b1069adf2d6117ad] --json --jq '{enabled,value}'; flagsmith flag list -e [env-b1069adf2d6117ad] --json | jq -c '.[] | {feature,enabled,value}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops-v2\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Stages experiment drafts with enrollment off. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI (revision 2)\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment draft (created, not started). Needs the feature id, metric ids and multivariate option ids.\n# Stage it with enrollment off: Flagsmith can enroll identities from an enabled rollout before the experiment starts.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":0,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n",
+          "isError": false,
+          "ms": 104
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 97,
+        "cacheRead": 0,
+        "cacheWrite": 1085
+      },
+      "costUsd": 0.000184525,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag list -e [env-b1069adf2d6117ad] --json --jq '.[] | select(.enabled==true and .value==\"maintenance\") | {name,id,enabled,value}'"
+          },
+          "output": "{\"enabled\":true,\"id\":null,\"name\":null,\"value\":\"maintenance\"}",
+          "isError": false,
+          "ms": 602
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 115,
+        "cacheRead": 1085,
+        "cacheWrite": 3112
+      },
+      "costUsd": 0.0004575500000000001,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag list -e [env-b1069adf2d6117ad] --json | jq '.[0]'; flagsmith flag list -e [env-b1069adf2d6117ad] --json | jq 'length'"
+          },
+          "output": "{\n  \"feature\": \"guest_checkout\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"maintenance\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\n6",
+          "isError": false,
+          "ms": 1138
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 144,
+        "cacheRead": 4197,
+        "cacheWrite": 148
+      },
+      "costUsd": 0.00013267000000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag list -e [env-b1069adf2d6117ad] --json | jq -c '.[] | {feature,enabled,value}'"
+          },
+          "output": "{\"feature\":\"guest_checkout\",\"enabled\":true,\"value\":\"maintenance\"}\n{\"feature\":\"size_guide\",\"enabled\":false,\"value\":\"maintenance\"}\n{\"feature\":\"new_checkout\",\"enabled\":true,\"value\":\"beta_copy\"}\n{\"feature\":\"review_photos\",\"enabled\":true,\"value\":\"beta_copy\"}\n{\"feature\":\"saved_carts\",\"enabled\":true,\"value\":\"tiered\"}\n{\"feature\":\"search_v2\",\"enabled\":true,\"value\":\"blue\"}",
+          "isError": false,
+          "ms": 599
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 97,
+        "cacheRead": 4345,
+        "cacheWrite": 255
+      },
+      "costUsd": 0.000124025,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "The target is `guest_checkout` (enabled, value \"maintenance\"). `size_guide` also has \"maintenance\" but is disabled, so it doesn't match. Reading the target before changing it:",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag get guest_checkout -e [env-b1069adf2d6117ad] --json --jq '{enabled,value,segment_overrides,identity_overrides}'"
+          },
+          "output": "{\"enabled\":true,\"identity_overrides\":0,\"segment_overrides\":0,\"value\":\"maintenance\"}",
+          "isError": false,
+          "ms": 619
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 171,
+        "cacheRead": 4600,
+        "cacheWrite": 272
+      },
+      "costUsd": 0.0001657,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag update guest_checkout -e [env-b1069adf2d6117ad] --disable --yes && flagsmith flag get guest_checkout -e [env-b1069adf2d6117ad] --json --jq '{enabled,value}'; flagsmith flag list -e [env-b1069adf2d6117ad] --json | jq -c '.[] | {feature,enabled,value}'"
+          },
+          "output": "Feature              guest_checkout\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":false,\"value\":\"maintenance\"}\n{\"feature\":\"guest_checkout\",\"enabled\":false,\"value\":\"maintenance\"}\n{\"feature\":\"size_guide\",\"enabled\":false,\"value\":\"maintenance\"}\n{\"feature\":\"new_checkout\",\"enabled\":true,\"value\":\"beta_copy\"}\n{\"feature\":\"review_photos\",\"enabled\":true,\"value\":\"beta_copy\"}\n{\"feature\":\"saved_carts\",\"enabled\":true,\"value\":\"tiered\"}\n{\"feature\":\"search_v2\",\"enabled\":true,\"value\":\"blue\"}\n\n[stderr]\n✓ Disabled guest_checkout in environment Production ([env-b1069adf2d6117ad])",
+          "isError": false,
+          "ms": 2046
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 189,
+        "cacheRead": 4872,
+        "cacheWrite": 214
+      },
+      "costUsd": 0.00017017,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 7,
+      "text": "DONE: In Production, `guest_checkout` was the only enabled flag serving \"maintenance\"; I turned it off and read it back as disabled (value unchanged at \"maintenance\"). The other five flags are unchanged.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 73,
+        "cacheRead": 5086,
+        "cacheWrite": 497
+      },
+      "costUsd": 0.00014968500000000001,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T16:00:24.776Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 1,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops-v2",
+    "sha256": "19b412bfdfa744c5b694bd65148ef45c5575db3d426f1dcba5e64146c94f6de8"
+  }
+}

@@ -1,0 +1,285 @@
+{
+  "trialId": "skill-v1-check-0047",
+  "index": 47,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "remove_segment_override",
+  "family": "repair",
+  "heldOut": true,
+  "task": "Remove the \"enterprise_accounts\" segment override of the flag \"price_alerts\" in Production. Keep the same override in Development.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.override.price_alerts.enterprise_accounts.enabled",
+      "before": true,
+      "after": null
+    },
+    {
+      "path": "env.Production.override.price_alerts.enterprise_accounts.value",
+      "before": "segment_copy",
+      "after": null
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Removed the `enterprise_accounts` segment override on `price_alerts` in Production (867). Read-back confirms Production now has 0 segment overrides, with the environment default unchanged (off, value `base`). Development (866) still has its `enterprise_accounts` override (on, `segment_copy`), untouched.",
+  "costUsd": 0.002394,
+  "usage": {
+    "input": 22,
+    "output": 1986,
+    "cacheRead": 42158,
+    "cacheWrite": 7820
+  },
+  "toolCalls": 9,
+  "toolErrors": 0,
+  "turns": 10,
+  "ms": 27770,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "cd /tmp; for k in [env-591a313155c9c563] [env-153608b15faad89b]; do echo \"== $k\"; flagsmith flag get price_alerts -e $k --json --jq '{enabled,value,segment_overrides}'; done",
+    "cd /tmp; for k in [env-591a313155c9c563] [env-153608b15faad89b]; do echo \"== $k\"; flagsmith flag get price_alerts -e $k --json | jq -c '.segment_overrides'; done; flagsmith segment list --json --jq '.[] | select(.name|test(\"enterprise\"))|{id,name}'",
+    "cd /tmp; flagsmith feature list --json --jq '.[]|select(.name==\"price_alerts\")|{id,name}'; ",
+    "cd /tmp; for e in 866 867; do echo \"== env $e\"; flagsmith api \"api/v1/environments/$( [ $e = 866 ] && echo [env-591a313155c9c563] || echo [env-153608b15faad89b] )/featurestates/?feature=1757\" --jq '.results[] | {id,enabled,value:.feature_state_value,segment:.feature_segment}'; done",
+    "cd /tmp; flagsmith api \"api/v1/environments/[env-153608b15faad89b]/featurestates/?feature=1757\" | jq '.results | length, .[0:3]' ; flagsmith flag get price_alerts -e [env-153608b15faad89b] --json | jq '.segment_overrides'; flagsmith flag get price_alerts -e [env-591a313155c9c563] --json | jq .",
+    "cd /tmp; flagsmith flag get --help | head -40; flagsmith flag delete --help | head -30",
+    "cd /tmp; for k in [env-591a313155c9c563] [env-153608b15faad89b]; do echo \"== $k\"; flagsmith flag get price_alerts -e $k --segment enterprise_accounts 2>&1; flagsmith flag get price_alerts -e $k --segment enterprise_accounts --json 2>&1 | jq -c '{id,enabled,value,feature_segment}' 2>/dev/null; done",
+    "cd /tmp; flagsmith flag delete price_alerts -e [env-153608b15faad89b] --segment enterprise_accounts --yes 2>&1; echo \"--- verify PROD\"; flagsmith flag get price_alerts -e [env-153608b15faad89b] --segment enterprise_accounts 2>&1; flagsmith flag get price_alerts -e [env-153608b15faad89b] --json | jq -c '{enabled,value,segment_overrides}'; echo \"--- verify DEV\"; flagsmith flag get price_alerts -e [env-591a313155c9c563] --segment enterprise_accounts 2>&1; flagsmith flag get price_alerts -e [env-591a313155c9c563] --json | jq -c '{enabled,value,segment_overrides}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 310
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 89,
+        "cacheRead": 0,
+        "cacheWrite": 1087
+      },
+      "costUsd": 0.00018077500000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "Let me read the current state of the flag in both environments before changing anything.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; for k in [env-591a313155c9c563] [env-153608b15faad89b]; do echo \"== $k\"; flagsmith flag get price_alerts -e $k --json --jq '{enabled,value,segment_overrides}'; done"
+          },
+          "output": "== [env-591a313155c9c563]\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}\n== [env-153608b15faad89b]\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}",
+          "isError": false,
+          "ms": 1080
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 169,
+        "cacheRead": 1087,
+        "cacheWrite": 2779
+      },
+      "costUsd": 0.00044294500000000004,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; for k in [env-591a313155c9c563] [env-153608b15faad89b]; do echo \"== $k\"; flagsmith flag get price_alerts -e $k --json | jq -c '.segment_overrides'; done; flagsmith segment list --json --jq '.[] | select(.name|test(\"enterprise\"))|{id,name}'"
+          },
+          "output": "== [env-591a313155c9c563]\n1\n== [env-153608b15faad89b]\n1\n{\"id\":183,\"name\":\"enterprise_accounts\"}",
+          "isError": false,
+          "ms": 1491
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 181,
+        "cacheRead": 3866,
+        "cacheWrite": 271
+      },
+      "costUsd": 0.00016323500000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; flagsmith feature list --json --jq '.[]|select(.name==\"price_alerts\")|{id,name}'; "
+          },
+          "output": "{\"id\":1757,\"name\":\"price_alerts\"}",
+          "isError": false,
+          "ms": 295
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 129,
+        "cacheRead": 4137,
+        "cacheWrite": 256
+      },
+      "costUsd": 0.00013806999999999998,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; for e in 866 867; do echo \"== env $e\"; flagsmith api \"api/v1/environments/$( [ $e = 866 ] && echo [env-591a313155c9c563] || echo [env-153608b15faad89b] )/featurestates/?feature=1757\" --jq '.results[] | {id,enabled,value:.feature_state_value,segment:.feature_segment}'; done"
+          },
+          "output": "== env 866\n{\"enabled\":false,\"id\":3661,\"segment\":null,\"value\":\"base\"}\n== env 867\n{\"enabled\":false,\"id\":3662,\"segment\":null,\"value\":\"base\"}",
+          "isError": false,
+          "ms": 559
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 198,
+        "cacheRead": 4393,
+        "cacheWrite": 152
+      },
+      "costUsd": 0.00016213,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; flagsmith api \"api/v1/environments/[env-153608b15faad89b]/featurestates/?feature=1757\" | jq '.results | length, .[0:3]' ; flagsmith flag get price_alerts -e [env-153608b15faad89b] --json | jq '.segment_overrides'; flagsmith flag get price_alerts -e [env-591a313155c9c563] --json | jq ."
+          },
+          "output": "1\n[\n  {\n    \"id\": 3662,\n    \"feature_state_value\": \"base\",\n    \"multivariate_feature_state_values\": [],\n    \"identity\": null,\n    \"deleted_at\": null,\n    \"uuid\": \"47a83d3c-eef6-487f-b829-44f30d424bed\",\n    \"enabled\": false,\n    \"created_at\": \"2026-11-28T15:58:05.642762Z\",\n    \"updated_at\": \"2026-11-28T15:58:05.751849Z\",\n    \"live_from\": \"2026-11-28T15:58:05.642126Z\",\n    \"version\": 1,\n    \"feature\": 1757,\n    \"environment\": 867,\n    \"feature_segment\": null,\n    \"change_request\": null,\n    \"environment_feature_version\": null\n  }\n]\n1\n{\n  \"feature\": \"price_alerts\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": false,\n  \"value\": \"base\",\n  \"segment_overrides\": 1,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}",
+          "isError": false,
+          "ms": 1301
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 280,
+        "cacheRead": 4545,
+        "cacheWrite": 268
+      },
+      "costUsd": 0.00021915,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 7,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; flagsmith flag get --help | head -40; flagsmith flag delete --help | head -30"
+          },
+          "output": "Show a single flag's state in the current environment\n\nUsage:\n  flagsmith flag get <feature> [flags]\n\nExamples:\n  flagsmith flag get onboarding\n\n  # a segment or identity override\n  flagsmith flag get onboarding --segment 12\n  flagsmith flag get onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for get\n  -i, --identifier string   show the override for this identity\n      --segment string      show the override for this segment (id or name)\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\nDelete a flag's segment override in the current environment\n\nUsage:\n  flagsmith flag delete <feature> [flags]\n\nExamples:\n  # remove a segment or identity override (the flag itself is untouched)\n  flagsmith flag delete onboarding --segment 12\n  flagsmith flag delete onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for delete\n  -i, --identifier string   the identity whose override to delete\n      --segment string      the segment (id or name) whose override to delete\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively",
+          "isError": false,
+          "ms": 51
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 170,
+        "cacheRead": 4813,
+        "cacheWrite": 637
+      },
+      "costUsd": 0.00021295500000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 8,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; for k in [env-591a313155c9c563] [env-153608b15faad89b]; do echo \"== $k\"; flagsmith flag get price_alerts -e $k --segment enterprise_accounts 2>&1; flagsmith flag get price_alerts -e $k --segment enterprise_accounts --json 2>&1 | jq -c '{id,enabled,value,feature_segment}' 2>/dev/null; done"
+          },
+          "output": "== [env-591a313155c9c563]\nFeature    price_alerts\nType       standard\nSegment    enterprise_accounts (183)\nPriority   0\nState      on\nValue      segment_copy\n{\"id\":null,\"enabled\":true,\"value\":\"segment_copy\",\"feature_segment\":null}\n== [env-153608b15faad89b]\nFeature    price_alerts\nType       standard\nSegment    enterprise_accounts (183)\nPriority   0\nState      on\nValue      segment_copy\n{\"id\":null,\"enabled\":true,\"value\":\"segment_copy\",\"feature_segment\":null}",
+          "isError": false,
+          "ms": 4143
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 209,
+        "cacheRead": 5450,
+        "cacheWrite": 1271
+      },
+      "costUsd": 0.00031807499999999997,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 9,
+      "text": "Both environments have the `enterprise_accounts` override (on, value `segment_copy`). I'll remove it only in Production (867) and leave Development alone.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; flagsmith flag delete price_alerts -e [env-153608b15faad89b] --segment enterprise_accounts --yes 2>&1; echo \"--- verify PROD\"; flagsmith flag get price_alerts -e [env-153608b15faad89b] --segment enterprise_accounts 2>&1; flagsmith flag get price_alerts -e [env-153608b15faad89b] --json | jq -c '{enabled,value,segment_overrides}'; echo \"--- verify DEV\"; flagsmith flag get price_alerts -e [env-591a313155c9c563] --segment enterprise_accounts 2>&1; flagsmith flag get price_alerts -e [env-591a313155c9c563] --json | jq -c '{enabled,value,segment_overrides}'"
+          },
+          "output": "✓ Deleted price_alerts override for segment enterprise_accounts (183) in environment Production ([env-153608b15faad89b])\n--- verify PROD\nError: \"price_alerts\" has no override for segment 183 in Production ([env-153608b15faad89b])\n{\"enabled\":false,\"value\":\"base\",\"segment_overrides\":0}\n--- verify DEV\nFeature    price_alerts\nType       standard\nSegment    enterprise_accounts (183)\nPriority   0\nState      on\nValue      segment_copy\n{\"enabled\":false,\"value\":\"base\",\"segment_overrides\":1}",
+          "isError": false,
+          "ms": 4051
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 453,
+        "cacheRead": 6721,
+        "cacheWrite": 425
+      },
+      "costUsd": 0.000347035,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 10,
+      "text": "DONE: Removed the `enterprise_accounts` segment override on `price_alerts` in Production (867). Read-back confirms Production now has 0 segment overrides, with the environment default unchanged (off, value `base`). Development (866) still has its `enterprise_accounts` override (on, `segment_copy`), untouched.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 108,
+        "cacheRead": 7146,
+        "cacheWrite": 674
+      },
+      "costUsd": 0.00020991000000000003,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:58:04.997Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 1,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops",
+    "sha256": "f6f350aec5da331637eaf740f37da39445b693b57967531bd377fca89c509328"
+  }
+}

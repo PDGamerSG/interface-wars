@@ -1,0 +1,160 @@
+{
+  "trialId": "skill-v2-check-0010",
+  "index": 10,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "start_experiment",
+  "family": "experiments",
+  "heldOut": false,
+  "task": "The experiment \"express_shipping_copy test\" in Production is set up but not running. Start it.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.experiment.express_shipping_copy test.status",
+      "before": "created",
+      "after": "running"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Production experiment \"express_shipping_copy test\" (id 94) is now `running`, started_at 2026-11-28T15:59:37Z. Read-back shows rollout enabled at 100%, control \"Start free trial\" and variant \"Try it free\" (id 187) at a 50% split, which I left unchanged.",
+  "costUsd": 0.001301,
+  "usage": {
+    "input": 12,
+    "output": 880,
+    "cacheRead": 14397,
+    "cacheWrite": 5723
+  },
+  "toolCalls": 4,
+  "toolErrors": 0,
+  "turns": 5,
+  "ms": 8609,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "E=[env-f6134057f156b417]; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status}'",
+    "E=[env-f6134057f156b417]; flagsmith api api/v1/environments/$E/experiments/94/ --jq '{status,feature,rollout_decision,rollout:(.experiment_rollout|{enabled,rollout_percentage,feature_state_value,multivariate_feature_state_values}),metrics}'",
+    "E=[env-f6134057f156b417]; flagsmith api api/v1/environments/$E/experiments/94/start/ -X POST; echo; flagsmith api api/v1/environments/$E/experiments/94/ --jq '{status,rollout_decision,rollout:(.experiment_rollout|{enabled,rollout_percentage,feature_state_value,multivariate_feature_state_values})}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops-v2\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Stages experiment drafts with enrollment off. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI (revision 2)\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment draft (created, not started). Needs the feature id, metric ids and multivariate option ids.\n# Stage it with enrollment off: Flagsmith can enroll identities from an enabled rollout before the experiment starts.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":0,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n",
+          "isError": false,
+          "ms": 48
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 89,
+        "cacheRead": 0,
+        "cacheWrite": 1075
+      },
+      "costUsd": 0.000179275,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=[env-f6134057f156b417]; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status}'"
+          },
+          "output": "{\"id\":94,\"name\":\"express_shipping_copy test\",\"status\":\"created\"}",
+          "isError": false,
+          "ms": 624
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 108,
+        "cacheRead": 1075,
+        "cacheWrite": 3104
+      },
+      "costUsd": 0.00045295000000000003,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=[env-f6134057f156b417]; flagsmith api api/v1/environments/$E/experiments/94/ --jq '{status,feature,rollout_decision,rollout:(.experiment_rollout|{enabled,rollout_percentage,feature_state_value,multivariate_feature_state_values}),metrics}'"
+          },
+          "output": "{\"feature\":{\"id\":1834,\"initial_value\":\"Start free trial\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":187,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Try it free\",\"type\":\"unicode\",\"uuid\":\"ff984f5a-0228-414a-a5f7-a02f14692246\"}],\"name\":\"express_shipping_copy\",\"type\":\"MULTIVARIATE\"},\"metrics\":[{\"aggregation\":\"occurrence\",\"created_at\":\"2026-11-28T15:59:29.483630Z\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"id\":126,\"metric\":152,\"metric_name\":\"signup_completed\"}],\"rollout\":{\"enabled\":true,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Start free trial\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":187,\"percentage_allocation\":50}],\"rollout_percentage\":100},\"rollout_decision\":null,\"status\":\"created\"}",
+          "isError": false,
+          "ms": 328
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 162,
+        "cacheRead": 4179,
+        "cacheWrite": 139
+      },
+      "costUsd": 0.00014036500000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "The experiment is in `created` status, and its rollout is already configured (enabled, 100%, 50% split to variant \"b\", control \"Start free trial\"). I'll start it and read back.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=[env-f6134057f156b417]; flagsmith api api/v1/environments/$E/experiments/94/start/ -X POST; echo; flagsmith api api/v1/environments/$E/experiments/94/ --jq '{status,rollout_decision,rollout:(.experiment_rollout|{enabled,rollout_percentage,feature_state_value,multivariate_feature_state_values})}'"
+          },
+          "output": "{\"id\":94,\"feature\":{\"id\":1834,\"name\":\"express_shipping_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Start free trial\",\"multivariate_options\":[{\"id\":187,\"uuid\":\"ff984f5a-0228-414a-a5f7-a02f14692246\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Try it free\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"express_shipping_copy test\",\"hypothesis\":\"Try it free wins\",\"status\":\"running\",\"metrics\":[{\"id\":126,\"metric\":152,\"metric_name\":\"signup_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-28T15:59:29.483630Z\"}],\"created_at\":\"2026-11-28T15:59:29.482046Z\",\"updated_at\":\"2026-11-28T15:59:37.691733Z\",\"started_at\":\"2026-11-28T15:59:37.690849Z\",\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}\n{\"rollout\":{\"enabled\":true,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Start free trial\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":187,\"percentage_allocation\":50}],\"rollout_percentage\":100},\"rollout_decision\":null,\"status\":\"running\"}",
+          "isError": false,
+          "ms": 579
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 415,
+        "cacheRead": 4318,
+        "cacheWrite": 507
+      },
+      "costUsd": 0.000314255,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "DONE: Production experiment \"express_shipping_copy test\" (id 94) is now `running`, started_at 2026-11-28T15:59:37Z. Read-back shows rollout enabled at 100%, control \"Start free trial\" and variant \"Try it free\" (id 187) at a 50% split, which I left unchanged.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 106,
+        "cacheRead": 4825,
+        "cacheWrite": 898
+      },
+      "costUsd": 0.00021370000000000002,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:59:28.070Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 1,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops-v2",
+    "sha256": "19b412bfdfa744c5b694bd65148ef45c5575db3d426f1dcba5e64146c94f6de8"
+  }
+}

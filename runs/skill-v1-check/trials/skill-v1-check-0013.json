@@ -1,0 +1,184 @@
+{
+  "trialId": "skill-v1-check-0013",
+  "index": 13,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "find_maintenance_flag",
+  "family": "repair",
+  "heldOut": false,
+  "task": "One flag in Production is enabled and serving the value \"maintenance\". Find it and turn it off in Production. Leave every other flag alone.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.flag.review_photos.enabled",
+      "before": true,
+      "after": false
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Turned off `review_photos` in Production (it was the only enabled flag serving \"maintenance\"). Read-back shows enabled=false, value still \"maintenance\", and the other five flags are unchanged.",
+  "costUsd": 0.001364,
+  "usage": {
+    "input": 14,
+    "output": 886,
+    "cacheRead": 19496,
+    "cacheWrite": 5799
+  },
+  "toolCalls": 5,
+  "toolErrors": 0,
+  "turns": 6,
+  "ms": 12602,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "flagsmith flag list -e [env-a0d4a7b5504b4826] --json --jq '.[] | select(.value==\"maintenance\") | {name,enabled,value,id}'; echo ---; flagsmith flag list -e [env-a0d4a7b5504b4826] --json --jq '.[] | select(.enabled==true) | {name,value}' | head -100",
+    "flagsmith flag list -e [env-a0d4a7b5504b4826] --json | head -c 1500; echo; flagsmith feature list --json | jq '.[0]' | head -40",
+    "flagsmith flag get review_photos -e [env-a0d4a7b5504b4826] --json --jq '{enabled,value,segment_overrides}'",
+    "flagsmith flag update review_photos -e [env-a0d4a7b5504b4826] --disable --yes && flagsmith flag get review_photos -e [env-a0d4a7b5504b4826] --json --jq '{enabled,value,segment_overrides}'; flagsmith flag list -e [env-a0d4a7b5504b4826] --json | jq -c '.[] | {feature,enabled,value}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 52
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 98,
+        "cacheRead": 0,
+        "cacheWrite": 1088
+      },
+      "costUsd": 0.0001854,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag list -e [env-a0d4a7b5504b4826] --json --jq '.[] | select(.value==\"maintenance\") | {name,enabled,value,id}'; echo ---; flagsmith flag list -e [env-a0d4a7b5504b4826] --json --jq '.[] | select(.enabled==true) | {name,value}' | head -100"
+          },
+          "output": "{\"enabled\":true,\"id\":null,\"name\":null,\"value\":\"maintenance\"}\n{\"enabled\":false,\"id\":null,\"name\":null,\"value\":\"maintenance\"}\n---\n{\"name\":null,\"value\":\"maintenance\"}\n{\"name\":null,\"value\":\"eu_west\"}\n{\"name\":null,\"value\":\"fast_lane\"}\n{\"name\":null,\"value\":\"max_10\"}\n{\"name\":null,\"value\":\"fast_lane\"}",
+          "isError": false,
+          "ms": 1222
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 177,
+        "cacheRead": 1088,
+        "cacheWrite": 2788
+      },
+      "costUsd": 0.00044808,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "The list output has null names, so I'll look at the raw structure.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag list -e [env-a0d4a7b5504b4826] --json | head -c 1500; echo; flagsmith feature list --json | jq '.[0]' | head -40"
+          },
+          "output": "[\n  {\n    \"feature\": \"review_photos\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"maintenance\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"wishlist_sync\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": false,\n    \"value\": \"maintenance\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"size_guide\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"eu_west\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"guest_checkout\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"fast_lane\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"smart_reorder\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"max_10\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"new_checkout\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"fast_lane\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  }\n]\n\n{\n  \"id\": 1620,\n  \"name\": \"review_photos\",\n  \"type\": \"standard\",\n  \"default_value\": \"normal\",\n  \"enabled\": false\n}",
+          "isError": false,
+          "ms": 909
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 149,
+        "cacheRead": 3876,
+        "cacheWrite": 327
+      },
+      "costUsd": 0.00015433500000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "The only enabled flag serving \"maintenance\" in Production is `review_photos`. I'll read it before changing anything.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag get review_photos -e [env-a0d4a7b5504b4826] --json --jq '{enabled,value,segment_overrides}'"
+          },
+          "output": "{\"enabled\":true,\"segment_overrides\":0,\"value\":\"maintenance\"}",
+          "isError": false,
+          "ms": 785
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 194,
+        "cacheRead": 4203,
+        "cacheWrite": 848
+      },
+      "costUsd": 0.00024523000000000004,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag update review_photos -e [env-a0d4a7b5504b4826] --disable --yes && flagsmith flag get review_photos -e [env-a0d4a7b5504b4826] --json --jq '{enabled,value,segment_overrides}'; flagsmith flag list -e [env-a0d4a7b5504b4826] --json | jq -c '.[] | {feature,enabled,value}'"
+          },
+          "output": "Feature              review_photos\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"maintenance\"}\n{\"feature\":\"review_photos\",\"enabled\":false,\"value\":\"maintenance\"}\n{\"feature\":\"wishlist_sync\",\"enabled\":false,\"value\":\"maintenance\"}\n{\"feature\":\"size_guide\",\"enabled\":true,\"value\":\"eu_west\"}\n{\"feature\":\"guest_checkout\",\"enabled\":true,\"value\":\"fast_lane\"}\n{\"feature\":\"smart_reorder\",\"enabled\":true,\"value\":\"max_10\"}\n{\"feature\":\"new_checkout\",\"enabled\":true,\"value\":\"fast_lane\"}\n\n[stderr]\n✓ Disabled review_photos in environment Production ([env-a0d4a7b5504b4826])",
+          "isError": false,
+          "ms": 2004
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 198,
+        "cacheRead": 5051,
+        "cacheWrite": 227
+      },
+      "costUsd": 0.000178085,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "DONE: Turned off `review_photos` in Production (it was the only enabled flag serving \"maintenance\"). Read-back shows enabled=false, value still \"maintenance\", and the other five flags are unchanged.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 70,
+        "cacheRead": 5278,
+        "cacheWrite": 521
+      },
+      "costUsd": 0.000153105,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:56:25.413Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 1,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops",
+    "sha256": "f6f350aec5da331637eaf740f37da39445b693b57967531bd377fca89c509328"
+  }
+}
