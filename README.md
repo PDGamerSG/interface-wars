@@ -125,7 +125,8 @@ Flagsmith is both the system under test and the experiment platform.
 Ten problems in Flagsmith 2.295.2 and its MCP server, each with the trials or code that show it, are written up in
 [docs/FLAGSMITH_FINDINGS.md](docs/FLAGSMITH_FINDINGS.md). We opened [PR #9159](https://github.com/Flagsmith/flagsmith/pull/9159)
 for the first finding and issues [#9158](https://github.com/Flagsmith/flagsmith/issues/9158) and
-[#9157](https://github.com/Flagsmith/flagsmith/issues/9157) for the second and seventh. The sixth was already tracked in
+[#9157](https://github.com/Flagsmith/flagsmith/issues/9157) for the second and seventh. [PR #9160](https://github.com/Flagsmith/flagsmith/pull/9160)
+adds the missing MCP tag tool from the fourth. The sixth was already tracked in
 [#9128](https://github.com/Flagsmith/flagsmith/issues/9128). [Upstream status](docs/FLAGSMITH_FINDINGS.md#upstream-status). The short list:
 
 1. MCP `create_metric` lists `definition` as required but leaves it out of `properties`, so no metric can be
