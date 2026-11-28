@@ -1,8 +1,6 @@
 # Deploys the judge site (judge-site/, served at interfacewars.pallabdas.me) after CI passes on main.
-# The deploy hook's ref parameter makes Render build exactly the commit that passed, not the branch tip,
-# which may not have passed CI yet. Render's own auto-deploy is off, so this job is the only deploy path.
-# The job then waits until the live site's version.json names this commit, or a later one deployed by a
-# later run of this job. A deploy that never goes live fails the job.
+# Render auto-deploy is off. A delayed CI run retains a newer live release. After calling the hook,
+# the job waits for version.json to name the exact requested commit.
 name: deploy
 
 on:
@@ -31,28 +29,15 @@ jobs:
       SITE: https://interfacewars.pallabdas.me
       GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Trigger the Render deploy
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          persist-credentials: false
+
+      - name: Deploy the selected commit and verify the live revision
         env:
           HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
-        run: |
-          if [ -z "$HOOK" ]; then echo "::error::The RENDER_DEPLOY_HOOK secret is not set."; exit 1; fi
-          curl -fsS -X POST "$HOOK&ref=$SHA" -o /dev/null
-
-      - name: Wait for the live site to serve this commit
-        run: |
-          live=""
-          for attempt in $(seq 1 60); do
-            live=$(curl -fsS "$SITE/version.json?nocache=$(date +%s%N)" | jq -r '.commit // empty' || true)
-            if [ "$live" = "$SHA" ]; then echo "Live at $SHA."; exit 0; fi
-            # A later merge may have been deployed first. Accept a live commit that is ahead of this one on main.
-            if [ -n "$live" ]; then
-              status=$(gh api "repos/$GITHUB_REPOSITORY/compare/$SHA...$live" --jq .status 2>/dev/null || true)
-              if [ "$status" = "ahead" ]; then echo "Live at $live, which includes $SHA."; exit 0; fi
-            fi
-            sleep 10
-          done
-          echo "::error::After 10 minutes the site serves ${live:-no version.json}, not $SHA."
-          exit 1
+        run: node scripts/deploy-judge-site.mjs
 
       - name: Check the published pages and data
         run: |
