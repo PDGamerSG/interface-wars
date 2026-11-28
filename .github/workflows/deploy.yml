@@ -1,6 +1,8 @@
 # Deploys the judge site (judge-site/, served at interfacewars.pallabdas.me) after CI passes on main.
-# Render builds the site when the deploy hook is called. The job then waits until the live site's
-# version.json names this commit or a later one on main. A deploy that never goes live fails the job.
+# The deploy hook's ref parameter makes Render build exactly the commit that passed, not the branch tip,
+# which may not have passed CI yet. Render's own auto-deploy is off, so this job is the only deploy path.
+# The job then waits until the live site's version.json names this commit, or a later one deployed by a
+# later run of this job. A deploy that never goes live fails the job.
 name: deploy
 
 on:
@@ -34,7 +36,7 @@ jobs:
           HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
         run: |
           if [ -z "$HOOK" ]; then echo "::error::The RENDER_DEPLOY_HOOK secret is not set."; exit 1; fi
-          curl -fsS -X POST "$HOOK" -o /dev/null
+          curl -fsS -X POST "$HOOK&ref=$SHA" -o /dev/null
 
       - name: Wait for the live site to serve this commit
         run: |
