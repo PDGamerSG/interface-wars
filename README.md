@@ -207,6 +207,10 @@ node src/cli.ts show main-0154
 Offline readout recomputes the trial statistics and bootstrap, then applies the decision rule to the archived Flagsmith
 inference. It writes `runs/main/readout.offline.json` and `readout.offline.md`.
 
+Agent outcomes record `done` or `failed` only when the final response contains one unambiguous standalone `DONE:` or
+`FAILED:` line. A missing or mixed status is recorded as `incomplete`, so prose such as `DONE? No` cannot be counted as
+a completed report.
+
 To replay the recorded demo without credentials, Docker, model calls or network access, run `npm run demo`. It prints
 the matched `apple_pay_copy` comparison, the registered and staging-safe readings, the human approval and the six
 post-ship jobs. The timed presentation is in [the demo storyboard](docs/DEMO_STORYBOARD.md).
