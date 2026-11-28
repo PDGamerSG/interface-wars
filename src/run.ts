@@ -115,8 +115,8 @@ async function worker() {
       results.push(r);
       console.log(
         `${trialId} ${r.arm.padEnd(9)} ${r.template.padEnd(31)} ${r.correct ? 'CORRECT' : 'wrong  '} ` +
-        `collateral=${r.collateral.length} cost=$${r.costUsd.toFixed(4)} turns=${r.turns} ${Math.round(r.ms / 1000)}s` +
-        (r.correct ? '' : `  ${[...r.reasons, ...r.collateral.map((c) => 'collateral ' + c.path)].join('; ').slice(0, 160)}`),
+        `collateral=${r.collateral.length} oosWrites=${r.writeAudit?.outOfScope.length ?? 'n/a'} cost=$${r.costUsd.toFixed(4)} turns=${r.turns} ${Math.round(r.ms / 1000)}s` +
+        (r.correct ? '' : `  ${[...r.reasons, ...r.collateral.map((c) => 'collateral ' + c.path), ...(r.writeAudit?.outOfScope ?? []).map((w) => 'out-of-scope write: ' + w.log)].join('; ').slice(0, 200)}`),
       );
     } catch (error) {
       if (error instanceof BudgetExceeded) {
@@ -135,14 +135,15 @@ async function worker() {
 await Promise.all(Array.from({ length: concurrency }, worker));
 await assigner?.close();
 
-const byArm: Record<string, { n: number; correct: number; collateral: number; cost: number }> = {};
+const byArm: Record<string, { n: number; correct: number; collateral: number; oosWrites: number; audited: number; cost: number }> = {};
 for (const r of results) {
-  const a = (byArm[r.arm] ??= { n: 0, correct: 0, collateral: 0, cost: 0 });
+  const a = (byArm[r.arm] ??= { n: 0, correct: 0, collateral: 0, oosWrites: 0, audited: 0, cost: 0 });
   a.n++; a.correct += Number(r.correct); a.collateral += Number(r.collateral.length > 0); a.cost += r.costUsd;
+  if (r.writeAudit) { a.audited++; a.oosWrites += Number(r.writeAudit.outOfScope.length > 0); }
 }
 console.log('\nSummary (this batch, raw counts):');
 for (const [arm, a] of Object.entries(byArm)) {
-  console.log(`  ${arm.padEnd(9)} n=${a.n} correct=${a.correct} (${((100 * a.correct) / a.n).toFixed(0)}%) collateral=${a.collateral} mean cost=$${(a.cost / a.n).toFixed(4)}`);
+  console.log(`  ${arm.padEnd(9)} n=${a.n} correct=${a.correct} (${((100 * a.correct) / a.n).toFixed(0)}%) finalCollateral=${a.collateral} outOfScopeWrites=${a.audited ? a.oosWrites : 'n/a'} mean cost=$${(a.cost / a.n).toFixed(4)}`);
 }
 if (process.env.IW_DRY_RUN !== '1') console.log(`\nTotal real spend (all runs): $${spentUsd().toFixed(4)} of cap $${capUsd()}.`);
 void active;
