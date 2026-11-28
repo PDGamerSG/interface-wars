@@ -207,6 +207,10 @@ node src/cli.ts show main-0154
 Offline readout recomputes the trial statistics and bootstrap, then applies the decision rule to the archived Flagsmith
 inference. It writes `runs/main/readout.offline.json` and `readout.offline.md`.
 
+To replay the recorded demo without credentials, Docker, model calls or network access, run `npm run demo`. It prints
+the matched `apple_pay_copy` comparison, the registered and staging-safe readings, the human approval and the six
+post-ship jobs. The timed presentation is in [the demo storyboard](docs/DEMO_STORYBOARD.md).
+
 ### Run a fresh experiment
 
 On a fresh local Docker lab, copy `.env.example` to `.env` and set the Anthropic API key and project spend limit.
