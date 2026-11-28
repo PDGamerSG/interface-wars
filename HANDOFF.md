@@ -20,7 +20,7 @@ commit dates.** The user records the demo video. The website is the next piece o
 | Readout | cli_skill WIN, cli INCONCLUSIVE, SRM p = 0.92 (`runs/main/readout.md`) |
 | Ship | Approved by Pallab Das: cli_skill. Experiment completed with `rollout_decision=variant` |
 | Closed loop | `which` returns cli_skill for new sessions; 6 post-ship agents all correct (`runs/after-ship/`) |
-| Findings | 10 Flagsmith and MCP problems with trial evidence (`docs/FLAGSMITH_FINDINGS.md`). Not filed upstream; ask the user first |
+| Findings | 10 Flagsmith and MCP problems with trial evidence (`docs/FLAGSMITH_FINDINGS.md`). Findings 1, 2 and 7 filed as Flagsmith PR #9159 and issues #9158, #9157; finding 6 already tracked in #9128 |
 | Deviations | `prereg/DEVIATIONS.md` |
 | Token counts | `runs/interface-tokens.json`: MCP tools 29,270 tokens per request, bash tool 611, skill 1,950 |
 | Web data | `node scripts/export-web-data.ts main` writes `web/public/data/` (3.6 MB, credential guard) |
@@ -43,7 +43,7 @@ A separate `flagsmith-release-gate` Agent Skill is available for production-styl
    started (roll assigned "The Fight Card", pick "Trial Report") but the user paused the frontend before choosing.
 3. Render static site deploy, then add the URL to the README.
 4. Confirm the README "AI tools used" wording with the user.
-5. Ask before filing any upstream issue from `docs/FLAGSMITH_FINDINGS.md`.
+5. Upstream status is in `docs/FLAGSMITH_FINDINGS.md#upstream-status`. Check it before filing another finding.
 6. Submit on the WeMakeDevs page before 14:30 UTC on 29 November.
 
 ## 4. Facts learned the hard way
