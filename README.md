@@ -298,7 +298,8 @@ The rules and the other recipes are unchanged. Revision 1 stays frozen for the a
 `src/arms/skill.ts` pins each revision by the SHA-256 of its `SKILL.md`, so an edited file stops a run before any
 model call. `IW_SKILL=flagsmith-ops-v2` selects revision 2 for `cli_skill` trials. Only the selected revision is
 mounted, always at `/skills/flagsmith-ops`, so the system prompt is byte-identical across revisions. New trial records
-store the revision name and hash. Revision 2 has not been through a registered comparison.
+store the revision name and hash. Revision 2 has not been through a registered comparison. The descriptive check
+against revision 1 was fixed in [prereg/SKILL_V2_CHECK.md](prereg/SKILL_V2_CHECK.md) before it ran.
 
 ## Repository map
 
