@@ -7,13 +7,15 @@ The limit was reached by 203 tool results in 155 main trials.
 
 ## Upstream status
 
-Five of the ten findings are now tracked in Flagsmith/flagsmith. The others are documented here only.
+Seven of the ten findings are now tracked in Flagsmith/flagsmith. The others are documented here only.
 
 | Finding | Upstream | Opened by |
 |---|---|---|
 | 1. `create_metric` omits `definition` | [PR #9159](https://github.com/Flagsmith/flagsmith/pull/9159) fixes the OpenAPI schema | Interface Wars |
 | 2. No MCP tool starts or completes an experiment | [Issue #9158](https://github.com/Flagsmith/flagsmith/issues/9158) | Interface Wars |
+| 3. MCP reads omit multivariate feature-state value IDs | [Issue #9161](https://github.com/Flagsmith/flagsmith/issues/9161) | Interface Wars |
 | 4. No MCP tool lists project tags | [PR #9160](https://github.com/Flagsmith/flagsmith/pull/9160) adds the read-only `list_project_tags` tool | Interface Wars |
+| 5. All MCP tool schemas are sent on every request | [Issue #9162](https://github.com/Flagsmith/flagsmith/issues/9162) requests tool groups or scopes | Interface Wars |
 | 6. `srm_p_value` is null for experiment rollouts | [Issue #9128](https://github.com/Flagsmith/flagsmith/issues/9128) and [PR #8798](https://github.com/Flagsmith/flagsmith/pull/8798) | Other contributors, opened before our report |
 | 7. Feature-state PATCH ignores multivariate allocations | [Issue #9157](https://github.com/Flagsmith/flagsmith/issues/9157) | Interface Wars |
 
