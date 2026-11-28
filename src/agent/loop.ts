@@ -90,9 +90,17 @@ export function systemPrompt(arm: Arm['name'], s: Sandbox) {
   ].join('\n');
 }
 
-export async function runAgent(arm: Arm, sandbox: Sandbox, task: string, client = new Anthropic({ maxRetries: 6 })): Promise<AgentResult> {
+type AgentOptions = {
+  model?: { id: string; effort: typeof EFFORT; maxTurns: number };
+  guide?: string;
+  billing?: { reserve(): void; settle(usd: number): void; rejected(error: unknown): void };
+};
+
+export async function runAgent(arm: Arm, sandbox: Sandbox, task: string, client = new Anthropic({ maxRetries: 6 }), options: AgentOptions = {}): Promise<AgentResult> {
+  const model = options.model ?? { id: MODEL, effort: EFFORT, maxTurns: MAX_TURNS };
+  const billing = options.billing ?? { reserve: checkBudget, settle: recordSpend, rejected() {} };
   const started = Date.now();
-  const system = systemPrompt(arm.name, sandbox);
+  const system = systemPrompt(arm.name, sandbox) + (options.guide ? '\n\n' + options.guide : '');
   const messages: Anthropic.MessageParam[] = [{ role: 'user', content: task }];
   const turns: TurnRecord[] = [];
   const usage: Usage = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 };
@@ -102,20 +110,21 @@ export async function runAgent(arm: Arm, sandbox: Sandbox, task: string, client 
   let finalText = '';
   let outcome: AgentResult['outcome'] = 'turn_limit';
 
-  for (let turn = 1; turn <= MAX_TURNS; turn++) {
-    checkBudget();
+  for (let turn = 1; turn <= model.maxTurns; turn++) {
+    billing.reserve();
     let response: Anthropic.Message;
     try {
       response = await client.messages.create({
-        model: MODEL,
+        model: model.id,
         max_tokens: 16000,
         system,
         tools: arm.tools,
         messages,
-        output_config: { effort: EFFORT },
+        output_config: { effort: model.effort },
         cache_control: { type: 'ephemeral' },
       } as any);
     } catch (error) {
+      billing.rejected(error);
       outcome = 'api_error';
       finalText = `API error: ${(error as Error).message}`;
       break;
@@ -127,9 +136,9 @@ export async function runAgent(arm: Arm, sandbox: Sandbox, task: string, client 
       cacheWrite: response.usage.cache_creation_input_tokens ?? 0,
     };
     usage.input += u.input; usage.output += u.output; usage.cacheRead += u.cacheRead; usage.cacheWrite += u.cacheWrite;
-    const turnCost = costOf(MODEL, u);
+    const turnCost = costOf(model.id, u);
     costUsd += turnCost;
-    recordSpend(turnCost);
+    billing.settle(turnCost);
 
     const text = response.content.filter((b): b is Anthropic.TextBlock => b.type === 'text').map((b) => b.text).join('\n').trim();
     const record: TurnRecord = { turn, text, calls: [], usage: u, costUsd: turnCost, stopReason: response.stop_reason };

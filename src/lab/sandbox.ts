@@ -51,8 +51,7 @@ function value(v: string | undefined) {
   return { type: 'unicode', string_value: v };
 }
 
-export async function createSandbox(trialId: string, seed: Seed): Promise<Sandbox> {
-  const lab = readLab();
+export async function createSandbox(trialId: string, seed: Seed, lab = readLab()): Promise<Sandbox> {
   const root = createAdmin(FLAGSMITH_URL, { kind: 'token', value: lab.admin.token });
   const org = await root.post('/api/v1/organisations/', { name: `sbx-${trialId}`.slice(0, 100) });
   const project = await root.post('/api/v1/projects/', { name: 'shop', organisation: org.id });

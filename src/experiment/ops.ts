@@ -5,7 +5,7 @@
 //                   value and IW_MAX_SPEND_USD wins, so the dashboard can only tighten the cap set on the machine.
 // The runner reads them from the Flags API with the server-side key, like any service reads its flags.
 import { createAdmin } from '../flagsmith/admin.ts';
-import { FLAGSMITH_URL, readLab } from '../lab/config.ts';
+import { FLAGSMITH_URL, readLab, type Lab } from '../lab/config.ts';
 
 export const KILL_SWITCH = 'trials_enabled';
 export const SPEND_CAP = 'spend_cap_usd';
@@ -57,9 +57,9 @@ export async function ensureOpsFlags(defaultCapUsd = 15) {
 
 // Reads the flags. If Flagsmith cannot be reached, trials stay enabled and only the machine's cap applies, and the
 // caller is told so; the experiment itself cannot run without Flagsmith anyway.
-export async function readOpsFlags(): Promise<OpsFlags> {
+export async function readOpsFlags(knownLab?: Lab): Promise<OpsFlags> {
   try {
-    const lab = readLab();
+    const lab = knownLab ?? readLab();
     const res = await fetch(`${FLAGSMITH_URL}/api/v1/flags/`, { headers: { 'X-Environment-Key': lab.control.serverKey } });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const flags = (await res.json()) as any[];
