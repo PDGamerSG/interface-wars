@@ -7,7 +7,7 @@ The limit was reached by 203 tool results in 155 main trials.
 
 ## Upstream status
 
-Seven of the twelve findings are now tracked in Flagsmith/flagsmith. The others are documented here only.
+Nine of the twelve findings are now tracked in Flagsmith/flagsmith. The others are documented here only.
 
 | Finding | Upstream | Opened by |
 |---|---|---|
@@ -18,6 +18,8 @@ Seven of the twelve findings are now tracked in Flagsmith/flagsmith. The others 
 | 5. All MCP tool schemas are sent on every request | [Issue #9162](https://github.com/Flagsmith/flagsmith/issues/9162) requests tool groups or scopes | Interface Wars |
 | 6. `srm_p_value` is null for experiment rollouts | [Issue #9128](https://github.com/Flagsmith/flagsmith/issues/9128) and [PR #8798](https://github.com/Flagsmith/flagsmith/pull/8798) | Other contributors, opened before our report |
 | 7. Feature-state PATCH ignores multivariate allocations | [Issue #9157](https://github.com/Flagsmith/flagsmith/issues/9157) | Interface Wars |
+| 11. The audit log API returns an empty list on an unlicensed install | [Issue #9172](https://github.com/Flagsmith/flagsmith/issues/9172) asks for a signal that the list is limited by plan | Interface Wars |
+| 12. An audit row is lost when its segment override is already deleted | [PR #9171](https://github.com/Flagsmith/flagsmith/pull/9171) stops the task failing on the creation message, as #6792 did for updates | Interface Wars |
 
 The text under each remaining heading is written so it can be pasted into an issue.
 
@@ -135,6 +137,10 @@ uses the audit log to check what an agent changed.
   no audit row for that write.
 - **Workaround in this repo:** the harness counts failed audit tasks whose historical record belongs to the sandbox
   and reports them as `lostRows`. The lab raises `max_connections` to 500.
+- **Upstream:** [PR #9171](https://github.com/Flagsmith/flagsmith/pull/9171) makes the task return without an audit
+  row instead of failing, as [#6792](https://github.com/Flagsmith/flagsmith/issues/6792) did for update messages.
+  The override's deletion is still logged. On a Flagsmith with that fix, these tasks complete, so `lostRows` would no
+  longer count them.
 
 ## Agent behaviour worth knowing
 
