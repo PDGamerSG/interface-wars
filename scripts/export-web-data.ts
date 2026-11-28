@@ -74,17 +74,23 @@ const summarise = (rows: TrialRecord[]) =>
     return [arm, { n: r.length, correct: r.filter((t) => t.correct).length, costUsd: Number(r.reduce((s, t) => s + t.costUsd, 0).toFixed(6)) }];
   }));
 
-const spend = existsSync(join(RUNS, 'spend.local.json')) ? readJson(join(RUNS, 'spend.local.json')).totalUsd : null;
+// The local spend ledger is intentionally ignored because it is mutable and may
+// include calls that have no published record. Derive the public total only from
+// the tracked trial archives so a clean checkout gets the same value.
+const projectSpendUsd = Number([...trials, ...pilot, ...afterShip].reduce((sum, trial) => sum + trial.costUsd, 0).toFixed(6));
 const meta = {
   run,
-  exportedAt: new Date().toISOString(),
+  // The readout is the immutable publication boundary for a run. Reusing its
+  // timestamp keeps a replayed export byte-for-byte stable while preserving the
+  // existing metadata field for consumers.
+  exportedAt: readout.generatedAt ?? null,
   model: readout.model,
   effort: readout.effort,
   trials: trials.length,
   firstTrialAt: trials.map((t) => t.startedAt).sort()[0] ?? null,
   lastTrialAt: trials.map((t) => t.startedAt).sort().at(-1) ?? null,
   runSpendUsd: Number(trials.reduce((s, t) => s + t.costUsd, 0).toFixed(4)),
-  projectSpendUsd: spend,
+  projectSpendUsd,
   versions: { flagsmith: '2.295.2', flagsmithMcp: '2.295.2', flagsmithCli: '2' },
   interfaceTokens,
   approval,
