@@ -28,6 +28,9 @@ jobs:
       - name: Unit tests (statistics, decision rule, verifier, cost, recorded trials)
         run: npm test
 
+      - name: Credential scan of every tracked file (trial records, web export, docs, code)
+        run: npm run scan:secrets
+
   selftest:
     runs-on: ubuntu-latest
     timeout-minutes: 25

@@ -167,6 +167,9 @@ The repository includes a small read-only static presentation in `judge-site/`. 
 Open the live judge site at [interfacewars.pallabdas.me](https://interfacewars.pallabdas.me/). It is deployed from `main` on Render and uses the same static build described above.
 
 Published trial records pass through the same field-aware redactor before they are written to `runs/` or exported to the site. Historical Flagsmith environment keys become stable `[env-…]` labels for trace matching, while server keys and other credential fields become `[REDACTED]`. The exporter fails if a credential-shaped value remains.
+`npm run scan:secrets` applies the same detector to every tracked file, and CI runs it on each change. Commits before
+`31e992e` contain environment keys of sandbox organisations on the local lab at 127.0.0.1. Each sandbox was deleted
+after its trial, and the lab was never reachable from the internet.
 
 ## Staged release gate
 

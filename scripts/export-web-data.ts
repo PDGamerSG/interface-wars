@@ -6,6 +6,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync
 import { join } from 'node:path';
 import { RUNS, ROOT } from '../src/lab/config.ts';
 import { localCredentials, redactCredentials } from '../src/evidence/redact.ts';
+import { findCredentials } from '../src/evidence/secrets.ts';
 import { TEMPLATES } from '../src/jobs/catalog.ts';
 import type { TrialRecord } from '../src/trial.ts';
 
@@ -98,14 +99,6 @@ const meta = {
   afterShip: { trials: afterShip.length, byArm: summarise(afterShip), rows: afterShip.map(row) },
 };
 
-const PATTERNS = [
-  /sk-ant-[A-Za-z0-9_-]{10,}/,
-  /Api-Key [A-Za-z0-9]{12,}/,
-  /FLAGSMITH_API_KEY_[A-Za-z0-9_]+=\S{8,}/,
-  /Token [0-9a-f]{40}/,
-  /"(?:environment_api_key|api_key|server_key|master_key)"\s*:\s*"(?!\[env-|\[REDACTED\])[^"]+"/i,
-  /(?<![A-Za-z0-9])ser\.[2-9A-HJ-NP-Za-km-z]{22}(?![A-Za-z0-9])/,
-];
 
 const files = new Map<string, string>();
 files.set('meta.json', JSON.stringify(meta));
@@ -123,7 +116,7 @@ let total = 0;
 for (const [name, body] of files) {
   total += Buffer.byteLength(body);
   for (const secret of labSecrets) if (body.includes(secret)) problems.push(`${name}: contains a value from runs/lab.local.json or .env`);
-  for (const p of PATTERNS) if (p.test(body)) problems.push(`${name}: matches ${p}`);
+  for (const hit of findCredentials(body)) problems.push(`${name}: matches ${hit.rule}`);
 }
 if (total > MAX_TOTAL_BYTES) problems.push(`export is ${(total / 1e6).toFixed(1)} MB, above the ${MAX_TOTAL_BYTES / 1e6} MB budget`);
 if (problems.length) {
