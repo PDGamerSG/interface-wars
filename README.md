@@ -52,9 +52,11 @@ node src/cli.ts ops:resume
 ```
 
 `trials_enabled` stops new trials while allowing an already-running trial to finish. `spend_cap_usd` lowers the
-machine-side `IW_MAX_SPEND_USD` cap. The runner refreshes both flags before every trial. If the control Flagsmith
-endpoint is unavailable, the runner continues only with the local cap so a transient control-plane outage does not
-create an unbounded batch. These controls apply to new runs and do not alter the archived `main` records.
+machine-side `IW_MAX_SPEND_USD` cap, which a real run requires as a finite dollar amount. The runner refreshes both
+flags before every trial. If the control flags cannot be read, the runner starts no new trial, because it cannot honour
+the kill switch. Rerunning the same `--run` later retries the missing trials. `IW_OPS_OFFLINE=1` lets an operator run on
+the machine cap alone, and the last cap read from Flagsmith stays in force during an outage. These controls apply to
+new runs and do not alter the archived `main` records.
 
 ## How it works
 

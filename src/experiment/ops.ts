@@ -55,8 +55,8 @@ export async function ensureOpsFlags(defaultCapUsd = 15) {
   return { created, ...(await readOpsFlags()) };
 }
 
-// Reads the flags. If Flagsmith cannot be reached, trials stay enabled and only the machine's cap applies, and the
-// caller is told so; the experiment itself cannot run without Flagsmith anyway.
+// Reads the flags. If Flagsmith cannot be reached the result says so (source 'unavailable'); trialGate decides what
+// the runner does about it.
 export async function readOpsFlags(knownLab?: Lab): Promise<OpsFlags> {
   try {
     const lab = knownLab ?? readLab();
@@ -67,6 +67,19 @@ export async function readOpsFlags(knownLab?: Lab): Promise<OpsFlags> {
   } catch {
     return { trialsEnabled: true, spendCapUsd: null, source: 'unavailable' };
   }
+}
+
+export type GateMode = { dryRun: boolean; allowOffline: boolean };
+
+// Whether the runner may start another trial. A paid trial needs the control plane: when the flags cannot be read
+// the kill switch cannot be honoured, so the runner stops unless the operator set IW_OPS_OFFLINE=1 for this run.
+// The finite machine cap applies either way. Dry runs make no model calls, so an outage does not block them.
+export function trialGate(ops: OpsFlags, mode: GateMode): { start: true } | { start: false; reason: string } {
+  if (!ops.trialsEnabled) return { start: false, reason: `the ${KILL_SWITCH} flag is off in Flagsmith` };
+  if (ops.source === 'unavailable' && !mode.dryRun && !mode.allowOffline) {
+    return { start: false, reason: 'the ops flags could not be read from Flagsmith (IW_OPS_OFFLINE=1 runs on the machine cap alone)' };
+  }
+  return { start: true };
 }
 
 // Flips the kill switch in the control environment, as an operator would in the dashboard.

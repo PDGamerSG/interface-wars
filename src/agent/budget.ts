@@ -9,10 +9,20 @@ import { join } from 'node:path';
 import { projectRuns, writeJson } from './project.ts';
 
 const ledgerPath = () => join(projectRuns(), 'spend.local.json');
-export const CAP_USD = Number(process.env.IW_MAX_SPEND_USD || Infinity);
 let remoteCapUsd: number | null = null;
 
 export class BudgetExceeded extends Error {}
+
+// A real run needs a finite machine cap. An unset value used to become Infinity, and a malformed one NaN, which made
+// every spent >= cap comparison false, so neither stopped a run.
+export function parseMachineCap(raw: string | undefined): number {
+  if (raw === undefined || raw.trim() === '') throw new BudgetExceeded('Set IW_MAX_SPEND_USD in .env to a dollar amount before a real run.');
+  const value = Number(raw);
+  if (!Number.isFinite(value) || value < 0) throw new BudgetExceeded(`IW_MAX_SPEND_USD must be a finite, non-negative dollar amount, not "${raw}".`);
+  return value;
+}
+
+export const machineCapUsd = () => parseMachineCap(process.env.IW_MAX_SPEND_USD);
 
 export type SpendLedger = {
   totalUsd: number; calls: number; capUsd?: number | null; updatedAt?: string;
@@ -30,7 +40,8 @@ export function readSpend(path = ledgerPath()): SpendLedger {
 
 // The cap in force: the machine's cap, lowered by Flagsmith's spend_cap_usd when that is set.
 export function capUsd() {
-  return remoteCapUsd === null ? CAP_USD : Math.min(CAP_USD, remoteCapUsd);
+  const machine = machineCapUsd();
+  return remoteCapUsd === null ? machine : Math.min(machine, remoteCapUsd);
 }
 
 export function setRemoteCap(usd: number | null) {
@@ -47,7 +58,7 @@ export function checkBudget() {
   const spent = ledger.totalUsd;
   const cap = capUsd();
   if (spent >= cap) {
-    const from = remoteCapUsd !== null && remoteCapUsd < CAP_USD ? ' (spend_cap_usd in Flagsmith)' : '';
+    const from = remoteCapUsd !== null && remoteCapUsd < machineCapUsd() ? ' (spend_cap_usd in Flagsmith)' : '';
     throw new BudgetExceeded(`Spend cap reached: $${spent.toFixed(4)} spent, cap $${cap}${from}.`);
   }
 }

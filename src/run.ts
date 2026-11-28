@@ -11,7 +11,7 @@ import { createAssigner, experimentState } from './experiment/control.ts';
 import { loadEnvFile, RUNS } from './lab/config.ts';
 import { BudgetExceeded, capUsd, checkBudget, setRemoteCap, spentUsd } from './agent/budget.ts';
 import { lockProject } from './agent/project.ts';
-import { readOpsFlags, KILL_SWITCH, SPEND_CAP } from './experiment/ops.ts';
+import { readOpsFlags, trialGate, SPEND_CAP } from './experiment/ops.ts';
 
 loadEnvFile();
 const args = process.argv.slice(2);
@@ -41,18 +41,21 @@ if (process.env.IW_DRY_RUN !== '1') {
   process.once('exit', release);
 }
 
-// The ops flags in Flagsmith: the kill switch and the remote spend cap (src/experiment/ops.ts).
+// The ops flags in Flagsmith: the kill switch and the remote spend cap (src/experiment/ops.ts). During an outage the
+// last cap read from Flagsmith stays in force, so a lowered cap cannot be lost by losing the connection.
+const gateMode = { dryRun: process.env.IW_DRY_RUN === '1', allowOffline: process.env.IW_OPS_OFFLINE === '1' };
 async function refreshOps() {
   const ops = await readOpsFlags();
-  setRemoteCap(ops.spendCapUsd);
+  if (ops.source === 'flagsmith') setRemoteCap(ops.spendCapUsd);
   return ops;
 }
 const ops = await refreshOps();
-if (ops.source === 'unavailable') console.log('Ops flags unavailable in Flagsmith; using the machine cap only.');
-if (!ops.trialsEnabled) {
-  console.error(`Trials are paused: the ${KILL_SWITCH} flag is off in Flagsmith. Turn it on to run.`);
+const gate = trialGate(ops, gateMode);
+if (!gate.start) {
+  console.error(`No trials started: ${gate.reason}.`);
   process.exit(2);
 }
+if (ops.source === 'unavailable') console.log(`Ops flags unavailable in Flagsmith; ${gateMode.dryRun ? 'dry run, no model calls' : 'IW_OPS_OFFLINE=1, machine cap only'}.`);
 
 if (process.env.IW_DRY_RUN !== '1') {
   try {
@@ -91,9 +94,9 @@ async function worker() {
     const { jobFor } = await import('./jobs/catalog.ts');
     if (templateFilter && jobFor(index, trialId).template !== templateFilter) continue;
     // Read the ops flags before every trial, so a change in the dashboard takes effect within one trial.
-    const now = await refreshOps();
-    if (!now.trialsEnabled) {
-      console.log(`${trialId} PAUSED: the ${KILL_SWITCH} flag was turned off in Flagsmith. No new trials will start.`);
+    const now = trialGate(await refreshOps(), gateMode);
+    if (!now.start) {
+      console.log(`${trialId} PAUSED: ${now.reason}. No new trials will start; rerun the same --run to resume.`);
       queue.length = 0;
       break;
     }
