@@ -7,6 +7,7 @@ import { createSandbox, snapshot, diff, destroySandbox } from '../lab/sandbox.ts
 
 let failures = 0;
 const strict = process.argv.includes('--strict');
+if (strict) process.env.IW_GRADER = STRICT_GRADER;
 const only = process.argv.slice(2).find((arg) => !arg.startsWith('--'));
 for (const t of TEMPLATES) {
   if (only && t.id !== only) continue;

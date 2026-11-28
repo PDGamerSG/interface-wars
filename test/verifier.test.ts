@@ -63,7 +63,7 @@ test('scope prefixes do not leak into names that share a prefix', () => {
 
 test('strict draft grading requires the requested experiment safety contract', () => {
   const job = jobFor(9, 'strict-draft-fixture');
-  const experiment = job.seed.experiments![0];
+  const experiment = job.strictDraft!;
   const feature = job.seed.features.find((item) => item.name === experiment.feature)!;
   const variation = feature.variants![0].value;
   const control = feature.value!;

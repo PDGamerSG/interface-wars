@@ -18,7 +18,7 @@ export function strictGrade(job: Job, before: Snapshot, after: Snapshot, changes
   const reasons = [...base.reasons];
   if (job.template !== 'create_experiment') return { ...base, reasons, correct: reasons.length === 0 && base.collateral.length === 0 };
 
-  const experiment = job.seed.experiments?.[0];
+  const experiment = job.strictDraft;
   const feature = experiment?.feature;
   const featureSeed = job.seed.features.find((item) => item.name === feature);
   const variation = featureSeed?.variants?.[0]?.value;
