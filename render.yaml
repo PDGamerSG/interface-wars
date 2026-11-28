@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: interface-wars
+    runtime: static
+    buildCommand: npm --prefix judge-site run build
+    staticPublishPath: judge-site/dist
+    previews:
+      generation: automatic

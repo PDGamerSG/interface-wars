@@ -10,3 +10,4 @@ runs/main.local.log
 .impeccable/questions/
 runs/*/readout.offline.*
 runs/*/evidence.sqlite
+judge-site/dist/
