@@ -1,0 +1,62 @@
+# Deploys the judge site (judge-site/, served at interfacewars.pallabdas.me) after CI passes on main.
+# Render builds the site when the deploy hook is called. The job then waits until the live site's
+# version.json names this commit or a later one on main. A deploy that never goes live fails the job.
+name: deploy
+
+on:
+  workflow_run:
+    workflows: [checks]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-judge-site
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+      SITE: https://interfacewars.pallabdas.me
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Trigger the Render deploy
+        env:
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then echo "::error::The RENDER_DEPLOY_HOOK secret is not set."; exit 1; fi
+          curl -fsS -X POST "$HOOK" -o /dev/null
+
+      - name: Wait for the live site to serve this commit
+        run: |
+          live=""
+          for attempt in $(seq 1 60); do
+            live=$(curl -fsS "$SITE/version.json?nocache=$(date +%s%N)" | jq -r '.commit // empty' || true)
+            if [ "$live" = "$SHA" ]; then echo "Live at $SHA."; exit 0; fi
+            # A later merge may have been deployed first. Accept a live commit that is ahead of this one on main.
+            if [ -n "$live" ]; then
+              status=$(gh api "repos/$GITHUB_REPOSITORY/compare/$SHA...$live" --jq .status 2>/dev/null || true)
+              if [ "$status" = "ahead" ]; then echo "Live at $live, which includes $SHA."; exit 0; fi
+            fi
+            sleep 10
+          done
+          echo "::error::After 10 minutes the site serves ${live:-no version.json}, not $SHA."
+          exit 1
+
+      - name: Check the published pages and data
+        run: |
+          for path in / /readout.json /meta.json /trials.json; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$SITE$path")
+            echo "$path $code"
+            [ "$code" = 200 ] || exit 1
+          done
+          curl -fsS "$SITE/readout.json" | jq -e '(.perArm | length) == 3 and .trials > 0' > /dev/null
