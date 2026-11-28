@@ -33,6 +33,14 @@ export type ExperimentManifest = {
   jobPack: { id: string; templateIds: string[] };
   metrics: ManifestMetric[];
   budget: { maxUsd: number; expectedUsd: number; currency: 'USD' };
+  matched?: {
+    pilotPairs: number;
+    identities: number;
+    minimumPairs: number;
+    guardrailMargin: number;
+    bootstrapDraws: number;
+    projectCapUsd: number;
+  };
 };
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
@@ -72,11 +80,12 @@ const MCP_GUIDANCE: ExperimentManifest = {
   model: { id: 'claude-haiku-5-5', effort: 'medium', maxTurns: 30 },
   jobPack: { id: 'mcp-guidance-four-jobs-v1', templateIds: ['kill_switch', 'set_value_in_development', 'segment_override', 'remove_segment_override'] },
   metrics: [
-    { name: 'job_correct', event: 'job_correct', aggregation: 'occurrence', direction: 'up', role: 'primary' },
+    { name: 'cost_usd', event: 'cost_usd', aggregation: 'mean', direction: 'down', role: 'primary' },
+    { name: 'job_correct', event: 'job_correct', aggregation: 'occurrence', direction: 'up', role: 'guardrail' },
     { name: 'no_collateral', event: 'no_collateral', aggregation: 'occurrence', direction: 'up', role: 'guardrail' },
-    { name: 'cost_usd', event: 'cost_usd', aggregation: 'mean', direction: 'down', role: 'guardrail' },
   ],
   budget: { maxUsd: 2, expectedUsd: 0.85, currency: 'USD' },
+  matched: { pilotPairs: 12, identities: 128, minimumPairs: 50, guardrailMargin: 0.05, bootstrapDraws: 10_000, projectCapUsd: 15 },
 };
 
 export const EXPERIMENT_MANIFESTS: Record<string, ExperimentManifest> = {
