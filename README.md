@@ -159,6 +159,8 @@ See [the manifest design](docs/EXPERIMENT_MANIFESTS.md) and [the frozen guide](g
 
 The repository includes a small read-only static presentation in `judge-site/`. It reads the committed aggregate export and links to the source evidence without exposing raw transcript records or making Flagsmith writes. Render can build it with `npm --prefix judge-site run build` and publish `judge-site/dist`.
 
+Open the live judge site at [interfacewars.pallabdas.me](https://interfacewars.pallabdas.me/). It is deployed from `main` on Render and uses the same static build described above.
+
 ## Staged release gate
 
 Track 04 now includes `skills/flagsmith-release-gate/`, a separate production-safety workflow for a future rollout. It binds the target and disabled pre-state to a signed digest, requires two distinct approvals, checks the kill switch and lower spend cap before every write, promotes one stage at a time, evaluates member and nonmember probes, and records rollback receipts. The archived `agent_interface` experiment is unchanged.
