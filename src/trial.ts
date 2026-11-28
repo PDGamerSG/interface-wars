@@ -42,6 +42,8 @@ export type TrialRecord = {
   // Writes Flagsmith logged while the agent ran (absent on trials recorded before the audit existed).
   // Out-of-scope writes fail the trial even when the agent reverted them before the final snapshot.
   writeAudit?: WriteAudit;
+  // cli_skill trials recorded after skill revisions existed: which SKILL.md the agent could read.
+  skill?: { name: string; sha256: string };
 };
 
 // IW_WRITE_AUDIT=0 reproduces the registered protocol exactly, which graded the final snapshot only.
@@ -93,6 +95,7 @@ export async function runTrial(opts: { run: string; index: number; trialId: stri
       startedAt,
       grader,
       ...(writeAudit ? { writeAudit } : {}),
+      ...(arm.skill ? { skill: arm.skill } : {}),
     };
     const dir = join(RUNS, opts.run, 'trials');
     mkdirSync(dir, { recursive: true });

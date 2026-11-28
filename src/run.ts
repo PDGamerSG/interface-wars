@@ -12,6 +12,7 @@ import { loadEnvFile, RUNS } from './lab/config.ts';
 import { BudgetExceeded, capUsd, checkBudget, setRemoteCap, spentUsd } from './agent/budget.ts';
 import { lockProject } from './agent/project.ts';
 import { readOpsFlags, trialGate, SPEND_CAP } from './experiment/ops.ts';
+import { selectedSkill } from './arms/skill.ts';
 
 loadEnvFile();
 const args = process.argv.slice(2);
@@ -32,6 +33,16 @@ const followFlag = flag('follow-flag');
 const grader = opt('grader', process.env.IW_GRADER ?? 'registered-v1')!;
 if (!['registered-v1', 'strict-draft-v1'].includes(grader)) throw new Error(`Unknown grader ${grader}`);
 process.env.IW_GRADER = grader;
+// Check the skill revision before any sandbox or model call. Batches that cannot reach cli_skill skip the check.
+if (!forcedArm || forcedArm === 'cli_skill') {
+  try {
+    const skill = selectedSkill();
+    console.log(`Skill for cli_skill trials: ${skill.name} (SHA-256 ${skill.sha256.slice(0, 12)}).`);
+  } catch (error) {
+    console.error((error as Error).message);
+    process.exit(2);
+  }
+}
 
 if (process.env.IW_DRY_RUN !== '1' && !process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
   console.error('Set ANTHROPIC_API_KEY in .env first.');
