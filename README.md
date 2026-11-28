@@ -282,6 +282,24 @@ mkdir -p ~/.claude/skills && cp -r skills/flagsmith-ops ~/.claude/skills/
 The skill was frozen before the main run (`prereg-v1`) and four of the sixteen job templates were held out while it
 was written. All 16 assigned held-out skill trials passed the frozen grader.
 
+### Revision 2: staged experiment drafts
+
+Revision 1 tells the agent to create an experiment draft with an enabled 100% rollout. Flagsmith can enroll
+identities from that rollout before the experiment starts. That is why six skill trials fail the staging check in
+[the sensitivity analysis](runs/main/sensitivity.md). [`skills/flagsmith-ops-v2/`](skills/flagsmith-ops-v2/SKILL.md)
+changes only the experiment guidance:
+
+- A draft is created with enrollment disabled at 0%.
+- Starting the experiment enables the rollout but keeps 0%. The agent then sets the enrollment the task asks for.
+- The read-back includes the rollout state.
+
+The rules and the other recipes are unchanged. Revision 1 stays frozen for the archive.
+
+`src/arms/skill.ts` pins each revision by the SHA-256 of its `SKILL.md`, so an edited file stops a run before any
+model call. `IW_SKILL=flagsmith-ops-v2` selects revision 2 for `cli_skill` trials. Only the selected revision is
+mounted, always at `/skills/flagsmith-ops`, so the system prompt is byte-identical across revisions. New trial records
+store the revision name and hash. Revision 2 has not been through a registered comparison.
+
 ## Repository map
 
 | Path | What it is |
@@ -292,7 +310,8 @@ was written. All 16 assigned held-out skill trials passed the frozen grader.
 | `src/arms/` | The MCP and CLI arms |
 | `src/agent/` | The Messages API tool loop, cost accounting and spend cap |
 | `src/experiment/` | Flagsmith experiment control plane, SDK assignment and events, readout |
-| `skills/flagsmith-ops/` | The Agent Skill |
+| `skills/flagsmith-ops/` | The Agent Skill, revision 1 (frozen for the archived study) |
+| `skills/flagsmith-ops-v2/` | Revision 2, which stages experiment drafts with enrollment off |
 | `prereg/` | The pre-registration |
 | `runs/` | Per-turn records with clipped tool output, final state diffs and readouts |
 

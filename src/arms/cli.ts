@@ -1,14 +1,15 @@
 // CLI arms: the agent gets one tool, Anthropic's bash tool, executed inside a throwaway container that
-// holds only the Flagsmith CLI, jq and coreutils. The cli_skill arm also gets the skill mounted at /skills.
+// holds only the Flagsmith CLI, jq and coreutils. The cli_skill arm also gets one skill revision (src/arms/skill.ts)
+// mounted read-only at /skills/flagsmith-ops.
 // The container joins only the lab's internal cli-sandbox network, so bash (including /dev/tcp sockets)
 // can reach the Flagsmith API and nothing else: no MCP server, no Docker host, no internet.
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { join } from 'node:path';
 import type Anthropic from '@anthropic-ai/sdk';
-import { CLI_NETWORK, FLAGSMITH_URL_FROM_CONTAINER, ROOT } from '../lab/config.ts';
+import { CLI_NETWORK, FLAGSMITH_URL_FROM_CONTAINER } from '../lab/config.ts';
 import type { Sandbox } from '../lab/sandbox.ts';
 import type { Arm } from './types.ts';
+import { selectedSkill, SKILL_MOUNT } from './skill.ts';
 
 const run = promisify(execFile);
 export const CLI_IMAGE = 'interface-wars-cli:2.0.0';
@@ -31,7 +32,8 @@ export async function openCliArm(sandbox: Sandbox, withSkill: boolean): Promise<
     '-e', `FLAGSMITH_ORGANISATION=${sandbox.organisationId}`,
     '-e', `FLAGSMITH_PROJECT=${sandbox.projectId}`,
   ];
-  if (withSkill) args.push('-v', `${join(ROOT, 'skills')}:/skills:ro`);
+  const skill = withSkill ? selectedSkill() : undefined;
+  if (skill) args.push('-v', `${skill.dir}:${SKILL_MOUNT}:ro`);
   args.push(CLI_IMAGE);
   await run('docker', args);
 
@@ -40,6 +42,7 @@ export async function openCliArm(sandbox: Sandbox, withSkill: boolean): Promise<
 
   return {
     name: withSkill ? 'cli_skill' : 'cli',
+    ...(skill ? { skill: { name: skill.name, sha256: skill.sha256 } } : {}),
     tools,
     commands,
     async execute(toolName, input) {
