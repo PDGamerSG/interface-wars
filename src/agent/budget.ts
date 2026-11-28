@@ -4,20 +4,28 @@
 // The ledger is re-read on every check and write, so several runner processes at once share one total.
 // The cap is the lower of IW_MAX_SPEND_USD on the machine and the spend_cap_usd flag in Flagsmith
 // (src/experiment/ops.ts), which the runner refreshes before every trial.
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { RUNS } from '../lab/config.ts';
+import { projectRuns, writeJson } from './project.ts';
 
-const LEDGER = join(RUNS, 'spend.local.json');
+const ledgerPath = () => join(projectRuns(), 'spend.local.json');
 export const CAP_USD = Number(process.env.IW_MAX_SPEND_USD || Infinity);
 let remoteCapUsd: number | null = null;
 
 export class BudgetExceeded extends Error {}
 
-function read(): { totalUsd: number; calls: number } {
-  if (!existsSync(LEDGER)) return { totalUsd: 0, calls: 0 };
-  const data = JSON.parse(readFileSync(LEDGER, 'utf8'));
-  return { totalUsd: Number(data.totalUsd ?? 0), calls: Number(data.calls ?? 0) };
+export type SpendLedger = {
+  totalUsd: number; calls: number; capUsd?: number | null; updatedAt?: string;
+  matched?: { totals: Record<string, number>; pending?: { trialId: string; nonce: string; reserveUsd: number } };
+};
+
+export function readSpend(path = ledgerPath()): SpendLedger {
+  if (!existsSync(path)) return { totalUsd: 0, calls: 0 };
+  const data = JSON.parse(readFileSync(path, 'utf8'));
+  if (!Number.isFinite(data.totalUsd) || data.totalUsd < 0 || !Number.isInteger(data.calls) || data.calls < 0) {
+    throw new Error('Invalid project spend ledger');
+  }
+  return data;
 }
 
 // The cap in force: the machine's cap, lowered by Flagsmith's spend_cap_usd when that is set.
@@ -30,11 +38,13 @@ export function setRemoteCap(usd: number | null) {
 }
 
 export function spentUsd() {
-  return read().totalUsd;
+  return readSpend().totalUsd;
 }
 
 export function checkBudget() {
-  const spent = read().totalUsd;
+  const ledger = readSpend();
+  if (ledger.matched?.pending) throw new BudgetExceeded('Unresolved matched-study billing reservation');
+  const spent = ledger.totalUsd;
   const cap = capUsd();
   if (spent >= cap) {
     const from = remoteCapUsd !== null && remoteCapUsd < CAP_USD ? ' (spend_cap_usd in Flagsmith)' : '';
@@ -43,7 +53,7 @@ export function checkBudget() {
 }
 
 export function recordSpend(usd: number) {
-  const current = read();
+  const current = readSpend();
   const totalUsd = current.totalUsd + usd;
-  writeFileSync(LEDGER, JSON.stringify({ totalUsd: Number(totalUsd.toFixed(6)), calls: current.calls + 1, capUsd: capUsd(), updatedAt: new Date().toISOString() }, null, 2));
+  writeJson(ledgerPath(), { ...current, totalUsd: Number(totalUsd.toFixed(9)), calls: current.calls + 1, capUsd: capUsd(), updatedAt: new Date().toISOString() });
 }

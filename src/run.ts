@@ -10,6 +10,7 @@ import { ARMS, type ArmName } from './arms/types.ts';
 import { createAssigner, experimentState } from './experiment/control.ts';
 import { loadEnvFile, RUNS } from './lab/config.ts';
 import { BudgetExceeded, capUsd, checkBudget, setRemoteCap, spentUsd } from './agent/budget.ts';
+import { lockProject } from './agent/project.ts';
 import { readOpsFlags, KILL_SWITCH, SPEND_CAP } from './experiment/ops.ts';
 
 loadEnvFile();
@@ -32,6 +33,12 @@ const followFlag = flag('follow-flag');
 if (process.env.IW_DRY_RUN !== '1' && !process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
   console.error('Set ANTHROPIC_API_KEY in .env first.');
   process.exit(2);
+}
+
+// The matched study and legacy batches use the same project ledger and paid-coordinator lock.
+if (process.env.IW_DRY_RUN !== '1') {
+  const release = lockProject();
+  process.once('exit', release);
 }
 
 // The ops flags in Flagsmith: the kill switch and the remote spend cap (src/experiment/ops.ts).
