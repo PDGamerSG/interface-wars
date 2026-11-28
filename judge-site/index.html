@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interface Wars: a Flagsmith experiment comparing MCP, CLI and CLI plus an Agent Skill.">
+  <title>Interface Wars / Flagsmith experiment</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+    :root { --ink:#eef2ed; --muted:#9aa79f; --paper:#111815; --panel:#18221e; --line:#30423a; --lime:#d7f36b; --orange:#ff7d4d; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:radial-gradient(circle at 80% 0,#243b30 0,transparent 30rem),var(--paper); color:var(--ink); font:16px/1.5 'Space Grotesk',system-ui,sans-serif; }
+    a { color:inherit; }
+    .wrap { max-width:1180px; margin:auto; padding:0 28px; }
+    .top { border-bottom:1px solid var(--line); padding:22px 0; }
+    .top .wrap { display:flex; justify-content:space-between; align-items:center; gap:20px; }
+    .brand { font-weight:700; letter-spacing:-.04em; text-decoration:none; }
+    .brand i { color:var(--lime); font-style:normal; }
+    .nav { display:flex; gap:18px; color:var(--muted); font-size:14px; }
+    .nav a:hover { color:var(--lime); }
+    main { padding:70px 0 100px; }
+    .kicker { color:var(--lime); font:500 12px 'DM Mono',monospace; letter-spacing:.08em; text-transform:uppercase; }
+    .hero { display:grid; grid-template-columns:1.1fr .9fr; gap:70px; align-items:end; }
+    h1 { font-size:clamp(42px,7vw,86px); line-height:.98; letter-spacing:-.07em; margin:18px 0 26px; max-width:760px; }
+    h1 em { color:var(--lime); font-style:normal; }
+    .lede { color:#c7d1ca; font-size:20px; max-width:620px; }
+    .stamp { border:1px solid var(--line); padding:28px; background:rgba(24,34,30,.8); }
+    .stamp strong { color:var(--lime); display:block; font-size:31px; letter-spacing:-.05em; }
+    .stamp p { color:var(--muted); margin:7px 0 0; }
+    .arms { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:70px 0 24px; }
+    .arm { border-top:4px solid var(--accent); background:var(--panel); padding:23px; }
+    .arm h3 { margin:0 0 20px; }
+    .arm strong { display:block; font-size:40px; letter-spacing:-.06em; }
+    .arm span { color:var(--muted); font-size:14px; }
+    .arm dl { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; border-top:1px solid var(--line); margin-top:22px; padding-top:15px; }
+    dt { color:var(--muted); font:11px 'DM Mono'; } dd { margin:3px 0 0; font-weight:600; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:24px; }
+    .panel { background:var(--panel); border:1px solid var(--line); padding:27px; }
+    .panel h2 { font-size:24px; letter-spacing:-.04em; margin:0 0 16px; }
+    table { border-collapse:collapse; width:100%; font-size:14px; }
+    th,td { border-bottom:1px solid var(--line); padding:10px 8px; text-align:left; }
+    th { font-weight:500; } td { color:#c7d1ca; }
+    code,.mono { font:13px 'DM Mono',monospace; }
+    .note { color:var(--muted); font-size:14px; }
+    .trace-list { display:grid; gap:10px; }
+    .trace { display:grid; grid-template-columns:1fr auto; gap:2px 12px; text-decoration:none; background:#202c26; padding:13px; }
+    .trace:hover { outline:1px solid var(--lime); }
+    .trace span { color:var(--lime); font:12px 'DM Mono'; }
+    .trace b { font:13px 'DM Mono'; text-align:right; }
+    .trace small { color:var(--muted); grid-column:1/-1; }
+    .footer { border-top:1px solid var(--line); color:var(--muted); font-size:13px; padding:25px 0; }
+    .footer a { color:var(--lime); }
+    .error { color:#ffb39a; }
+    @media (max-width:780px) { .hero,.grid,.arms { grid-template-columns:1fr; } .nav { display:none; } .wrap { padding:0 18px; } main { padding-top:46px; } h1 { font-size:56px; } .panel { overflow:auto; padding:20px; } }
+  </style>
+</head>
+<body>
+  <header class="top"><div class="wrap"><a class="brand" href="/">INTERFACE <i>WARS</i></a><nav class="nav"><a href="#verdict">Verdict</a><a href="#evidence">Evidence</a><a href="#method">Method</a><a href="https://github.com/PDGamerSG/interface-wars">GitHub</a></nav></div></header>
+  <main><div class="wrap">
+    <section class="hero"><div><div class="kicker">Flagsmith experimentation / Toggle Wars 2026</div><h1>Which interface lets agents <em>ship safely?</em></h1><p class="lede">255 Claude Haiku jobs. One fresh Flagsmith sandbox per trial. The CLI with the Agent Skill completed every registered job and used the least model cost.</p></div><aside class="stamp"><div class="kicker">Human-approved rollout</div><strong>CLI + skill</strong><p>Approved by Pallab Das. Flagsmith recorded <code>rollout_decision=variant</code>. The stricter disabled-enrollment sensitivity is published alongside the registered result.</p></aside></section>
+    <section class="arms" id="verdict"></section>
+    <div class="grid"><section class="panel"><h2>Registered comparison</h2><table><thead><tr><th>Arm</th><th>Passes</th><th>Rate</th><th>Mean cost</th><th>Input tokens</th></tr></thead><tbody id="arm-table"></tbody></table><p class="note">MCP received 54 official tools, contributing 29,270 tokens per request. The skill file was 1,950 tokens.</p></section><section class="panel"><h2>What the archive says</h2><p>On the five templates with documented MCP capability gaps, MCP passed 1/20 attempts. On the other eleven templates it passed 67/67. Four CLI failures opened with a <code>DONE:</code> claim. The exporter counts four, including one that ended failed.</p><p class="note">The registered skill win is clear. Requiring disabled enrollment for staged experiments makes that interpretation inconclusive. Those observations had zero detected out-of-scope final changes.</p><div class="trace-list"><a class="trace" href="https://github.com/PDGamerSG/interface-wars/blob/main/docs/FLAGSMITH_FINDINGS.md"><span>evidence</span><b>Flagsmith findings</b><small>Capability gaps with pinned trial evidence</small></a><a class="trace" href="https://github.com/PDGamerSG/interface-wars/blob/main/docs/EVIDENCE_INDEX.md"><span>query</span><b>Read-only index</b><small>Cross-trial recipes and provenance</small></a></div></section></div>
+    <section class="panel" id="evidence" style="margin-top:24px"><h2>Cross-trial evidence</h2><div class="grid" style="margin-top:0"><div><table><thead><tr><th>Recorded condition</th><th>Trials</th></tr></thead><tbody id="error-table"></tbody></table></div><p class="note">The read-only SQLite evidence index preserves source paths, SHA-256 digests, JSON pointers and tool-call relationships. Named recipes answer which errors recover and where the metric schema defect appears. <a href="https://github.com/PDGamerSG/interface-wars/blob/main/docs/EVIDENCE_INDEX.md">Read the evidence guide</a>.</p></div></section>
+    <section class="panel" id="method" style="margin-top:24px"><h2>16 templates, three arms, one flag</h2><p class="note">Flagsmith assigned each trial through <code>agent_interface</code>, recorded outcome events, computed Bayesian results, and served the human-approved winner to later sessions. Every sandbox was fresh and the verifier checked the task-scoped state diff.</p><table><thead><tr><th>Template</th><th>MCP</th><th>CLI</th><th>CLI + skill</th></tr></thead><tbody id="template-table"></tbody></table><p class="footer">Archive model <span id="model"></span> · Flagsmith <span id="version"></span> · <span id="trial-count"></span> trials · <a href="https://github.com/PDGamerSG/interface-wars/blob/main/prereg/PREREGISTRATION.md">Pre-registration</a> · <a href="https://github.com/PDGamerSG/interface-wars/blob/main/docs/FLAGSMITH_FINDINGS.md">Flagsmith findings</a></p></section>
+    <p id="load-error" class="error" hidden>Aggregate data could not be loaded. The source archive is linked above.</p>
+  </div></main>
+  <script>
+    const arms = [['mcp','MCP','#ff7d4d'],['cli','CLI','#44b6a7'],['cli_skill','CLI + skill','#f4c95d']];
+    const pct = value => (value * 100).toFixed(1) + '%';
+    const usd = value => '$' + value.toFixed(4);
+    const esc = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    const render = async () => {
+      const [readout, meta, trials] = await Promise.all(['readout.json','meta.json','trials.json'].map(path => fetch(path).then(response => response.json())));
+      document.querySelector('.arms').innerHTML = arms.map(([key,label,color]) => { const arm = readout.perArm[key]; return `<article class="arm" style="--accent:${color}"><h3>${label}</h3><strong>${arm.correct}/${arm.n}</strong><span>correct jobs</span><dl><div><dt>Rate</dt><dd>${pct(arm.correctRate)}</dd></div><div><dt>Mean cost</dt><dd>${usd(arm.meanCost)}</dd></div><div><dt>Turns</dt><dd>${arm.meanTurns.toFixed(1)}</dd></div></dl></article>`; }).join('');
+      document.querySelector('#arm-table').innerHTML = arms.map(([key,label]) => { const arm = readout.perArm[key]; return `<tr><th>${label}</th><td>${arm.correct}/${arm.n}</td><td>${pct(arm.correctRate)}</td><td>${usd(arm.meanCost)}</td><td>${Math.round(arm.meanTokensIn).toLocaleString()}</td></tr>`; }).join('');
+      const counts = trials.reduce((acc, trial) => { const key = `${trial.toolErrors ? 'error' : 'clean'}-${trial.correct ? 'pass' : 'fail'}`; acc[key] = (acc[key] || 0) + 1; return acc; }, {});
+      document.querySelector('#error-table').innerHTML = [['clean-pass','Clean + correct'],['clean-fail','Clean + incorrect'],['error-pass','Error + correct'],['error-fail','Error + incorrect']].map(([key,label]) => `<tr><th>${label}</th><td>${counts[key] || 0}</td></tr>`).join('');
+      document.querySelector('#template-table').innerHTML = Object.entries(readout.perTemplate).map(([template,value]) => `<tr><th>${esc(template)}</th><td>${value.mcp.correct}/${value.mcp.n}</td><td>${value.cli.correct}/${value.cli.n}</td><td>${value.cli_skill.correct}/${value.cli_skill.n}</td></tr>`).join('');
+      document.querySelector('#model').textContent = meta.model; document.querySelector('#version').textContent = meta.versions.flagsmith; document.querySelector('#trial-count').textContent = meta.trials;
+    };
+    render().catch(() => { document.querySelector('#load-error').hidden = false; });
+  </script>
+</body>
+</html>
