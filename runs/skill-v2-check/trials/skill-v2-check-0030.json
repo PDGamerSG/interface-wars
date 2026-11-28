@@ -1,0 +1,184 @@
+{
+  "trialId": "skill-v2-check-0030",
+  "index": 30,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "archive_stale_flag",
+  "family": "repair",
+  "heldOut": false,
+  "task": "Archive the flag that is tagged \"stale\". Do not archive or change any other flag.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "feature.gift_wrap.archived",
+      "before": false,
+      "after": true
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Archived `gift_wrap` (id 1914), the only flag tagged \"stale\"; read-back shows `is_archived: true`, and the other four flags remain unarchived. No other changes made.",
+  "costUsd": 0.001306,
+  "usage": {
+    "input": 14,
+    "output": 847,
+    "cacheRead": 19390,
+    "cacheWrite": 5496
+  },
+  "toolCalls": 5,
+  "toolErrors": 0,
+  "turns": 6,
+  "ms": 11733,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; echo ----; flagsmith --help",
+    "flagsmith api \"api/v1/projects/477/tags/\" --jq '.results[]? // .[]? | {id,label}' 2>&1 | head -50; echo ----; flagsmith feature list --json 2>&1 | jq -c '.[0]' | head -c 1500",
+    "flagsmith feature list --json 2>&1 | jq -c '.[] | {id,name,tags,is_archived}'",
+    "flagsmith api \"api/v1/projects/477/features/?page_size=100\" --jq '.results[] | {id,name,tags,is_archived}' 2>&1",
+    "flagsmith flag get gift_wrap -e [env-a4fbfb9368f5dfea] --json --jq '{enabled,value}' 2>&1; flagsmith feature update gift_wrap --archive --yes 2>&1; echo ----; flagsmith api \"api/v1/projects/477/features/1914/\" --jq '{id,name,is_archived,tags}' 2>&1; flagsmith api \"api/v1/projects/477/features/?page_size=100\" --jq '.results[] | {name,is_archived}' 2>&1"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; echo ----; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops-v2\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Stages experiment drafts with enrollment off. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI (revision 2)\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment draft (created, not started). Needs the feature id, metric ids and multivariate option ids.\n# Stage it with enrollment off: Flagsmith can enroll identities from an enabled rollout before the experiment starts.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":0,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n",
+          "isError": false,
+          "ms": 77
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 109,
+        "cacheRead": 0,
+        "cacheWrite": 1073
+      },
+      "costUsd": 0.000189025,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "Next I'll find the project's tags and the features that carry the \"stale\" tag.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api \"api/v1/projects/477/tags/\" --jq '.results[]? // .[]? | {id,label}' 2>&1 | head -50; echo ----; flagsmith feature list --json 2>&1 | jq -c '.[0]' | head -c 1500"
+          },
+          "output": "{\"id\":53,\"label\":\"stale\"}\n{\"id\":54,\"label\":\"checkout\"}\n----\n{\"id\":1914,\"name\":\"gift_wrap\",\"type\":\"standard\",\"default_value\":\"compact\",\"enabled\":false}",
+          "isError": false,
+          "ms": 696
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 163,
+        "cacheRead": 1073,
+        "cacheWrite": 3126
+      },
+      "costUsd": 0.00048318,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith feature list --json 2>&1 | jq -c '.[] | {id,name,tags,is_archived}'"
+          },
+          "output": "{\"id\":1914,\"name\":\"gift_wrap\",\"tags\":null,\"is_archived\":null}\n{\"id\":1915,\"name\":\"bulk_discounts\",\"tags\":null,\"is_archived\":null}\n{\"id\":1916,\"name\":\"express_shipping\",\"tags\":null,\"is_archived\":null}\n{\"id\":1917,\"name\":\"apple_pay\",\"tags\":null,\"is_archived\":null}\n{\"id\":1918,\"name\":\"live_chat\",\"tags\":null,\"is_archived\":null}",
+          "isError": false,
+          "ms": 421
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 85,
+        "cacheRead": 4199,
+        "cacheWrite": 239
+      },
+      "costUsd": 0.000114565,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "The CLI list doesn't include tags, so I'll query the features API directly.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api \"api/v1/projects/477/features/?page_size=100\" --jq '.results[] | {id,name,tags,is_archived}' 2>&1"
+          },
+          "output": "{\"id\":1914,\"is_archived\":false,\"name\":\"gift_wrap\",\"tags\":[53]}\n{\"id\":1915,\"is_archived\":false,\"name\":\"bulk_discounts\",\"tags\":[54]}\n{\"id\":1916,\"is_archived\":false,\"name\":\"express_shipping\",\"tags\":[]}\n{\"id\":1917,\"is_archived\":false,\"name\":\"apple_pay\",\"tags\":[]}\n{\"id\":1918,\"is_archived\":false,\"name\":\"live_chat\",\"tags\":[]}",
+          "isError": false,
+          "ms": 408
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 144,
+        "cacheRead": 4438,
+        "cacheWrite": 246
+      },
+      "costUsd": 0.00014733000000000001,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "The only flag tagged \"stale\" (tag id 53) is `gift_wrap` (id 1914). Before archiving, I'll record its current state.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag get gift_wrap -e [env-a4fbfb9368f5dfea] --json --jq '{enabled,value}' 2>&1; flagsmith feature update gift_wrap --archive --yes 2>&1; echo ----; flagsmith api \"api/v1/projects/477/features/1914/\" --jq '{id,name,is_archived,tags}' 2>&1; flagsmith api \"api/v1/projects/477/features/?page_size=100\" --jq '.results[] | {name,is_archived}' 2>&1"
+          },
+          "output": "{\"enabled\":false,\"value\":\"compact\"}\n✓ Updated feature gift_wrap (1914)\nFeature         gift_wrap (1914)\nDescription     \nType            standard\nDefault value   compact\nEnabled         false\n----\n{\"id\":1914,\"is_archived\":true,\"name\":\"gift_wrap\",\"tags\":[53]}\n{\"is_archived\":true,\"name\":\"gift_wrap\"}\n{\"is_archived\":false,\"name\":\"bulk_discounts\"}\n{\"is_archived\":false,\"name\":\"express_shipping\"}\n{\"is_archived\":false,\"name\":\"apple_pay\"}\n{\"is_archived\":false,\"name\":\"live_chat\"}",
+          "isError": false,
+          "ms": 1770
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 278,
+        "cacheRead": 4684,
+        "cacheWrite": 312
+      },
+      "costUsd": 0.00022504,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "DONE: Archived `gift_wrap` (id 1914), the only flag tagged \"stale\"; read-back shows `is_archived: true`, and the other four flags remain unarchived. No other changes made.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 68,
+        "cacheRead": 4996,
+        "cacheWrite": 500
+      },
+      "costUsd": 0.00014666,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T16:00:31.238Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 1,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops-v2",
+    "sha256": "19b412bfdfa744c5b694bd65148ef45c5575db3d426f1dcba5e64146c94f6de8"
+  }
+}

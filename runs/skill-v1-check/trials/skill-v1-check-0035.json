@@ -1,0 +1,136 @@
+{
+  "trialId": "skill-v1-check-0035",
+  "index": 35,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "kill_switch",
+  "family": "flags",
+  "heldOut": true,
+  "task": "Incident: the flag \"guest_checkout\" is causing checkout errors in Production. Turn it off in Production right now. Do not touch any other flag or environment.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.flag.guest_checkout.enabled",
+      "before": true,
+      "after": false
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: `guest_checkout` is now off in Production ([env-8c455a26b2f683ad]). Read-back confirms enabled=false; its value (\"blue\"), the Development environment, and all other flags were left unchanged.",
+  "costUsd": 0.000859,
+  "usage": {
+    "input": 10,
+    "output": 450,
+    "cacheRead": 9043,
+    "cacheWrite": 4340
+  },
+  "toolCalls": 3,
+  "toolErrors": 0,
+  "turns": 4,
+  "ms": 7272,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help | head -50",
+    "flagsmith flag get guest_checkout -e [env-8c455a26b2f683ad] --json --jq '{enabled,value,variants,segment_overrides}'",
+    "flagsmith flag update guest_checkout -e [env-8c455a26b2f683ad] --disable --yes && flagsmith flag get guest_checkout -e [env-8c455a26b2f683ad] --json --jq '{enabled,value,variants,segment_overrides}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help | head -50"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 112
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 116,
+        "cacheRead": 0,
+        "cacheWrite": 1097
+      },
+      "costUsd": 0.000195525,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag get guest_checkout -e [env-8c455a26b2f683ad] --json --jq '{enabled,value,variants,segment_overrides}'"
+          },
+          "output": "{\"enabled\":true,\"segment_overrides\":0,\"value\":\"blue\",\"variants\":null}",
+          "isError": false,
+          "ms": 1013
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 105,
+        "cacheRead": 1097,
+        "cacheWrite": 2806
+      },
+      "costUsd": 0.00041442000000000003,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag update guest_checkout -e [env-8c455a26b2f683ad] --disable --yes && flagsmith flag get guest_checkout -e [env-8c455a26b2f683ad] --json --jq '{enabled,value,variants,segment_overrides}'"
+          },
+          "output": "Feature              guest_checkout\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"blue\",\"variants\":null}\n\n[stderr]\n✓ Disabled guest_checkout in environment Production ([env-8c455a26b2f683ad])",
+          "isError": false,
+          "ms": 1580
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 148,
+        "cacheRead": 3903,
+        "cacheWrite": 140
+      },
+      "costUsd": 0.00013073000000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "DONE: `guest_checkout` is now off in Production ([env-8c455a26b2f683ad]). Read-back confirms enabled=false; its value (\"blue\"), the Development environment, and all other flags were left unchanged.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 81,
+        "cacheRead": 4043,
+        "cacheWrite": 297
+      },
+      "costUsd": 0.000118255,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:57:26.801Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 1,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops",
+    "sha256": "f6f350aec5da331637eaf740f37da39445b693b57967531bd377fca89c509328"
+  }
+}

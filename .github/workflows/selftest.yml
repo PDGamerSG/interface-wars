@@ -28,6 +28,9 @@ jobs:
       - name: Unit tests (statistics, decision rule, verifier, cost, recorded trials)
         run: npm test
 
+      - name: Reproduce the skill revision check from its recorded trials
+        run: node scripts/skill-check-report.ts | diff -u runs/skill-check.md -
+
       - name: Credential scan of every tracked file (trial records, web export, docs, code)
         run: npm run scan:secrets
 

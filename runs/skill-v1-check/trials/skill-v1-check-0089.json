@@ -1,0 +1,221 @@
+{
+  "trialId": "skill-v1-check-0089",
+  "index": 89,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "create_experiment",
+  "family": "experiments",
+  "heldOut": false,
+  "task": "In Production, set up (but do not start) an experiment named \"promo_banner_copy test\" on the multivariate flag \"promo_banner_copy\". Hypothesis: \"Get it today\" increases trial started versus \"Buy now\". The primary metric \"trial_started\" should increase, and \"payment_error\" is a guardrail that should not increase. Split users evenly between the control and the variation.",
+  "correct": false,
+  "reasons": [
+    "strict draft: enrollment must be disabled while the experiment is created"
+  ],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.experiment.promo_banner_copy test.feature",
+      "before": null,
+      "after": "promo_banner_copy"
+    },
+    {
+      "path": "env.Production.experiment.promo_banner_copy test.hypothesis",
+      "before": null,
+      "after": "\"Get it today\" increases trial started versus \"Buy now\""
+    },
+    {
+      "path": "env.Production.experiment.promo_banner_copy test.metric.payment_error",
+      "before": null,
+      "after": "not_increase"
+    },
+    {
+      "path": "env.Production.experiment.promo_banner_copy test.metric.trial_started",
+      "before": null,
+      "after": "increase"
+    },
+    {
+      "path": "env.Production.experiment.promo_banner_copy test.status",
+      "before": null,
+      "after": "created"
+    },
+    {
+      "path": "env.Production.override.promo_banner_copy.experiment-83-rollout.enabled",
+      "before": null,
+      "after": true
+    },
+    {
+      "path": "env.Production.override.promo_banner_copy.experiment-83-rollout.split.Get it today",
+      "before": null,
+      "after": 50
+    },
+    {
+      "path": "env.Production.override.promo_banner_copy.experiment-83-rollout.value",
+      "before": null,
+      "after": "Buy now"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Created experiment \"promo_banner_copy test\" (id 83) in Production on flag promo_banner_copy, status `created` and not started. Control is \"Buy now\" and variation is \"Get it today\", with a 50/50 split. Primary metric trial_started is expected to increase, and guardrail payment_error is expected not to increase. The flag itself is unchanged (still enabled, value \"Buy now\", variant weight 0).",
+  "costUsd": 0.001775,
+  "usage": {
+    "input": 14,
+    "output": 1584,
+    "cacheRead": 19998,
+    "cacheWrite": 6252
+  },
+  "toolCalls": 5,
+  "toolErrors": 0,
+  "turns": 6,
+  "ms": 13929,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "cd /tmp; E=[env-9a934077b986c1b2]\nflagsmith flag get promo_banner_copy -e $E --json --jq '{id,enabled,value,variants}' \nflagsmith feature variant list promo_banner_copy --json\nflagsmith api api/v1/environments/$E/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'\nflagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature}'",
+    "cd /tmp; E=[env-9a934077b986c1b2]\nflagsmith feature list --json --jq '.[] | select(.name==\"promo_banner_copy\") | {id,name,type}'\nflagsmith api \"api/v1/environments/$E/featurestates/?feature_name=promo_banner_copy\" --jq '.results[] | {id,feature,enabled,feature_state_value}' 2>/dev/null | head -20",
+    "cd /tmp; E=[env-9a934077b986c1b2]\nflagsmith api api/v1/environments/$E/experiments/ -X POST --input - <<'JSON'\n{\"feature\":1770,\"name\":\"promo_banner_copy test\",\"hypothesis\":\"\\\"Get it today\\\" increases trial started versus \\\"Buy now\\\"\",\n \"metrics\":[{\"metric\":140,\"expected_direction\":\"increase\"},{\"metric\":142,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"Buy now\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":175,\"percentage_allocation\":50}]}}\nJSON",
+    "cd /tmp; E=[env-9a934077b986c1b2]\nflagsmith api api/v1/environments/$E/experiments/83/ --jq '{name,status,feature,hypothesis,metrics,experiment_rollout}' \nflagsmith flag get promo_banner_copy -e $E --json --jq '{enabled,value,variants}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 49
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 89,
+        "cacheRead": 0,
+        "cacheWrite": 1163
+      },
+      "costUsd": 0.000190275,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "Let me look at the current state of the flag, its variants, and the existing metrics/experiments in Production.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; E=[env-9a934077b986c1b2]\nflagsmith flag get promo_banner_copy -e $E --json --jq '{id,enabled,value,variants}' \nflagsmith feature variant list promo_banner_copy --json\nflagsmith api api/v1/environments/$E/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'\nflagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature}'"
+          },
+          "output": "{\"enabled\":true,\"id\":null,\"value\":\"Buy now\",\"variants\":[{\"id\":175,\"key\":\"b\",\"value\":\"Get it today\",\"weight\":0}]}\n[\n  {\n    \"id\": 175,\n    \"value\": \"Get it today\",\n    \"weight\": 0,\n    \"key\": \"b\"\n  }\n]\n{\"aggregation\":\"occurrence\",\"definition\":{\"event\":\"trial_started\",\"version\":1},\"direction\":\"up\",\"id\":140,\"name\":\"trial_started\"}\n{\"aggregation\":\"occurrence\",\"definition\":{\"event\":\"payment_error\",\"version\":1},\"direction\":\"down\",\"id\":142,\"name\":\"payment_error\"}",
+          "isError": false,
+          "ms": 1837
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 267,
+        "cacheRead": 1163,
+        "cacheWrite": 2779
+      },
+      "costUsd": 0.0004927050000000001,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "Both metrics already exist (trial_started id 140, payment_error id 142). The flag's variant \"Get it today\" has option id 175. I still need the feature id.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; E=[env-9a934077b986c1b2]\nflagsmith feature list --json --jq '.[] | select(.name==\"promo_banner_copy\") | {id,name,type}'\nflagsmith api \"api/v1/environments/$E/featurestates/?feature_name=promo_banner_copy\" --jq '.results[] | {id,feature,enabled,feature_state_value}' 2>/dev/null | head -20"
+          },
+          "output": "{\"id\":1770,\"name\":\"promo_banner_copy\",\"type\":\"multivariate\"}\n{\"enabled\":true,\"feature\":1770,\"feature_state_value\":\"Buy now\",\"id\":3690}",
+          "isError": false,
+          "ms": 544
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 439,
+        "cacheRead": 3942,
+        "cacheWrite": 475
+      },
+      "costUsd": 0.000318495,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "Feature id is 1770, the control value is \"Buy now\", and the variation option is id 175. The metrics already exist, so I'll create only the experiment, without starting it.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; E=[env-9a934077b986c1b2]\nflagsmith api api/v1/environments/$E/experiments/ -X POST --input - <<'JSON'\n{\"feature\":1770,\"name\":\"promo_banner_copy test\",\"hypothesis\":\"\\\"Get it today\\\" increases trial started versus \\\"Buy now\\\"\",\n \"metrics\":[{\"metric\":140,\"expected_direction\":\"increase\"},{\"metric\":142,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"Buy now\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":175,\"percentage_allocation\":50}]}}\nJSON"
+          },
+          "output": "{\"id\":83,\"feature\":1770,\"name\":\"promo_banner_copy test\",\"hypothesis\":\"\\\"Get it today\\\" increases trial started versus \\\"Buy now\\\"\",\"status\":\"created\",\"created_at\":\"2026-11-28T15:58:48.583274Z\",\"updated_at\":\"2026-11-28T15:58:48.593841Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
+          "isError": false,
+          "ms": 375
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 477,
+        "cacheRead": 4417,
+        "cacheWrite": 508
+      },
+      "costUsd": 0.00034637,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; E=[env-9a934077b986c1b2]\nflagsmith api api/v1/environments/$E/experiments/83/ --jq '{name,status,feature,hypothesis,metrics,experiment_rollout}' \nflagsmith flag get promo_banner_copy -e $E --json --jq '{enabled,value,variants}'"
+          },
+          "output": "{\"experiment_rollout\":{\"audience\":{\"match\":\"any\",\"segments\":[]},\"enabled\":true,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Buy now\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":175,\"percentage_allocation\":50}],\"rollout_percentage\":100},\"feature\":{\"id\":1770,\"initial_value\":\"Buy now\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":175,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Get it today\",\"type\":\"unicode\",\"uuid\":\"1d3e61a6-1b65-43f2-b2ec-f4f6dfb1b052\"}],\"name\":\"promo_banner_copy\",\"type\":\"MULTIVARIATE\"},\"hypothesis\":\"\\\"Get it today\\\" increases trial started versus \\\"Buy now\\\"\",\"metrics\":[{\"aggregation\":\"occurrence\",\"created_at\":\"2026-11-28T15:58:48.583944Z\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"id\":111,\"metric\":140,\"metric_name\":\"trial_started\"},{\"aggregation\":\"occurrence\",\"created_at\":\"2026-11-28T15:58:48.583953Z\",\"direction\":\"down\",\"expected_direction\":\"not_increase\",\"id\":112,\"metric\":142,\"metric_name\":\"payment_error\"}],\"name\":\"promo_banner_copy test\",\"status\":\"created\"}\n{\"enabled\":true,\"value\":\"Buy now\",\"variants\":[{\"id\":175,\"key\":\"b\",\"value\":\"Get it today\",\"weight\":0}]}",
+          "isError": false,
+          "ms": 1113
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 171,
+        "cacheRead": 4925,
+        "cacheWrite": 626
+      },
+      "costUsd": 0.00021319999999999998,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "DONE: Created experiment \"promo_banner_copy test\" (id 83) in Production on flag promo_banner_copy, status `created` and not started. Control is \"Buy now\" and variation is \"Get it today\", with a 50/50 split. Primary metric trial_started is expected to increase, and guardrail payment_error is expected not to increase. The flag itself is unchanged (still enabled, value \"Buy now\", variant weight 0).",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 141,
+        "cacheRead": 5551,
+        "cacheWrite": 701
+      },
+      "costUsd": 0.00021383500000000003,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:58:35.603Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 2,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops",
+    "sha256": "f6f350aec5da331637eaf740f37da39445b693b57967531bd377fca89c509328"
+  }
+}

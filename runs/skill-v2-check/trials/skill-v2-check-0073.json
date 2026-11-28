@@ -1,0 +1,197 @@
+{
+  "trialId": "skill-v2-check-0073",
+  "index": 73,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "create_experiment",
+  "family": "experiments",
+  "heldOut": false,
+  "task": "In Production, set up (but do not start) an experiment named \"search_v2_copy test\" on the multivariate flag \"search_v2_copy\". Hypothesis: \"Create account\" increases signup completed versus \"Sign up\". The primary metric \"signup_completed\" should increase, and \"refund_requested\" is a guardrail that should not increase. Split users evenly between the control and the variation.",
+  "correct": false,
+  "reasons": [
+    "strict draft: hypothesis does not match the registered text"
+  ],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.experiment.search_v2_copy test.feature",
+      "before": null,
+      "after": "search_v2_copy"
+    },
+    {
+      "path": "env.Production.experiment.search_v2_copy test.hypothesis",
+      "before": null,
+      "after": "Create account increases signup completed versus Sign up"
+    },
+    {
+      "path": "env.Production.experiment.search_v2_copy test.metric.refund_requested",
+      "before": null,
+      "after": "not_increase"
+    },
+    {
+      "path": "env.Production.experiment.search_v2_copy test.metric.signup_completed",
+      "before": null,
+      "after": "increase"
+    },
+    {
+      "path": "env.Production.experiment.search_v2_copy test.status",
+      "before": null,
+      "after": "created"
+    },
+    {
+      "path": "env.Production.override.search_v2_copy.experiment-102-rollout.enabled",
+      "before": null,
+      "after": false
+    },
+    {
+      "path": "env.Production.override.search_v2_copy.experiment-102-rollout.split.Create account",
+      "before": null,
+      "after": 50
+    },
+    {
+      "path": "env.Production.override.search_v2_copy.experiment-102-rollout.value",
+      "before": null,
+      "after": "Sign up"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Created the draft experiment \"search_v2_copy test\" (id 102) in Production, not started. Primary metric signup_completed is set to increase and guardrail refund_requested to not_increase. The split is 50% control \"Sign up\" and 50% variation \"Create account\" (option 202). Rollout is disabled at 0%, and the flag is still enabled with value \"Sign up\".",
+  "costUsd": 0.001569,
+  "usage": {
+    "input": 12,
+    "output": 1305,
+    "cacheRead": 15734,
+    "cacheWrite": 6060
+  },
+  "toolCalls": 4,
+  "toolErrors": 0,
+  "turns": 5,
+  "ms": 12944,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "PK=[env-e0f915048f31f342]\nflagsmith flag get search_v2_copy -e $PK --json --jq '{enabled,value,variants}'\nflagsmith feature variant list search_v2_copy --json\nflagsmith api api/v1/environments/$PK/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'\nflagsmith api api/v1/environments/$PK/experiments/ --jq '.results[] | {id,name,status}'\nflagsmith feature list --json --jq '.[] | select(.name==\"search_v2_copy\") | {id,name,type}'",
+    "PK=[env-e0f915048f31f342]\nflagsmith api api/v1/environments/$PK/experiments/ -X POST --input - <<'JSON'\n{\"feature\":1988,\"name\":\"search_v2_copy test\",\"hypothesis\":\"Create account increases signup completed versus Sign up\",\n \"metrics\":[{\"metric\":171,\"expected_direction\":\"increase\"},{\"metric\":173,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":0,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":202,\"percentage_allocation\":50}]}}\nJSON",
+    "PK=[env-e0f915048f31f342]\nflagsmith api api/v1/environments/$PK/experiments/102/ --jq '{name,hypothesis,status,rollout_decision,metrics,rollout:(.experiment_rollout|{enabled,rollout_percentage,feature_state_value,multivariate_feature_state_values})}'\nflagsmith flag get search_v2_copy -e $PK --json --jq '{enabled,value}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops-v2\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Stages experiment drafts with enrollment off. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI (revision 2)\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment draft (created, not started). Needs the feature id, metric ids and multivariate option ids.\n# Stage it with enrollment off: Flagsmith can enroll identities from an enabled rollout before the experiment starts.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":0,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n",
+          "isError": false,
+          "ms": 58
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 89,
+        "cacheRead": 0,
+        "cacheWrite": 1166
+      },
+      "costUsd": 0.00019065,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "PK=[env-e0f915048f31f342]\nflagsmith flag get search_v2_copy -e $PK --json --jq '{enabled,value,variants}'\nflagsmith feature variant list search_v2_copy --json\nflagsmith api api/v1/environments/$PK/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'\nflagsmith api api/v1/environments/$PK/experiments/ --jq '.results[] | {id,name,status}'\nflagsmith feature list --json --jq '.[] | select(.name==\"search_v2_copy\") | {id,name,type}'"
+          },
+          "output": "{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":202,\"key\":\"b\",\"value\":\"Create account\",\"weight\":0}]}\n[\n  {\n    \"id\": 202,\n    \"value\": \"Create account\",\n    \"weight\": 0,\n    \"key\": \"b\"\n  }\n]\n{\"aggregation\":\"occurrence\",\"definition\":{\"event\":\"refund_requested\",\"version\":1},\"direction\":\"down\",\"id\":173,\"name\":\"refund_requested\"}\n{\"aggregation\":\"occurrence\",\"definition\":{\"event\":\"signup_completed\",\"version\":1},\"direction\":\"up\",\"id\":171,\"name\":\"signup_completed\"}\n{\"id\":1988,\"name\":\"search_v2_copy\",\"type\":\"multivariate\"}",
+          "isError": false,
+          "ms": 2414
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 264,
+        "cacheRead": 1166,
+        "cacheWrite": 3104
+      },
+      "costUsd": 0.00053186,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "Metrics `signup_completed` (171) and `refund_requested` (173) already exist in Production, and the flag has one variant \"Create account\" (option 202) against the control \"Sign up\". No experiments exist yet. Creating the draft with enrollment off.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "PK=[env-e0f915048f31f342]\nflagsmith api api/v1/environments/$PK/experiments/ -X POST --input - <<'JSON'\n{\"feature\":1988,\"name\":\"search_v2_copy test\",\"hypothesis\":\"Create account increases signup completed versus Sign up\",\n \"metrics\":[{\"metric\":171,\"expected_direction\":\"increase\"},{\"metric\":173,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":0,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":202,\"percentage_allocation\":50}]}}\nJSON"
+          },
+          "output": "{\"id\":102,\"feature\":1988,\"name\":\"search_v2_copy test\",\"hypothesis\":\"Create account increases signup completed versus Sign up\",\"status\":\"created\",\"created_at\":\"2026-11-28T16:02:02.692853Z\",\"updated_at\":\"2026-11-28T16:02:02.704804Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
+          "isError": false,
+          "ms": 386
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 622,
+        "cacheRead": 4270,
+        "cacheWrite": 498
+      },
+      "costUsd": 0.00041614999999999995,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "PK=[env-e0f915048f31f342]\nflagsmith api api/v1/environments/$PK/experiments/102/ --jq '{name,hypothesis,status,rollout_decision,metrics,rollout:(.experiment_rollout|{enabled,rollout_percentage,feature_state_value,multivariate_feature_state_values})}'\nflagsmith flag get search_v2_copy -e $PK --json --jq '{enabled,value}'"
+          },
+          "output": "{\"hypothesis\":\"Create account increases signup completed versus Sign up\",\"metrics\":[{\"aggregation\":\"occurrence\",\"created_at\":\"2026-11-28T16:02:02.693510Z\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"id\":137,\"metric\":171,\"metric_name\":\"signup_completed\"},{\"aggregation\":\"occurrence\",\"created_at\":\"2026-11-28T16:02:02.693558Z\",\"direction\":\"down\",\"expected_direction\":\"not_increase\",\"id\":138,\"metric\":173,\"metric_name\":\"refund_requested\"}],\"name\":\"search_v2_copy test\",\"rollout\":{\"enabled\":false,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":202,\"percentage_allocation\":50}],\"rollout_percentage\":0},\"rollout_decision\":null,\"status\":\"created\"}\n{\"enabled\":true,\"value\":\"Sign up\"}",
+          "isError": false,
+          "ms": 1249
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 204,
+        "cacheRead": 4768,
+        "cacheWrite": 762
+      },
+      "costUsd": 0.00024513,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "DONE: Created the draft experiment \"search_v2_copy test\" (id 102) in Production, not started. Primary metric signup_completed is set to increase and guardrail refund_requested to not_increase. The split is 50% control \"Sign up\" and 50% variation \"Create account\" (option 202). Rollout is disabled at 0%, and the flag is still enabled with value \"Sign up\".",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 126,
+        "cacheRead": 5530,
+        "cacheWrite": 530
+      },
+      "costUsd": 0.00018475,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T16:01:50.738Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 3,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops-v2",
+    "sha256": "19b412bfdfa744c5b694bd65148ef45c5575db3d426f1dcba5e64146c94f6de8"
+  }
+}

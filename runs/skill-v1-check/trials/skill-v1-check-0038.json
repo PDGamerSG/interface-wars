@@ -1,0 +1,160 @@
+{
+  "trialId": "skill-v1-check-0038",
+  "index": 38,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "create_segment",
+  "family": "targeting",
+  "heldOut": false,
+  "task": "Create a segment named \"enterprise_accounts\" that matches users whose trait \"tier\" equals \"enterprise\".",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "segment.enterprise_accounts",
+      "before": null,
+      "after": "[{\"type\":\"ALL\",\"conditions\":[],\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"tier\",\"value\":\"enterprise\"}],\"rules\":[]}]}]"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Created segment `enterprise_accounts` (id 179) in project 425 with the rule `tier EQUAL enterprise`; read-back confirms the rule tree matches the request.",
+  "costUsd": 0.001044,
+  "usage": {
+    "input": 12,
+    "output": 551,
+    "cacheRead": 14058,
+    "cacheWrite": 5012
+  },
+  "toolCalls": 4,
+  "toolErrors": 0,
+  "turns": 5,
+  "ms": 8085,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "flagsmith segment --help | head -30; flagsmith segment list --json --jq '.[] | {id,name}' 2>&1 | head -50",
+    "flagsmith segment list --json 2>&1 | head -c 2000",
+    "flagsmith segment create enterprise_accounts --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"tier\",\"value\":\"enterprise\"}]}]}' --yes 2>&1; echo \"---\"; flagsmith segment list --json --jq '.[] | select(.name==\"enterprise_accounts\")' 2>&1"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 298
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 99,
+        "cacheRead": 0,
+        "cacheWrite": 1080
+      },
+      "costUsd": 0.0001849,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "Before creating anything, I'll check whether a segment with this name already exists.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith segment --help | head -30; flagsmith segment list --json --jq '.[] | {id,name}' 2>&1 | head -50"
+          },
+          "output": "Manage segments in the current project\n\nUsage:\n  flagsmith segment [command] [flags]\n\nAvailable Commands:\n  create      Create a segment\n  delete      Delete a segment\n  get         Show a segment and its rule tree\n  list        List segments in the current project\n  update      Update a segment's rule tree or fields\n\nFlags:\n  -h, --help   help for segment\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n\nUse \"flagsmith segment [command] --help\" for more information about a command.",
+          "isError": false,
+          "ms": 322
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 117,
+        "cacheRead": 1080,
+        "cacheWrite": 2789
+      },
+      "costUsd": 0.00041812500000000004,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith segment list --json 2>&1 | head -c 2000"
+          },
+          "output": "[]",
+          "isError": false,
+          "ms": 321
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 68,
+        "cacheRead": 3869,
+        "cacheWrite": 648
+      },
+      "costUsd": 0.00015388999999999998,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "No segments exist yet, so there's no name clash. Creating the segment now.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith segment create enterprise_accounts --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"tier\",\"value\":\"enterprise\"}]}]}' --yes 2>&1; echo \"---\"; flagsmith segment list --json --jq '.[] | select(.name==\"enterprise_accounts\")' 2>&1"
+          },
+          "output": "✓ Created segment enterprise_accounts (179)\nSegment       enterprise_accounts (179)\nDescription   \n\nAll of the below:\n  Any of the below:\n    tier  EQUAL  enterprise\n---\n{\"id\":179,\"name\":\"enterprise_accounts\",\"rules\":{\"$schema\":\"https://raw.githubusercontent.com/Flagsmith/flagsmith/main/sdk/evaluation-context.json#/$defs/SegmentRule\",\"rules\":[{\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"tier\",\"value\":\"enterprise\"}],\"type\":\"ANY\"}],\"type\":\"ALL\"}}",
+          "isError": false,
+          "ms": 686
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 203,
+        "cacheRead": 4517,
+        "cacheWrite": 75
+      },
+      "costUsd": 0.000156245,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "DONE: Created segment `enterprise_accounts` (id 179) in project 425 with the rule `tier EQUAL enterprise`; read-back confirms the rule tree matches the request.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 64,
+        "cacheRead": 4592,
+        "cacheWrite": 420
+      },
+      "costUsd": 0.00013062,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:57:36.011Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 1,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops",
+    "sha256": "f6f350aec5da331637eaf740f37da39445b693b57967531bd377fca89c509328"
+  }
+}

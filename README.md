@@ -189,7 +189,7 @@ identities from that rollout before the experiment starts. That is why six skill
 changes only the experiment guidance:
 
 - A draft is created with enrollment disabled at 0%.
-- Starting the experiment enables the rollout but keeps 0%. The agent then sets the enrollment the task asks for.
+- Starting a draft preserves its enrollment percentage. If it starts at 0%, the agent then sets the requested enrollment.
 - The read-back includes the rollout state.
 
 The rules and the other recipes are unchanged. Revision 1 stays frozen for the archive.
@@ -197,8 +197,13 @@ The rules and the other recipes are unchanged. Revision 1 stays frozen for the a
 `src/arms/skill.ts` pins each revision by the SHA-256 of its `SKILL.md`, so an edited file stops a run before any
 model call. `IW_SKILL=flagsmith-ops-v2` selects revision 2 for `cli_skill` trials. Only the selected revision is
 mounted, always at `/skills/flagsmith-ops`, so the system prompt is byte-identical across revisions. New trial records
-store the revision name and hash. Revision 2 has not been through a registered comparison. The descriptive check
-against revision 1 was fixed in [prereg/SKILL_V2_CHECK.md](prereg/SKILL_V2_CHECK.md) before it ran.
+store the revision name and hash.
+
+In a separate 120-trial check, revision 1 left enrollment enabled in **9 of 9** new drafts. Revision 2 left it
+enabled in **0 of 9**. Revision 2 passed the full strict grader on **3 of 9** drafts. The other six changed punctuation
+in the requested hypothesis. Both revisions passed all 51 jobs on the other 15 templates. The start jobs used
+fresh experiments seeded at 100% enrollment. Starting one of the newly staged drafts falls outside this comparison.
+[Comparison plan](prereg/SKILL_V2_CHECK.md) · [Results and trial records](runs/skill-check.md)
 
 ## Repository map
 

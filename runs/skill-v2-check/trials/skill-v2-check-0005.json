@@ -1,0 +1,136 @@
+{
+  "trialId": "skill-v2-check-0005",
+  "index": 5,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "change_split_in_production",
+  "family": "targeting",
+  "heldOut": false,
+  "task": "In Production only, change the traffic split of the multivariate flag \"live_chat_copy\" so the \"Try it free\" variation gets 80% of users and the rest stay on the control value. Development keeps its current split.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.flag.live_chat_copy.split.Try it free",
+      "before": 50,
+      "after": 80
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: In Production, \"Try it free\" on live_chat_copy is now at 80% (the control \"Start free trial\" keeps the remaining 20%), verified by read-back. Development is unchanged at 50%.",
+  "costUsd": 0.001105,
+  "usage": {
+    "input": 10,
+    "output": 664,
+    "cacheRead": 10087,
+    "cacheWrite": 5368
+  },
+  "toolCalls": 3,
+  "toolErrors": 0,
+  "turns": 4,
+  "ms": 11072,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "cd /tmp; flagsmith flag get live_chat_copy -e [env-146c8c9cd7eb683d] --json; echo ----; flagsmith flag get live_chat_copy -e [env-5f7053dd3dd0e201] --json; echo ----; flagsmith feature variant list live_chat_copy --json",
+    "cd /tmp; flagsmith flag update live_chat_copy -e [env-146c8c9cd7eb683d] --weight 182=80 --yes && flagsmith flag get live_chat_copy -e [env-146c8c9cd7eb683d] --json --jq '{enabled,value,variants}'; echo ----; flagsmith flag get live_chat_copy -e [env-5f7053dd3dd0e201] --json --jq '{enabled,value,variants}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops-v2\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Stages experiment drafts with enrollment off. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI (revision 2)\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment draft (created, not started). Needs the feature id, metric ids and multivariate option ids.\n# Stage it with enrollment off: Flagsmith can enroll identities from an enabled rollout before the experiment starts.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":0,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n",
+          "isError": false,
+          "ms": 79
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 93,
+        "cacheRead": 0,
+        "cacheWrite": 1110
+      },
+      "costUsd": 0.00018565,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; flagsmith flag get live_chat_copy -e [env-146c8c9cd7eb683d] --json; echo ----; flagsmith flag get live_chat_copy -e [env-5f7053dd3dd0e201] --json; echo ----; flagsmith feature variant list live_chat_copy --json"
+          },
+          "output": "{\n  \"feature\": \"live_chat_copy\",\n  \"type\": \"multivariate\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"Start free trial\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\",\n  \"variants\": [\n    {\n      \"id\": 182,\n      \"value\": \"Try it free\",\n      \"weight\": 50,\n      \"key\": \"b\"\n    }\n  ]\n}\n----\n{\n  \"feature\": \"live_chat_copy\",\n  \"type\": \"multivariate\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"Start free trial\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\",\n  \"variants\": [\n    {\n      \"id\": 182,\n      \"value\": \"Try it free\",\n      \"weight\": 50,\n      \"key\": \"b\"\n    }\n  ]\n}\n----\n[\n  {\n    \"id\": 182,\n    \"value\": \"Try it free\",\n    \"weight\": 50,\n    \"key\": \"b\"\n  }\n]",
+          "isError": false,
+          "ms": 2694
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 163,
+        "cacheRead": 1110,
+        "cacheWrite": 3108
+      },
+      "costUsd": 0.0004813,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "Production currently has \"Try it free\" at 50% (control \"Start free trial\" gets the remainder). Development is at 50% too and I'll leave it alone. Applying the change to Production only.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; flagsmith flag update live_chat_copy -e [env-146c8c9cd7eb683d] --weight 182=80 --yes && flagsmith flag get live_chat_copy -e [env-146c8c9cd7eb683d] --json --jq '{enabled,value,variants}'; echo ----; flagsmith flag get live_chat_copy -e [env-5f7053dd3dd0e201] --json --jq '{enabled,value,variants}'"
+          },
+          "output": "Feature              live_chat_copy\nDescription          \nType                 multivariate\nState                on\nValue                Start free trial\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n\nVariants\n  VALUE        WEIGHT  KEY  ID\n  Try it free  80%     b    182\n{\"enabled\":true,\"value\":\"Start free trial\",\"variants\":[{\"id\":182,\"key\":\"b\",\"value\":\"Try it free\",\"weight\":80}]}\n----\n{\"enabled\":true,\"value\":\"Start free trial\",\"variants\":[{\"id\":182,\"key\":\"b\",\"value\":\"Try it free\",\"weight\":50}]}\n\n[stderr]\n✓ Set live_chat_copy weights to 182=80 in environment Production ([env-146c8c9cd7eb683d])",
+          "isError": false,
+          "ms": 2858
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 338,
+        "cacheRead": 4218,
+        "cacheWrite": 541
+      },
+      "costUsd": 0.000279005,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "DONE: In Production, \"Try it free\" on live_chat_copy is now at 80% (the control \"Start free trial\" keeps the remaining 20%), verified by read-back. Development is unchanged at 50%.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 70,
+        "cacheRead": 4759,
+        "cacheWrite": 609
+      },
+      "costUsd": 0.00015891500000000003,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:59:12.730Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 1,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops-v2",
+    "sha256": "19b412bfdfa744c5b694bd65148ef45c5575db3d426f1dcba5e64146c94f6de8"
+  }
+}

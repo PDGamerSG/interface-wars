@@ -1,0 +1,136 @@
+{
+  "trialId": "skill-v1-check-0022",
+  "index": 22,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "create_segment",
+  "family": "targeting",
+  "heldOut": false,
+  "task": "Create a segment named \"power_users\" that matches users whose trait \"orders_band\" equals \"50_plus\".",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "segment.power_users",
+      "before": null,
+      "after": "[{\"type\":\"ALL\",\"conditions\":[],\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"orders_band\",\"value\":\"50_plus\"}],\"rules\":[]}]}]"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Created segment \"power_users\" (id 172) in project shop, matching users where the trait `orders_band` equals `50_plus`. Read-back confirmed the rule tree; no flags or environments were changed.",
+  "costUsd": 0.000977,
+  "usage": {
+    "input": 10,
+    "output": 500,
+    "cacheRead": 9644,
+    "cacheWrite": 5036
+  },
+  "toolCalls": 3,
+  "toolErrors": 1,
+  "turns": 4,
+  "ms": 5868,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help; flagsmith segments --help 2>/dev/null",
+    "flagsmith segment list --json --jq '.[] | select(.name==\"power_users\") | {id,name}' ; echo \"---\"; flagsmith segment create --help | head -30",
+    "flagsmith segment create power_users --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"orders_band\",\"value\":\"50_plus\"}]}]}' --yes && echo \"--- read-back:\" && flagsmith segment list --json --jq '.[] | select(.name==\"power_users\")'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help; flagsmith segments --help 2>/dev/null"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": true,
+          "ms": 66
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 126,
+        "cacheRead": 0,
+        "cacheWrite": 1080
+      },
+      "costUsd": 0.0001984,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "Segments are project-level, so no environment is needed. I'll check for an existing segment with this name first, then create it.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith segment list --json --jq '.[] | select(.name==\"power_users\") | {id,name}' ; echo \"---\"; flagsmith segment create --help | head -30"
+          },
+          "output": "---\nCreate a segment\n\nUsage:\n  flagsmith segment create <name> [flags]\n\nExamples:\n  # rules from a file, - for stdin, or an inline JSON string\n  flagsmith segment create beta-users --rules @rules.json --description \"Beta cohort\"\n\n  # scope it to a feature (feature-specific segment)\n  flagsmith segment create rollout --rules @rules.json --feature onboarding\n\nFlags:\n      --description string   segment description\n      --feature string       scope to a feature (id or name), making it feature-specific\n  -h, --help                 help for create\n      --rules string         rule tree: @file, - for stdin, or an inline JSON string\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively",
+          "isError": false,
+          "ms": 350
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 138,
+        "cacheRead": 1080,
+        "cacheWrite": 2830
+      },
+      "costUsd": 0.00043375,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith segment create power_users --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"orders_band\",\"value\":\"50_plus\"}]}]}' --yes && echo \"--- read-back:\" && flagsmith segment list --json --jq '.[] | select(.name==\"power_users\")'"
+          },
+          "output": "Segment       power_users (172)\nDescription   \n\nAll of the below:\n  Any of the below:\n    orders_band  EQUAL  50_plus\n--- read-back:\n{\"id\":172,\"name\":\"power_users\",\"rules\":{\"$schema\":\"https://raw.githubusercontent.com/Flagsmith/flagsmith/main/sdk/evaluation-context.json#/$defs/SegmentRule\",\"rules\":[{\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"orders_band\",\"value\":\"50_plus\"}],\"type\":\"ANY\"}],\"type\":\"ALL\"}}\n\n[stderr]\n✓ Created segment power_users (172)",
+          "isError": false,
+          "ms": 622
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 165,
+        "cacheRead": 3910,
+        "cacheWrite": 744
+      },
+      "costUsd": 0.00021480000000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "DONE: Created segment \"power_users\" (id 172) in project shop, matching users where the trait `orders_band` equals `50_plus`. Read-back confirmed the rule tree; no flags or environments were changed.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 71,
+        "cacheRead": 4654,
+        "cacheWrite": 382
+      },
+      "costUsd": 0.00012999000000000002,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:56:47.762Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 1,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops",
+    "sha256": "f6f350aec5da331637eaf740f37da39445b693b57967531bd377fca89c509328"
+  }
+}

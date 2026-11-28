@@ -1,0 +1,184 @@
+{
+  "trialId": "skill-v2-check-0014",
+  "index": 14,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "archive_stale_flag",
+  "family": "repair",
+  "heldOut": false,
+  "task": "Archive the flag that is tagged \"stale\". Do not archive or change any other flag.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "feature.loyalty_points.archived",
+      "before": false,
+      "after": true
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Archived `loyalty_points` (id 1851), the only flag tagged \"stale\" (tag id 51). Read-back shows `is_archived: true`. The other four flags are unchanged and not archived.",
+  "costUsd": 0.001421,
+  "usage": {
+    "input": 14,
+    "output": 950,
+    "cacheRead": 20489,
+    "cacheWrite": 5915
+  },
+  "toolCalls": 5,
+  "toolErrors": 0,
+  "turns": 6,
+  "ms": 12658,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "flagsmith api \"api/v1/projects/461/tags/\" --jq '.results[]? // .[]? | {id,label}' 2>&1 | head -50; echo ---; flagsmith feature list --json | jq '.[] | {id,name,tags}' | head -200",
+    "flagsmith feature list --json | jq -c '.[] | {id,name,is_archived,tags:(.tags // .tag_ids // .tag)}'; echo ---; flagsmith feature list --json | jq '.[0] | keys'; echo ---; flagsmith api \"api/v1/projects/461/features/?page_size=100\" --jq '.results[] | {id,name,tags,is_archived}' 2>&1 | head -60",
+    "flagsmith api \"api/v1/projects/461/features/?page_size=100\" --jq '{count,next}'; flagsmith feature list --help | head -5; flagsmith feature update --help | grep -i archiv; flagsmith flag get loyalty_points -e [env-9b9991ddee8ddce6] --json --jq '{id,name,enabled,value}'",
+    "flagsmith feature update loyalty_points --archive --yes; echo ---; flagsmith api \"api/v1/projects/461/features/?page_size=100\" --jq '.results[] | {id,name,tags,is_archived}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops-v2\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Stages experiment drafts with enrollment off. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI (revision 2)\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment draft (created, not started). Needs the feature id, metric ids and multivariate option ids.\n# Stage it with enrollment off: Flagsmith can enroll identities from an enabled rollout before the experiment starts.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":0,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n",
+          "isError": false,
+          "ms": 73
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 106,
+        "cacheRead": 0,
+        "cacheWrite": 1070
+      },
+      "costUsd": 0.00018715,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "Let me find the tag and the flag carrying it.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api \"api/v1/projects/461/tags/\" --jq '.results[]? // .[]? | {id,label}' 2>&1 | head -50; echo ---; flagsmith feature list --json | jq '.[] | {id,name,tags}' | head -200"
+          },
+          "output": "{\"id\":51,\"label\":\"stale\"}\n{\"id\":52,\"label\":\"checkout\"}\n---\n{\n  \"id\": 1851,\n  \"name\": \"loyalty_points\",\n  \"tags\": null\n}\n{\n  \"id\": 1852,\n  \"name\": \"gift_wrap\",\n  \"tags\": null\n}\n{\n  \"id\": 1853,\n  \"name\": \"new_checkout\",\n  \"tags\": null\n}\n{\n  \"id\": 1854,\n  \"name\": \"one_click_buy\",\n  \"tags\": null\n}\n{\n  \"id\": 1855,\n  \"name\": \"review_photos\",\n  \"tags\": null\n}",
+          "isError": false,
+          "ms": 755
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 151,
+        "cacheRead": 1070,
+        "cacheWrite": 3121
+      },
+      "costUsd": 0.000476525,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith feature list --json | jq -c '.[] | {id,name,is_archived,tags:(.tags // .tag_ids // .tag)}'; echo ---; flagsmith feature list --json | jq '.[0] | keys'; echo ---; flagsmith api \"api/v1/projects/461/features/?page_size=100\" --jq '.results[] | {id,name,tags,is_archived}' 2>&1 | head -60"
+          },
+          "output": "{\"id\":1851,\"name\":\"loyalty_points\",\"is_archived\":null,\"tags\":null}\n{\"id\":1852,\"name\":\"gift_wrap\",\"is_archived\":null,\"tags\":null}\n{\"id\":1853,\"name\":\"new_checkout\",\"is_archived\":null,\"tags\":null}\n{\"id\":1854,\"name\":\"one_click_buy\",\"is_archived\":null,\"tags\":null}\n{\"id\":1855,\"name\":\"review_photos\",\"is_archived\":null,\"tags\":null}\n---\n[\n  \"default_value\",\n  \"enabled\",\n  \"id\",\n  \"name\",\n  \"type\"\n]\n---\n{\"id\":1851,\"is_archived\":false,\"name\":\"loyalty_points\",\"tags\":[51]}\n{\"id\":1852,\"is_archived\":false,\"name\":\"gift_wrap\",\"tags\":[52]}\n{\"id\":1853,\"is_archived\":false,\"name\":\"new_checkout\",\"tags\":[]}\n{\"id\":1854,\"is_archived\":false,\"name\":\"one_click_buy\",\"tags\":[]}\n{\"id\":1855,\"is_archived\":false,\"name\":\"review_photos\",\"tags\":[]}",
+          "isError": false,
+          "ms": 842
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 224,
+        "cacheRead": 4191,
+        "cacheWrite": 350
+      },
+      "costUsd": 0.00019786,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "The API shows `loyalty_points` (id 1851) is the only flag with tag 51 (\"stale\"). Let me read it before changing anything.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api \"api/v1/projects/461/features/?page_size=100\" --jq '{count,next}'; flagsmith feature list --help | head -5; flagsmith feature update --help | grep -i archiv; flagsmith flag get loyalty_points -e [env-9b9991ddee8ddce6] --json --jq '{id,name,enabled,value}'"
+          },
+          "output": "{\"count\":5,\"next\":null}\nList features in the current project\n\nUsage:\n  flagsmith feature list [flags]\n\nUpdate a feature's description or archive state\n  # archive or restore a feature\n  flagsmith feature update onboarding --archive\n  flagsmith feature update onboarding --unarchive\n      --archive              archive the feature\n      --unarchive            unarchive the feature\n{\"enabled\":false,\"id\":null,\"name\":null,\"value\":\"rounded\"}",
+          "isError": false,
+          "ms": 828
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 278,
+        "cacheRead": 4541,
+        "cacheWrite": 586
+      },
+      "costUsd": 0.00025786,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith feature update loyalty_points --archive --yes; echo ---; flagsmith api \"api/v1/projects/461/features/?page_size=100\" --jq '.results[] | {id,name,tags,is_archived}'"
+          },
+          "output": "Feature         loyalty_points (1851)\nDescription     \nType            standard\nDefault value   rounded\nEnabled         false\n---\n{\"id\":1851,\"is_archived\":true,\"name\":\"loyalty_points\",\"tags\":[51]}\n{\"id\":1852,\"is_archived\":false,\"name\":\"gift_wrap\",\"tags\":[52]}\n{\"id\":1853,\"is_archived\":false,\"name\":\"new_checkout\",\"tags\":[]}\n{\"id\":1854,\"is_archived\":false,\"name\":\"one_click_buy\",\"tags\":[]}\n{\"id\":1855,\"is_archived\":false,\"name\":\"review_photos\",\"tags\":[]}\n\n[stderr]\n✓ Updated feature loyalty_points (1851)",
+          "isError": false,
+          "ms": 1092
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 120,
+        "cacheRead": 5127,
+        "cacheWrite": 433
+      },
+      "costUsd": 0.000165595,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "DONE: Archived `loyalty_points` (id 1851), the only flag tagged \"stale\" (tag id 51). Read-back shows `is_archived: true`. The other four flags are unchanged and not archived.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 71,
+        "cacheRead": 5560,
+        "cacheWrite": 355
+      },
+      "costUsd": 0.000135675,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:59:41.874Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 1,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops-v2",
+    "sha256": "19b412bfdfa744c5b694bd65148ef45c5575db3d426f1dcba5e64146c94f6de8"
+  }
+}

@@ -1,0 +1,209 @@
+{
+  "trialId": "skill-v1-check-0027",
+  "index": 27,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "ship_winner",
+  "family": "experiments",
+  "heldOut": true,
+  "task": "The experiment \"promo_banner_copy test\" in Production has finished and the variation \"Create account\" won. Complete the experiment and roll the winning variation out to everyone.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.experiment.promo_banner_copy test.rollout_decision",
+      "before": null,
+      "after": "variant"
+    },
+    {
+      "path": "env.Production.experiment.promo_banner_copy test.status",
+      "before": "running",
+      "after": "completed"
+    },
+    {
+      "path": "env.Production.flag.promo_banner_copy.split.Create account",
+      "before": 0,
+      "after": 100
+    },
+    {
+      "path": "env.Production.override.promo_banner_copy.experiment-76-rollout.enabled",
+      "before": true,
+      "after": null
+    },
+    {
+      "path": "env.Production.override.promo_banner_copy.experiment-76-rollout.split.Create account",
+      "before": 50,
+      "after": null
+    },
+    {
+      "path": "env.Production.override.promo_banner_copy.experiment-76-rollout.value",
+      "before": "Sign up",
+      "after": null
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Production experiment \"promo_banner_copy test\" (id 76) is now completed with rollout decision \"variant\" set to \"Create account\" (option 163). The read-back shows that variant at weight 100 on promo_banner_copy, so everyone gets it. The flag's base value still reads \"Sign up\", which is the control and was not changed. I did not run an SDK evaluation to confirm what end users receive.",
+  "costUsd": 0.001521,
+  "usage": {
+    "input": 14,
+    "output": 1183,
+    "cacheRead": 19508,
+    "cacheWrite": 5861
+  },
+  "toolCalls": 5,
+  "toolErrors": 0,
+  "turns": 6,
+  "ms": 12580,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "E=[env-ec7f709bddf98505]; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'",
+    "E=[env-ec7f709bddf98505]; flagsmith api api/v1/environments/$E/experiments/76/ | jq '{status,rollout_decision,rollout_variant,metrics,experiment_rollout}' ; flagsmith flag get promo_banner_copy -e $E --json --jq '{enabled,value,variants}'",
+    "E=[env-ec7f709bddf98505]; flagsmith api api/v1/environments/$E/experiments/76/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":163}\nJSON\necho ---; flagsmith api api/v1/environments/$E/experiments/76/ | jq '{status,rollout_decision,rollout_variant}'; flagsmith flag get promo_banner_copy -e $E --json --jq '{enabled,value,variants}'",
+    "E=[env-ec7f709bddf98505]; flagsmith evaluate -e $E --json --jq '.[] | select(.feature.name==\"promo_banner_copy\") | {value:.value}' 2>&1 | head -5"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 101
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 93,
+        "cacheRead": 0,
+        "cacheWrite": 1100
+      },
+      "costUsd": 0.0001844,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=[env-ec7f709bddf98505]; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'"
+          },
+          "output": "{\"feature\":{\"id\":1673,\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":163,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Create account\",\"type\":\"unicode\",\"uuid\":\"2bfa2632-e3de-46d0-97c6-6e6a7dfe6302\"}],\"name\":\"promo_banner_copy\",\"type\":\"MULTIVARIATE\"},\"id\":76,\"name\":\"promo_banner_copy test\",\"rollout_decision\":null,\"status\":\"running\"}",
+          "isError": false,
+          "ms": 449
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 119,
+        "cacheRead": 1100,
+        "cacheWrite": 2783
+      },
+      "costUsd": 0.00041857499999999997,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=[env-ec7f709bddf98505]; flagsmith api api/v1/environments/$E/experiments/76/ | jq '{status,rollout_decision,rollout_variant,metrics,experiment_rollout}' ; flagsmith flag get promo_banner_copy -e $E --json --jq '{enabled,value,variants}'"
+          },
+          "output": "{\n  \"status\": \"running\",\n  \"rollout_decision\": null,\n  \"rollout_variant\": null,\n  \"metrics\": [\n    {\n      \"id\": 100,\n      \"metric\": 125,\n      \"metric_name\": \"signup_completed\",\n      \"aggregation\": \"occurrence\",\n      \"direction\": \"up\",\n      \"expected_direction\": \"increase\",\n      \"created_at\": \"2026-11-28T15:57:01.451287Z\"\n    }\n  ],\n  \"experiment_rollout\": {\n    \"enabled\": true,\n    \"rollout_percentage\": 100.0,\n    \"feature_state_value\": {\n      \"type\": \"string\",\n      \"value\": \"Sign up\"\n    },\n    \"multivariate_feature_state_values\": [\n      {\n        \"multivariate_feature_option\": 163,\n        \"percentage_allocation\": 50.0\n      }\n    ],\n    \"audience\": {\n      \"match\": \"any\",\n      \"segments\": []\n    }\n  }\n}\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":163,\"key\":\"b\",\"value\":\"Create account\",\"weight\":0}]}",
+          "isError": false,
+          "ms": 1221
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 207,
+        "cacheRead": 3883,
+        "cacheWrite": 313
+      },
+      "costUsd": 0.000181655,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "The experiment is running and \"Create account\" is option 163. Completing it with that variation as the rollout decision.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=[env-ec7f709bddf98505]; flagsmith api api/v1/environments/$E/experiments/76/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":163}\nJSON\necho ---; flagsmith api api/v1/environments/$E/experiments/76/ | jq '{status,rollout_decision,rollout_variant}'; flagsmith flag get promo_banner_copy -e $E --json --jq '{enabled,value,variants}'"
+          },
+          "output": "{\"id\":76,\"feature\":{\"id\":1673,\"name\":\"promo_banner_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"id\":163,\"uuid\":\"2bfa2632-e3de-46d0-97c6-6e6a7dfe6302\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Create account\",\"boolean_value\":null,\"default_percentage_allocation\":100.0,\"key\":\"b\"}]},\"name\":\"promo_banner_copy test\",\"hypothesis\":\"Create account wins\",\"status\":\"completed\",\"metrics\":[{\"id\":100,\"metric\":125,\"metric_name\":\"signup_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-28T15:57:01.451287Z\"}],\"created_at\":\"2026-11-28T15:57:01.450889Z\",\"updated_at\":\"2026-11-28T15:57:10.682826Z\",\"started_at\":\"2026-11-28T15:57:01.550848Z\",\"ended_at\":\"2026-11-28T15:57:10.628775Z\",\"rollout_decision\":\"variant\",\"rollout_variant\":163}---\n{\n  \"status\": \"completed\",\n  \"rollout_decision\": \"variant\",\n  \"rollout_variant\": 163\n}\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":163,\"key\":\"b\",\"value\":\"Create account\",\"weight\":100}]}",
+          "isError": false,
+          "ms": 1593
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 330,
+        "cacheRead": 4196,
+        "cacheWrite": 562
+      },
+      "costUsd": 0.00027740999999999996,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=[env-ec7f709bddf98505]; flagsmith evaluate -e $E --json --jq '.[] | select(.feature.name==\"promo_banner_copy\") | {value:.value}' 2>&1 | head -5"
+          },
+          "output": "Error: expected an object but got: string (\"https://raw.githubuserco ...\")",
+          "isError": false,
+          "ms": 76
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 259,
+        "cacheRead": 4758,
+        "cacheWrite": 813
+      },
+      "costUsd": 0.000278905,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "DONE: Production experiment \"promo_banner_copy test\" (id 76) is now completed with rollout decision \"variant\" set to \"Create account\" (option 163). The read-back shows that variant at weight 100 on promo_banner_copy, so everyone gets it. The flag's base value still reads \"Sign up\", which is the control and was not changed. I did not run an SDK evaluation to confirm what end users receive.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 175,
+        "cacheRead": 5571,
+        "cacheWrite": 290
+      },
+      "costUsd": 0.00017966,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:57:00.410Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 3,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops",
+    "sha256": "f6f350aec5da331637eaf740f37da39445b693b57967531bd377fca89c509328"
+  }
+}

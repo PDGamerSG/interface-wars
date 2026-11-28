@@ -1,0 +1,141 @@
+{
+  "trialId": "skill-v1-check-0044",
+  "index": 44,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "sync_production_to_development",
+  "family": "repair",
+  "heldOut": false,
+  "task": "Make the flag \"express_shipping\" in Production match its Development configuration exactly (on/off state and value). Change nothing else.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.flag.express_shipping.enabled",
+      "before": false,
+      "after": true
+    },
+    {
+      "path": "env.Production.flag.express_shipping.value",
+      "before": "tiered",
+      "after": "eu_west"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: In Production, `express_shipping` is now on with value `eu_west`, matching Development. I read both back after the change. Production had been off with value `tiered`. No overrides were added or changed, and nothing else was touched.",
+  "costUsd": 0.00101,
+  "usage": {
+    "input": 10,
+    "output": 640,
+    "cacheRead": 9166,
+    "cacheWrite": 4782
+  },
+  "toolCalls": 3,
+  "toolErrors": 0,
+  "turns": 4,
+  "ms": 8197,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "flagsmith flag get express_shipping -e [env-a53eb9df0522bc33] --json; echo ---; flagsmith flag get express_shipping -e [env-068c17c33c21383e] --json",
+    "flagsmith flag update express_shipping -e [env-068c17c33c21383e] --enable --value \"eu_west\" --yes && flagsmith flag get express_shipping -e [env-068c17c33c21383e] --json --jq '{enabled,value,segment_overrides,identity_overrides}'; echo ---; flagsmith flag get express_shipping -e [env-a53eb9df0522bc33] --json --jq '{enabled,value}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 46
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 89,
+        "cacheRead": 0,
+        "cacheWrite": 1088
+      },
+      "costUsd": 0.0001809,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag get express_shipping -e [env-a53eb9df0522bc33] --json; echo ---; flagsmith flag get express_shipping -e [env-068c17c33c21383e] --json"
+          },
+          "output": "{\n  \"feature\": \"express_shipping\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"eu_west\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\n---\n{\n  \"feature\": \"express_shipping\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": false,\n  \"value\": \"tiered\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}",
+          "isError": false,
+          "ms": 1108
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 131,
+        "cacheRead": 1088,
+        "cacheWrite": 2779
+      },
+      "costUsd": 0.00042395500000000006,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "Development is on with value `eu_west`; Production is off with value `tiered`. I'll update Production's state and value together.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag update express_shipping -e [env-068c17c33c21383e] --enable --value \"eu_west\" --yes && flagsmith flag get express_shipping -e [env-068c17c33c21383e] --json --jq '{enabled,value,segment_overrides,identity_overrides}'; echo ---; flagsmith flag get express_shipping -e [env-a53eb9df0522bc33] --json --jq '{enabled,value}'"
+          },
+          "output": "Feature              express_shipping\nDescription          \nType                 standard\nState                on\nValue                eu_west\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"identity_overrides\":0,\"segment_overrides\":0,\"value\":\"eu_west\"}\n---\n{\"enabled\":true,\"value\":\"eu_west\"}\n\n[stderr]\n✓ Set express_shipping to \"eu_west\" in environment Production ([env-068c17c33c21383e])\n✓ Enabled express_shipping in environment Production ([env-068c17c33c21383e])",
+          "isError": false,
+          "ms": 2052
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 346,
+        "cacheRead": 3867,
+        "cacheWrite": 344
+      },
+      "costUsd": 0.00025487000000000003,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "DONE: In Production, `express_shipping` is now on with value `eu_west`, matching Development. I read both back after the change. Production had been off with value `tiered`. No overrides were added or changed, and nothing else was touched.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 74,
+        "cacheRead": 4211,
+        "cacheWrite": 571
+      },
+      "costUsd": 0.000150685,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:57:55.141Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 2,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops",
+    "sha256": "f6f350aec5da331637eaf740f37da39445b693b57967531bd377fca89c509328"
+  }
+}

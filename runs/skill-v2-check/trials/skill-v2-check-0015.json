@@ -1,0 +1,261 @@
+{
+  "trialId": "skill-v2-check-0015",
+  "index": 15,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "remove_segment_override",
+  "family": "repair",
+  "heldOut": true,
+  "task": "Remove the \"mobile_app_users\" segment override of the flag \"store_locator\" in Production. Keep the same override in Development.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.override.store_locator.mobile_app_users.enabled",
+      "before": true,
+      "after": null
+    },
+    {
+      "path": "env.Production.override.store_locator.mobile_app_users.value",
+      "before": "segment_copy",
+      "after": null
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Removed the `mobile_app_users` segment override on `store_locator` in Production (segment_overrides 1→0; the environment default is still off with value \"base\"). Development still has its override (enabled, value `segment_copy`), and its environment default is unchanged.",
+  "costUsd": 0.002343,
+  "usage": {
+    "input": 20,
+    "output": 1881,
+    "cacheRead": 39973,
+    "cacheWrite": 8010
+  },
+  "toolCalls": 8,
+  "toolErrors": 0,
+  "turns": 9,
+  "ms": 28128,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "cd /tmp; for k in [env-f7e6b36424870b0d] [env-ebb179476b232341]; do echo \"== $k\"; flagsmith flag get store_locator -e $k --json --jq '{enabled,value,segment_overrides}'; done",
+    "cd /tmp; F=$(flagsmith feature list --json --jq '.[] | select(.name==\"store_locator\") | .id'); echo \"feature id: $F\"; for k in [env-f7e6b36424870b0d] [env-ebb179476b232341]; do echo \"== $k\"; flagsmith flag get store_locator -e $k --json --jq '.segment_overrides'; flagsmith api \"api/v1/environments/$k/featurestates/?feature=$F\" --jq '.results[] | {id, enabled, value: .feature_state_value, segment: .feature_segment}'; done",
+    "cd /tmp; F=1857; for k in [env-f7e6b36424870b0d] [env-ebb179476b232341]; do echo \"== $k\"; flagsmith api \"api/v1/environments/$k/featurestates/?feature=$F\" | jq -c '.results[] | {id, enabled, value: .feature_state_value, feature_segment}'; flagsmith flag get store_locator -e $k --json | jq -c '.segment_overrides'; done; flagsmith segment list --json --jq '.[] | select(.name|test(\"mobile\";\"i\")) | {id,name}'",
+    "cd /tmp; flagsmith flag get store_locator -e [env-f7e6b36424870b0d] --json | jq '.'; flagsmith flag get store_locator -e [env-ebb179476b232341] --json | jq '.'",
+    "cd /tmp; flagsmith flag get --help | head -30; flagsmith flag delete --help | head -30",
+    "cd /tmp; for k in [env-f7e6b36424870b0d] [env-ebb179476b232341]; do echo \"== $k\"; flagsmith flag get store_locator -e $k --segment mobile_app_users --json; done",
+    "cd /tmp; flagsmith flag delete store_locator -e [env-f7e6b36424870b0d] --segment mobile_app_users --yes; echo \"--- read-back PROD\"; flagsmith flag get store_locator -e [env-f7e6b36424870b0d] --json | jq -c '{enabled,value,segment_overrides}'; flagsmith flag get store_locator -e [env-f7e6b36424870b0d] --segment mobile_app_users 2>&1 | tail -2; echo \"--- read-back DEV\"; flagsmith flag get store_locator -e [env-ebb179476b232341] --json | jq -c '{enabled,value,segment_overrides}'; flagsmith flag get store_locator -e [env-ebb179476b232341] --segment mobile_app_users --json | jq -c '{segment:.segment.name,enabled,value}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops-v2\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Stages experiment drafts with enrollment off. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI (revision 2)\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment draft (created, not started). Needs the feature id, metric ids and multivariate option ids.\n# Stage it with enrollment off: Flagsmith can enroll identities from an enabled rollout before the experiment starts.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":0,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n",
+          "isError": false,
+          "ms": 55
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 93,
+        "cacheRead": 0,
+        "cacheWrite": 1090
+      },
+      "costUsd": 0.00018315,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "Let me read the target flag in both environments before changing anything.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; for k in [env-f7e6b36424870b0d] [env-ebb179476b232341]; do echo \"== $k\"; flagsmith flag get store_locator -e $k --json --jq '{enabled,value,segment_overrides}'; done"
+          },
+          "output": "== [env-f7e6b36424870b0d]\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}\n== [env-ebb179476b232341]\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}",
+          "isError": false,
+          "ms": 1114
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 170,
+        "cacheRead": 1090,
+        "cacheWrite": 3108
+      },
+      "costUsd": 0.0004846,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; F=$(flagsmith feature list --json --jq '.[] | select(.name==\"store_locator\") | .id'); echo \"feature id: $F\"; for k in [env-f7e6b36424870b0d] [env-ebb179476b232341]; do echo \"== $k\"; flagsmith flag get store_locator -e $k --json --jq '.segment_overrides'; flagsmith api \"api/v1/environments/$k/featurestates/?feature=$F\" --jq '.results[] | {id, enabled, value: .feature_state_value, segment: .feature_segment}'; done"
+          },
+          "output": "feature id: 1857\n== [env-f7e6b36424870b0d]\n1\n{\"enabled\":false,\"id\":3880,\"segment\":null,\"value\":\"base\"}\n== [env-ebb179476b232341]\n1\n{\"enabled\":false,\"id\":3877,\"segment\":null,\"value\":\"base\"}",
+          "isError": false,
+          "ms": 2633
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 261,
+        "cacheRead": 4198,
+        "cacheWrite": 277
+      },
+      "costUsd": 0.000207305,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "The override count is 1 but the listing above only showed the environment default. Let me look at the full override data.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; F=1857; for k in [env-f7e6b36424870b0d] [env-ebb179476b232341]; do echo \"== $k\"; flagsmith api \"api/v1/environments/$k/featurestates/?feature=$F\" | jq -c '.results[] | {id, enabled, value: .feature_state_value, feature_segment}'; flagsmith flag get store_locator -e $k --json | jq -c '.segment_overrides'; done; flagsmith segment list --json --jq '.[] | select(.name|test(\"mobile\";\"i\")) | {id,name}'"
+          },
+          "output": "== [env-f7e6b36424870b0d]\n{\"id\":3880,\"enabled\":false,\"value\":\"base\",\"feature_segment\":null}\n1\n== [env-ebb179476b232341]\n{\"id\":3877,\"enabled\":false,\"value\":\"base\",\"feature_segment\":null}\n1\n{\"id\":202,\"name\":\"mobile_app_users\"}",
+          "isError": false,
+          "ms": 1968
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 349,
+        "cacheRead": 4475,
+        "cacheWrite": 384
+      },
+      "costUsd": 0.00026744999999999997,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; flagsmith flag get store_locator -e [env-f7e6b36424870b0d] --json | jq '.'; flagsmith flag get store_locator -e [env-ebb179476b232341] --json | jq '.'"
+          },
+          "output": "{\n  \"feature\": \"store_locator\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": false,\n  \"value\": \"base\",\n  \"segment_overrides\": 1,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\n{\n  \"feature\": \"store_locator\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": false,\n  \"value\": \"base\",\n  \"segment_overrides\": 1,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}",
+          "isError": false,
+          "ms": 1585
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 144,
+        "cacheRead": 4859,
+        "cacheWrite": 486
+      },
+      "costUsd": 0.00018154000000000003,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; flagsmith flag get --help | head -30; flagsmith flag delete --help | head -30"
+          },
+          "output": "Show a single flag's state in the current environment\n\nUsage:\n  flagsmith flag get <feature> [flags]\n\nExamples:\n  flagsmith flag get onboarding\n\n  # a segment or identity override\n  flagsmith flag get onboarding --segment 12\n  flagsmith flag get onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for get\n  -i, --identifier string   show the override for this identity\n      --segment string      show the override for this segment (id or name)\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\nDelete a flag's segment override in the current environment\n\nUsage:\n  flagsmith flag delete <feature> [flags]\n\nExamples:\n  # remove a segment or identity override (the flag itself is untouched)\n  flagsmith flag delete onboarding --segment 12\n  flagsmith flag delete onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for delete\n  -i, --identifier string   the identity whose override to delete\n      --segment string      the segment (id or name) whose override to delete\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively",
+          "isError": false,
+          "ms": 62
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 177,
+        "cacheRead": 5345,
+        "cacheWrite": 348
+      },
+      "costUsd": 0.00018565,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 7,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; for k in [env-f7e6b36424870b0d] [env-ebb179476b232341]; do echo \"== $k\"; flagsmith flag get store_locator -e $k --segment mobile_app_users --json; done"
+          },
+          "output": "== [env-f7e6b36424870b0d]\n{\n  \"feature\": \"store_locator\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 202,\n    \"name\": \"mobile_app_users\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"segment_copy\"\n}\n== [env-ebb179476b232341]\n{\n  \"feature\": \"store_locator\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 202,\n    \"name\": \"mobile_app_users\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"segment_copy\"\n}",
+          "isError": false,
+          "ms": 2184
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 142,
+        "cacheRead": 5693,
+        "cacheWrite": 1278
+      },
+      "costUsd": 0.00028788,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 8,
+      "text": "The `mobile_app_users` override exists in both environments (enabled, value `segment_copy`). I'll delete it in Production only.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cd /tmp; flagsmith flag delete store_locator -e [env-f7e6b36424870b0d] --segment mobile_app_users --yes; echo \"--- read-back PROD\"; flagsmith flag get store_locator -e [env-f7e6b36424870b0d] --json | jq -c '{enabled,value,segment_overrides}'; flagsmith flag get store_locator -e [env-f7e6b36424870b0d] --segment mobile_app_users 2>&1 | tail -2; echo \"--- read-back DEV\"; flagsmith flag get store_locator -e [env-ebb179476b232341] --json | jq -c '{enabled,value,segment_overrides}'; flagsmith flag get store_locator -e [env-ebb179476b232341] --segment mobile_app_users --json | jq -c '{segment:.segment.name,enabled,value}'"
+          },
+          "output": "--- read-back PROD\n{\"enabled\":false,\"value\":\"base\",\"segment_overrides\":0}\nError: \"store_locator\" has no override for segment 202 in Production ([env-f7e6b36424870b0d])\n--- read-back DEV\n{\"enabled\":false,\"value\":\"base\",\"segment_overrides\":1}\n{\"segment\":\"mobile_app_users\",\"enabled\":true,\"value\":\"segment_copy\"}\n\n[stderr]\n✓ Deleted store_locator override for segment mobile_app_users (202) in environment Production ([env-f7e6b36424870b0d])",
+          "isError": false,
+          "ms": 4628
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 457,
+        "cacheRead": 6971,
+        "cacheWrite": 371
+      },
+      "costUsd": 0.00034478499999999996,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 9,
+      "text": "DONE: Removed the `mobile_app_users` segment override on `store_locator` in Production (segment_overrides 1→0; the environment default is still off with value \"base\"). Development still has its override (enabled, value `segment_copy`), and its environment default is unchanged.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 88,
+        "cacheRead": 7342,
+        "cacheWrite": 668
+      },
+      "costUsd": 0.00020112,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:59:46.111Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 1,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops-v2",
+    "sha256": "19b412bfdfa744c5b694bd65148ef45c5575db3d426f1dcba5e64146c94f6de8"
+  }
+}

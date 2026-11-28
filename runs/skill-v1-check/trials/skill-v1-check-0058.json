@@ -1,0 +1,160 @@
+{
+  "trialId": "skill-v1-check-0058",
+  "index": 58,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "start_experiment",
+  "family": "experiments",
+  "heldOut": false,
+  "task": "The experiment \"review_photos_copy test\" in Production is set up but not running. Start it.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.experiment.review_photos_copy test.status",
+      "before": "created",
+      "after": "running"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: The Production experiment \"review_photos_copy test\" (id 90) is now running, confirmed by read-back: status \"running\" with started_at set. I did not change its configuration.",
+  "costUsd": 0.001241,
+  "usage": {
+    "input": 12,
+    "output": 761,
+    "cacheRead": 14187,
+    "cacheWrite": 5740
+  },
+  "toolCalls": 4,
+  "toolErrors": 0,
+  "turns": 5,
+  "ms": 9364,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; echo ----; flagsmith --help",
+    "E=[env-c76b7c589a2a3d12]; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'",
+    "E=[env-c76b7c589a2a3d12]; flagsmith api api/v1/environments/$E/experiments/90/ | jq .; flagsmith flag get review_photos_copy -e $E --json --jq '{enabled,value,variants}'",
+    "E=[env-c76b7c589a2a3d12]; flagsmith api api/v1/environments/$E/experiments/90/start/ -X POST; echo; flagsmith api api/v1/environments/$E/experiments/90/ --jq '{status,started_at,rollout_decision}'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; echo ----; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 53
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 105,
+        "cacheRead": 0,
+        "cacheWrite": 1072
+      },
+      "costUsd": 0.00018690000000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=[env-c76b7c589a2a3d12]; flagsmith api api/v1/environments/$E/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'"
+          },
+          "output": "{\"feature\":{\"id\":1781,\"initial_value\":\"Start free trial\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":178,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Try it free\",\"type\":\"unicode\",\"uuid\":\"99614df7-be7d-480e-8059-a3b4c2cf9245\"}],\"name\":\"review_photos_copy\",\"type\":\"MULTIVARIATE\"},\"id\":90,\"name\":\"review_photos_copy test\",\"rollout_decision\":null,\"status\":\"created\"}",
+          "isError": false,
+          "ms": 545
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 117,
+        "cacheRead": 1072,
+        "cacheWrite": 2797
+      },
+      "costUsd": 0.000419045,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=[env-c76b7c589a2a3d12]; flagsmith api api/v1/environments/$E/experiments/90/ | jq .; flagsmith flag get review_photos_copy -e $E --json --jq '{enabled,value,variants}'"
+          },
+          "output": "{\n  \"id\": 90,\n  \"feature\": {\n    \"id\": 1781,\n    \"name\": \"review_photos_copy\",\n    \"type\": \"MULTIVARIATE\",\n    \"initial_value\": \"Start free trial\",\n    \"multivariate_options\": [\n      {\n        \"id\": 178,\n        \"uuid\": \"99614df7-be7d-480e-8059-a3b4c2cf9245\",\n        \"type\": \"unicode\",\n        \"integer_value\": null,\n        \"string_value\": \"Try it free\",\n        \"boolean_value\": null,\n        \"default_percentage_allocation\": 0.0,\n        \"key\": \"b\"\n      }\n    ]\n  },\n  \"name\": \"review_photos_copy test\",\n  \"hypothesis\": \"Try it free wins\",\n  \"status\": \"created\",\n  \"metrics\": [\n    {\n      \"id\": 122,\n      \"metric\": 146,\n      \"metric_name\": \"add_to_cart\",\n      \"aggregation\": \"occurrence\",\n      \"direction\": \"up\",\n      \"expected_direction\": \"increase\",\n      \"created_at\": \"2026-11-28T15:58:57.673564Z\"\n    }\n  ],\n  \"experiment_rollout\": {\n    \"enabled\": true,\n    \"rollout_percentage\": 100.0,\n    \"feature_state_value\": {\n      \"type\": \"string\",\n      \"value\": \"Start free trial\"\n    },\n    \"multivariate_feature_state_values\": [\n      {\n        \"multivariate_feature_option\": 178,\n        \"percentage_allocation\": 50.0\n      }\n    ],\n    \"audience\": {\n      \"match\": \"any\",\n      \"segments\": []\n    }\n  },\n  \"created_at\": \"2026-11-28T15:58:57.673012Z\",\n  \"updated_at\": \"2026-11-28T15:58:57.684744Z\",\n  \"started_at\": null,\n  \"ended_at\": null,\n  \"rollout_decision\": null,\n  \"rollout_variant\": null\n}\n{\"enabled\":true,\"value\":\"Start free trial\",\"variants\":[{\"id\":178,\"key\":\"b\",\"value\":\"Try it free\",\"weight\":0}]}",
+          "isError": false,
+          "ms": 1311
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 227,
+        "cacheRead": 3869,
+        "cacheWrite": 307
+      },
+      "costUsd": 0.000190765,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "The experiment is configured as expected: one primary metric, a 50/50 split between control and variant \"b\", and 100% rollout. Starting it now.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "E=[env-c76b7c589a2a3d12]; flagsmith api api/v1/environments/$E/experiments/90/start/ -X POST; echo; flagsmith api api/v1/environments/$E/experiments/90/ --jq '{status,started_at,rollout_decision}'"
+          },
+          "output": "{\"id\":90,\"feature\":{\"id\":1781,\"name\":\"review_photos_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Start free trial\",\"multivariate_options\":[{\"id\":178,\"uuid\":\"99614df7-be7d-480e-8059-a3b4c2cf9245\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Try it free\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"review_photos_copy test\",\"hypothesis\":\"Try it free wins\",\"status\":\"running\",\"metrics\":[{\"id\":122,\"metric\":146,\"metric_name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-28T15:58:57.673564Z\"}],\"created_at\":\"2026-11-28T15:58:57.673012Z\",\"updated_at\":\"2026-11-28T15:59:07.364237Z\",\"started_at\":\"2026-11-28T15:59:07.362245Z\",\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}\n{\"rollout_decision\":null,\"started_at\":\"2026-11-28T15:59:07.362245Z\",\"status\":\"running\"}",
+          "isError": false,
+          "ms": 624
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 253,
+        "cacheRead": 4176,
+        "cacheWrite": 894
+      },
+      "costUsd": 0.00028021000000000003,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "DONE: The Production experiment \"review_photos_copy test\" (id 90) is now running, confirmed by read-back: status \"running\" with started_at set. I did not change its configuration.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 59,
+        "cacheRead": 5070,
+        "cacheWrite": 670
+      },
+      "costUsd": 0.00016415,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:58:56.002Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 1,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops",
+    "sha256": "f6f350aec5da331637eaf740f37da39445b693b57967531bd377fca89c509328"
+  }
+}

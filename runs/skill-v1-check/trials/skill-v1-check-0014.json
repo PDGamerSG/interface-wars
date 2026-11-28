@@ -1,0 +1,218 @@
+{
+  "trialId": "skill-v1-check-0014",
+  "index": 14,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "archive_stale_flag",
+  "family": "repair",
+  "heldOut": false,
+  "task": "Archive the flag that is tagged \"stale\". Do not archive or change any other flag.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "feature.bulk_discounts.archived",
+      "before": false,
+      "after": true
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Archived `bulk_discounts` (id 1626), the only flag tagged \"stale\" (tag id 45). Read-back shows `is_archived: true`. The other four flags remain unarchived, and I left its per-environment values untouched (both environments still disabled, value `max_10`).",
+  "costUsd": 0.001686,
+  "usage": {
+    "input": 16,
+    "output": 1074,
+    "cacheRead": 28739,
+    "cacheWrite": 6877
+  },
+  "toolCalls": 7,
+  "toolErrors": 0,
+  "turns": 7,
+  "ms": 13837,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "flagsmith features --help 2>&1 | head -50; flagsmith list --help 2>&1 | head -5",
+    "flagsmith feature list --help; flagsmith feature update --help | head -40; flagsmith api \"api/v1/projects/401/tags/\" | head -c 2000",
+    "flagsmith feature list --json | jq '.[] | {id,name,tags,is_archived}'",
+    "flagsmith api \"api/v1/projects/401/features/?page_size=100\" | jq '.results[] | {id,name,tags,is_archived}'",
+    "flagsmith api \"api/v1/projects/401/features/?page_size=100\" | jq '.count, .next'; flagsmith flag get bulk_discounts -e [env-322db3e8c39ecae5] --json --jq '{enabled,value}'; flagsmith flag get bulk_discounts -e [env-1854ab9a7d46f09b] --json --jq '{enabled,value}'",
+    "flagsmith feature update bulk_discounts --archive --yes; flagsmith api \"api/v1/projects/401/features/?page_size=100\" | jq '.results[] | {id,name,tags,is_archived}'; flagsmith feature list --include-archived --json | jq '.[].name'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 50
+        },
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith features --help 2>&1 | head -50; flagsmith list --help 2>&1 | head -5"
+          },
+          "output": "Error: unknown command \"features\" for \"flagsmith\"\n\nDid you mean this?\n\tfeature\n\nRun 'flagsmith --help' for usage.\nError: unknown command \"list\" for \"flagsmith\"\nRun 'flagsmith --help' for usage.",
+          "isError": false,
+          "ms": 159
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 183,
+        "cacheRead": 0,
+        "cacheWrite": 1072
+      },
+      "costUsd": 0.00022590000000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith feature list --help; flagsmith feature update --help | head -40; flagsmith api \"api/v1/projects/401/tags/\" | head -c 2000"
+          },
+          "output": "List features in the current project\n\nUsage:\n  flagsmith feature list [flags]\n\nExamples:\n  flagsmith feature list\n\n  # include archived features\n  flagsmith feature list --include-archived\n\nFlags:\n  -h, --help               help for list\n      --include-archived   include archived features\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\nUpdate a feature's description or archive state\n\nUsage:\n  flagsmith feature update <feature> [flags]\n\nExamples:\n  flagsmith feature update onboarding --description \"Revised flow\"\n\n  # archive or restore a feature\n  flagsmith feature update onboarding --archive\n  flagsmith feature update onboarding --unarchive\n\nFlags:\n      --archive              archive the feature\n      --description string   feature description\n  -h, --help                 help for update\n      --unarchive            unarchive the feature\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n{\"count\":2,\"next\":null,\"previous\":null,\"results\":[{\"id\":45,\"label\":\"stale\",\"color\":\"#3d4db6\",\"description\":null,\"project\":401,\"uuid\":\"c047e606-e0a3-40b7-b77a-0f4cabae9333\",\"is_permanent\":false,\"is_system_tag\":false,\"type\":\"NONE\"},{\"id\":46,\"label\":\"checkout\",\"color\":\"#3d4db6\",\"description\":null,\"project\":401,\"uuid\":\"fb4675c8-1657-4428-b4a5-c30894eb01b4\",\"is_permanent\":false,\"is_system_tag\":false,\"type\":\"NONE\"}]}",
+          "isError": false,
+          "ms": 383
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 99,
+        "cacheRead": 1072,
+        "cacheWrite": 3005
+      },
+      "costUsd": 0.00043604500000000003,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith feature list --json | jq '.[] | {id,name,tags,is_archived}'"
+          },
+          "output": "{\n  \"id\": 1626,\n  \"name\": \"bulk_discounts\",\n  \"tags\": null,\n  \"is_archived\": null\n}\n{\n  \"id\": 1629,\n  \"name\": \"apple_pay\",\n  \"tags\": null,\n  \"is_archived\": null\n}\n{\n  \"id\": 1630,\n  \"name\": \"search_v2\",\n  \"tags\": null,\n  \"is_archived\": null\n}\n{\n  \"id\": 1632,\n  \"name\": \"review_photos\",\n  \"tags\": null,\n  \"is_archived\": null\n}\n{\n  \"id\": 1633,\n  \"name\": \"loyalty_points\",\n  \"tags\": null,\n  \"is_archived\": null\n}",
+          "isError": false,
+          "ms": 371
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 77,
+        "cacheRead": 4077,
+        "cacheWrite": 1335
+      },
+      "costUsd": 0.000246345,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "The CLI output has no tag field, so I'll check the tags through the API.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api \"api/v1/projects/401/features/?page_size=100\" | jq '.results[] | {id,name,tags,is_archived}'"
+          },
+          "output": "{\n  \"id\": 1626,\n  \"name\": \"bulk_discounts\",\n  \"tags\": [\n    45\n  ],\n  \"is_archived\": false\n}\n{\n  \"id\": 1629,\n  \"name\": \"apple_pay\",\n  \"tags\": [\n    46\n  ],\n  \"is_archived\": false\n}\n{\n  \"id\": 1630,\n  \"name\": \"search_v2\",\n  \"tags\": [],\n  \"is_archived\": false\n}\n{\n  \"id\": 1632,\n  \"name\": \"review_photos\",\n  \"tags\": [],\n  \"is_archived\": false\n}\n{\n  \"id\": 1633,\n  \"name\": \"loyalty_points\",\n  \"tags\": [],\n  \"is_archived\": false\n}",
+          "isError": false,
+          "ms": 323
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 142,
+        "cacheRead": 5412,
+        "cacheWrite": 292
+      },
+      "costUsd": 0.00016182,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "The \"stale\" tag (id 45) is on `bulk_discounts`. Next I'll confirm there is no other match and read the flag before changing it.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api \"api/v1/projects/401/features/?page_size=100\" | jq '.count, .next'; flagsmith flag get bulk_discounts -e [env-322db3e8c39ecae5] --json --jq '{enabled,value}'; flagsmith flag get bulk_discounts -e [env-1854ab9a7d46f09b] --json --jq '{enabled,value}'"
+          },
+          "output": "5\nnull\n{\"enabled\":false,\"value\":\"max_10\"}\n{\"enabled\":false,\"value\":\"max_10\"}",
+          "isError": false,
+          "ms": 1458
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 284,
+        "cacheRead": 5704,
+        "cacheWrite": 369
+      },
+      "costUsd": 0.000245365,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith feature update bulk_discounts --archive --yes; flagsmith api \"api/v1/projects/401/features/?page_size=100\" | jq '.results[] | {id,name,tags,is_archived}'; flagsmith feature list --include-archived --json | jq '.[].name'"
+          },
+          "output": "Feature         bulk_discounts (1626)\nDescription     \nType            standard\nDefault value   max_10\nEnabled         false\n{\n  \"id\": 1626,\n  \"name\": \"bulk_discounts\",\n  \"tags\": [\n    45\n  ],\n  \"is_archived\": true\n}\n{\n  \"id\": 1629,\n  \"name\": \"apple_pay\",\n  \"tags\": [\n    46\n  ],\n  \"is_archived\": false\n}\n{\n  \"id\": 1630,\n  \"name\": \"search_v2\",\n  \"tags\": [],\n  \"is_archived\": false\n}\n{\n  \"id\": 1632,\n  \"name\": \"review_photos\",\n  \"tags\": [],\n  \"is_archived\": false\n}\n{\n  \"id\": 1633,\n  \"name\": \"loyalty_points\",\n  \"tags\": [],\n  \"is_archived\": false\n}\n\"bulk_discounts\"\n\"apple_pay\"\n\"search_v2\"\n\"review_photos\"\n\"loyalty_points\"\n\n[stderr]\n✓ Updated feature bulk_discounts (1626)",
+          "isError": false,
+          "ms": 1206
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 141,
+        "cacheRead": 6073,
+        "cacheWrite": 328
+      },
+      "costUsd": 0.00017243,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 7,
+      "text": "DONE: Archived `bulk_discounts` (id 1626), the only flag tagged \"stale\" (tag id 45). Read-back shows `is_archived: true`. The other four flags remain unarchived, and I left its per-environment values untouched (both environments still disabled, value `max_10`).",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 148,
+        "cacheRead": 6401,
+        "cacheWrite": 476
+      },
+      "costUsd": 0.00019771,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:56:30.980Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 1,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops",
+    "sha256": "f6f350aec5da331637eaf740f37da39445b693b57967531bd377fca89c509328"
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "trialId": "skill-v2-check-0016",
+  "index": 16,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "create_flag",
+  "family": "flags",
+  "heldOut": false,
+  "task": "Create a new feature flag named \"saved_carts\" in the shop project with the description \"Gates the saved carts rollout\". It must be turned off in every environment.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Development.flag.saved_carts.enabled",
+      "before": null,
+      "after": false
+    },
+    {
+      "path": "env.Production.flag.saved_carts.enabled",
+      "before": null,
+      "after": false
+    },
+    {
+      "path": "feature.saved_carts.archived",
+      "before": null,
+      "after": false
+    },
+    {
+      "path": "feature.saved_carts.description",
+      "before": null,
+      "after": "Gates the saved carts rollout"
+    },
+    {
+      "path": "feature.saved_carts.exists",
+      "before": null,
+      "after": true
+    },
+    {
+      "path": "feature.saved_carts.tags",
+      "before": null,
+      "after": ""
+    },
+    {
+      "path": "feature.saved_carts.type",
+      "before": null,
+      "after": "STANDARD"
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Created the `saved_carts` flag (id 1867) in the shop project with the description \"Gates the saved carts rollout\". Read-back shows it disabled in both Development and Production, with no value set.",
+  "costUsd": 0.00101,
+  "usage": {
+    "input": 10,
+    "output": 496,
+    "cacheRead": 10198,
+    "cacheWrite": 5275
+  },
+  "toolCalls": 3,
+  "toolErrors": 0,
+  "turns": 4,
+  "ms": 6605,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "flagsmith config; flagsmith feature list --json --jq '.[] | select(.name==\"saved_carts\")' ; flagsmith feature create --help | head -30",
+    "flagsmith feature create saved_carts --description \"Gates the saved carts rollout\" --yes && for k in [env-2589091f6f85493c] [env-ab137857adb148aa]; do echo \"== $k\"; flagsmith flag get saved_carts -e $k --json --jq '{enabled,value,description:.description}'; done"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops-v2\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Stages experiment drafts with enrollment off. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI (revision 2)\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment draft (created, not started). Needs the feature id, metric ids and multivariate option ids.\n# Stage it with enrollment off: Flagsmith can enroll identities from an enabled rollout before the experiment starts.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":0,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n",
+          "isError": false,
+          "ms": 84
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 100,
+        "cacheRead": 0,
+        "cacheWrite": 1093
+      },
+      "costUsd": 0.000187025,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith config; flagsmith feature list --json --jq '.[] | select(.name==\"saved_carts\")' ; flagsmith feature create --help | head -30"
+          },
+          "output": "Config file    -                       default\nProject        462                     env\nOrganisation   462                     env\nEnvironment    -                       default\nAPI            http://flagsmith:8000   env\nSDK API        http://flagsmith:8000   default\nCreate a feature\n\nUsage:\n  flagsmith feature create <name> [flags]\n\nExamples:\n  # a standard feature, off by default\n  flagsmith feature create onboarding --description \"New onboarding flow\"\n\n  # a default value, enabled everywhere\n  flagsmith feature create banner-text --value \"Welcome!\" --enabled\n\n  # a multivariate feature with weighted variants from a file\n  flagsmith feature create button-colour --variants @variants.json\n\nFlags:\n      --description string   feature description\n      --enabled              enable the feature by default\n  -h, --help                 help for create\n      --value string         the feature's default value\n      --variants string      multivariate variants: @file, -, or inline JSON\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)",
+          "isError": false,
+          "ms": 312
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 99,
+        "cacheRead": 1093,
+        "cacheWrite": 3115
+      },
+      "costUsd": 0.000450005,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "The flag doesn't exist yet. Creating it off by default (no `--enabled`).",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith feature create saved_carts --description \"Gates the saved carts rollout\" --yes && for k in [env-2589091f6f85493c] [env-ab137857adb148aa]; do echo \"== $k\"; flagsmith flag get saved_carts -e $k --json --jq '{enabled,value,description:.description}'; done"
+          },
+          "output": "Feature         saved_carts (1867)\nDescription     Gates the saved carts rollout\nType            standard\nDefault value   -\nEnabled         false\n== [env-2589091f6f85493c]\n{\"description\":\"Gates the saved carts rollout\",\"enabled\":false,\"value\":null}\n== [env-ab137857adb148aa]\n{\"description\":\"Gates the saved carts rollout\",\"enabled\":false,\"value\":null}\n\n[stderr]\n✓ Created feature saved_carts (1867)",
+          "isError": false,
+          "ms": 1532
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 199,
+        "cacheRead": 4208,
+        "cacheWrite": 689
+      },
+      "costUsd": 0.000227905,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "DONE: Created the `saved_carts` flag (id 1867) in the shop project with the description \"Gates the saved carts rollout\". Read-back shows it disabled in both Development and Production, with no value set.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 98,
+        "cacheRead": 4897,
+        "cacheWrite": 378
+      },
+      "costUsd": 0.00014542000000000003,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:59:46.105Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 3,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops-v2",
+    "sha256": "19b412bfdfa744c5b694bd65148ef45c5575db3d426f1dcba5e64146c94f6de8"
+  }
+}

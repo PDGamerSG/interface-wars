@@ -1,0 +1,208 @@
+{
+  "trialId": "skill-v1-check-0046",
+  "index": 46,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "archive_stale_flag",
+  "family": "repair",
+  "heldOut": false,
+  "task": "Archive the flag that is tagged \"stale\". Do not archive or change any other flag.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "feature.order_tracking_v2.archived",
+      "before": false,
+      "after": true
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: Archived `order_tracking_v2` (id 1752), the only flag tagged \"stale\"; it now reads `is_archived: true`. The other four flags are unchanged and not archived. Its environment states are unchanged (disabled, value \"v2\" in both Development and Production).",
+  "costUsd": 0.001528,
+  "usage": {
+    "input": 16,
+    "output": 1119,
+    "cacheRead": 24818,
+    "cacheWrite": 5747
+  },
+  "toolCalls": 6,
+  "toolErrors": 0,
+  "turns": 7,
+  "ms": 14354,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; echo ----; flagsmith --help",
+    "flagsmith api \"api/v1/projects/433/tags/\" --jq '.'; echo ----; flagsmith feature list --json | jq '.[] | {id,name,tags,is_archived}'",
+    "flagsmith api \"api/v1/projects/433/features/?page_size=200\" --jq '.results[] | {id,name,tags,is_archived}'",
+    "flagsmith api \"api/v1/projects/433/features/?page_size=200\" --jq '.count'; flagsmith feature get order_tracking_v2 --json 2>/dev/null | jq '{id,name,is_archived}' ; flagsmith flag get order_tracking_v2 -e [env-9a62dfbaeb071874] --json --jq '{enabled,value}'; flagsmith flag get order_tracking_v2 -e [env-dacd92b82b8cd360] --json --jq '{enabled,value}'",
+    "flagsmith feature update order_tracking_v2 --archive --yes; echo \"exit=$?\"; flagsmith api \"api/v1/projects/433/features/?page_size=200\" --jq '.results[] | {id,name,is_archived,tags}'",
+    "flagsmith flag get order_tracking_v2 -e [env-9a62dfbaeb071874] --json --jq '{enabled,value}' 2>&1; flagsmith flag get order_tracking_v2 -e [env-dacd92b82b8cd360] --json --jq '{enabled,value}' 2>&1"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; echo ----; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 49
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 102,
+        "cacheRead": 0,
+        "cacheWrite": 1073
+      },
+      "costUsd": 0.000185525,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "Next I'll find the project's tags and the flags that carry them.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api \"api/v1/projects/433/tags/\" --jq '.'; echo ----; flagsmith feature list --json | jq '.[] | {id,name,tags,is_archived}'"
+          },
+          "output": "{\"count\":2,\"next\":null,\"previous\":null,\"results\":[{\"color\":\"#3d4db6\",\"description\":null,\"id\":49,\"is_permanent\":false,\"is_system_tag\":false,\"label\":\"stale\",\"project\":433,\"type\":\"NONE\",\"uuid\":\"ba275984-4671-46ea-9305-c4b258dc0d74\"},{\"color\":\"#3d4db6\",\"description\":null,\"id\":50,\"is_permanent\":false,\"is_system_tag\":false,\"label\":\"checkout\",\"project\":433,\"type\":\"NONE\",\"uuid\":\"6abec4a3-54c6-4ab4-b03b-bccb96bc01af\"}]}\n----\n{\n  \"id\": 1752,\n  \"name\": \"order_tracking_v2\",\n  \"tags\": null,\n  \"is_archived\": null\n}\n{\n  \"id\": 1753,\n  \"name\": \"live_chat\",\n  \"tags\": null,\n  \"is_archived\": null\n}\n{\n  \"id\": 1754,\n  \"name\": \"guest_checkout\",\n  \"tags\": null,\n  \"is_archived\": null\n}\n{\n  \"id\": 1755,\n  \"name\": \"search_v2\",\n  \"tags\": null,\n  \"is_archived\": null\n}\n{\n  \"id\": 1756,\n  \"name\": \"one_click_buy\",\n  \"tags\": null,\n  \"is_archived\": null\n}",
+          "isError": false,
+          "ms": 544
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 131,
+        "cacheRead": 1073,
+        "cacheWrite": 2794
+      },
+      "costUsd": 0.00042568000000000006,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "The CLI list doesn't show tags, so I'll query the features API directly.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api \"api/v1/projects/433/features/?page_size=200\" --jq '.results[] | {id,name,tags,is_archived}'"
+          },
+          "output": "{\"id\":1752,\"is_archived\":false,\"name\":\"order_tracking_v2\",\"tags\":[49]}\n{\"id\":1753,\"is_archived\":false,\"name\":\"live_chat\",\"tags\":[50]}\n{\"id\":1754,\"is_archived\":false,\"name\":\"guest_checkout\",\"tags\":[]}\n{\"id\":1755,\"is_archived\":false,\"name\":\"search_v2\",\"tags\":[]}\n{\"id\":1756,\"is_archived\":false,\"name\":\"one_click_buy\",\"tags\":[]}",
+          "isError": false,
+          "ms": 316
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 141,
+        "cacheRead": 3867,
+        "cacheWrite": 559
+      },
+      "costUsd": 0.000179245,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "Only `order_tracking_v2` (id 1752) carries the \"stale\" tag (id 49). I'll confirm the total count and read the flag before changing it.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith api \"api/v1/projects/433/features/?page_size=200\" --jq '.count'; flagsmith feature get order_tracking_v2 --json 2>/dev/null | jq '{id,name,is_archived}' ; flagsmith flag get order_tracking_v2 -e [env-9a62dfbaeb071874] --json --jq '{enabled,value}'; flagsmith flag get order_tracking_v2 -e [env-dacd92b82b8cd360] --json --jq '{enabled,value}'"
+          },
+          "output": "5\n{\n  \"id\": 1752,\n  \"name\": \"order_tracking_v2\",\n  \"is_archived\": null\n}\n{\"enabled\":false,\"value\":\"v2\"}\n{\"enabled\":false,\"value\":\"v2\"}",
+          "isError": false,
+          "ms": 2291
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 359,
+        "cacheRead": 4426,
+        "cacheWrite": 310
+      },
+      "costUsd": 0.00026271,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith feature update order_tracking_v2 --archive --yes; echo \"exit=$?\"; flagsmith api \"api/v1/projects/433/features/?page_size=200\" --jq '.results[] | {id,name,is_archived,tags}'"
+          },
+          "output": "Feature         order_tracking_v2 (1752)\nDescription     \nType            standard\nDefault value   v2\nEnabled         false\nexit=0\n{\"id\":1752,\"is_archived\":true,\"name\":\"order_tracking_v2\",\"tags\":[49]}\n{\"id\":1753,\"is_archived\":false,\"name\":\"live_chat\",\"tags\":[50]}\n{\"id\":1754,\"is_archived\":false,\"name\":\"guest_checkout\",\"tags\":[]}\n{\"id\":1755,\"is_archived\":false,\"name\":\"search_v2\",\"tags\":[]}\n{\"id\":1756,\"is_archived\":false,\"name\":\"one_click_buy\",\"tags\":[]}\n\n[stderr]\n✓ Updated feature order_tracking_v2 (1752)",
+          "isError": false,
+          "ms": 893
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 128,
+        "cacheRead": 4736,
+        "cacheWrite": 436
+      },
+      "costUsd": 0.00016606,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag get order_tracking_v2 -e [env-9a62dfbaeb071874] --json --jq '{enabled,value}' 2>&1; flagsmith flag get order_tracking_v2 -e [env-dacd92b82b8cd360] --json --jq '{enabled,value}' 2>&1"
+          },
+          "output": "{\"enabled\":false,\"value\":\"v2\"}\n{\"enabled\":false,\"value\":\"v2\"}",
+          "isError": false,
+          "ms": 1118
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 165,
+        "cacheRead": 5172,
+        "cacheWrite": 372
+      },
+      "costUsd": 0.00018092000000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 7,
+      "text": "DONE: Archived `order_tracking_v2` (id 1752), the only flag tagged \"stale\"; it now reads `is_archived: true`. The other four flags are unchanged and not archived. Its environment states are unchanged (disabled, value \"v2\" in both Development and Production).",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 93,
+        "cacheRead": 5544,
+        "cacheWrite": 203
+      },
+      "costUsd": 0.000127515,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:57:59.874Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 1,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops",
+    "sha256": "f6f350aec5da331637eaf740f37da39445b693b57967531bd377fca89c509328"
+  }
+}

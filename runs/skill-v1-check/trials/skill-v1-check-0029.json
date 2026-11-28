@@ -1,0 +1,208 @@
+{
+  "trialId": "skill-v1-check-0029",
+  "index": 29,
+  "arm": "cli_skill",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "template": "find_maintenance_flag",
+  "family": "repair",
+  "heldOut": false,
+  "task": "One flag in Production is enabled and serving the value \"maintenance\". Find it and turn it off in Production. Leave every other flag alone.",
+  "correct": true,
+  "reasons": [],
+  "collateral": [],
+  "changes": [
+    {
+      "path": "env.Production.flag.order_tracking_v2.enabled",
+      "before": true,
+      "after": false
+    }
+  ],
+  "outcome": "done",
+  "finalText": "DONE: In Production, `order_tracking_v2` (the only enabled flag serving \"maintenance\") is now disabled; its value is still \"maintenance\", and the other four enabled flags are unchanged.",
+  "costUsd": 0.001306,
+  "usage": {
+    "input": 16,
+    "output": 851,
+    "cacheRead": 23345,
+    "cacheWrite": 5160
+  },
+  "toolCalls": 6,
+  "toolErrors": 0,
+  "turns": 7,
+  "ms": 14293,
+  "commands": [
+    "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
+    "flagsmith flag list -e [env-afba980ac0224f3b] --json --jq '.[] | select(.enabled==true) | {name,value,enabled}'",
+    "flagsmith flag list -e [env-afba980ac0224f3b] --json | jq '.[0]'; flagsmith flag list -e [env-afba980ac0224f3b] --json | jq '.[] | select(.enabled==true) | {feature,value}'",
+    "flagsmith flag get order_tracking_v2 -e [env-afba980ac0224f3b] --json --jq '{enabled,value,segment_overrides}'",
+    "flagsmith flag update order_tracking_v2 -e [env-afba980ac0224f3b] --disable --yes && flagsmith flag get order_tracking_v2 -e [env-afba980ac0224f3b] --json --jq '{enabled,value,segment_overrides}'",
+    "flagsmith flag list -e [env-afba980ac0224f3b] --json | jq -r '.[] | select(.enabled==true) | .feature'"
+  ],
+  "transcript": [
+    {
+      "turn": 1,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help"
+          },
+          "output": "---\nname: flagsmith-ops\ndescription: Operate Flagsmith end to end with the Flagsmith CLI v2 - flags, values, multivariate splits, segments and overrides, experiments and metrics (via `flagsmith api`) - with scoped changes and read-back verification. Use for any Flagsmith task.\n---\n\n# Flagsmith operations with the CLI\n\nThe CLI is already authenticated and has the organisation and project preselected. Pick the environment with\n`-e <environment key>` on every flag command. Keep output small: add `--json --jq '<filter>'` when you only need a field.\n\n## Rules\n\n1. Change only what the task names: one flag, one environment, one segment. Never loop over flags or environments.\n2. Read the target before and after the change (`flagsmith flag get <flag> -e <key> --json`). Report DONE only after the read-back matches.\n3. Writes run without a terminal: add `--yes` to every command that changes something, or it stops at a confirmation prompt.\n4. If a step fails, read the error, fix the one command, and retry. Do not try alternative bulk approaches.\n\n## Recipes\n\n| Job | Command |\n|---|---|\n| Create a flag, off everywhere | `flagsmith feature create <name> --description \"<text>\" --yes` |\n| Turn on/off in one environment | `flagsmith flag update <flag> -e <key> --enable --yes` (or `--disable`) |\n| Set a value | `flagsmith flag update <flag> -e <key> --value \"<v>\" --yes` |\n| Create a multivariate flag | `flagsmith feature create <name> --value \"<control>\" --enabled --variants '[{\"value\":\"A\",\"weight\":50},{\"value\":\"B\",\"weight\":50}]' --yes` |\n| Re-weight variants in one environment | `flagsmith flag update <flag> -e <key> --weight <variant key or id>=<pct> --yes` (find ids with `flagsmith feature variant list <flag>`; the control gets the remainder) |\n| Create a segment (trait equals value) | `flagsmith segment create <name> --rules '{\"type\":\"ALL\",\"rules\":[{\"type\":\"ANY\",\"conditions\":[{\"operator\":\"EQUAL\",\"property\":\"<trait>\",\"value\":\"<value>\"}]}]}' --yes` |\n| Segment override in one environment | `flagsmith flag update <flag> -e <key> --segment <segment name> --enable --value \"<v>\" --yes` (the environment default is untouched) |\n| Remove a segment override | `flagsmith flag delete <flag> -e <key> --segment <segment name> --yes` |\n| Archive a flag | `flagsmith feature update <flag> --archive --yes` |\n| Find flags by state | `flagsmith flag list -e <key> --json --jq '.[] | select(.value==\"<v>\")'` |\n| Find flags by tag | `flagsmith api \"api/v1/projects/<project id>/tags/\"` then `flagsmith feature list --json` and match tag ids |\n\n## Experiments (no dedicated commands: use `flagsmith api`)\n\nExperiments and metrics live under the environment key. Send JSON bodies with `--input -` and a heredoc.\n\n```bash\n# Metric. aggregation: occurrence | count | sum | mean; direction: up | down | informational\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"<metric>\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"<event>\"}}\nJSON\n\n# Experiment (created, not started). Needs the feature id, metric ids and multivariate option ids.\nflagsmith api api/v1/environments/<env key>/experiment-metrics/ --jq '.results[] | {id,name}'\nflagsmith feature variant list <flag> --json\nflagsmith api api/v1/environments/<env key>/experiments/ -X POST --input - <<'JSON'\n{\"feature\":<feature id>,\"name\":\"<name>\",\"hypothesis\":\"<text>\",\n \"metrics\":[{\"metric\":<primary id>,\"expected_direction\":\"increase\"},{\"metric\":<guardrail id>,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"<control value>\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":<option id>,\"percentage_allocation\":50}]}}\nJSON\n```\n\n- expected_direction: `increase`, `decrease`, `not_increase` (guardrail that must not go up), `not_decrease`.\n- Start: `flagsmith api api/v1/environments/<env key>/experiments/<id>/sta",
+          "isError": false,
+          "ms": 129
+        }
+      ],
+      "usage": {
+        "input": 4,
+        "output": 96,
+        "cacheRead": 0,
+        "cacheWrite": 1087
+      },
+      "costUsd": 0.000184275,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 2,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag list -e [env-afba980ac0224f3b] --json --jq '.[] | select(.enabled==true) | {name,value,enabled}'"
+          },
+          "output": "{\"enabled\":true,\"name\":null,\"value\":\"maintenance\"}\n{\"enabled\":true,\"name\":null,\"value\":\"beta_copy\"}\n{\"enabled\":true,\"name\":null,\"value\":\"fast_lane\"}\n{\"enabled\":true,\"name\":null,\"value\":\"fast_lane\"}\n{\"enabled\":true,\"name\":null,\"value\":\"v2\"}",
+          "isError": false,
+          "ms": 905
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 107,
+        "cacheRead": 1087,
+        "cacheWrite": 2786
+      },
+      "costUsd": 0.00041282,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 3,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag list -e [env-afba980ac0224f3b] --json | jq '.[0]'; flagsmith flag list -e [env-afba980ac0224f3b] --json | jq '.[] | select(.enabled==true) | {feature,value}'"
+          },
+          "output": "{\n  \"feature\": \"order_tracking_v2\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"maintenance\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\n{\n  \"feature\": \"order_tracking_v2\",\n  \"value\": \"maintenance\"\n}\n{\n  \"feature\": \"guest_checkout\",\n  \"value\": \"beta_copy\"\n}\n{\n  \"feature\": \"review_photos\",\n  \"value\": \"fast_lane\"\n}\n{\n  \"feature\": \"promo_banner\",\n  \"value\": \"fast_lane\"\n}\n{\n  \"feature\": \"one_click_buy\",\n  \"value\": \"v2\"\n}",
+          "isError": false,
+          "ms": 1091
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 174,
+        "cacheRead": 3873,
+        "cacheWrite": 232
+      },
+      "costUsd": 0.00015493,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 4,
+      "text": "Exactly one enabled Production flag serves \"maintenance\": `order_tracking_v2`. Reading it before changing anything.",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag get order_tracking_v2 -e [env-afba980ac0224f3b] --json --jq '{enabled,value,segment_overrides}'"
+          },
+          "output": "{\"enabled\":true,\"segment_overrides\":0,\"value\":\"maintenance\"}",
+          "isError": false,
+          "ms": 620
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 149,
+        "cacheRead": 4105,
+        "cacheWrite": 430
+      },
+      "costUsd": 0.0001695,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 5,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag update order_tracking_v2 -e [env-afba980ac0224f3b] --disable --yes && flagsmith flag get order_tracking_v2 -e [env-afba980ac0224f3b] --json --jq '{enabled,value,segment_overrides}'"
+          },
+          "output": "Feature              order_tracking_v2\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"maintenance\"}\n\n[stderr]\n✓ Disabled order_tracking_v2 in environment Production ([env-afba980ac0224f3b])",
+          "isError": false,
+          "ms": 1662
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 155,
+        "cacheRead": 4535,
+        "cacheWrite": 182
+      },
+      "costUsd": 0.00014580000000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 6,
+      "text": "",
+      "calls": [
+        {
+          "name": "bash",
+          "input": {
+            "command": "flagsmith flag list -e [env-afba980ac0224f3b] --json | jq -r '.[] | select(.enabled==true) | .feature'"
+          },
+          "output": "guest_checkout\nreview_photos\npromo_banner\none_click_buy",
+          "isError": false,
+          "ms": 592
+        }
+      ],
+      "usage": {
+        "input": 2,
+        "output": 103,
+        "cacheRead": 4717,
+        "cacheWrite": 311
+      },
+      "costUsd": 0.00013774500000000002,
+      "stopReason": "tool_use"
+    },
+    {
+      "turn": 7,
+      "text": "DONE: In Production, `order_tracking_v2` (the only enabled flag serving \"maintenance\") is now disabled; its value is still \"maintenance\", and the other four enabled flags are unchanged.",
+      "calls": [],
+      "usage": {
+        "input": 2,
+        "output": 67,
+        "cacheRead": 5028,
+        "cacheWrite": 132
+      },
+      "costUsd": 0.00010048,
+      "stopReason": "end_turn"
+    }
+  ],
+  "startedAt": "2026-11-28T15:57:05.481Z",
+  "grader": "strict-draft-v1",
+  "writeAudit": {
+    "audit": "audit-v1",
+    "writes": 1,
+    "systemEvents": 0,
+    "outOfScope": [],
+    "lostRows": 0
+  },
+  "skill": {
+    "name": "flagsmith-ops",
+    "sha256": "f6f350aec5da331637eaf740f37da39445b693b57967531bd377fca89c509328"
+  }
+}
