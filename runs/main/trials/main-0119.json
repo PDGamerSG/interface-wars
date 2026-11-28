@@ -40,7 +40,7 @@
     "list_project_features {\"project_pk\":121,\"search\":\"review_photos\",\"environment\":241}",
     "list_project_segments {\"project_pk\":121,\"q\":\"enterprise_accounts\"}",
     "list_project_environments {\"id\":121}",
-    "create_segment_override {\"environment_api_key\":\"58VPWaXjxgGp79ozCMpRHP\",\"feature_pk\":470,\"feature\":470,\"enabled\":true,\"feature_segment\":{\"segment\":51},\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"v2\"}}",
+    "create_segment_override {\"environment_api_key\":\"[env-ad17b387b061759a]\",\"feature_pk\":470,\"feature\":470,\"enabled\":true,\"feature_segment\":{\"segment\":51},\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"v2\"}}",
     "list_feature_segments {\"environment\":241,\"feature\":470}",
     "list_project_features {\"project_pk\":121,\"search\":\"review_photos\",\"environment\":241}"
   ],
@@ -89,7 +89,7 @@
           "input": {
             "id": 121
           },
-          "output": "{\"result\":[{\"id\":240,\"uuid\":\"88cf3df0-6bd7-42db-8745-7fabe9924631\",\"name\":\"Development\",\"api_key\":\"nA6n4yjUJm3fR2W6mNKNKU\",\"description\":null,\"project\":121,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false},{\"id\":241,\"uuid\":\"fe97a986-61ab-4a0c-adc8-83fe2aa89036\",\"name\":\"Production\",\"api_key\":\"58VPWaXjxgGp79ozCMpRHP\",\"description\":null,\"project\":121,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false}]}",
+          "output": "{\"result\":[{\"id\":240,\"uuid\":\"88cf3df0-6bd7-42db-8745-7fabe9924631\",\"name\":\"Development\",\"api_key\":\"[env-0bac477ee263cec6]\",\"description\":null,\"project\":121,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false},{\"id\":241,\"uuid\":\"fe97a986-61ab-4a0c-adc8-83fe2aa89036\",\"name\":\"Production\",\"api_key\":\"[env-ad17b387b061759a]\",\"description\":null,\"project\":121,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false}]}",
           "isError": false,
           "ms": 331
         }
@@ -110,7 +110,7 @@
         {
           "name": "create_segment_override",
           "input": {
-            "environment_api_key": "58VPWaXjxgGp79ozCMpRHP",
+            "environment_api_key": "[env-ad17b387b061759a]",
             "feature_pk": 470,
             "feature": 470,
             "enabled": true,

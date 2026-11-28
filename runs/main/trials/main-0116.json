@@ -104,7 +104,7 @@
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
     "flagsmith feature list --json --jq '.[] | select(.name|test(\"order_tracking\")) | .name'; flagsmith feature create --help | head -40",
-    "flagsmith feature create order_tracking_v2_copy --value \"Sign up\" --enabled --variants '[{\"value\":\"Create account\",\"weight\":50},{\"value\":\"Join free\",\"weight\":50}]' --yes && for e in ZxXPcWGfgv3XcxdVTavAx7 bk5HaSEYGLd3ZeVgaivfnC; do echo \"== $e\"; flagsmith flag get order_tracking_v2_copy -e $e --json --jq '{enabled,value,variants}'; done"
+    "flagsmith feature create order_tracking_v2_copy --value \"Sign up\" --enabled --variants '[{\"value\":\"Create account\",\"weight\":50},{\"value\":\"Join free\",\"weight\":50}]' --yes && for e in [env-a6f19e8bc9ecb980] [env-30ebf6902c5a900a]; do echo \"== $e\"; flagsmith flag get order_tracking_v2_copy -e $e --json --jq '{enabled,value,variants}'; done"
   ],
   "transcript": [
     {
@@ -160,9 +160,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith feature create order_tracking_v2_copy --value \"Sign up\" --enabled --variants '[{\"value\":\"Create account\",\"weight\":50},{\"value\":\"Join free\",\"weight\":50}]' --yes && for e in ZxXPcWGfgv3XcxdVTavAx7 bk5HaSEYGLd3ZeVgaivfnC; do echo \"== $e\"; flagsmith flag get order_tracking_v2_copy -e $e --json --jq '{enabled,value,variants}'; done"
+            "command": "flagsmith feature create order_tracking_v2_copy --value \"Sign up\" --enabled --variants '[{\"value\":\"Create account\",\"weight\":50},{\"value\":\"Join free\",\"weight\":50}]' --yes && for e in [env-a6f19e8bc9ecb980] [env-30ebf6902c5a900a]; do echo \"== $e\"; flagsmith flag get order_tracking_v2_copy -e $e --json --jq '{enabled,value,variants}'; done"
           },
-          "output": "Feature         order_tracking_v2_copy (469)\nDescription     \nType            multivariate\nDefault value   Sign up\nEnabled         true\n\nVariants\n  VALUE           WEIGHT  KEY  ID\n  Create account  50%          46\n  Join free       50%          47\n== ZxXPcWGfgv3XcxdVTavAx7\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":46,\"value\":\"Create account\",\"weight\":50},{\"id\":47,\"value\":\"Join free\",\"weight\":50}]}\n== bk5HaSEYGLd3ZeVgaivfnC\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":46,\"value\":\"Create account\",\"weight\":50},{\"id\":47,\"value\":\"Join free\",\"weight\":50}]}\n\n[stderr]\n✓ Created feature order_tracking_v2_copy (469)",
+          "output": "Feature         order_tracking_v2_copy (469)\nDescription     \nType            multivariate\nDefault value   Sign up\nEnabled         true\n\nVariants\n  VALUE           WEIGHT  KEY  ID\n  Create account  50%          46\n  Join free       50%          47\n== [env-a6f19e8bc9ecb980]\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":46,\"value\":\"Create account\",\"weight\":50},{\"id\":47,\"value\":\"Join free\",\"weight\":50}]}\n== [env-30ebf6902c5a900a]\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":46,\"value\":\"Create account\",\"weight\":50},{\"id\":47,\"value\":\"Join free\",\"weight\":50}]}\n\n[stderr]\n✓ Created feature order_tracking_v2_copy (469)",
           "isError": false,
           "ms": 2865
         }

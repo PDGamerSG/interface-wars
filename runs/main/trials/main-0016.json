@@ -64,7 +64,7 @@
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
     "flagsmith feature create apple_pay --description \"Gates the apple pay rollout\" --yes; echo \"rc=$?\"; flagsmith feature list --json --jq '.[] | select(.name==\"apple_pay\") | {id,name,description}'",
-    "for k in 4YSh3CZ84KPz86nyhDbm8G b7R2RoZUqTc7WSphgRsH2m; do echo \"== $k\"; flagsmith flag get apple_pay -e $k --json --jq '{enabled,value}'; done"
+    "for k in [env-25724334afdffddd] [env-045b39ac1d5f54fc]; do echo \"== $k\"; flagsmith flag get apple_pay -e $k --json --jq '{enabled,value}'; done"
   ],
   "transcript": [
     {
@@ -120,9 +120,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "for k in 4YSh3CZ84KPz86nyhDbm8G b7R2RoZUqTc7WSphgRsH2m; do echo \"== $k\"; flagsmith flag get apple_pay -e $k --json --jq '{enabled,value}'; done"
+            "command": "for k in [env-25724334afdffddd] [env-045b39ac1d5f54fc]; do echo \"== $k\"; flagsmith flag get apple_pay -e $k --json --jq '{enabled,value}'; done"
           },
-          "output": "== 4YSh3CZ84KPz86nyhDbm8G\n{\"enabled\":false,\"value\":null}\n== b7R2RoZUqTc7WSphgRsH2m\n{\"enabled\":false,\"value\":null}",
+          "output": "== [env-25724334afdffddd]\n{\"enabled\":false,\"value\":null}\n== [env-045b39ac1d5f54fc]\n{\"enabled\":false,\"value\":null}",
           "isError": false,
           "ms": 1623
         }

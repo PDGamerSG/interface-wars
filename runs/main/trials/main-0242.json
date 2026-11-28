@@ -33,8 +33,8 @@
   "ms": 6102,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith flag get wishlist_sync -e ZfyWnfW9Km7HmHoovwT9MN --json --jq '{enabled,value}'",
-    "flagsmith flag update wishlist_sync -e ZfyWnfW9Km7HmHoovwT9MN --value \"tiered\" --yes && flagsmith flag get wishlist_sync -e ZfyWnfW9Km7HmHoovwT9MN --json --jq '{enabled,value}'"
+    "flagsmith flag get wishlist_sync -e [env-79c42ba753e9366a] --json --jq '{enabled,value}'",
+    "flagsmith flag update wishlist_sync -e [env-79c42ba753e9366a] --value \"tiered\" --yes && flagsmith flag get wishlist_sync -e [env-79c42ba753e9366a] --json --jq '{enabled,value}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get wishlist_sync -e ZfyWnfW9Km7HmHoovwT9MN --json --jq '{enabled,value}'"
+            "command": "flagsmith flag get wishlist_sync -e [env-79c42ba753e9366a] --json --jq '{enabled,value}'"
           },
           "output": "{\"enabled\":true,\"value\":\"compact\"}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update wishlist_sync -e ZfyWnfW9Km7HmHoovwT9MN --value \"tiered\" --yes && flagsmith flag get wishlist_sync -e ZfyWnfW9Km7HmHoovwT9MN --json --jq '{enabled,value}'"
+            "command": "flagsmith flag update wishlist_sync -e [env-79c42ba753e9366a] --value \"tiered\" --yes && flagsmith flag get wishlist_sync -e [env-79c42ba753e9366a] --json --jq '{enabled,value}'"
           },
-          "output": "Feature              wishlist_sync\nDescription          \nType                 standard\nState                on\nValue                tiered\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"value\":\"tiered\"}\n\n[stderr]\n✓ Set wishlist_sync to \"tiered\" in environment Development (ZfyWnfW9Km7HmHoovwT9MN)",
+          "output": "Feature              wishlist_sync\nDescription          \nType                 standard\nState                on\nValue                tiered\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"value\":\"tiered\"}\n\n[stderr]\n✓ Set wishlist_sync to \"tiered\" in environment Development ([env-79c42ba753e9366a])",
           "isError": false,
           "ms": 1601
         }

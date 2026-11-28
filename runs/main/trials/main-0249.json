@@ -63,14 +63,14 @@
   "ms": 19543,
   "commands": [
     "list_project_features {\"project_pk\":251,\"search\":\"saved_carts_copy\",\"environment\":501}",
-    "list_metrics {\"environment_api_key\":\"7fEnRmGzvpQwvANUsJv3KC\",\"q\":\"add_to_cart\"}",
-    "list_metrics {\"environment_api_key\":\"7fEnRmGzvpQwvANUsJv3KC\",\"q\":\"support_ticket_opened\"}",
-    "list_experiments {\"environment_api_key\":\"7fEnRmGzvpQwvANUsJv3KC\",\"q\":\"saved_carts_copy\"}",
+    "list_metrics {\"environment_api_key\":\"[env-db2d50f7ac26bb51]\",\"q\":\"add_to_cart\"}",
+    "list_metrics {\"environment_api_key\":\"[env-db2d50f7ac26bb51]\",\"q\":\"support_ticket_opened\"}",
+    "list_experiments {\"environment_api_key\":\"[env-db2d50f7ac26bb51]\",\"q\":\"saved_carts_copy\"}",
     "list_feature_multivariate_options {\"feature_pk\":981,\"project_pk\":\"251\"}",
     "get_feature_flag {\"id\":981,\"project_pk\":251}",
-    "create_experiment {\"environment_api_key\":\"7fEnRmGzvpQwvANUsJv3KC\",\"feature\":981,\"name\":\"saved_carts_copy test\",\"hypothesis\":\"\\\"Get it today\\\" increases add to cart versus \\\"Buy now\\\"\",\"status\":\"created\",\"metrics\":[{\"metric\":\"add_to_cart\",\"expected_direction\":\"increase\"},{\"metric\":\"support_ticket_opened\",\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":true,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Buy now\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":96,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
-    "create_experiment {\"environment_api_key\":\"7fEnRmGzvpQwvANUsJv3KC\",\"feature\":981,\"name\":\"saved_carts_copy test\",\"hypothesis\":\"\\\"Get it today\\\" increases add to cart versus \\\"Buy now\\\"\",\"status\":\"created\",\"metrics\":[{\"metric\":75,\"expected_direction\":\"increase\"},{\"metric\":76,\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":true,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Buy now\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":96,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
-    "get_experiment {\"environment_api_key\":\"7fEnRmGzvpQwvANUsJv3KC\",\"experiment_id\":48}"
+    "create_experiment {\"environment_api_key\":\"[env-db2d50f7ac26bb51]\",\"feature\":981,\"name\":\"saved_carts_copy test\",\"hypothesis\":\"\\\"Get it today\\\" increases add to cart versus \\\"Buy now\\\"\",\"status\":\"created\",\"metrics\":[{\"metric\":\"add_to_cart\",\"expected_direction\":\"increase\"},{\"metric\":\"support_ticket_opened\",\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":true,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Buy now\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":96,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
+    "create_experiment {\"environment_api_key\":\"[env-db2d50f7ac26bb51]\",\"feature\":981,\"name\":\"saved_carts_copy test\",\"hypothesis\":\"\\\"Get it today\\\" increases add to cart versus \\\"Buy now\\\"\",\"status\":\"created\",\"metrics\":[{\"metric\":75,\"expected_direction\":\"increase\"},{\"metric\":76,\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":true,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Buy now\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":96,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
+    "get_experiment {\"environment_api_key\":\"[env-db2d50f7ac26bb51]\",\"experiment_id\":48}"
   ],
   "transcript": [
     {
@@ -91,7 +91,7 @@
         {
           "name": "list_metrics",
           "input": {
-            "environment_api_key": "7fEnRmGzvpQwvANUsJv3KC",
+            "environment_api_key": "[env-db2d50f7ac26bb51]",
             "q": "add_to_cart"
           },
           "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":75,\"name\":\"add_to_cart\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"event\":\"add_to_cart_clicked\",\"version\":1},\"experiments\":[],\"created_at\":\"2026-11-27T20:34:39.180508Z\",\"updated_at\":\"2026-11-27T20:34:39.180520Z\"}]}",
@@ -101,7 +101,7 @@
         {
           "name": "list_metrics",
           "input": {
-            "environment_api_key": "7fEnRmGzvpQwvANUsJv3KC",
+            "environment_api_key": "[env-db2d50f7ac26bb51]",
             "q": "support_ticket_opened"
           },
           "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":76,\"name\":\"support_ticket_opened\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"down\",\"definition\":{\"event\":\"support_ticket_opened\",\"version\":1},\"experiments\":[],\"created_at\":\"2026-11-27T20:34:39.252543Z\",\"updated_at\":\"2026-11-27T20:34:39.252551Z\"}]}",
@@ -111,7 +111,7 @@
         {
           "name": "list_experiments",
           "input": {
-            "environment_api_key": "7fEnRmGzvpQwvANUsJv3KC",
+            "environment_api_key": "[env-db2d50f7ac26bb51]",
             "q": "saved_carts_copy"
           },
           "output": "{\"count\":0,\"next\":null,\"previous\":null,\"results\":[],\"status_counts\":{\"created\":0,\"running\":0,\"paused\":0,\"completed\":0}}",
@@ -169,7 +169,7 @@
         {
           "name": "create_experiment",
           "input": {
-            "environment_api_key": "7fEnRmGzvpQwvANUsJv3KC",
+            "environment_api_key": "[env-db2d50f7ac26bb51]",
             "feature": 981,
             "name": "saved_carts_copy test",
             "hypothesis": "\"Get it today\" increases add to cart versus \"Buy now\"",
@@ -220,7 +220,7 @@
         {
           "name": "create_experiment",
           "input": {
-            "environment_api_key": "7fEnRmGzvpQwvANUsJv3KC",
+            "environment_api_key": "[env-db2d50f7ac26bb51]",
             "feature": 981,
             "name": "saved_carts_copy test",
             "hypothesis": "\"Get it today\" increases add to cart versus \"Buy now\"",
@@ -271,7 +271,7 @@
         {
           "name": "get_experiment",
           "input": {
-            "environment_api_key": "7fEnRmGzvpQwvANUsJv3KC",
+            "environment_api_key": "[env-db2d50f7ac26bb51]",
             "experiment_id": 48
           },
           "output": "{\"id\":48,\"feature\":{\"id\":981,\"name\":\"saved_carts_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Buy now\",\"multivariate_options\":[{\"id\":96,\"uuid\":\"05d1a587-0563-4f86-9548-46614d287e50\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Get it today\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"saved_carts_copy test\",\"hypothesis\":\"\\\"Get it today\\\" increases add to cart versus \\\"Buy now\\\"\",\"status\":\"created\",\"metrics\":[{\"id\":64,\"metric\":75,\"metric_name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:34:56.095616Z\"},{\"id\":65,\"metric\":76,\"metric_name\":\"support_ticket_opened\",\"aggregation\":\"occurrence\",\"direction\":\"down\",\"expected_direction\":\"not_increase\",\"created_at\":\"2026-11-27T20:34:56.095625Z\"}],\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100.0,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Buy now\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":96,\"percentage_allocation\":50.0}],\"audience\":{\"match\":\"any\",\"segments\":[]}},\"created_at\":\"2026-11-27T20:34:56.094857Z\",\"updated_at\":\"2026-11-27T20:34:56.105557Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",

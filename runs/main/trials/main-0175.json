@@ -38,13 +38,13 @@
   "ms": 34313,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "cd /tmp; for k in 4Wy8Q4Da8WPE2A7nSQAad7 cxyQeQd94FDkLHYCp5LuZ4; do echo \"== $k\"; flagsmith flag get review_photos -e $k --json --jq '{enabled,value,segment_overrides}'; done",
-    "cd /tmp; for k in 4Wy8Q4Da8WPE2A7nSQAad7 cxyQeQd94FDkLHYCp5LuZ4; do echo \"== $k\"; flagsmith flag get review_photos -e $k --json | jq -c '.segment_overrides'; done; flagsmith feature list --json | jq -c '.[] | select(.name==\"review_photos\") | {id,name}'; flagsmith segment list --json | jq -c '.[] | select(.name==\"enterprise_accounts\") | {id,name}'",
-    "cd /tmp; flagsmith api \"api/v1/environments/cxyQeQd94FDkLHYCp5LuZ4/featurestates/?feature=687\" | jq -c '.results[] | {id, enabled, value: .feature_state_value, segment: .feature_segment}'; echo; flagsmith api \"api/v1/environments/4Wy8Q4Da8WPE2A7nSQAad7/featurestates/?feature=687\" | jq -c '.results[] | {id, enabled, value: .feature_state_value, segment: .feature_segment}'",
-    "cd /tmp; flagsmith flag get review_photos -e cxyQeQd94FDkLHYCp5LuZ4 --json | jq '.segment_overrides'; flagsmith flag get review_photos -e 4Wy8Q4Da8WPE2A7nSQAad7 --json | jq '.segment_overrides'; flagsmith api \"api/v1/environments/cxyQeQd94FDkLHYCp5LuZ4/featurestates/?feature=687\" | jq -c '.'",
-    "cd /tmp; flagsmith flag get review_photos -e cxyQeQd94FDkLHYCp5LuZ4 --json; echo; flagsmith flag get review_photos -e cxyQeQd94FDkLHYCp5LuZ4 --help | head -30",
-    "cd /tmp; for k in 4Wy8Q4Da8WPE2A7nSQAad7 cxyQeQd94FDkLHYCp5LuZ4; do echo \"== $k\"; flagsmith flag get review_photos -e $k --segment enterprise_accounts --json; echo; done",
-    "cd /tmp; flagsmith flag delete review_photos -e cxyQeQd94FDkLHYCp5LuZ4 --segment enterprise_accounts --yes; echo \"exit $?\"; echo \"== prod after\"; flagsmith flag get review_photos -e cxyQeQd94FDkLHYCp5LuZ4 --json --jq '{enabled,value,segment_overrides}'; flagsmith flag get review_photos -e cxyQeQd94FDkLHYCp5LuZ4 --segment enterprise_accounts 2>&1 | tail -2; echo \"== dev after\"; flagsmith flag get review_photos -e 4Wy8Q4Da8WPE2A7nSQAad7 --json --jq '{enabled,value,segment_overrides}'; flagsmith flag get review_photos -e 4Wy8Q4Da8WPE2A7nSQAad7 --segment enterprise_accounts --json"
+    "cd /tmp; for k in [env-0998eb9351dfadd0] [env-3ecae8333076ebe1]; do echo \"== $k\"; flagsmith flag get review_photos -e $k --json --jq '{enabled,value,segment_overrides}'; done",
+    "cd /tmp; for k in [env-0998eb9351dfadd0] [env-3ecae8333076ebe1]; do echo \"== $k\"; flagsmith flag get review_photos -e $k --json | jq -c '.segment_overrides'; done; flagsmith feature list --json | jq -c '.[] | select(.name==\"review_photos\") | {id,name}'; flagsmith segment list --json | jq -c '.[] | select(.name==\"enterprise_accounts\") | {id,name}'",
+    "cd /tmp; flagsmith api \"api/v1/environments/[env-3ecae8333076ebe1]/featurestates/?feature=687\" | jq -c '.results[] | {id, enabled, value: .feature_state_value, segment: .feature_segment}'; echo; flagsmith api \"api/v1/environments/[env-0998eb9351dfadd0]/featurestates/?feature=687\" | jq -c '.results[] | {id, enabled, value: .feature_state_value, segment: .feature_segment}'",
+    "cd /tmp; flagsmith flag get review_photos -e [env-3ecae8333076ebe1] --json | jq '.segment_overrides'; flagsmith flag get review_photos -e [env-0998eb9351dfadd0] --json | jq '.segment_overrides'; flagsmith api \"api/v1/environments/[env-3ecae8333076ebe1]/featurestates/?feature=687\" | jq -c '.'",
+    "cd /tmp; flagsmith flag get review_photos -e [env-3ecae8333076ebe1] --json; echo; flagsmith flag get review_photos -e [env-3ecae8333076ebe1] --help | head -30",
+    "cd /tmp; for k in [env-0998eb9351dfadd0] [env-3ecae8333076ebe1]; do echo \"== $k\"; flagsmith flag get review_photos -e $k --segment enterprise_accounts --json; echo; done",
+    "cd /tmp; flagsmith flag delete review_photos -e [env-3ecae8333076ebe1] --segment enterprise_accounts --yes; echo \"exit $?\"; echo \"== prod after\"; flagsmith flag get review_photos -e [env-3ecae8333076ebe1] --json --jq '{enabled,value,segment_overrides}'; flagsmith flag get review_photos -e [env-3ecae8333076ebe1] --segment enterprise_accounts 2>&1 | tail -2; echo \"== dev after\"; flagsmith flag get review_photos -e [env-0998eb9351dfadd0] --json --jq '{enabled,value,segment_overrides}'; flagsmith flag get review_photos -e [env-0998eb9351dfadd0] --segment enterprise_accounts --json"
   ],
   "transcript": [
     {
@@ -77,9 +77,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; for k in 4Wy8Q4Da8WPE2A7nSQAad7 cxyQeQd94FDkLHYCp5LuZ4; do echo \"== $k\"; flagsmith flag get review_photos -e $k --json --jq '{enabled,value,segment_overrides}'; done"
+            "command": "cd /tmp; for k in [env-0998eb9351dfadd0] [env-3ecae8333076ebe1]; do echo \"== $k\"; flagsmith flag get review_photos -e $k --json --jq '{enabled,value,segment_overrides}'; done"
           },
-          "output": "== 4Wy8Q4Da8WPE2A7nSQAad7\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}\n== cxyQeQd94FDkLHYCp5LuZ4\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}",
+          "output": "== [env-0998eb9351dfadd0]\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}\n== [env-3ecae8333076ebe1]\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}",
           "isError": false,
           "ms": 1137
         }
@@ -100,9 +100,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; for k in 4Wy8Q4Da8WPE2A7nSQAad7 cxyQeQd94FDkLHYCp5LuZ4; do echo \"== $k\"; flagsmith flag get review_photos -e $k --json | jq -c '.segment_overrides'; done; flagsmith feature list --json | jq -c '.[] | select(.name==\"review_photos\") | {id,name}'; flagsmith segment list --json | jq -c '.[] | select(.name==\"enterprise_accounts\") | {id,name}'"
+            "command": "cd /tmp; for k in [env-0998eb9351dfadd0] [env-3ecae8333076ebe1]; do echo \"== $k\"; flagsmith flag get review_photos -e $k --json | jq -c '.segment_overrides'; done; flagsmith feature list --json | jq -c '.[] | select(.name==\"review_photos\") | {id,name}'; flagsmith segment list --json | jq -c '.[] | select(.name==\"enterprise_accounts\") | {id,name}'"
           },
-          "output": "== 4Wy8Q4Da8WPE2A7nSQAad7\n1\n== cxyQeQd94FDkLHYCp5LuZ4\n1\n{\"id\":687,\"name\":\"review_photos\"}\n{\"id\":77,\"name\":\"enterprise_accounts\"}",
+          "output": "== [env-0998eb9351dfadd0]\n1\n== [env-3ecae8333076ebe1]\n1\n{\"id\":687,\"name\":\"review_photos\"}\n{\"id\":77,\"name\":\"enterprise_accounts\"}",
           "isError": false,
           "ms": 2082
         }
@@ -123,7 +123,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith api \"api/v1/environments/cxyQeQd94FDkLHYCp5LuZ4/featurestates/?feature=687\" | jq -c '.results[] | {id, enabled, value: .feature_state_value, segment: .feature_segment}'; echo; flagsmith api \"api/v1/environments/4Wy8Q4Da8WPE2A7nSQAad7/featurestates/?feature=687\" | jq -c '.results[] | {id, enabled, value: .feature_state_value, segment: .feature_segment}'"
+            "command": "cd /tmp; flagsmith api \"api/v1/environments/[env-3ecae8333076ebe1]/featurestates/?feature=687\" | jq -c '.results[] | {id, enabled, value: .feature_state_value, segment: .feature_segment}'; echo; flagsmith api \"api/v1/environments/[env-0998eb9351dfadd0]/featurestates/?feature=687\" | jq -c '.results[] | {id, enabled, value: .feature_state_value, segment: .feature_segment}'"
           },
           "output": "{\"id\":1437,\"enabled\":false,\"value\":\"base\",\"segment\":null}\n\n{\"id\":1436,\"enabled\":false,\"value\":\"base\",\"segment\":null}",
           "isError": false,
@@ -146,7 +146,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith flag get review_photos -e cxyQeQd94FDkLHYCp5LuZ4 --json | jq '.segment_overrides'; flagsmith flag get review_photos -e 4Wy8Q4Da8WPE2A7nSQAad7 --json | jq '.segment_overrides'; flagsmith api \"api/v1/environments/cxyQeQd94FDkLHYCp5LuZ4/featurestates/?feature=687\" | jq -c '.'"
+            "command": "cd /tmp; flagsmith flag get review_photos -e [env-3ecae8333076ebe1] --json | jq '.segment_overrides'; flagsmith flag get review_photos -e [env-0998eb9351dfadd0] --json | jq '.segment_overrides'; flagsmith api \"api/v1/environments/[env-3ecae8333076ebe1]/featurestates/?feature=687\" | jq -c '.'"
           },
           "output": "1\n1\n{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":1437,\"feature_state_value\":\"base\",\"multivariate_feature_state_values\":[],\"identity\":null,\"deleted_at\":null,\"uuid\":\"53305cda-491a-4eb5-a61d-259a22700e90\",\"enabled\":false,\"created_at\":\"2026-11-27T20:30:33.710985Z\",\"updated_at\":\"2026-11-27T20:30:34.010678Z\",\"live_from\":\"2026-11-27T20:30:33.707894Z\",\"version\":1,\"feature\":687,\"environment\":353,\"feature_segment\":null,\"change_request\":null,\"environment_feature_version\":null}]}",
           "isError": false,
@@ -169,7 +169,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith flag get review_photos -e cxyQeQd94FDkLHYCp5LuZ4 --json; echo; flagsmith flag get review_photos -e cxyQeQd94FDkLHYCp5LuZ4 --help | head -30"
+            "command": "cd /tmp; flagsmith flag get review_photos -e [env-3ecae8333076ebe1] --json; echo; flagsmith flag get review_photos -e [env-3ecae8333076ebe1] --help | head -30"
           },
           "output": "{\n  \"feature\": \"review_photos\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": false,\n  \"value\": \"base\",\n  \"segment_overrides\": 1,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\n\nShow a single flag's state in the current environment\n\nUsage:\n  flagsmith flag get <feature> [flags]\n\nExamples:\n  flagsmith flag get onboarding\n\n  # a segment or identity override\n  flagsmith flag get onboarding --segment 12\n  flagsmith flag get onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for get\n  -i, --identifier string   show the override for this identity\n      --segment string      show the override for this segment (id or name)\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively",
           "isError": false,
@@ -192,9 +192,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; for k in 4Wy8Q4Da8WPE2A7nSQAad7 cxyQeQd94FDkLHYCp5LuZ4; do echo \"== $k\"; flagsmith flag get review_photos -e $k --segment enterprise_accounts --json; echo; done"
+            "command": "cd /tmp; for k in [env-0998eb9351dfadd0] [env-3ecae8333076ebe1]; do echo \"== $k\"; flagsmith flag get review_photos -e $k --segment enterprise_accounts --json; echo; done"
           },
-          "output": "== 4Wy8Q4Da8WPE2A7nSQAad7\n{\n  \"feature\": \"review_photos\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 77,\n    \"name\": \"enterprise_accounts\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"segment_copy\"\n}\n\n== cxyQeQd94FDkLHYCp5LuZ4\n{\n  \"feature\": \"review_photos\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 77,\n    \"name\": \"enterprise_accounts\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"segment_copy\"\n}",
+          "output": "== [env-0998eb9351dfadd0]\n{\n  \"feature\": \"review_photos\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 77,\n    \"name\": \"enterprise_accounts\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"segment_copy\"\n}\n\n== [env-3ecae8333076ebe1]\n{\n  \"feature\": \"review_photos\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 77,\n    \"name\": \"enterprise_accounts\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"segment_copy\"\n}",
           "isError": false,
           "ms": 2416
         }
@@ -215,9 +215,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith flag delete review_photos -e cxyQeQd94FDkLHYCp5LuZ4 --segment enterprise_accounts --yes; echo \"exit $?\"; echo \"== prod after\"; flagsmith flag get review_photos -e cxyQeQd94FDkLHYCp5LuZ4 --json --jq '{enabled,value,segment_overrides}'; flagsmith flag get review_photos -e cxyQeQd94FDkLHYCp5LuZ4 --segment enterprise_accounts 2>&1 | tail -2; echo \"== dev after\"; flagsmith flag get review_photos -e 4Wy8Q4Da8WPE2A7nSQAad7 --json --jq '{enabled,value,segment_overrides}'; flagsmith flag get review_photos -e 4Wy8Q4Da8WPE2A7nSQAad7 --segment enterprise_accounts --json"
+            "command": "cd /tmp; flagsmith flag delete review_photos -e [env-3ecae8333076ebe1] --segment enterprise_accounts --yes; echo \"exit $?\"; echo \"== prod after\"; flagsmith flag get review_photos -e [env-3ecae8333076ebe1] --json --jq '{enabled,value,segment_overrides}'; flagsmith flag get review_photos -e [env-3ecae8333076ebe1] --segment enterprise_accounts 2>&1 | tail -2; echo \"== dev after\"; flagsmith flag get review_photos -e [env-0998eb9351dfadd0] --json --jq '{enabled,value,segment_overrides}'; flagsmith flag get review_photos -e [env-0998eb9351dfadd0] --segment enterprise_accounts --json"
           },
-          "output": "exit 0\n== prod after\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"base\"}\nError: \"review_photos\" has no override for segment 77 in Production (cxyQeQd94FDkLHYCp5LuZ4)\n== dev after\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}\n{\n  \"feature\": \"review_photos\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 77,\n    \"name\": \"enterprise_accounts\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"segment_copy\"\n}\n\n[stderr]\n✓ Deleted review_photos override for segment enterprise_accounts (77) in environment Production (cxyQeQd94FDkLHYCp5LuZ4)",
+          "output": "exit 0\n== prod after\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"base\"}\nError: \"review_photos\" has no override for segment 77 in Production ([env-3ecae8333076ebe1])\n== dev after\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}\n{\n  \"feature\": \"review_photos\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 77,\n    \"name\": \"enterprise_accounts\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"segment_copy\"\n}\n\n[stderr]\n✓ Deleted review_photos override for segment enterprise_accounts (77) in environment Production ([env-3ecae8333076ebe1])",
           "isError": false,
           "ms": 5636
         }

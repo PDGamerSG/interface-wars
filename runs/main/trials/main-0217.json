@@ -63,14 +63,14 @@
   "ms": 22093,
   "commands": [
     "list_project_features {\"project_pk\":219,\"search\":\"one_click_buy_copy\",\"environment\":437}",
-    "list_metrics {\"environment_api_key\":\"3GLqDUiqjaLUmuoqipU4WC\",\"q\":\"signup_completed\"}",
-    "list_metrics {\"environment_api_key\":\"3GLqDUiqjaLUmuoqipU4WC\",\"q\":\"support_ticket_opened\"}",
-    "list_experiments {\"environment_api_key\":\"3GLqDUiqjaLUmuoqipU4WC\",\"q\":\"one_click_buy_copy\"}",
+    "list_metrics {\"environment_api_key\":\"[env-197aeb99b2acb3d3]\",\"q\":\"signup_completed\"}",
+    "list_metrics {\"environment_api_key\":\"[env-197aeb99b2acb3d3]\",\"q\":\"support_ticket_opened\"}",
+    "list_experiments {\"environment_api_key\":\"[env-197aeb99b2acb3d3]\",\"q\":\"one_click_buy_copy\"}",
     "list_feature_multivariate_options {\"feature_pk\":855,\"project_pk\":\"219\"}",
     "get_feature_flag {\"id\":855,\"project_pk\":219}",
-    "create_experiment {\"environment_api_key\":\"3GLqDUiqjaLUmuoqipU4WC\",\"feature\":855,\"name\":\"one_click_buy_copy test\",\"hypothesis\":\"\\\"Try it free\\\" increases signup completed versus \\\"Start free trial\\\".\",\"status\":\"created\",\"metrics\":[{\"metric\":\"signup_completed\",\"expected_direction\":\"increase\"},{\"metric\":\"support_ticket_opened\",\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":false,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Try it free\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":84,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
-    "create_experiment {\"environment_api_key\":\"3GLqDUiqjaLUmuoqipU4WC\",\"feature\":855,\"name\":\"one_click_buy_copy test\",\"hypothesis\":\"\\\"Try it free\\\" increases signup completed versus \\\"Start free trial\\\".\",\"status\":\"created\",\"metrics\":[{\"metric\":65,\"expected_direction\":\"increase\"},{\"metric\":66,\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":false,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Try it free\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":84,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
-    "get_experiment {\"environment_api_key\":\"3GLqDUiqjaLUmuoqipU4WC\",\"experiment_id\":42}"
+    "create_experiment {\"environment_api_key\":\"[env-197aeb99b2acb3d3]\",\"feature\":855,\"name\":\"one_click_buy_copy test\",\"hypothesis\":\"\\\"Try it free\\\" increases signup completed versus \\\"Start free trial\\\".\",\"status\":\"created\",\"metrics\":[{\"metric\":\"signup_completed\",\"expected_direction\":\"increase\"},{\"metric\":\"support_ticket_opened\",\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":false,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Try it free\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":84,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
+    "create_experiment {\"environment_api_key\":\"[env-197aeb99b2acb3d3]\",\"feature\":855,\"name\":\"one_click_buy_copy test\",\"hypothesis\":\"\\\"Try it free\\\" increases signup completed versus \\\"Start free trial\\\".\",\"status\":\"created\",\"metrics\":[{\"metric\":65,\"expected_direction\":\"increase\"},{\"metric\":66,\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":false,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Try it free\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":84,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
+    "get_experiment {\"environment_api_key\":\"[env-197aeb99b2acb3d3]\",\"experiment_id\":42}"
   ],
   "transcript": [
     {
@@ -91,7 +91,7 @@
         {
           "name": "list_metrics",
           "input": {
-            "environment_api_key": "3GLqDUiqjaLUmuoqipU4WC",
+            "environment_api_key": "[env-197aeb99b2acb3d3]",
             "q": "signup_completed"
           },
           "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":65,\"name\":\"signup_completed\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"event\":\"signup_completed\",\"version\":1},\"experiments\":[],\"created_at\":\"2026-11-27T20:33:10.789961Z\",\"updated_at\":\"2026-11-27T20:33:10.789969Z\"}]}",
@@ -101,7 +101,7 @@
         {
           "name": "list_metrics",
           "input": {
-            "environment_api_key": "3GLqDUiqjaLUmuoqipU4WC",
+            "environment_api_key": "[env-197aeb99b2acb3d3]",
             "q": "support_ticket_opened"
           },
           "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":66,\"name\":\"support_ticket_opened\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"down\",\"definition\":{\"event\":\"support_ticket_opened\",\"version\":1},\"experiments\":[],\"created_at\":\"2026-11-27T20:33:10.806747Z\",\"updated_at\":\"2026-11-27T20:33:10.806756Z\"}]}",
@@ -111,7 +111,7 @@
         {
           "name": "list_experiments",
           "input": {
-            "environment_api_key": "3GLqDUiqjaLUmuoqipU4WC",
+            "environment_api_key": "[env-197aeb99b2acb3d3]",
             "q": "one_click_buy_copy"
           },
           "output": "{\"count\":0,\"next\":null,\"previous\":null,\"results\":[],\"status_counts\":{\"created\":0,\"running\":0,\"paused\":0,\"completed\":0}}",
@@ -169,7 +169,7 @@
         {
           "name": "create_experiment",
           "input": {
-            "environment_api_key": "3GLqDUiqjaLUmuoqipU4WC",
+            "environment_api_key": "[env-197aeb99b2acb3d3]",
             "feature": 855,
             "name": "one_click_buy_copy test",
             "hypothesis": "\"Try it free\" increases signup completed versus \"Start free trial\".",
@@ -220,7 +220,7 @@
         {
           "name": "create_experiment",
           "input": {
-            "environment_api_key": "3GLqDUiqjaLUmuoqipU4WC",
+            "environment_api_key": "[env-197aeb99b2acb3d3]",
             "feature": 855,
             "name": "one_click_buy_copy test",
             "hypothesis": "\"Try it free\" increases signup completed versus \"Start free trial\".",
@@ -271,7 +271,7 @@
         {
           "name": "get_experiment",
           "input": {
-            "environment_api_key": "3GLqDUiqjaLUmuoqipU4WC",
+            "environment_api_key": "[env-197aeb99b2acb3d3]",
             "experiment_id": 42
           },
           "output": "{\"id\":42,\"feature\":{\"id\":855,\"name\":\"one_click_buy_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Start free trial\",\"multivariate_options\":[{\"id\":84,\"uuid\":\"1f074b9e-19af-470f-ad96-35afb0a64f90\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Try it free\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"one_click_buy_copy test\",\"hypothesis\":\"\\\"Try it free\\\" increases signup completed versus \\\"Start free trial\\\".\",\"status\":\"created\",\"metrics\":[{\"id\":56,\"metric\":65,\"metric_name\":\"signup_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:33:29.886176Z\"},{\"id\":57,\"metric\":66,\"metric_name\":\"support_ticket_opened\",\"aggregation\":\"occurrence\",\"direction\":\"down\",\"expected_direction\":\"not_increase\",\"created_at\":\"2026-11-27T20:33:29.886183Z\"}],\"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":100.0,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Try it free\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":84,\"percentage_allocation\":50.0}],\"audience\":{\"match\":\"any\",\"segments\":[]}},\"created_at\":\"2026-11-27T20:33:29.885646Z\",\"updated_at\":\"2026-11-27T20:33:29.894683Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",

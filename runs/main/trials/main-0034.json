@@ -33,8 +33,8 @@
   "ms": 8732,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith flag get size_guide -e RbCEWbd35hjckaKtMVUKyV --json --jq '{enabled,value,variants}'",
-    "flagsmith flag update size_guide -e RbCEWbd35hjckaKtMVUKyV --value \"blue\" --yes && flagsmith flag get size_guide -e RbCEWbd35hjckaKtMVUKyV --json --jq '{enabled,value,variants}'"
+    "flagsmith flag get size_guide -e [env-4486165c15654b61] --json --jq '{enabled,value,variants}'",
+    "flagsmith flag update size_guide -e [env-4486165c15654b61] --value \"blue\" --yes && flagsmith flag get size_guide -e [env-4486165c15654b61] --json --jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get size_guide -e RbCEWbd35hjckaKtMVUKyV --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith flag get size_guide -e [env-4486165c15654b61] --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"enabled\":true,\"value\":\"grid\",\"variants\":null}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update size_guide -e RbCEWbd35hjckaKtMVUKyV --value \"blue\" --yes && flagsmith flag get size_guide -e RbCEWbd35hjckaKtMVUKyV --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith flag update size_guide -e [env-4486165c15654b61] --value \"blue\" --yes && flagsmith flag get size_guide -e [env-4486165c15654b61] --json --jq '{enabled,value,variants}'"
           },
-          "output": "Feature              size_guide\nDescription          \nType                 standard\nState                on\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"value\":\"blue\",\"variants\":null}\n\n[stderr]\n✓ Set size_guide to \"blue\" in environment Development (RbCEWbd35hjckaKtMVUKyV)",
+          "output": "Feature              size_guide\nDescription          \nType                 standard\nState                on\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"value\":\"blue\",\"variants\":null}\n\n[stderr]\n✓ Set size_guide to \"blue\" in environment Development ([env-4486165c15654b61])",
           "isError": false,
           "ms": 1617
         }

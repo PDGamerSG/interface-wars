@@ -53,12 +53,12 @@
   "ms": 23467,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "P=iBcECx7naoQ853uurmHuJK; flagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'",
-    "P=iBcECx7naoQ853uurmHuJK; flagsmith api api/v1/environments/$P/experiments/12/ | jq '{status,rollout_decision,rollout_variant,metrics,experiment_rollout}' ; flagsmith flag get promo_banner_copy -e $P --json --jq '{enabled,value,variants}'",
-    "P=iBcECx7naoQ853uurmHuJK; flagsmith api api/v1/environments/$P/experiments/12/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":26}\nJSON\necho; flagsmith api api/v1/environments/$P/experiments/12/ --jq '{status,rollout_decision,rollout_variant}'; flagsmith flag get promo_banner_copy -e $P --json --jq '{enabled,value,variants,segment_overrides}'",
-    "P=FS5Eux9tCbcMyPShnUbKff; P=iBcECx7naoQ853uurmHuJK; flagsmith evaluate -e $P --json --jq '.' 2>&1 | head -30",
-    "P=iBcECx7naoQ853uurmHuJK; flagsmith api \"api/v1/environments/$P/featurestates/?feature=231\" | jq '.results[] | {id,enabled,feature_state_value,multivariate_feature_state_values,segment_id,feature_segment}'; flagsmith feature variant list promo_banner_copy --json",
-    "P=iBcECx7naoQ853uurmHuJK; flagsmith evaluate --help | head -30; flagsmith evaluate -e $P --identity test-user-1 --json --jq '.flags.promo_banner_copy' 2>&1"
+    "P=[env-a3902e68f905dfb8]; flagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'",
+    "P=[env-a3902e68f905dfb8]; flagsmith api api/v1/environments/$P/experiments/12/ | jq '{status,rollout_decision,rollout_variant,metrics,experiment_rollout}' ; flagsmith flag get promo_banner_copy -e $P --json --jq '{enabled,value,variants}'",
+    "P=[env-a3902e68f905dfb8]; flagsmith api api/v1/environments/$P/experiments/12/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":26}\nJSON\necho; flagsmith api api/v1/environments/$P/experiments/12/ --jq '{status,rollout_decision,rollout_variant}'; flagsmith flag get promo_banner_copy -e $P --json --jq '{enabled,value,variants,segment_overrides}'",
+    "P=[env-87a4acbb1d7a1e5f]; P=[env-a3902e68f905dfb8]; flagsmith evaluate -e $P --json --jq '.' 2>&1 | head -30",
+    "P=[env-a3902e68f905dfb8]; flagsmith api \"api/v1/environments/$P/featurestates/?feature=231\" | jq '.results[] | {id,enabled,feature_state_value,multivariate_feature_state_values,segment_id,feature_segment}'; flagsmith feature variant list promo_banner_copy --json",
+    "P=[env-a3902e68f905dfb8]; flagsmith evaluate --help | head -30; flagsmith evaluate -e $P --identity test-user-1 --json --jq '.flags.promo_banner_copy' 2>&1"
   ],
   "transcript": [
     {
@@ -91,7 +91,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=iBcECx7naoQ853uurmHuJK; flagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'"
+            "command": "P=[env-a3902e68f905dfb8]; flagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status,feature,rollout_decision}'"
           },
           "output": "{\"feature\":{\"id\":231,\"initial_value\":\"Buy now\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":26,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Get it today\",\"type\":\"unicode\",\"uuid\":\"99cea3bf-73ca-4bb9-87b1-889f398867af\"}],\"name\":\"promo_banner_copy\",\"type\":\"MULTIVARIATE\"},\"id\":12,\"name\":\"promo_banner_copy test\",\"rollout_decision\":null,\"status\":\"running\"}",
           "isError": false,
@@ -114,7 +114,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=iBcECx7naoQ853uurmHuJK; flagsmith api api/v1/environments/$P/experiments/12/ | jq '{status,rollout_decision,rollout_variant,metrics,experiment_rollout}' ; flagsmith flag get promo_banner_copy -e $P --json --jq '{enabled,value,variants}'"
+            "command": "P=[env-a3902e68f905dfb8]; flagsmith api api/v1/environments/$P/experiments/12/ | jq '{status,rollout_decision,rollout_variant,metrics,experiment_rollout}' ; flagsmith flag get promo_banner_copy -e $P --json --jq '{enabled,value,variants}'"
           },
           "output": "{\n  \"status\": \"running\",\n  \"rollout_decision\": null,\n  \"rollout_variant\": null,\n  \"metrics\": [\n    {\n      \"id\": 17,\n      \"metric\": 21,\n      \"metric_name\": \"checkout_completed\",\n      \"aggregation\": \"occurrence\",\n      \"direction\": \"up\",\n      \"expected_direction\": \"increase\",\n      \"created_at\": \"2026-11-27T20:20:38.930692Z\"\n    }\n  ],\n  \"experiment_rollout\": {\n    \"enabled\": true,\n    \"rollout_percentage\": 100.0,\n    \"feature_state_value\": {\n      \"type\": \"string\",\n      \"value\": \"Buy now\"\n    },\n    \"multivariate_feature_state_values\": [\n      {\n        \"multivariate_feature_option\": 26,\n        \"percentage_allocation\": 50.0\n      }\n    ],\n    \"audience\": {\n      \"match\": \"any\",\n      \"segments\": []\n    }\n  }\n}\n{\"enabled\":true,\"value\":\"Buy now\",\"variants\":[{\"id\":26,\"key\":\"b\",\"value\":\"Get it today\",\"weight\":0}]}",
           "isError": false,
@@ -137,7 +137,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=iBcECx7naoQ853uurmHuJK; flagsmith api api/v1/environments/$P/experiments/12/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":26}\nJSON\necho; flagsmith api api/v1/environments/$P/experiments/12/ --jq '{status,rollout_decision,rollout_variant}'; flagsmith flag get promo_banner_copy -e $P --json --jq '{enabled,value,variants,segment_overrides}'"
+            "command": "P=[env-a3902e68f905dfb8]; flagsmith api api/v1/environments/$P/experiments/12/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":26}\nJSON\necho; flagsmith api api/v1/environments/$P/experiments/12/ --jq '{status,rollout_decision,rollout_variant}'; flagsmith flag get promo_banner_copy -e $P --json --jq '{enabled,value,variants,segment_overrides}'"
           },
           "output": "{\"id\":12,\"feature\":{\"id\":231,\"name\":\"promo_banner_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Buy now\",\"multivariate_options\":[{\"id\":26,\"uuid\":\"99cea3bf-73ca-4bb9-87b1-889f398867af\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Get it today\",\"boolean_value\":null,\"default_percentage_allocation\":100.0,\"key\":\"b\"}]},\"name\":\"promo_banner_copy test\",\"hypothesis\":\"Get it today wins\",\"status\":\"completed\",\"metrics\":[{\"id\":17,\"metric\":21,\"metric_name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:20:38.930692Z\"}],\"created_at\":\"2026-11-27T20:20:38.930002Z\",\"updated_at\":\"2026-11-27T20:20:49.766302Z\",\"started_at\":\"2026-11-27T20:20:39.125203Z\",\"ended_at\":\"2026-11-27T20:20:49.679476Z\",\"rollout_decision\":\"variant\",\"rollout_variant\":26}\n{\"rollout_decision\":\"variant\",\"rollout_variant\":26,\"status\":\"completed\"}\n{\"enabled\":true,\"segment_overrides\":0,\"value\":\"Buy now\",\"variants\":[{\"id\":26,\"key\":\"b\",\"value\":\"Get it today\",\"weight\":100}]}",
           "isError": false,
@@ -160,7 +160,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=FS5Eux9tCbcMyPShnUbKff; P=iBcECx7naoQ853uurmHuJK; flagsmith evaluate -e $P --json --jq '.' 2>&1 | head -30"
+            "command": "P=[env-87a4acbb1d7a1e5f]; P=[env-a3902e68f905dfb8]; flagsmith evaluate -e $P --json --jq '.' 2>&1 | head -30"
           },
           "output": "{\"$schema\":\"https://raw.githubusercontent.com/Flagsmith/flagsmith/main/sdk/evaluation-result.json\",\"flags\":{\"loyalty_points\":{\"enabled\":false,\"name\":\"loyalty_points\",\"reason\":\"STATIC\",\"value\":\"blue\"},\"promo_banner_copy\":{\"enabled\":true,\"name\":\"promo_banner_copy\",\"reason\":\"STATIC\",\"value\":\"Buy now\"},\"saved_carts\":{\"enabled\":true,\"name\":\"saved_carts\",\"reason\":\"STATIC\",\"value\":\"fast_lane\"}}}",
           "isError": false,
@@ -183,7 +183,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=iBcECx7naoQ853uurmHuJK; flagsmith api \"api/v1/environments/$P/featurestates/?feature=231\" | jq '.results[] | {id,enabled,feature_state_value,multivariate_feature_state_values,segment_id,feature_segment}'; flagsmith feature variant list promo_banner_copy --json"
+            "command": "P=[env-a3902e68f905dfb8]; flagsmith api \"api/v1/environments/$P/featurestates/?feature=231\" | jq '.results[] | {id,enabled,feature_state_value,multivariate_feature_state_values,segment_id,feature_segment}'; flagsmith feature variant list promo_banner_copy --json"
           },
           "output": "{\n  \"id\": 481,\n  \"enabled\": true,\n  \"feature_state_value\": \"Buy now\",\n  \"multivariate_feature_state_values\": [\n    {\n      \"id\": 62,\n      \"multivariate_feature_option\": 26,\n      \"percentage_allocation\": 100.0\n    }\n  ],\n  \"segment_id\": null,\n  \"feature_segment\": null\n}\n[\n  {\n    \"id\": 26,\n    \"value\": \"Get it today\",\n    \"weight\": 0,\n    \"key\": \"b\"\n  }\n]",
           "isError": false,
@@ -206,7 +206,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=iBcECx7naoQ853uurmHuJK; flagsmith evaluate --help | head -30; flagsmith evaluate -e $P --identity test-user-1 --json --jq '.flags.promo_banner_copy' 2>&1"
+            "command": "P=[env-a3902e68f905dfb8]; flagsmith evaluate --help | head -30; flagsmith evaluate -e $P --identity test-user-1 --json --jq '.flags.promo_banner_copy' 2>&1"
           },
           "output": "Show the flags an SDK resolves for the current environment\n\nUsage:\n  flagsmith evaluate [feature] [flags]\n\nAliases:\n  evaluate, eval\n\nExamples:\n  # the flags a fresh SDK sees\n  flagsmith evaluate\n\n  # resolved for one user: segment overrides applied, variants allocated\n  flagsmith evaluate --identity user-123\n\n  # a what-if: overlay traits without persisting the identity\n  flagsmith evaluate --identity user-123 --trait plan=premium --trait age=42\n\n  # one feature, for scripting\n  flagsmith eval onboarding --identity user-123 --jq .value\n\n  # bootstrap a frontend SDK (can be provided as state)\n  flagsmith eval --js > state.json\n\n  # gate a script on a flag: a disabled flag fails\n  flagsmith eval new-pipeline --test && ./deploy.sh\n\nFlags:\n  -h, --help                help for evaluate\n  -i, --identity string     resolve for this identifier\n{\"enabled\":true,\"name\":\"promo_banner_copy\",\"reason\":\"SPLIT; weight=100.0\",\"value\":\"Get it today\",\"variant\":\"b\"}",
           "isError": false,

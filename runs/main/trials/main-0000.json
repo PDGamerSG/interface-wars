@@ -65,7 +65,7 @@
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
     "flagsmith config; flagsmith feature list --json --jq '.[] | select(.name==\"saved_carts\") | {name,id}'; flagsmith feature create --help | head -30",
     "flagsmith feature create saved_carts --description \"Gates the saved carts rollout\" --yes && flagsmith feature list --json --jq '.[] | select(.name==\"saved_carts\") | {name,id,description}'",
-    "for e in NsDqFqNkVMagwMnY7jbfpi oQirCDnJoChUXU4rY9UQMa; do flagsmith flag get saved_carts -e $e --json --jq '{enabled,value,variants}'; done"
+    "for e in [env-86fc09c3257f02df] [env-fd885c562b42bfbc]; do flagsmith flag get saved_carts -e $e --json --jq '{enabled,value,variants}'; done"
   ],
   "transcript": [
     {
@@ -144,7 +144,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "for e in NsDqFqNkVMagwMnY7jbfpi oQirCDnJoChUXU4rY9UQMa; do flagsmith flag get saved_carts -e $e --json --jq '{enabled,value,variants}'; done"
+            "command": "for e in [env-86fc09c3257f02df] [env-fd885c562b42bfbc]; do flagsmith flag get saved_carts -e $e --json --jq '{enabled,value,variants}'; done"
           },
           "output": "{\"enabled\":false,\"value\":null,\"variants\":null}\n{\"enabled\":false,\"value\":null,\"variants\":null}",
           "isError": false,

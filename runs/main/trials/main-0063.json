@@ -40,9 +40,9 @@
     "flagsmith --help; echo ---; flagsmith --help 2>&1 | head -0; flagsmith features --help 2>&1; flagsmith segments --help 2>&1",
     "flagsmith feature --help; flagsmith segment --help; flagsmith flag --help; flagsmith environment --help",
     "flagsmith flag delete --help; flagsmith flag get --help; flagsmith flag list --help | head -30",
-    "flagsmith environment list 2>&1 | head -20; echo ---; flagsmith -e BRCHzh9SPXN8BdPJgFhGWu flag list --feature order_tracking_v2 2>&1; echo ---; flagsmith -e 3CoKjz2fDaUD38gCZrMkVr flag list --feature order_tracking_v2 2>&1",
-    "flagsmith -e BRCHzh9SPXN8BdPJgFhGWu flag delete order_tracking_v2 --segment beta_testers 2>&1; echo ---; echo PROD:; flagsmith -e BRCHzh9SPXN8BdPJgFhGWu flag list --feature order_tracking_v2 2>&1; echo DEV:; flagsmith -e 3CoKjz2fDaUD38gCZrMkVr flag list --feature order_tracking_v2 2>&1",
-    "flagsmith -e BRCHzh9SPXN8BdPJgFhGWu flag delete order_tracking_v2 --segment beta_testers --yes 2>&1; echo ---; echo PROD:; flagsmith -e BRCHzh9SPXN8BdPJgFhGWu flag list --feature order_tracking_v2 2>&1; echo DEV:; flagsmith -e 3CoKjz2fDaUD38gCZrMkVr flag list --feature order_tracking_v2 2>&1"
+    "flagsmith environment list 2>&1 | head -20; echo ---; flagsmith -e [env-1be6700300f9877f] flag list --feature order_tracking_v2 2>&1; echo ---; flagsmith -e [env-6a4d4e8817711d14] flag list --feature order_tracking_v2 2>&1",
+    "flagsmith -e [env-1be6700300f9877f] flag delete order_tracking_v2 --segment beta_testers 2>&1; echo ---; echo PROD:; flagsmith -e [env-1be6700300f9877f] flag list --feature order_tracking_v2 2>&1; echo DEV:; flagsmith -e [env-6a4d4e8817711d14] flag list --feature order_tracking_v2 2>&1",
+    "flagsmith -e [env-1be6700300f9877f] flag delete order_tracking_v2 --segment beta_testers --yes 2>&1; echo ---; echo PROD:; flagsmith -e [env-1be6700300f9877f] flag list --feature order_tracking_v2 2>&1; echo DEV:; flagsmith -e [env-6a4d4e8817711d14] flag list --feature order_tracking_v2 2>&1"
   ],
   "transcript": [
     {
@@ -121,9 +121,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith environment list 2>&1 | head -20; echo ---; flagsmith -e BRCHzh9SPXN8BdPJgFhGWu flag list --feature order_tracking_v2 2>&1; echo ---; flagsmith -e 3CoKjz2fDaUD38gCZrMkVr flag list --feature order_tracking_v2 2>&1"
+            "command": "flagsmith environment list 2>&1 | head -20; echo ---; flagsmith -e [env-1be6700300f9877f] flag list --feature order_tracking_v2 2>&1; echo ---; flagsmith -e [env-6a4d4e8817711d14] flag list --feature order_tracking_v2 2>&1"
           },
-          "output": "NAME          KEY                      DESCRIPTION\nDevelopment   3CoKjz2fDaUD38gCZrMkVr   \nProduction    BRCHzh9SPXN8BdPJgFhGWu   \n\n2 environments\n---\nPRIORITY   SEGMENT             STATE   VALUE\n0          beta_testers (28)   on      segment_copy\n\n1 override\n---\nPRIORITY   SEGMENT             STATE   VALUE\n0          beta_testers (28)   on      segment_copy\n\n1 override",
+          "output": "NAME          KEY                      DESCRIPTION\nDevelopment   [env-6a4d4e8817711d14]   \nProduction    [env-1be6700300f9877f]   \n\n2 environments\n---\nPRIORITY   SEGMENT             STATE   VALUE\n0          beta_testers (28)   on      segment_copy\n\n1 override\n---\nPRIORITY   SEGMENT             STATE   VALUE\n0          beta_testers (28)   on      segment_copy\n\n1 override",
           "isError": false,
           "ms": 3167
         }
@@ -144,9 +144,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith -e BRCHzh9SPXN8BdPJgFhGWu flag delete order_tracking_v2 --segment beta_testers 2>&1; echo ---; echo PROD:; flagsmith -e BRCHzh9SPXN8BdPJgFhGWu flag list --feature order_tracking_v2 2>&1; echo DEV:; flagsmith -e 3CoKjz2fDaUD38gCZrMkVr flag list --feature order_tracking_v2 2>&1"
+            "command": "flagsmith -e [env-1be6700300f9877f] flag delete order_tracking_v2 --segment beta_testers 2>&1; echo ---; echo PROD:; flagsmith -e [env-1be6700300f9877f] flag list --feature order_tracking_v2 2>&1; echo DEV:; flagsmith -e [env-6a4d4e8817711d14] flag list --feature order_tracking_v2 2>&1"
           },
-          "output": "Error: pass --yes to confirm \"delete order_tracking_v2 override for segment beta_testers (28) in Production (BRCHzh9SPXN8BdPJgFhGWu)?\" without an interactive terminal\nUsage:\n  flagsmith flag delete <feature> [flags]\n\nExamples:\n  # remove a segment or identity override (the flag itself is untouched)\n  flagsmith flag delete onboarding --segment 12\n  flagsmith flag delete onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for delete\n  -i, --identifier string   the identity whose override to delete\n      --segment string      the segment (id or name) whose override to delete\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n---\nPROD:\nPRIORITY   SEGMENT             STATE   VALUE\n0          beta_testers (28)   on      segment_copy\n\n1 override\nDEV:\nPRIORITY   SEGMENT             STATE   VALUE\n0          beta_testers (28)   on      segment_copy\n\n1 override",
+          "output": "Error: pass --yes to confirm \"delete order_tracking_v2 override for segment beta_testers (28) in Production ([env-1be6700300f9877f])?\" without an interactive terminal\nUsage:\n  flagsmith flag delete <feature> [flags]\n\nExamples:\n  # remove a segment or identity override (the flag itself is untouched)\n  flagsmith flag delete onboarding --segment 12\n  flagsmith flag delete onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for delete\n  -i, --identifier string   the identity whose override to delete\n      --segment string      the segment (id or name) whose override to delete\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n---\nPROD:\nPRIORITY   SEGMENT             STATE   VALUE\n0          beta_testers (28)   on      segment_copy\n\n1 override\nDEV:\nPRIORITY   SEGMENT             STATE   VALUE\n0          beta_testers (28)   on      segment_copy\n\n1 override",
           "isError": false,
           "ms": 4236
         }
@@ -167,9 +167,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith -e BRCHzh9SPXN8BdPJgFhGWu flag delete order_tracking_v2 --segment beta_testers --yes 2>&1; echo ---; echo PROD:; flagsmith -e BRCHzh9SPXN8BdPJgFhGWu flag list --feature order_tracking_v2 2>&1; echo DEV:; flagsmith -e 3CoKjz2fDaUD38gCZrMkVr flag list --feature order_tracking_v2 2>&1"
+            "command": "flagsmith -e [env-1be6700300f9877f] flag delete order_tracking_v2 --segment beta_testers --yes 2>&1; echo ---; echo PROD:; flagsmith -e [env-1be6700300f9877f] flag list --feature order_tracking_v2 2>&1; echo DEV:; flagsmith -e [env-6a4d4e8817711d14] flag list --feature order_tracking_v2 2>&1"
           },
-          "output": "✓ Deleted order_tracking_v2 override for segment beta_testers (28) in environment Production (BRCHzh9SPXN8BdPJgFhGWu)\n---\nPROD:\nNo segment overrides.\nDEV:\nPRIORITY   SEGMENT             STATE   VALUE\n0          beta_testers (28)   on      segment_copy\n\n1 override",
+          "output": "✓ Deleted order_tracking_v2 override for segment beta_testers (28) in environment Production ([env-1be6700300f9877f])\n---\nPROD:\nNo segment overrides.\nDEV:\nPRIORITY   SEGMENT             STATE   VALUE\n0          beta_testers (28)   on      segment_copy\n\n1 override",
           "isError": false,
           "ms": 5867
         }

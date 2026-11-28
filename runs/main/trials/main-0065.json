@@ -19,7 +19,7 @@
     }
   ],
   "outcome": "done",
-  "finalText": "DONE: search_v2 is now on in Production (oWRjSSSr5yPf38nTtLvcRE). Its value is still \"blue\" with no overrides, and Development (48CK2LkJtxcqnVxUDCX8TM) is still off, as before.",
+  "finalText": "DONE: search_v2 is now on in Production ([env-5c1d5bf64dd5572d]). Its value is still \"blue\" with no overrides, and Development ([env-069c8f3bbcfc67ad]) is still off, as before.",
   "costUsd": 0.002146,
   "usage": {
     "input": 16,
@@ -35,9 +35,9 @@
     "flagsmith --help; echo ---; flagsmith features --help 2>&1 | head -50",
     "flagsmith feature --help; echo ---; flagsmith feature list --help 2>&1; echo ---; flagsmith feature update --help 2>&1; echo ---; flagsmith environment --help 2>&1 | head -30",
     "flagsmith flag --help; echo ---; flagsmith flag --help >/dev/null; for c in $(flagsmith flag --help | awk '/Available Commands/{f=1;next} /^Flags/{f=0} f{print $1}'); do echo \"== $c\"; flagsmith flag $c --help 2>&1 | sed -n 1,25p; done",
-    "flagsmith environment list 2>&1; echo ---; flagsmith flag get search_v2 -e oWRjSSSr5yPf38nTtLvcRE 2>&1; echo ---; flagsmith flag get search_v2 -e 48CK2LkJtxcqnVxUDCX8TM 2>&1",
-    "flagsmith flag enable search_v2 -e oWRjSSSr5yPf38nTtLvcRE 2>&1; echo ---; flagsmith flag get search_v2 -e oWRjSSSr5yPf38nTtLvcRE 2>&1; echo ---; flagsmith flag get search_v2 -e 48CK2LkJtxcqnVxUDCX8TM 2>&1",
-    "flagsmith flag enable search_v2 -e oWRjSSSr5yPf38nTtLvcRE --yes 2>&1; echo ---; flagsmith flag get search_v2 -e oWRjSSSr5yPf38nTtLvcRE 2>&1; echo ---; flagsmith flag get search_v2 -e 48CK2LkJtxcqnVxUDCX8TM 2>&1"
+    "flagsmith environment list 2>&1; echo ---; flagsmith flag get search_v2 -e [env-5c1d5bf64dd5572d] 2>&1; echo ---; flagsmith flag get search_v2 -e [env-069c8f3bbcfc67ad] 2>&1",
+    "flagsmith flag enable search_v2 -e [env-5c1d5bf64dd5572d] 2>&1; echo ---; flagsmith flag get search_v2 -e [env-5c1d5bf64dd5572d] 2>&1; echo ---; flagsmith flag get search_v2 -e [env-069c8f3bbcfc67ad] 2>&1",
+    "flagsmith flag enable search_v2 -e [env-5c1d5bf64dd5572d] --yes 2>&1; echo ---; flagsmith flag get search_v2 -e [env-5c1d5bf64dd5572d] 2>&1; echo ---; flagsmith flag get search_v2 -e [env-069c8f3bbcfc67ad] 2>&1"
   ],
   "transcript": [
     {
@@ -116,9 +116,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith environment list 2>&1; echo ---; flagsmith flag get search_v2 -e oWRjSSSr5yPf38nTtLvcRE 2>&1; echo ---; flagsmith flag get search_v2 -e 48CK2LkJtxcqnVxUDCX8TM 2>&1"
+            "command": "flagsmith environment list 2>&1; echo ---; flagsmith flag get search_v2 -e [env-5c1d5bf64dd5572d] 2>&1; echo ---; flagsmith flag get search_v2 -e [env-069c8f3bbcfc67ad] 2>&1"
           },
-          "output": "NAME          KEY                      DESCRIPTION\nDevelopment   48CK2LkJtxcqnVxUDCX8TM   \nProduction    oWRjSSSr5yPf38nTtLvcRE   \n\n2 environments\n---\nFeature              search_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nFeature              search_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
+          "output": "NAME          KEY                      DESCRIPTION\nDevelopment   [env-069c8f3bbcfc67ad]   \nProduction    [env-5c1d5bf64dd5572d]   \n\n2 environments\n---\nFeature              search_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nFeature              search_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
           "isError": false,
           "ms": 1959
         }
@@ -139,9 +139,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag enable search_v2 -e oWRjSSSr5yPf38nTtLvcRE 2>&1; echo ---; flagsmith flag get search_v2 -e oWRjSSSr5yPf38nTtLvcRE 2>&1; echo ---; flagsmith flag get search_v2 -e 48CK2LkJtxcqnVxUDCX8TM 2>&1"
+            "command": "flagsmith flag enable search_v2 -e [env-5c1d5bf64dd5572d] 2>&1; echo ---; flagsmith flag get search_v2 -e [env-5c1d5bf64dd5572d] 2>&1; echo ---; flagsmith flag get search_v2 -e [env-069c8f3bbcfc67ad] 2>&1"
           },
-          "output": "Error: pass --yes to confirm \"Update search_v2 in environment Production (oWRjSSSr5yPf38nTtLvcRE)?\" without an interactive terminal\nUsage:\n  flagsmith flag enable <feature> [flags]\n\nExamples:\n  flagsmith flag enable onboarding\n\n  # target a segment or identity override\n  flagsmith flag enable onboarding --segment 12\n  flagsmith flag enable onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for enable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n---\nFeature              search_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nFeature              search_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
+          "output": "Error: pass --yes to confirm \"Update search_v2 in environment Production ([env-5c1d5bf64dd5572d])?\" without an interactive terminal\nUsage:\n  flagsmith flag enable <feature> [flags]\n\nExamples:\n  flagsmith flag enable onboarding\n\n  # target a segment or identity override\n  flagsmith flag enable onboarding --segment 12\n  flagsmith flag enable onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for enable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n---\nFeature              search_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nFeature              search_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
           "isError": false,
           "ms": 3332
         }
@@ -157,14 +157,14 @@
     },
     {
       "turn": 6,
-      "text": "The CLI asked for confirmation. The prompt names the exact target (Production, oWRjSSSr5yPf38nTtLvcRE), so I'll re-run with `--yes` for that one command.",
+      "text": "The CLI asked for confirmation. The prompt names the exact target (Production, [env-5c1d5bf64dd5572d]), so I'll re-run with `--yes` for that one command.",
       "calls": [
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag enable search_v2 -e oWRjSSSr5yPf38nTtLvcRE --yes 2>&1; echo ---; flagsmith flag get search_v2 -e oWRjSSSr5yPf38nTtLvcRE 2>&1; echo ---; flagsmith flag get search_v2 -e 48CK2LkJtxcqnVxUDCX8TM 2>&1"
+            "command": "flagsmith flag enable search_v2 -e [env-5c1d5bf64dd5572d] --yes 2>&1; echo ---; flagsmith flag get search_v2 -e [env-5c1d5bf64dd5572d] 2>&1; echo ---; flagsmith flag get search_v2 -e [env-069c8f3bbcfc67ad] 2>&1"
           },
-          "output": "✓ Enabled search_v2 in environment Production (oWRjSSSr5yPf38nTtLvcRE)\nFeature              search_v2\nDescription          \nType                 standard\nState                on\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nFeature              search_v2\nDescription          \nType                 standard\nState                on\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nFeature              search_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
+          "output": "✓ Enabled search_v2 in environment Production ([env-5c1d5bf64dd5572d])\nFeature              search_v2\nDescription          \nType                 standard\nState                on\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nFeature              search_v2\nDescription          \nType                 standard\nState                on\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nFeature              search_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
           "isError": false,
           "ms": 3143
         }
@@ -180,7 +180,7 @@
     },
     {
       "turn": 7,
-      "text": "DONE: search_v2 is now on in Production (oWRjSSSr5yPf38nTtLvcRE). Its value is still \"blue\" with no overrides, and Development (48CK2LkJtxcqnVxUDCX8TM) is still off, as before.",
+      "text": "DONE: search_v2 is now on in Production ([env-5c1d5bf64dd5572d]). Its value is still \"blue\" with no overrides, and Development ([env-069c8f3bbcfc67ad]) is still off, as before.",
       "calls": [],
       "usage": {
         "input": 2,

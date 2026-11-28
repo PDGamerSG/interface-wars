@@ -33,7 +33,7 @@
   "ms": 7440,
   "commands": [
     "list_project_features {\"project_pk\":196,\"environment\":390,\"search\":\"order_tracking_v2\"}",
-    "update_environment_feature_state {\"id__path\":1602,\"id\":1602,\"environment_api_key\":\"PtLRRmkCDE4gbkcmLkFw3g\",\"feature\":766,\"environment\":390,\"enabled\":true,\"feature_state_value\":\"rounded\"}",
+    "update_environment_feature_state {\"id__path\":1602,\"id\":1602,\"environment_api_key\":\"[env-12bd60b40ed677d5]\",\"feature\":766,\"environment\":390,\"enabled\":true,\"feature_state_value\":\"rounded\"}",
     "list_project_features {\"project_pk\":196,\"environment\":390,\"search\":\"order_tracking_v2\"}"
   ],
   "transcript": [
@@ -71,7 +71,7 @@
           "input": {
             "id__path": 1602,
             "id": 1602,
-            "environment_api_key": "PtLRRmkCDE4gbkcmLkFw3g",
+            "environment_api_key": "[env-12bd60b40ed677d5]",
             "feature": 766,
             "environment": 390,
             "enabled": true,

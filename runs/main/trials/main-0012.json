@@ -38,8 +38,8 @@
   "ms": 10864,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "cd /; flagsmith flag get store_locator -e dKW3H5u5rAzBfHM5WbZkEx --json; echo ---; flagsmith flag get store_locator -e oQ94znEKatQhoXWPAjv24q --json",
-    "cd /; flagsmith flag update store_locator -e oQ94znEKatQhoXWPAjv24q --enable --value \"grid\" --yes && flagsmith flag get store_locator -e oQ94znEKatQhoXWPAjv24q --json --jq '{enabled,value,segment_overrides,identity_overrides}'; echo ---; flagsmith flag get store_locator -e dKW3H5u5rAzBfHM5WbZkEx --json --jq '{enabled,value}'"
+    "cd /; flagsmith flag get store_locator -e [env-8cd253db5c0cd68b] --json; echo ---; flagsmith flag get store_locator -e [env-397b69c6cc526176] --json",
+    "cd /; flagsmith flag update store_locator -e [env-397b69c6cc526176] --enable --value \"grid\" --yes && flagsmith flag get store_locator -e [env-397b69c6cc526176] --json --jq '{enabled,value,segment_overrides,identity_overrides}'; echo ---; flagsmith flag get store_locator -e [env-8cd253db5c0cd68b] --json --jq '{enabled,value}'"
   ],
   "transcript": [
     {
@@ -72,7 +72,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /; flagsmith flag get store_locator -e dKW3H5u5rAzBfHM5WbZkEx --json; echo ---; flagsmith flag get store_locator -e oQ94znEKatQhoXWPAjv24q --json"
+            "command": "cd /; flagsmith flag get store_locator -e [env-8cd253db5c0cd68b] --json; echo ---; flagsmith flag get store_locator -e [env-397b69c6cc526176] --json"
           },
           "output": "{\n  \"feature\": \"store_locator\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"grid\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\n---\n{\n  \"feature\": \"store_locator\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": false,\n  \"value\": \"compact\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}",
           "isError": false,
@@ -95,9 +95,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /; flagsmith flag update store_locator -e oQ94znEKatQhoXWPAjv24q --enable --value \"grid\" --yes && flagsmith flag get store_locator -e oQ94znEKatQhoXWPAjv24q --json --jq '{enabled,value,segment_overrides,identity_overrides}'; echo ---; flagsmith flag get store_locator -e dKW3H5u5rAzBfHM5WbZkEx --json --jq '{enabled,value}'"
+            "command": "cd /; flagsmith flag update store_locator -e [env-397b69c6cc526176] --enable --value \"grid\" --yes && flagsmith flag get store_locator -e [env-397b69c6cc526176] --json --jq '{enabled,value,segment_overrides,identity_overrides}'; echo ---; flagsmith flag get store_locator -e [env-8cd253db5c0cd68b] --json --jq '{enabled,value}'"
           },
-          "output": "Feature              store_locator\nDescription          \nType                 standard\nState                on\nValue                grid\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"identity_overrides\":0,\"segment_overrides\":0,\"value\":\"grid\"}\n---\n{\"enabled\":true,\"value\":\"grid\"}\n\n[stderr]\n✓ Set store_locator to \"grid\" in environment Production (oQ94znEKatQhoXWPAjv24q)\n✓ Enabled store_locator in environment Production (oQ94znEKatQhoXWPAjv24q)",
+          "output": "Feature              store_locator\nDescription          \nType                 standard\nState                on\nValue                grid\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"identity_overrides\":0,\"segment_overrides\":0,\"value\":\"grid\"}\n---\n{\"enabled\":true,\"value\":\"grid\"}\n\n[stderr]\n✓ Set store_locator to \"grid\" in environment Production ([env-397b69c6cc526176])\n✓ Enabled store_locator in environment Production ([env-397b69c6cc526176])",
           "isError": false,
           "ms": 1975
         }

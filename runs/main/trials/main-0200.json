@@ -30,9 +30,9 @@
   "turns": 4,
   "ms": 10647,
   "commands": [
-    "create_metric {\"environment_api_key\":\"nKgss7cYeQ9pt7JoojJifE\",\"name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":\"add_to_cart_clicked\",\"description\":\"Whether the add_to_cart_clicked event happened at least once per user.\"}",
-    "create_metric {\"environment_api_key\":\"nKgss7cYeQ9pt7JoojJifE\",\"name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"event_name\":\"add_to_cart_clicked\"},\"description\":\"Whether the add_to_cart_clicked event happened at least once per user.\"}",
-    "list_metrics {\"environment_api_key\":\"nKgss7cYeQ9pt7JoojJifE\",\"page_size\":5}"
+    "create_metric {\"environment_api_key\":\"[env-ee5e315d5e7f20e0]\",\"name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":\"add_to_cart_clicked\",\"description\":\"Whether the add_to_cart_clicked event happened at least once per user.\"}",
+    "create_metric {\"environment_api_key\":\"[env-ee5e315d5e7f20e0]\",\"name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"event_name\":\"add_to_cart_clicked\"},\"description\":\"Whether the add_to_cart_clicked event happened at least once per user.\"}",
+    "list_metrics {\"environment_api_key\":\"[env-ee5e315d5e7f20e0]\",\"page_size\":5}"
   ],
   "transcript": [
     {
@@ -42,7 +42,7 @@
         {
           "name": "create_metric",
           "input": {
-            "environment_api_key": "nKgss7cYeQ9pt7JoojJifE",
+            "environment_api_key": "[env-ee5e315d5e7f20e0]",
             "name": "add_to_cart",
             "aggregation": "occurrence",
             "direction": "up",
@@ -70,7 +70,7 @@
         {
           "name": "create_metric",
           "input": {
-            "environment_api_key": "nKgss7cYeQ9pt7JoojJifE",
+            "environment_api_key": "[env-ee5e315d5e7f20e0]",
             "name": "add_to_cart",
             "aggregation": "occurrence",
             "direction": "up",
@@ -100,7 +100,7 @@
         {
           "name": "list_metrics",
           "input": {
-            "environment_api_key": "nKgss7cYeQ9pt7JoojJifE",
+            "environment_api_key": "[env-ee5e315d5e7f20e0]",
             "page_size": 5
           },
           "output": "{\"count\":0,\"next\":null,\"previous\":null,\"results\":[]}",

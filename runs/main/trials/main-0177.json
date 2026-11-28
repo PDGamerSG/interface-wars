@@ -33,7 +33,7 @@
   "ms": 6575,
   "commands": [
     "list_project_features {\"project_pk\":179,\"search\":\"store_locator\",\"environment\":357}",
-    "update_environment_feature_state {\"id__path\":1461,\"id\":1461,\"environment_api_key\":\"SbfuTfqYXj94S987uCQ6dF\",\"feature\":698,\"enabled\":true,\"feature_state_value\":\"tiered\"}",
+    "update_environment_feature_state {\"id__path\":1461,\"id\":1461,\"environment_api_key\":\"[env-3de2c0ee5f764678]\",\"feature\":698,\"enabled\":true,\"feature_state_value\":\"tiered\"}",
     "list_project_features {\"project_pk\":179,\"search\":\"store_locator\",\"environment\":357}",
     "list_project_features {\"project_pk\":179,\"search\":\"store_locator\",\"environment\":356}"
   ],
@@ -72,7 +72,7 @@
           "input": {
             "id__path": 1461,
             "id": 1461,
-            "environment_api_key": "SbfuTfqYXj94S987uCQ6dF",
+            "environment_api_key": "[env-3de2c0ee5f764678]",
             "feature": 698,
             "enabled": true,
             "feature_state_value": "tiered"

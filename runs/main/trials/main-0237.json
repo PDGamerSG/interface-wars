@@ -34,9 +34,9 @@
   "commands": [
     "flagsmith --help; echo ---; flagsmith features --help 2>&1 | head -50",
     "flagsmith feature --help; echo ---; flagsmith flag --help; echo ---; flagsmith environment --help",
-    "flagsmith flag list -e ChjeukHTJwdKxL6wfAe2GF --json | jq '.' | head -100",
-    "flagsmith environment list --json | jq -c '.[] | {id,name,api_key}' 2>/dev/null || flagsmith environment list; echo ---; flagsmith flag get bulk_discounts -e ChjeukHTJwdKxL6wfAe2GF; echo ---; flagsmith flag disable --help",
-    "flagsmith flag disable bulk_discounts -e ChjeukHTJwdKxL6wfAe2GF --no-input --yes; echo ---; flagsmith flag list -e ChjeukHTJwdKxL6wfAe2GF --json | jq -c '.[] | {feature,enabled,value}'"
+    "flagsmith flag list -e [env-0a222b3bea56c075] --json | jq '.' | head -100",
+    "flagsmith environment list --json | jq -c '.[] | {id,name,api_key}' 2>/dev/null || flagsmith environment list; echo ---; flagsmith flag get bulk_discounts -e [env-0a222b3bea56c075]; echo ---; flagsmith flag disable --help",
+    "flagsmith flag disable bulk_discounts -e [env-0a222b3bea56c075] --no-input --yes; echo ---; flagsmith flag list -e [env-0a222b3bea56c075] --json | jq -c '.[] | {feature,enabled,value}'"
   ],
   "transcript": [
     {
@@ -92,7 +92,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag list -e ChjeukHTJwdKxL6wfAe2GF --json | jq '.' | head -100"
+            "command": "flagsmith flag list -e [env-0a222b3bea56c075] --json | jq '.' | head -100"
           },
           "output": "[\n  {\n    \"feature\": \"bulk_discounts\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"maintenance\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"dark_mode\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": false,\n    \"value\": \"maintenance\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"review_photos\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"fast_lane\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"size_guide\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"tiered\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"guest_checkout\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"compact\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"order_tracking_v2\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"eu_west\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  }\n]",
           "isError": false,
@@ -115,9 +115,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith environment list --json | jq -c '.[] | {id,name,api_key}' 2>/dev/null || flagsmith environment list; echo ---; flagsmith flag get bulk_discounts -e ChjeukHTJwdKxL6wfAe2GF; echo ---; flagsmith flag disable --help"
+            "command": "flagsmith environment list --json | jq -c '.[] | {id,name,api_key}' 2>/dev/null || flagsmith environment list; echo ---; flagsmith flag get bulk_discounts -e [env-0a222b3bea56c075]; echo ---; flagsmith flag disable --help"
           },
-          "output": "{\"id\":476,\"name\":\"Development\",\"api_key\":\"jD2JaZw9QDUG4CmPToMJnf\"}\n{\"id\":477,\"name\":\"Production\",\"api_key\":\"ChjeukHTJwdKxL6wfAe2GF\"}\n---\nFeature              bulk_discounts\nDescription          \nType                 standard\nState                on\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nDisable a flag (shorthand for `flag update --disable`)\n\nUsage:\n  flagsmith flag disable <feature> [flags]\n\nExamples:\n  flagsmith flag disable onboarding\n  flagsmith flag disable onboarding --segment 12\n\nFlags:\n  -h, --help                help for disable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively",
+          "output": "{\"id\":476,\"name\":\"Development\",\"api_key\":\"[env-3d1846258d144c58]\"}\n{\"id\":477,\"name\":\"Production\",\"api_key\":\"[env-0a222b3bea56c075]\"}\n---\nFeature              bulk_discounts\nDescription          \nType                 standard\nState                on\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nDisable a flag (shorthand for `flag update --disable`)\n\nUsage:\n  flagsmith flag disable <feature> [flags]\n\nExamples:\n  flagsmith flag disable onboarding\n  flagsmith flag disable onboarding --segment 12\n\nFlags:\n  -h, --help                help for disable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively",
           "isError": false,
           "ms": 1211
         }
@@ -133,14 +133,14 @@
     },
     {
       "turn": 5,
-      "text": "Confirmed: the key `ChjeukHTJwdKxL6wfAe2GF` is Production, and `bulk_discounts` is the target. Disabling it now, with no segment or identity override.",
+      "text": "Confirmed: the key `[env-0a222b3bea56c075]` is Production, and `bulk_discounts` is the target. Disabling it now, with no segment or identity override.",
       "calls": [
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag disable bulk_discounts -e ChjeukHTJwdKxL6wfAe2GF --no-input --yes; echo ---; flagsmith flag list -e ChjeukHTJwdKxL6wfAe2GF --json | jq -c '.[] | {feature,enabled,value}'"
+            "command": "flagsmith flag disable bulk_discounts -e [env-0a222b3bea56c075] --no-input --yes; echo ---; flagsmith flag list -e [env-0a222b3bea56c075] --json | jq -c '.[] | {feature,enabled,value}'"
           },
-          "output": "Feature              bulk_discounts\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\n{\"feature\":\"bulk_discounts\",\"enabled\":false,\"value\":\"maintenance\"}\n{\"feature\":\"dark_mode\",\"enabled\":false,\"value\":\"maintenance\"}\n{\"feature\":\"review_photos\",\"enabled\":true,\"value\":\"fast_lane\"}\n{\"feature\":\"size_guide\",\"enabled\":true,\"value\":\"tiered\"}\n{\"feature\":\"guest_checkout\",\"enabled\":true,\"value\":\"compact\"}\n{\"feature\":\"order_tracking_v2\",\"enabled\":true,\"value\":\"eu_west\"}\n\n[stderr]\n✓ Disabled bulk_discounts in environment Production (ChjeukHTJwdKxL6wfAe2GF)",
+          "output": "Feature              bulk_discounts\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\n{\"feature\":\"bulk_discounts\",\"enabled\":false,\"value\":\"maintenance\"}\n{\"feature\":\"dark_mode\",\"enabled\":false,\"value\":\"maintenance\"}\n{\"feature\":\"review_photos\",\"enabled\":true,\"value\":\"fast_lane\"}\n{\"feature\":\"size_guide\",\"enabled\":true,\"value\":\"tiered\"}\n{\"feature\":\"guest_checkout\",\"enabled\":true,\"value\":\"compact\"}\n{\"feature\":\"order_tracking_v2\",\"enabled\":true,\"value\":\"eu_west\"}\n\n[stderr]\n✓ Disabled bulk_discounts in environment Production ([env-0a222b3bea56c075])",
           "isError": false,
           "ms": 1404
         }

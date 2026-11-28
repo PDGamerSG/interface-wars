@@ -19,7 +19,7 @@
     }
   ],
   "outcome": "done",
-  "finalText": "DONE: `review_photos` is now off in Production (MCegFgcD8mA3yhcfHMsXxV). Read-back shows enabled=false; it was enabled before. The value (\"rounded\") and the Development environment were not changed.",
+  "finalText": "DONE: `review_photos` is now off in Production ([env-e9ea3ea78baa34f3]). Read-back shows enabled=false; it was enabled before. The value (\"rounded\") and the Development environment were not changed.",
   "costUsd": 0.000879,
   "usage": {
     "input": 10,
@@ -33,8 +33,8 @@
   "ms": 7003,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; echo ---; flagsmith --help",
-    "flagsmith flag get review_photos -e MCegFgcD8mA3yhcfHMsXxV --json --jq '{enabled,value,variants}'; flagsmith config",
-    "flagsmith flag update review_photos -e MCegFgcD8mA3yhcfHMsXxV --disable --yes && flagsmith flag get review_photos -e MCegFgcD8mA3yhcfHMsXxV --json --jq '{enabled,value}'"
+    "flagsmith flag get review_photos -e [env-e9ea3ea78baa34f3] --json --jq '{enabled,value,variants}'; flagsmith config",
+    "flagsmith flag update review_photos -e [env-e9ea3ea78baa34f3] --disable --yes && flagsmith flag get review_photos -e [env-e9ea3ea78baa34f3] --json --jq '{enabled,value}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get review_photos -e MCegFgcD8mA3yhcfHMsXxV --json --jq '{enabled,value,variants}'; flagsmith config"
+            "command": "flagsmith flag get review_photos -e [env-e9ea3ea78baa34f3] --json --jq '{enabled,value,variants}'; flagsmith config"
           },
           "output": "{\"enabled\":true,\"value\":\"rounded\",\"variants\":null}\nConfig file    -                                  default\nProject        260                                env\nOrganisation   260                                env\nEnvironment    -                                  default\nAPI            http://host.docker.internal:8300   env\nSDK API        http://host.docker.internal:8300   default",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update review_photos -e MCegFgcD8mA3yhcfHMsXxV --disable --yes && flagsmith flag get review_photos -e MCegFgcD8mA3yhcfHMsXxV --json --jq '{enabled,value}'"
+            "command": "flagsmith flag update review_photos -e [env-e9ea3ea78baa34f3] --disable --yes && flagsmith flag get review_photos -e [env-e9ea3ea78baa34f3] --json --jq '{enabled,value}'"
           },
-          "output": "Feature              review_photos\nDescription          \nType                 standard\nState                off\nValue                rounded\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":false,\"value\":\"rounded\"}\n\n[stderr]\n✓ Disabled review_photos in environment Production (MCegFgcD8mA3yhcfHMsXxV)",
+          "output": "Feature              review_photos\nDescription          \nType                 standard\nState                off\nValue                rounded\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":false,\"value\":\"rounded\"}\n\n[stderr]\n✓ Disabled review_photos in environment Production ([env-e9ea3ea78baa34f3])",
           "isError": false,
           "ms": 1426
         }
@@ -108,7 +108,7 @@
     },
     {
       "turn": 4,
-      "text": "DONE: `review_photos` is now off in Production (MCegFgcD8mA3yhcfHMsXxV). Read-back shows enabled=false; it was enabled before. The value (\"rounded\") and the Development environment were not changed.",
+      "text": "DONE: `review_photos` is now off in Production ([env-e9ea3ea78baa34f3]). Read-back shows enabled=false; it was enabled before. The value (\"rounded\") and the Development environment were not changed.",
       "calls": [],
       "usage": {
         "input": 2,

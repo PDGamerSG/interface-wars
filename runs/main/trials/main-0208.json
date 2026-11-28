@@ -64,7 +64,7 @@
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
     "flagsmith feature create --help | head -40; echo ---; flagsmith feature list --json --jq '.[] | select(.name==\"review_photos\")'",
-    "flagsmith feature create review_photos --description \"Gates the review photos rollout\" --yes && for k in 85CCrTowujYYjf5Psk4gV2 KXK3G4rVsSz4kZYPa4XDoY; do echo \"== $k\"; flagsmith flag get review_photos -e $k --json --jq '{enabled,value}'; done",
+    "flagsmith feature create review_photos --description \"Gates the review photos rollout\" --yes && for k in [env-485ec29ff4c78949] [env-8de59bf84d066007]; do echo \"== $k\"; flagsmith flag get review_photos -e $k --json --jq '{enabled,value}'; done",
     "flagsmith feature list --json --jq '.[] | select(.name==\"review_photos\") | {name,description}'"
   ],
   "transcript": [
@@ -121,9 +121,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith feature create review_photos --description \"Gates the review photos rollout\" --yes && for k in 85CCrTowujYYjf5Psk4gV2 KXK3G4rVsSz4kZYPa4XDoY; do echo \"== $k\"; flagsmith flag get review_photos -e $k --json --jq '{enabled,value}'; done"
+            "command": "flagsmith feature create review_photos --description \"Gates the review photos rollout\" --yes && for k in [env-485ec29ff4c78949] [env-8de59bf84d066007]; do echo \"== $k\"; flagsmith flag get review_photos -e $k --json --jq '{enabled,value}'; done"
           },
-          "output": "Feature         review_photos (832)\nDescription     Gates the review photos rollout\nType            standard\nDefault value   -\nEnabled         false\n== 85CCrTowujYYjf5Psk4gV2\n{\"enabled\":false,\"value\":null}\n== KXK3G4rVsSz4kZYPa4XDoY\n{\"enabled\":false,\"value\":null}\n\n[stderr]\n✓ Created feature review_photos (832)",
+          "output": "Feature         review_photos (832)\nDescription     Gates the review photos rollout\nType            standard\nDefault value   -\nEnabled         false\n== [env-485ec29ff4c78949]\n{\"enabled\":false,\"value\":null}\n== [env-8de59bf84d066007]\n{\"enabled\":false,\"value\":null}\n\n[stderr]\n✓ Created feature review_photos (832)",
           "isError": false,
           "ms": 1478
         }

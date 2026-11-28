@@ -34,9 +34,9 @@
   "commands": [
     "flagsmith --help; flagsmith features --help 2>/dev/null | head -50",
     "flagsmith flag --help; flagsmith feature --help; flagsmith config",
-    "flagsmith flag list -e hXQiUuKh5wah6Mk24BMhSZ --json | jq '.' | head -100",
-    "flagsmith flag disable review_photos -e hXQiUuKh5wah6Mk24BMhSZ && flagsmith flag list -e hXQiUuKh5wah6Mk24BMhSZ --json | jq '.[] | {feature, enabled, value}'",
-    "flagsmith flag disable review_photos -e hXQiUuKh5wah6Mk24BMhSZ --yes && flagsmith flag list -e hXQiUuKh5wah6Mk24BMhSZ --json | jq '.[] | {feature, enabled, value}'"
+    "flagsmith flag list -e [env-c8866732584fc4b5] --json | jq '.' | head -100",
+    "flagsmith flag disable review_photos -e [env-c8866732584fc4b5] && flagsmith flag list -e [env-c8866732584fc4b5] --json | jq '.[] | {feature, enabled, value}'",
+    "flagsmith flag disable review_photos -e [env-c8866732584fc4b5] --yes && flagsmith flag list -e [env-c8866732584fc4b5] --json | jq '.[] | {feature, enabled, value}'"
   ],
   "transcript": [
     {
@@ -92,7 +92,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag list -e hXQiUuKh5wah6Mk24BMhSZ --json | jq '.' | head -100"
+            "command": "flagsmith flag list -e [env-c8866732584fc4b5] --json | jq '.' | head -100"
           },
           "output": "[\n  {\n    \"feature\": \"review_photos\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"maintenance\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"price_alerts\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": false,\n    \"value\": \"maintenance\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"live_chat\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"compact\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"search_v2\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"blue\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"apple_pay\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"tiered\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"promo_banner\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"max_10\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  }\n]",
           "isError": false,
@@ -115,9 +115,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag disable review_photos -e hXQiUuKh5wah6Mk24BMhSZ && flagsmith flag list -e hXQiUuKh5wah6Mk24BMhSZ --json | jq '.[] | {feature, enabled, value}'"
+            "command": "flagsmith flag disable review_photos -e [env-c8866732584fc4b5] && flagsmith flag list -e [env-c8866732584fc4b5] --json | jq '.[] | {feature, enabled, value}'"
           },
-          "output": "[stderr]\nError: pass --yes to confirm \"Update review_photos in environment Production (hXQiUuKh5wah6Mk24BMhSZ)?\" without an interactive terminal\nUsage:\n  flagsmith flag disable <feature> [flags]\n\nExamples:\n  flagsmith flag disable onboarding\n  flagsmith flag disable onboarding --segment 12\n\nFlags:\n  -h, --help                help for disable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n[exit code 2]",
+          "output": "[stderr]\nError: pass --yes to confirm \"Update review_photos in environment Production ([env-c8866732584fc4b5])?\" without an interactive terminal\nUsage:\n  flagsmith flag disable <feature> [flags]\n\nExamples:\n  flagsmith flag disable onboarding\n  flagsmith flag disable onboarding --segment 12\n\nFlags:\n  -h, --help                help for disable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n[exit code 2]",
           "isError": true,
           "ms": 3005
         }
@@ -138,9 +138,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag disable review_photos -e hXQiUuKh5wah6Mk24BMhSZ --yes && flagsmith flag list -e hXQiUuKh5wah6Mk24BMhSZ --json | jq '.[] | {feature, enabled, value}'"
+            "command": "flagsmith flag disable review_photos -e [env-c8866732584fc4b5] --yes && flagsmith flag list -e [env-c8866732584fc4b5] --json | jq '.[] | {feature, enabled, value}'"
           },
-          "output": "Feature              review_photos\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\n  \"feature\": \"review_photos\",\n  \"enabled\": false,\n  \"value\": \"maintenance\"\n}\n{\n  \"feature\": \"price_alerts\",\n  \"enabled\": false,\n  \"value\": \"maintenance\"\n}\n{\n  \"feature\": \"live_chat\",\n  \"enabled\": true,\n  \"value\": \"compact\"\n}\n{\n  \"feature\": \"search_v2\",\n  \"enabled\": true,\n  \"value\": \"blue\"\n}\n{\n  \"feature\": \"apple_pay\",\n  \"enabled\": true,\n  \"value\": \"tiered\"\n}\n{\n  \"feature\": \"promo_banner\",\n  \"enabled\": true,\n  \"value\": \"max_10\"\n}\n\n[stderr]\n✓ Disabled review_photos in environment Production (hXQiUuKh5wah6Mk24BMhSZ)",
+          "output": "Feature              review_photos\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\n  \"feature\": \"review_photos\",\n  \"enabled\": false,\n  \"value\": \"maintenance\"\n}\n{\n  \"feature\": \"price_alerts\",\n  \"enabled\": false,\n  \"value\": \"maintenance\"\n}\n{\n  \"feature\": \"live_chat\",\n  \"enabled\": true,\n  \"value\": \"compact\"\n}\n{\n  \"feature\": \"search_v2\",\n  \"enabled\": true,\n  \"value\": \"blue\"\n}\n{\n  \"feature\": \"apple_pay\",\n  \"enabled\": true,\n  \"value\": \"tiered\"\n}\n{\n  \"feature\": \"promo_banner\",\n  \"enabled\": true,\n  \"value\": \"max_10\"\n}\n\n[stderr]\n✓ Disabled review_photos in environment Production ([env-c8866732584fc4b5])",
           "isError": false,
           "ms": 6892
         }

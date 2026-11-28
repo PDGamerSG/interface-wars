@@ -64,7 +64,7 @@
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
     "flagsmith feature create live_chat --description \"Gates the live chat rollout\" --yes && flagsmith feature list --json --jq '.[] | select(.name==\"live_chat\")'",
-    "for k in 4S5FLtgv8xxGNtZYzmRf7R 63HKGgWNoEYPPn2jmytZjs; do echo \"== $k\"; flagsmith flag get live_chat -e $k --json --jq '{enabled,value,description}'; done"
+    "for k in [env-0b84a173bb1a0d0e] [env-12568fac00c90450]; do echo \"== $k\"; flagsmith flag get live_chat -e $k --json --jq '{enabled,value,description}'; done"
   ],
   "transcript": [
     {
@@ -120,9 +120,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "for k in 4S5FLtgv8xxGNtZYzmRf7R 63HKGgWNoEYPPn2jmytZjs; do echo \"== $k\"; flagsmith flag get live_chat -e $k --json --jq '{enabled,value,description}'; done"
+            "command": "for k in [env-0b84a173bb1a0d0e] [env-12568fac00c90450]; do echo \"== $k\"; flagsmith flag get live_chat -e $k --json --jq '{enabled,value,description}'; done"
           },
-          "output": "== 4S5FLtgv8xxGNtZYzmRf7R\n{\"description\":\"Gates the live chat rollout\",\"enabled\":false,\"value\":null}\n== 63HKGgWNoEYPPn2jmytZjs\n{\"description\":\"Gates the live chat rollout\",\"enabled\":false,\"value\":null}",
+          "output": "== [env-0b84a173bb1a0d0e]\n{\"description\":\"Gates the live chat rollout\",\"enabled\":false,\"value\":null}\n== [env-12568fac00c90450]\n{\"description\":\"Gates the live chat rollout\",\"enabled\":false,\"value\":null}",
           "isError": false,
           "ms": 1128
         }

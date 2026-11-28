@@ -33,8 +33,8 @@
   "ms": 9178,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith flag get apple_pay -e goxzAEnfGBqMMvCWwFuFfs --json --jq '{enabled,value,variants}'",
-    "flagsmith flag update apple_pay -e goxzAEnfGBqMMvCWwFuFfs --value \"tiered\" --yes && flagsmith flag get apple_pay -e goxzAEnfGBqMMvCWwFuFfs --json --jq '{enabled,value,variants}'"
+    "flagsmith flag get apple_pay -e [env-5466671b9a14afb2] --json --jq '{enabled,value,variants}'",
+    "flagsmith flag update apple_pay -e [env-5466671b9a14afb2] --value \"tiered\" --yes && flagsmith flag get apple_pay -e [env-5466671b9a14afb2] --json --jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get apple_pay -e goxzAEnfGBqMMvCWwFuFfs --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith flag get apple_pay -e [env-5466671b9a14afb2] --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"enabled\":true,\"value\":\"grid\",\"variants\":null}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update apple_pay -e goxzAEnfGBqMMvCWwFuFfs --value \"tiered\" --yes && flagsmith flag get apple_pay -e goxzAEnfGBqMMvCWwFuFfs --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith flag update apple_pay -e [env-5466671b9a14afb2] --value \"tiered\" --yes && flagsmith flag get apple_pay -e [env-5466671b9a14afb2] --json --jq '{enabled,value,variants}'"
           },
-          "output": "Feature              apple_pay\nDescription          \nType                 standard\nState                on\nValue                tiered\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"value\":\"tiered\",\"variants\":null}\n\n[stderr]\n✓ Set apple_pay to \"tiered\" in environment Development (goxzAEnfGBqMMvCWwFuFfs)",
+          "output": "Feature              apple_pay\nDescription          \nType                 standard\nState                on\nValue                tiered\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"value\":\"tiered\",\"variants\":null}\n\n[stderr]\n✓ Set apple_pay to \"tiered\" in environment Development ([env-5466671b9a14afb2])",
           "isError": false,
           "ms": 1583
         }

@@ -63,10 +63,10 @@
   "ms": 29402,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "P=cx6CEUwYih3iRMABrLP9ro\nflagsmith flag get price_alerts_copy -e $P --json --jq '{enabled,value,variants}'\nflagsmith feature variant list price_alerts_copy --json\nflagsmith api api/v1/environments/$P/experiment-metrics/ --jq '.results[] | {id,name,definition,direction}'\nflagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status}'",
+    "P=[env-199b5c19768e84a6]\nflagsmith flag get price_alerts_copy -e $P --json --jq '{enabled,value,variants}'\nflagsmith feature variant list price_alerts_copy --json\nflagsmith api api/v1/environments/$P/experiment-metrics/ --jq '.results[] | {id,name,definition,direction}'\nflagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status}'",
     "flagsmith feature list --json --jq '.[] | select(.name==\"price_alerts_copy\") | {id,name}'",
-    "P=cx6CEUwYih3iRMABrLP9ro\nflagsmith api api/v1/environments/$P/experiments/ -X POST --input - <<'JSON'\n{\"feature\":603,\"name\":\"price_alerts_copy test\",\"hypothesis\":\"Create account increases add to cart versus Sign up\",\n \"metrics\":[{\"metric\":48,\"expected_direction\":\"increase\"},{\"metric\":49,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":60,\"percentage_allocation\":50}]}}\nJSON",
-    "P=cx6CEUwYih3iRMABrLP9ro\nflagsmith api api/v1/environments/$P/experiments/31/ --jq '{name,status,hypothesis,feature,metrics,experiment_rollout}'\nflagsmith flag get price_alerts_copy -e $P --json --jq '{enabled,value,variants}'"
+    "P=[env-199b5c19768e84a6]\nflagsmith api api/v1/environments/$P/experiments/ -X POST --input - <<'JSON'\n{\"feature\":603,\"name\":\"price_alerts_copy test\",\"hypothesis\":\"Create account increases add to cart versus Sign up\",\n \"metrics\":[{\"metric\":48,\"expected_direction\":\"increase\"},{\"metric\":49,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":60,\"percentage_allocation\":50}]}}\nJSON",
+    "P=[env-199b5c19768e84a6]\nflagsmith api api/v1/environments/$P/experiments/31/ --jq '{name,status,hypothesis,feature,metrics,experiment_rollout}'\nflagsmith flag get price_alerts_copy -e $P --json --jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -99,7 +99,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=cx6CEUwYih3iRMABrLP9ro\nflagsmith flag get price_alerts_copy -e $P --json --jq '{enabled,value,variants}'\nflagsmith feature variant list price_alerts_copy --json\nflagsmith api api/v1/environments/$P/experiment-metrics/ --jq '.results[] | {id,name,definition,direction}'\nflagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status}'"
+            "command": "P=[env-199b5c19768e84a6]\nflagsmith flag get price_alerts_copy -e $P --json --jq '{enabled,value,variants}'\nflagsmith feature variant list price_alerts_copy --json\nflagsmith api api/v1/environments/$P/experiment-metrics/ --jq '.results[] | {id,name,definition,direction}'\nflagsmith api api/v1/environments/$P/experiments/ --jq '.results[] | {id,name,status}'"
           },
           "output": "{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":60,\"key\":\"b\",\"value\":\"Create account\",\"weight\":0}]}\n[\n  {\n    \"id\": 60,\n    \"value\": \"Create account\",\n    \"weight\": 0,\n    \"key\": \"b\"\n  }\n]\n{\"definition\":{\"event\":\"add_to_cart_clicked\",\"version\":1},\"direction\":\"up\",\"id\":48,\"name\":\"add_to_cart\"}\n{\"definition\":{\"event\":\"support_ticket_opened\",\"version\":1},\"direction\":\"down\",\"id\":49,\"name\":\"support_ticket_opened\"}",
           "isError": false,
@@ -145,7 +145,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=cx6CEUwYih3iRMABrLP9ro\nflagsmith api api/v1/environments/$P/experiments/ -X POST --input - <<'JSON'\n{\"feature\":603,\"name\":\"price_alerts_copy test\",\"hypothesis\":\"Create account increases add to cart versus Sign up\",\n \"metrics\":[{\"metric\":48,\"expected_direction\":\"increase\"},{\"metric\":49,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":60,\"percentage_allocation\":50}]}}\nJSON"
+            "command": "P=[env-199b5c19768e84a6]\nflagsmith api api/v1/environments/$P/experiments/ -X POST --input - <<'JSON'\n{\"feature\":603,\"name\":\"price_alerts_copy test\",\"hypothesis\":\"Create account increases add to cart versus Sign up\",\n \"metrics\":[{\"metric\":48,\"expected_direction\":\"increase\"},{\"metric\":49,\"expected_direction\":\"not_increase\"}],\n \"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\n   \"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\n   \"multivariate_feature_state_values\":[{\"multivariate_feature_option\":60,\"percentage_allocation\":50}]}}\nJSON"
           },
           "output": "{\"id\":31,\"feature\":603,\"name\":\"price_alerts_copy test\",\"hypothesis\":\"Create account increases add to cart versus Sign up\",\"status\":\"created\",\"created_at\":\"2026-11-27T20:29:33.891834Z\",\"updated_at\":\"2026-11-27T20:29:33.910842Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
           "isError": false,
@@ -168,7 +168,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=cx6CEUwYih3iRMABrLP9ro\nflagsmith api api/v1/environments/$P/experiments/31/ --jq '{name,status,hypothesis,feature,metrics,experiment_rollout}'\nflagsmith flag get price_alerts_copy -e $P --json --jq '{enabled,value,variants}'"
+            "command": "P=[env-199b5c19768e84a6]\nflagsmith api api/v1/environments/$P/experiments/31/ --jq '{name,status,hypothesis,feature,metrics,experiment_rollout}'\nflagsmith flag get price_alerts_copy -e $P --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"experiment_rollout\":{\"audience\":{\"match\":\"any\",\"segments\":[]},\"enabled\":true,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":60,\"percentage_allocation\":50}],\"rollout_percentage\":100},\"feature\":{\"id\":603,\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":60,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Create account\",\"type\":\"unicode\",\"uuid\":\"68458ceb-abb8-41a0-9f2d-c8b7e71ac8b0\"}],\"name\":\"price_alerts_copy\",\"type\":\"MULTIVARIATE\"},\"hypothesis\":\"Create account increases add to cart versus Sign up\",\"metrics\":[{\"aggregation\":\"occurrence\",\"created_at\":\"2026-11-27T20:29:33.893427Z\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"id\":42,\"metric\":48,\"metric_name\":\"add_to_cart\"},{\"aggregation\":\"occurrence\",\"created_at\":\"2026-11-27T20:29:33.893440Z\",\"direction\":\"down\",\"expected_direction\":\"not_increase\",\"id\":43,\"metric\":49,\"metric_name\":\"support_ticket_opened\"}],\"name\":\"price_alerts_copy test\",\"status\":\"created\"}\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":60,\"key\":\"b\",\"value\":\"Create account\",\"weight\":0}]}",
           "isError": false,

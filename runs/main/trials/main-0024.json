@@ -30,9 +30,9 @@
   "turns": 4,
   "ms": 16634,
   "commands": [
-    "create_metric {\"environment_api_key\":\"iRYr4evdfRU5v6uvpPB8xh\",\"name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"description\":\"Whether the checkout_completed event happened at least once per user. Higher is better.\",\"definition\":\"checkout_completed\"}",
-    "create_metric {\"environment_api_key\":\"iRYr4evdfRU5v6uvpPB8xh\",\"name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"description\":\"Whether the checkout_completed event happened at least once per user. Higher is better.\",\"definition\":{\"event\":\"checkout_completed\"}}",
-    "create_metric {\"environment_api_key\":\"iRYr4evdfRU5v6uvpPB8xh\",\"name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"description\":\"Whether the checkout_completed event happened at least once per user. Higher is better.\",\"definition\":{\"event\":\"checkout_completed\",\"aggregation\":\"occurrence\"}}"
+    "create_metric {\"environment_api_key\":\"[env-d650cb2fd8a32ec6]\",\"name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"description\":\"Whether the checkout_completed event happened at least once per user. Higher is better.\",\"definition\":\"checkout_completed\"}",
+    "create_metric {\"environment_api_key\":\"[env-d650cb2fd8a32ec6]\",\"name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"description\":\"Whether the checkout_completed event happened at least once per user. Higher is better.\",\"definition\":{\"event\":\"checkout_completed\"}}",
+    "create_metric {\"environment_api_key\":\"[env-d650cb2fd8a32ec6]\",\"name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"description\":\"Whether the checkout_completed event happened at least once per user. Higher is better.\",\"definition\":{\"event\":\"checkout_completed\",\"aggregation\":\"occurrence\"}}"
   ],
   "transcript": [
     {
@@ -42,7 +42,7 @@
         {
           "name": "create_metric",
           "input": {
-            "environment_api_key": "iRYr4evdfRU5v6uvpPB8xh",
+            "environment_api_key": "[env-d650cb2fd8a32ec6]",
             "name": "checkout_completed",
             "aggregation": "occurrence",
             "direction": "up",
@@ -70,7 +70,7 @@
         {
           "name": "create_metric",
           "input": {
-            "environment_api_key": "iRYr4evdfRU5v6uvpPB8xh",
+            "environment_api_key": "[env-d650cb2fd8a32ec6]",
             "name": "checkout_completed",
             "aggregation": "occurrence",
             "direction": "up",
@@ -100,7 +100,7 @@
         {
           "name": "create_metric",
           "input": {
-            "environment_api_key": "iRYr4evdfRU5v6uvpPB8xh",
+            "environment_api_key": "[env-d650cb2fd8a32ec6]",
             "name": "checkout_completed",
             "aggregation": "occurrence",
             "direction": "up",

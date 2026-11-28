@@ -19,7 +19,7 @@
     }
   ],
   "outcome": "done",
-  "finalText": "DONE: `saved_carts` is now off in Production (gRR9oEjR6bohZdZzZhbMwm). It was on with no overrides before. Its value (`grid`) is unchanged, and I did not touch any other flag or environment.",
+  "finalText": "DONE: `saved_carts` is now off in Production ([env-4283faf1fbc9fbbd]). It was on with no overrides before. Its value (`grid`) is unchanged, and I did not touch any other flag or environment.",
   "costUsd": 0.002143,
   "usage": {
     "input": 16,
@@ -35,9 +35,9 @@
     "flagsmith --help; echo ---; flagsmith features --help 2>&1 | head -50",
     "flagsmith feature --help; echo ---; flagsmith feature list --help 2>&1 | head -40; echo ---; flagsmith feature toggle --help 2>&1 | head -60",
     "flagsmith flag --help; echo ---; for c in $(flagsmith flag --help | awk '/Available Commands/{f=1;next}/Flags:/{f=0}f{print $1}'); do echo \"== $c\"; flagsmith flag $c --help | head -30; done",
-    "P=gRR9oEjR6bohZdZzZhbMwm; flagsmith -e $P config; echo ---; flagsmith -e $P flag get saved_carts; echo ---; flagsmith -e $P flag get saved_carts --json | jq .",
-    "P=gRR9oEjR6bohZdZzZhbMwm; flagsmith -e $P flag disable saved_carts && echo --- && flagsmith -e $P flag get saved_carts && echo --- && flagsmith -e $P flag list --json | jq -c '.[] | select(.feature==\"saved_carts\")' 2>/dev/null",
-    "P=gRR9oEjR6bohZdZzZhbMwm; flagsmith -e $P flag disable saved_carts --yes && echo --- && flagsmith -e $P flag get saved_carts --json | jq ."
+    "P=[env-4283faf1fbc9fbbd]; flagsmith -e $P config; echo ---; flagsmith -e $P flag get saved_carts; echo ---; flagsmith -e $P flag get saved_carts --json | jq .",
+    "P=[env-4283faf1fbc9fbbd]; flagsmith -e $P flag disable saved_carts && echo --- && flagsmith -e $P flag get saved_carts && echo --- && flagsmith -e $P flag list --json | jq -c '.[] | select(.feature==\"saved_carts\")' 2>/dev/null",
+    "P=[env-4283faf1fbc9fbbd]; flagsmith -e $P flag disable saved_carts --yes && echo --- && flagsmith -e $P flag get saved_carts --json | jq ."
   ],
   "transcript": [
     {
@@ -111,14 +111,14 @@
     },
     {
       "turn": 4,
-      "text": "The `flag` commands act on the environment selected with `-e`. I'll confirm the current state of `saved_carts` in Production (key `gRR9oEjR6bohZdZzZhbMwm`) before changing anything.",
+      "text": "The `flag` commands act on the environment selected with `-e`. I'll confirm the current state of `saved_carts` in Production (key `[env-4283faf1fbc9fbbd]`) before changing anything.",
       "calls": [
         {
           "name": "bash",
           "input": {
-            "command": "P=gRR9oEjR6bohZdZzZhbMwm; flagsmith -e $P config; echo ---; flagsmith -e $P flag get saved_carts; echo ---; flagsmith -e $P flag get saved_carts --json | jq ."
+            "command": "P=[env-4283faf1fbc9fbbd]; flagsmith -e $P config; echo ---; flagsmith -e $P flag get saved_carts; echo ---; flagsmith -e $P flag get saved_carts --json | jq ."
           },
-          "output": "Config file    -                                  default\nProject        197                                env\nOrganisation   197                                env\nEnvironment    gRR9oEjR6bohZdZzZhbMwm             cli\nAPI            http://host.docker.internal:8300   env\nSDK API        http://host.docker.internal:8300   default\n---\nFeature              saved_carts\nDescription          \nType                 standard\nState                on\nValue                grid\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\n{\n  \"feature\": \"saved_carts\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"grid\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}",
+          "output": "Config file    -                                  default\nProject        197                                env\nOrganisation   197                                env\nEnvironment    [env-4283faf1fbc9fbbd]             cli\nAPI            http://host.docker.internal:8300   env\nSDK API        http://host.docker.internal:8300   default\n---\nFeature              saved_carts\nDescription          \nType                 standard\nState                on\nValue                grid\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\n{\n  \"feature\": \"saved_carts\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"grid\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}",
           "isError": false,
           "ms": 1430
         }
@@ -139,9 +139,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=gRR9oEjR6bohZdZzZhbMwm; flagsmith -e $P flag disable saved_carts && echo --- && flagsmith -e $P flag get saved_carts && echo --- && flagsmith -e $P flag list --json | jq -c '.[] | select(.feature==\"saved_carts\")' 2>/dev/null"
+            "command": "P=[env-4283faf1fbc9fbbd]; flagsmith -e $P flag disable saved_carts && echo --- && flagsmith -e $P flag get saved_carts && echo --- && flagsmith -e $P flag list --json | jq -c '.[] | select(.feature==\"saved_carts\")' 2>/dev/null"
           },
-          "output": "[stderr]\nError: pass --yes to confirm \"Update saved_carts in environment Production (gRR9oEjR6bohZdZzZhbMwm)?\" without an interactive terminal\nUsage:\n  flagsmith flag disable <feature> [flags]\n\nExamples:\n  flagsmith flag disable onboarding\n  flagsmith flag disable onboarding --segment 12\n\nFlags:\n  -h, --help                help for disable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n[exit code 2]",
+          "output": "[stderr]\nError: pass --yes to confirm \"Update saved_carts in environment Production ([env-4283faf1fbc9fbbd])?\" without an interactive terminal\nUsage:\n  flagsmith flag disable <feature> [flags]\n\nExamples:\n  flagsmith flag disable onboarding\n  flagsmith flag disable onboarding --segment 12\n\nFlags:\n  -h, --help                help for disable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n[exit code 2]",
           "isError": true,
           "ms": 848
         }
@@ -157,14 +157,14 @@
     },
     {
       "turn": 6,
-      "text": "The CLI asks for confirmation. The prompt names the target as Production (gRR9oEjR6bohZdZzZhbMwm), so I'll confirm with `--yes`.",
+      "text": "The CLI asks for confirmation. The prompt names the target as Production ([env-4283faf1fbc9fbbd]), so I'll confirm with `--yes`.",
       "calls": [
         {
           "name": "bash",
           "input": {
-            "command": "P=gRR9oEjR6bohZdZzZhbMwm; flagsmith -e $P flag disable saved_carts --yes && echo --- && flagsmith -e $P flag get saved_carts --json | jq ."
+            "command": "P=[env-4283faf1fbc9fbbd]; flagsmith -e $P flag disable saved_carts --yes && echo --- && flagsmith -e $P flag get saved_carts --json | jq ."
           },
-          "output": "Feature              saved_carts\nDescription          \nType                 standard\nState                off\nValue                grid\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\n{\n  \"feature\": \"saved_carts\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": false,\n  \"value\": \"grid\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\n\n[stderr]\n✓ Disabled saved_carts in environment Production (gRR9oEjR6bohZdZzZhbMwm)",
+          "output": "Feature              saved_carts\nDescription          \nType                 standard\nState                off\nValue                grid\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\n{\n  \"feature\": \"saved_carts\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": false,\n  \"value\": \"grid\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\n\n[stderr]\n✓ Disabled saved_carts in environment Production ([env-4283faf1fbc9fbbd])",
           "isError": false,
           "ms": 1791
         }
@@ -180,7 +180,7 @@
     },
     {
       "turn": 7,
-      "text": "DONE: `saved_carts` is now off in Production (gRR9oEjR6bohZdZzZhbMwm). It was on with no overrides before. Its value (`grid`) is unchanged, and I did not touch any other flag or environment.",
+      "text": "DONE: `saved_carts` is now off in Production ([env-4283faf1fbc9fbbd]). It was on with no overrides before. Its value (`grid`) is unchanged, and I did not touch any other flag or environment.",
       "calls": [],
       "usage": {
         "input": 2,

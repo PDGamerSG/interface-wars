@@ -19,7 +19,7 @@
     }
   ],
   "outcome": "done",
-  "finalText": "DONE: Turned off `size_guide` in Production (hAkiNVZWDRAF25oeAgBopE). Read-back shows enabled=false with its value \"maintenance\" unchanged, and the other four enabled Production flags were not touched.",
+  "finalText": "DONE: Turned off `size_guide` in Production ([env-1af430614ce770a8]). Read-back shows enabled=false with its value \"maintenance\" unchanged, and the other four enabled Production flags were not touched.",
   "costUsd": 0.001236,
   "usage": {
     "input": 14,
@@ -33,10 +33,10 @@
   "ms": 17344,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith flag list -e hAkiNVZWDRAF25oeAgBopE --json --jq '.[] | select(.enabled==true) | {name,value,enabled}'",
-    "flagsmith flag list -e hAkiNVZWDRAF25oeAgBopE --json | jq '.[0]'; flagsmith flag list -e hAkiNVZWDRAF25oeAgBopE --json | jq -c '.[] | select(.enabled==true)'",
-    "flagsmith flag get size_guide -e hAkiNVZWDRAF25oeAgBopE --json --jq '{enabled,value,variants,segment_overrides}'",
-    "flagsmith flag update size_guide -e hAkiNVZWDRAF25oeAgBopE --disable --yes && flagsmith flag get size_guide -e hAkiNVZWDRAF25oeAgBopE --json --jq '{enabled,value}'; flagsmith flag list -e hAkiNVZWDRAF25oeAgBopE --json | jq -c '[.[] | select(.enabled==true) | .feature]'"
+    "flagsmith flag list -e [env-1af430614ce770a8] --json --jq '.[] | select(.enabled==true) | {name,value,enabled}'",
+    "flagsmith flag list -e [env-1af430614ce770a8] --json | jq '.[0]'; flagsmith flag list -e [env-1af430614ce770a8] --json | jq -c '.[] | select(.enabled==true)'",
+    "flagsmith flag get size_guide -e [env-1af430614ce770a8] --json --jq '{enabled,value,variants,segment_overrides}'",
+    "flagsmith flag update size_guide -e [env-1af430614ce770a8] --disable --yes && flagsmith flag get size_guide -e [env-1af430614ce770a8] --json --jq '{enabled,value}'; flagsmith flag list -e [env-1af430614ce770a8] --json | jq -c '[.[] | select(.enabled==true) | .feature]'"
   ],
   "transcript": [
     {
@@ -69,7 +69,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag list -e hAkiNVZWDRAF25oeAgBopE --json --jq '.[] | select(.enabled==true) | {name,value,enabled}'"
+            "command": "flagsmith flag list -e [env-1af430614ce770a8] --json --jq '.[] | select(.enabled==true) | {name,value,enabled}'"
           },
           "output": "{\"enabled\":true,\"name\":null,\"value\":\"maintenance\"}\n{\"enabled\":true,\"name\":null,\"value\":\"compact\"}\n{\"enabled\":true,\"name\":null,\"value\":\"v2\"}\n{\"enabled\":true,\"name\":null,\"value\":\"rounded\"}\n{\"enabled\":true,\"name\":null,\"value\":\"beta_copy\"}",
           "isError": false,
@@ -92,7 +92,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag list -e hAkiNVZWDRAF25oeAgBopE --json | jq '.[0]'; flagsmith flag list -e hAkiNVZWDRAF25oeAgBopE --json | jq -c '.[] | select(.enabled==true)'"
+            "command": "flagsmith flag list -e [env-1af430614ce770a8] --json | jq '.[0]'; flagsmith flag list -e [env-1af430614ce770a8] --json | jq -c '.[] | select(.enabled==true)'"
           },
           "output": "{\n  \"feature\": \"size_guide\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"maintenance\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\n{\"feature\":\"size_guide\",\"type\":\"standard\",\"description\":\"\",\"enabled\":true,\"value\":\"maintenance\",\"segment_overrides\":0,\"identity_overrides\":0,\"code_references\":0,\"lifecycle_stage\":\"new\"}\n{\"feature\":\"bulk_discounts\",\"type\":\"standard\",\"description\":\"\",\"enabled\":true,\"value\":\"compact\",\"segment_overrides\":0,\"identity_overrides\":0,\"code_references\":0,\"lifecycle_stage\":\"new\"}\n{\"feature\":\"one_click_buy\",\"type\":\"standard\",\"description\":\"\",\"enabled\":true,\"value\":\"v2\",\"segment_overrides\":0,\"identity_overrides\":0,\"code_references\":0,\"lifecycle_stage\":\"new\"}\n{\"feature\":\"wishlist_sync\",\"type\":\"standard\",\"description\":\"\",\"enabled\":true,\"value\":\"rounded\",\"segment_overrides\":0,\"identity_overrides\":0,\"code_references\":0,\"lifecycle_stage\":\"new\"}\n{\"feature\":\"saved_carts\",\"type\":\"standard\",\"description\":\"\",\"enabled\":true,\"value\":\"beta_copy\",\"segment_overrides\":0,\"identity_overrides\":0,\"code_references\":0,\"lifecycle_stage\":\"new\"}",
           "isError": false,
@@ -115,7 +115,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get size_guide -e hAkiNVZWDRAF25oeAgBopE --json --jq '{enabled,value,variants,segment_overrides}'"
+            "command": "flagsmith flag get size_guide -e [env-1af430614ce770a8] --json --jq '{enabled,value,variants,segment_overrides}'"
           },
           "output": "{\"enabled\":true,\"segment_overrides\":0,\"value\":\"maintenance\",\"variants\":null}",
           "isError": false,
@@ -138,9 +138,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update size_guide -e hAkiNVZWDRAF25oeAgBopE --disable --yes && flagsmith flag get size_guide -e hAkiNVZWDRAF25oeAgBopE --json --jq '{enabled,value}'; flagsmith flag list -e hAkiNVZWDRAF25oeAgBopE --json | jq -c '[.[] | select(.enabled==true) | .feature]'"
+            "command": "flagsmith flag update size_guide -e [env-1af430614ce770a8] --disable --yes && flagsmith flag get size_guide -e [env-1af430614ce770a8] --json --jq '{enabled,value}'; flagsmith flag list -e [env-1af430614ce770a8] --json | jq -c '[.[] | select(.enabled==true) | .feature]'"
           },
-          "output": "Feature              size_guide\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":false,\"value\":\"maintenance\"}\n[\"bulk_discounts\",\"one_click_buy\",\"wishlist_sync\",\"saved_carts\"]\n\n[stderr]\n✓ Disabled size_guide in environment Production (hAkiNVZWDRAF25oeAgBopE)",
+          "output": "Feature              size_guide\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":false,\"value\":\"maintenance\"}\n[\"bulk_discounts\",\"one_click_buy\",\"wishlist_sync\",\"saved_carts\"]\n\n[stderr]\n✓ Disabled size_guide in environment Production ([env-1af430614ce770a8])",
           "isError": false,
           "ms": 1984
         }
@@ -156,7 +156,7 @@
     },
     {
       "turn": 6,
-      "text": "DONE: Turned off `size_guide` in Production (hAkiNVZWDRAF25oeAgBopE). Read-back shows enabled=false with its value \"maintenance\" unchanged, and the other four enabled Production flags were not touched.",
+      "text": "DONE: Turned off `size_guide` in Production ([env-1af430614ce770a8]). Read-back shows enabled=false with its value \"maintenance\" unchanged, and the other four enabled Production flags were not touched.",
       "calls": [],
       "usage": {
         "input": 2,

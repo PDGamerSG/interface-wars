@@ -33,9 +33,9 @@
   "ms": 11539,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith flag list -e EDX57BxGpaCX6mrPj9f7Ah --json --jq '.[] | select(.value==\"maintenance\") | {feature,enabled,value}'; echo ---; flagsmith flag list -e EDX57BxGpaCX6mrPj9f7Ah --json --jq '.[] | select(.enabled==true) | {feature,value}'",
-    "flagsmith flag get saved_carts -e EDX57BxGpaCX6mrPj9f7Ah --json --jq '{enabled,value,segment_overrides}'",
-    "flagsmith flag update saved_carts -e EDX57BxGpaCX6mrPj9f7Ah --disable --yes && flagsmith flag get saved_carts -e EDX57BxGpaCX6mrPj9f7Ah --json --jq '{enabled,value,segment_overrides}'"
+    "flagsmith flag list -e [env-0ff92c62929c2fe5] --json --jq '.[] | select(.value==\"maintenance\") | {feature,enabled,value}'; echo ---; flagsmith flag list -e [env-0ff92c62929c2fe5] --json --jq '.[] | select(.enabled==true) | {feature,value}'",
+    "flagsmith flag get saved_carts -e [env-0ff92c62929c2fe5] --json --jq '{enabled,value,segment_overrides}'",
+    "flagsmith flag update saved_carts -e [env-0ff92c62929c2fe5] --disable --yes && flagsmith flag get saved_carts -e [env-0ff92c62929c2fe5] --json --jq '{enabled,value,segment_overrides}'"
   ],
   "transcript": [
     {
@@ -68,7 +68,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag list -e EDX57BxGpaCX6mrPj9f7Ah --json --jq '.[] | select(.value==\"maintenance\") | {feature,enabled,value}'; echo ---; flagsmith flag list -e EDX57BxGpaCX6mrPj9f7Ah --json --jq '.[] | select(.enabled==true) | {feature,value}'"
+            "command": "flagsmith flag list -e [env-0ff92c62929c2fe5] --json --jq '.[] | select(.value==\"maintenance\") | {feature,enabled,value}'; echo ---; flagsmith flag list -e [env-0ff92c62929c2fe5] --json --jq '.[] | select(.enabled==true) | {feature,value}'"
           },
           "output": "{\"enabled\":true,\"feature\":\"saved_carts\",\"value\":\"maintenance\"}\n{\"enabled\":false,\"feature\":\"promo_banner\",\"value\":\"maintenance\"}\n---\n{\"feature\":\"saved_carts\",\"value\":\"maintenance\"}\n{\"feature\":\"store_locator\",\"value\":\"compact\"}\n{\"feature\":\"review_photos\",\"value\":\"beta_copy\"}\n{\"feature\":\"bulk_discounts\",\"value\":\"rounded\"}\n{\"feature\":\"gift_wrap\",\"value\":\"beta_copy\"}",
           "isError": false,
@@ -91,7 +91,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get saved_carts -e EDX57BxGpaCX6mrPj9f7Ah --json --jq '{enabled,value,segment_overrides}'"
+            "command": "flagsmith flag get saved_carts -e [env-0ff92c62929c2fe5] --json --jq '{enabled,value,segment_overrides}'"
           },
           "output": "{\"enabled\":true,\"segment_overrides\":0,\"value\":\"maintenance\"}",
           "isError": false,
@@ -114,9 +114,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update saved_carts -e EDX57BxGpaCX6mrPj9f7Ah --disable --yes && flagsmith flag get saved_carts -e EDX57BxGpaCX6mrPj9f7Ah --json --jq '{enabled,value,segment_overrides}'"
+            "command": "flagsmith flag update saved_carts -e [env-0ff92c62929c2fe5] --disable --yes && flagsmith flag get saved_carts -e [env-0ff92c62929c2fe5] --json --jq '{enabled,value,segment_overrides}'"
           },
-          "output": "Feature              saved_carts\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"maintenance\"}\n\n[stderr]\n✓ Disabled saved_carts in environment Production (EDX57BxGpaCX6mrPj9f7Ah)",
+          "output": "Feature              saved_carts\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"maintenance\"}\n\n[stderr]\n✓ Disabled saved_carts in environment Production ([env-0ff92c62929c2fe5])",
           "isError": false,
           "ms": 2177
         }

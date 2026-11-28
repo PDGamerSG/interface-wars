@@ -28,10 +28,10 @@
   "turns": 4,
   "ms": 11814,
   "commands": [
-    "list_experiments {\"environment_api_key\":\"De9Fkcnequea4ds5Ni8yaJ\",\"q\":\"bulk_discounts_copy test\"}",
-    "get_experiment {\"environment_api_key\":\"De9Fkcnequea4ds5Ni8yaJ\",\"experiment_id\":20}",
-    "update_experiment {\"environment_api_key\":\"De9Fkcnequea4ds5Ni8yaJ\",\"experiment_id\":20,\"feature\":417,\"hypothesis\":\"Create account wins\",\"name\":\"bulk_discounts_copy test\",\"status\":\"running\"}",
-    "get_experiment {\"environment_api_key\":\"De9Fkcnequea4ds5Ni8yaJ\",\"experiment_id\":20}"
+    "list_experiments {\"environment_api_key\":\"[env-591351245626020c]\",\"q\":\"bulk_discounts_copy test\"}",
+    "get_experiment {\"environment_api_key\":\"[env-591351245626020c]\",\"experiment_id\":20}",
+    "update_experiment {\"environment_api_key\":\"[env-591351245626020c]\",\"experiment_id\":20,\"feature\":417,\"hypothesis\":\"Create account wins\",\"name\":\"bulk_discounts_copy test\",\"status\":\"running\"}",
+    "get_experiment {\"environment_api_key\":\"[env-591351245626020c]\",\"experiment_id\":20}"
   ],
   "transcript": [
     {
@@ -41,7 +41,7 @@
         {
           "name": "list_experiments",
           "input": {
-            "environment_api_key": "De9Fkcnequea4ds5Ni8yaJ",
+            "environment_api_key": "[env-591351245626020c]",
             "q": "bulk_discounts_copy test"
           },
           "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":20,\"feature\":{\"id\":417,\"name\":\"bulk_discounts_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"id\":43,\"uuid\":\"52e5d822-c1ed-43e0-bca5-09d68118cdcc\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Create account\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"bulk_discounts_copy test\",\"hypothesis\":\"Create account wins\",\"status\":\"created\",\"metrics\":[{\"id\":28,\"metric\":34,\"metric_name\":\"signup_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:23:37.619265Z\"}],\"created_at\":\"2026-11-27T20:23:37.618258Z\",\"updated_at\":\"2026-11-27T20:23:37.629680Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}],\"status_counts\":{\"created\":1,\"running\":0,\"paused\":0,\"completed\":0}}",
@@ -65,7 +65,7 @@
         {
           "name": "get_experiment",
           "input": {
-            "environment_api_key": "De9Fkcnequea4ds5Ni8yaJ",
+            "environment_api_key": "[env-591351245626020c]",
             "experiment_id": 20
           },
           "output": "{\"id\":20,\"feature\":{\"id\":417,\"name\":\"bulk_discounts_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"id\":43,\"uuid\":\"52e5d822-c1ed-43e0-bca5-09d68118cdcc\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Create account\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"bulk_discounts_copy test\",\"hypothesis\":\"Create account wins\",\"status\":\"created\",\"metrics\":[{\"id\":28,\"metric\":34,\"metric_name\":\"signup_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:23:37.619265Z\"}],\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100.0,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":43,\"percentage_allocation\":50.0}],\"audience\":{\"match\":\"any\",\"segments\":[]}},\"created_at\":\"2026-11-27T20:23:37.618258Z\",\"updated_at\":\"2026-11-27T20:23:37.629680Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
@@ -89,7 +89,7 @@
         {
           "name": "update_experiment",
           "input": {
-            "environment_api_key": "De9Fkcnequea4ds5Ni8yaJ",
+            "environment_api_key": "[env-591351245626020c]",
             "experiment_id": 20,
             "feature": 417,
             "hypothesis": "Create account wins",
@@ -103,7 +103,7 @@
         {
           "name": "get_experiment",
           "input": {
-            "environment_api_key": "De9Fkcnequea4ds5Ni8yaJ",
+            "environment_api_key": "[env-591351245626020c]",
             "experiment_id": 20
           },
           "output": "{\"id\":20,\"feature\":{\"id\":417,\"name\":\"bulk_discounts_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"id\":43,\"uuid\":\"52e5d822-c1ed-43e0-bca5-09d68118cdcc\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Create account\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"bulk_discounts_copy test\",\"hypothesis\":\"Create account wins\",\"status\":\"created\",\"metrics\":[{\"id\":28,\"metric\":34,\"metric_name\":\"signup_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:23:37.619265Z\"}],\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100.0,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":43,\"percentage_allocation\":50.0}],\"audience\":{\"match\":\"any\",\"segments\":[]}},\"created_at\":\"2026-11-27T20:23:37.618258Z\",\"updated_at\":\"2026-11-27T20:23:37.629680Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",

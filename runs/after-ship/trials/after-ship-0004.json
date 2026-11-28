@@ -104,7 +104,7 @@
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
     "flagsmith feature create --help | head -40; flagsmith feature list --json --jq '.[] | select(.name==\"apple_pay_copy\") | .name'",
-    "flagsmith feature create apple_pay_copy --value \"Sign up\" --enabled --variants '[{\"value\":\"Create account\",\"weight\":50},{\"value\":\"Join free\",\"weight\":50}]' --yes && for k in 7aoLppfKeaFph6EGovLLSu hV3F3my3C9zx938wST2PPD; do echo \"== $k\"; flagsmith flag get apple_pay_copy -e $k --json --jq '{enabled,value,variants}'; done"
+    "flagsmith feature create apple_pay_copy --value \"Sign up\" --enabled --variants '[{\"value\":\"Create account\",\"weight\":50},{\"value\":\"Join free\",\"weight\":50}]' --yes && for k in [env-7f0949af09016e29] [env-12fef1c84cae85a3]; do echo \"== $k\"; flagsmith flag get apple_pay_copy -e $k --json --jq '{enabled,value,variants}'; done"
   ],
   "transcript": [
     {
@@ -160,9 +160,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith feature create apple_pay_copy --value \"Sign up\" --enabled --variants '[{\"value\":\"Create account\",\"weight\":50},{\"value\":\"Join free\",\"weight\":50}]' --yes && for k in 7aoLppfKeaFph6EGovLLSu hV3F3my3C9zx938wST2PPD; do echo \"== $k\"; flagsmith flag get apple_pay_copy -e $k --json --jq '{enabled,value,variants}'; done"
+            "command": "flagsmith feature create apple_pay_copy --value \"Sign up\" --enabled --variants '[{\"value\":\"Create account\",\"weight\":50},{\"value\":\"Join free\",\"weight\":50}]' --yes && for k in [env-7f0949af09016e29] [env-12fef1c84cae85a3]; do echo \"== $k\"; flagsmith flag get apple_pay_copy -e $k --json --jq '{enabled,value,variants}'; done"
           },
-          "output": "Feature         apple_pay_copy (1029)\nDescription     \nType            multivariate\nDefault value   Sign up\nEnabled         true\n\nVariants\n  VALUE           WEIGHT  KEY  ID\n  Create account  50%          100\n  Join free       50%          101\n== 7aoLppfKeaFph6EGovLLSu\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":100,\"value\":\"Create account\",\"weight\":50},{\"id\":101,\"value\":\"Join free\",\"weight\":50}]}\n== hV3F3my3C9zx938wST2PPD\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":100,\"value\":\"Create account\",\"weight\":50},{\"id\":101,\"value\":\"Join free\",\"weight\":50}]}\n\n[stderr]\n✓ Created feature apple_pay_copy (1029)",
+          "output": "Feature         apple_pay_copy (1029)\nDescription     \nType            multivariate\nDefault value   Sign up\nEnabled         true\n\nVariants\n  VALUE           WEIGHT  KEY  ID\n  Create account  50%          100\n  Join free       50%          101\n== [env-7f0949af09016e29]\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":100,\"value\":\"Create account\",\"weight\":50},{\"id\":101,\"value\":\"Join free\",\"weight\":50}]}\n== [env-12fef1c84cae85a3]\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":100,\"value\":\"Create account\",\"weight\":50},{\"id\":101,\"value\":\"Join free\",\"weight\":50}]}\n\n[stderr]\n✓ Created feature apple_pay_copy (1029)",
           "isError": false,
           "ms": 2375
         }

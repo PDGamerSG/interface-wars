@@ -64,7 +64,7 @@
   "commands": [
     "flagsmith --help; echo ---; flagsmith feature --help 2>&1 | head -50",
     "flagsmith feature create --help; echo ---; flagsmith config; echo ---; flagsmith feature list 2>&1 | head -30",
-    "flagsmith feature create one_click_buy --description \"Gates the one click buy rollout\" && echo --- && for e in NoqsrUn8upDpfhiMTtxRgx MjWnQ69QbGPKKJw99SPnNX; do echo \"env $e:\"; flagsmith -e $e flag list 2>&1 | grep -i one_click || flagsmith -e $e flag list 2>&1 | head -5; done"
+    "flagsmith feature create one_click_buy --description \"Gates the one click buy rollout\" && echo --- && for e in [env-769a333024a30c16] [env-8f13398760b0dc81]; do echo \"env $e:\"; flagsmith -e $e flag list 2>&1 | grep -i one_click || flagsmith -e $e flag list 2>&1 | head -5; done"
   ],
   "transcript": [
     {
@@ -120,9 +120,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith feature create one_click_buy --description \"Gates the one click buy rollout\" && echo --- && for e in NoqsrUn8upDpfhiMTtxRgx MjWnQ69QbGPKKJw99SPnNX; do echo \"env $e:\"; flagsmith -e $e flag list 2>&1 | grep -i one_click || flagsmith -e $e flag list 2>&1 | head -5; done"
+            "command": "flagsmith feature create one_click_buy --description \"Gates the one click buy rollout\" && echo --- && for e in [env-769a333024a30c16] [env-8f13398760b0dc81]; do echo \"env $e:\"; flagsmith -e $e flag list 2>&1 | grep -i one_click || flagsmith -e $e flag list 2>&1 | head -5; done"
           },
-          "output": "Feature         one_click_buy (906)\nDescription     Gates the one click buy rollout\nType            standard\nDefault value   -\nEnabled         false\n---\nenv NoqsrUn8upDpfhiMTtxRgx:\none_click_buy   standard   off     -         new\nenv MjWnQ69QbGPKKJw99SPnNX:\none_click_buy   standard   off     -         new\n\n[stderr]\n✓ Created feature one_click_buy (906)",
+          "output": "Feature         one_click_buy (906)\nDescription     Gates the one click buy rollout\nType            standard\nDefault value   -\nEnabled         false\n---\nenv [env-769a333024a30c16]:\none_click_buy   standard   off     -         new\nenv [env-8f13398760b0dc81]:\none_click_buy   standard   off     -         new\n\n[stderr]\n✓ Created feature one_click_buy (906)",
           "isError": false,
           "ms": 1557
         }

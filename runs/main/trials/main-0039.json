@@ -40,7 +40,7 @@
     "list_project_features {\"project_pk\":41,\"environment\":81,\"search\":\"price_alerts\"}",
     "list_project_segments {\"project_pk\":41,\"q\":\"enterprise_accounts\"}",
     "list_environments {\"project\":41}",
-    "create_segment_override {\"environment_api_key\":\"9ixgZie5ouEoiQpAw3bgn7\",\"feature_pk\":154,\"feature\":154,\"environment\":81,\"enabled\":true,\"feature_segment\":{\"segment\":16},\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"blue\"}}",
+    "create_segment_override {\"environment_api_key\":\"[env-59aa050069c50e28]\",\"feature_pk\":154,\"feature\":154,\"environment\":81,\"enabled\":true,\"feature_segment\":{\"segment\":16},\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"blue\"}}",
     "list_feature_segments {\"environment\":81,\"feature\":154}",
     "list_project_features {\"project_pk\":41,\"environment\":81,\"search\":\"price_alerts\"}"
   ],
@@ -75,7 +75,7 @@
           "input": {
             "project": 41
           },
-          "output": "{\"count\":2,\"next\":null,\"previous\":null,\"results\":[{\"id\":80,\"uuid\":\"29174c6b-49f7-426f-af36-e054181437c5\",\"name\":\"Development\",\"api_key\":\"CDmxqDaaveYEch8QNW3VSU\",\"description\":null,\"project\":41,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false,\"metadata\":[]},{\"id\":81,\"uuid\":\"74bcb239-5d33-4953-a90e-7da36aba30ec\",\"name\":\"Production\",\"api_key\":\"9ixgZie5ouEoiQpAw3bgn7\",\"description\":null,\"project\":41,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false,\"metadata\":[]}]}",
+          "output": "{\"count\":2,\"next\":null,\"previous\":null,\"results\":[{\"id\":80,\"uuid\":\"29174c6b-49f7-426f-af36-e054181437c5\",\"name\":\"Development\",\"api_key\":\"[env-0cd621526ae364f2]\",\"description\":null,\"project\":41,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false,\"metadata\":[]},{\"id\":81,\"uuid\":\"74bcb239-5d33-4953-a90e-7da36aba30ec\",\"name\":\"Production\",\"api_key\":\"[env-59aa050069c50e28]\",\"description\":null,\"project\":41,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false,\"metadata\":[]}]}",
           "isError": false,
           "ms": 427
         }
@@ -96,7 +96,7 @@
         {
           "name": "create_segment_override",
           "input": {
-            "environment_api_key": "9ixgZie5ouEoiQpAw3bgn7",
+            "environment_api_key": "[env-59aa050069c50e28]",
             "feature_pk": 154,
             "feature": 154,
             "environment": 81,

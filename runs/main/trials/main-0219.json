@@ -30,11 +30,11 @@
   "turns": 5,
   "ms": 16440,
   "commands": [
-    "list_experiments {\"environment_api_key\":\"BYqWtsfWREe46gbjSAxShX\",\"q\":\"gift_wrap_copy test\"}",
-    "get_experiment {\"environment_api_key\":\"BYqWtsfWREe46gbjSAxShX\",\"experiment_id\":41}",
-    "get_experiment_results {\"environment_api_key\":\"BYqWtsfWREe46gbjSAxShX\",\"experiment_id\":41}",
-    "update_experiment {\"environment_api_key\":\"BYqWtsfWREe46gbjSAxShX\",\"experiment_id\":41,\"feature\":861,\"hypothesis\":\"Get it today wins\",\"name\":\"gift_wrap_copy test\",\"status\":\"completed\",\"rollout_decision\":\"variant\",\"rollout_variant\":86}",
-    "update_experiment {\"environment_api_key\":\"BYqWtsfWREe46gbjSAxShX\",\"experiment_id\":41,\"feature\":861,\"hypothesis\":\"Get it today wins\",\"name\":\"gift_wrap_copy test\",\"status\":\"completed\",\"rollout_decision\":\"variant\",\"rollout_variant\":86,\"started_at\":\"2026-11-27T20:33:16.096454Z\",\"created_at\":\"2026-11-27T20:33:16.007827Z\"}"
+    "list_experiments {\"environment_api_key\":\"[env-795731db1ca8fabd]\",\"q\":\"gift_wrap_copy test\"}",
+    "get_experiment {\"environment_api_key\":\"[env-795731db1ca8fabd]\",\"experiment_id\":41}",
+    "get_experiment_results {\"environment_api_key\":\"[env-795731db1ca8fabd]\",\"experiment_id\":41}",
+    "update_experiment {\"environment_api_key\":\"[env-795731db1ca8fabd]\",\"experiment_id\":41,\"feature\":861,\"hypothesis\":\"Get it today wins\",\"name\":\"gift_wrap_copy test\",\"status\":\"completed\",\"rollout_decision\":\"variant\",\"rollout_variant\":86}",
+    "update_experiment {\"environment_api_key\":\"[env-795731db1ca8fabd]\",\"experiment_id\":41,\"feature\":861,\"hypothesis\":\"Get it today wins\",\"name\":\"gift_wrap_copy test\",\"status\":\"completed\",\"rollout_decision\":\"variant\",\"rollout_variant\":86,\"started_at\":\"2026-11-27T20:33:16.096454Z\",\"created_at\":\"2026-11-27T20:33:16.007827Z\"}"
   ],
   "transcript": [
     {
@@ -44,7 +44,7 @@
         {
           "name": "list_experiments",
           "input": {
-            "environment_api_key": "BYqWtsfWREe46gbjSAxShX",
+            "environment_api_key": "[env-795731db1ca8fabd]",
             "q": "gift_wrap_copy test"
           },
           "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":41,\"feature\":{\"id\":861,\"name\":\"gift_wrap_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Buy now\",\"multivariate_options\":[{\"id\":86,\"uuid\":\"f5063123-f5d7-4f8f-b7ca-6863ba7ec09c\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Get it today\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"gift_wrap_copy test\",\"hypothesis\":\"Get it today wins\",\"status\":\"running\",\"metrics\":[{\"id\":55,\"metric\":69,\"metric_name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:33:16.008775Z\"}],\"created_at\":\"2026-11-27T20:33:16.007827Z\",\"updated_at\":\"2026-11-27T20:33:16.097820Z\",\"started_at\":\"2026-11-27T20:33:16.096454Z\",\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}],\"status_counts\":{\"created\":0,\"running\":1,\"paused\":0,\"completed\":0}}",
@@ -68,7 +68,7 @@
         {
           "name": "get_experiment",
           "input": {
-            "environment_api_key": "BYqWtsfWREe46gbjSAxShX",
+            "environment_api_key": "[env-795731db1ca8fabd]",
             "experiment_id": 41
           },
           "output": "{\"id\":41,\"feature\":{\"id\":861,\"name\":\"gift_wrap_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Buy now\",\"multivariate_options\":[{\"id\":86,\"uuid\":\"f5063123-f5d7-4f8f-b7ca-6863ba7ec09c\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Get it today\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"gift_wrap_copy test\",\"hypothesis\":\"Get it today wins\",\"status\":\"running\",\"metrics\":[{\"id\":55,\"metric\":69,\"metric_name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:33:16.008775Z\"}],\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100.0,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Buy now\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":86,\"percentage_allocation\":50.0}],\"audience\":{\"match\":\"any\",\"segments\":[]}},\"created_at\":\"2026-11-27T20:33:16.007827Z\",\"updated_at\":\"2026-11-27T20:33:16.097820Z\",\"started_at\":\"2026-11-27T20:33:16.096454Z\",\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
@@ -78,7 +78,7 @@
         {
           "name": "get_experiment_results",
           "input": {
-            "environment_api_key": "BYqWtsfWREe46gbjSAxShX",
+            "environment_api_key": "[env-795731db1ca8fabd]",
             "experiment_id": 41
           },
           "output": "{\"results\":null}",
@@ -102,7 +102,7 @@
         {
           "name": "update_experiment",
           "input": {
-            "environment_api_key": "BYqWtsfWREe46gbjSAxShX",
+            "environment_api_key": "[env-795731db1ca8fabd]",
             "experiment_id": 41,
             "feature": 861,
             "hypothesis": "Get it today wins",
@@ -132,7 +132,7 @@
         {
           "name": "update_experiment",
           "input": {
-            "environment_api_key": "BYqWtsfWREe46gbjSAxShX",
+            "environment_api_key": "[env-795731db1ca8fabd]",
             "experiment_id": 41,
             "feature": 861,
             "hypothesis": "Get it today wins",

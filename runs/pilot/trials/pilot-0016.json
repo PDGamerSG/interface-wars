@@ -65,7 +65,7 @@
     "flagsmith --help; echo ---; flagsmith features --help 2>&1 | head -50",
     "flagsmith feature --help; echo ---; flagsmith feature create --help",
     "flagsmith config; echo ---; flagsmith feature list --json | jq -r '.[]?.name // empty' 2>/dev/null | grep -i order_tracking; echo ---; flagsmith feature create order_tracking_v2 --description \"Gates the order tracking v2 rollout\"",
-    "flagsmith feature get order_tracking_v2 --json 2>&1 | head -60; echo ---; for e in MQBF5bfpK75rDir7qatQPi CKfZWnf9XUkHrNVxjA62Ss; do echo \"== $e\"; flagsmith -e $e flag list --json 2>&1 | jq -c '.[]? | select(.feature.name==\"order_tracking_v2\" or .name==\"order_tracking_v2\")' 2>/dev/null || flagsmith -e $e flag list 2>&1 | grep -i order_tracking; done"
+    "flagsmith feature get order_tracking_v2 --json 2>&1 | head -60; echo ---; for e in [env-392b8c5125090f7f] [env-8335d99945adc246]; do echo \"== $e\"; flagsmith -e $e flag list --json 2>&1 | jq -c '.[]? | select(.feature.name==\"order_tracking_v2\" or .name==\"order_tracking_v2\")' 2>/dev/null || flagsmith -e $e flag list 2>&1 | grep -i order_tracking; done"
   ],
   "transcript": [
     {
@@ -144,9 +144,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith feature get order_tracking_v2 --json 2>&1 | head -60; echo ---; for e in MQBF5bfpK75rDir7qatQPi CKfZWnf9XUkHrNVxjA62Ss; do echo \"== $e\"; flagsmith -e $e flag list --json 2>&1 | jq -c '.[]? | select(.feature.name==\"order_tracking_v2\" or .name==\"order_tracking_v2\")' 2>/dev/null || flagsmith -e $e flag list 2>&1 | grep -i order_tracking; done"
+            "command": "flagsmith feature get order_tracking_v2 --json 2>&1 | head -60; echo ---; for e in [env-392b8c5125090f7f] [env-8335d99945adc246]; do echo \"== $e\"; flagsmith -e $e flag list --json 2>&1 | jq -c '.[]? | select(.feature.name==\"order_tracking_v2\" or .name==\"order_tracking_v2\")' 2>/dev/null || flagsmith -e $e flag list 2>&1 | grep -i order_tracking; done"
           },
-          "output": "{\n  \"id\": 1104,\n  \"name\": \"order_tracking_v2\",\n  \"description\": \"Gates the order tracking v2 rollout\",\n  \"type\": \"standard\",\n  \"default_value\": null,\n  \"enabled\": false\n}\n---\n== MQBF5bfpK75rDir7qatQPi\norder_tracking_v2   standard   off     -           new\n== CKfZWnf9XUkHrNVxjA62Ss\norder_tracking_v2   standard   off     -           new",
+          "output": "{\n  \"id\": 1104,\n  \"name\": \"order_tracking_v2\",\n  \"description\": \"Gates the order tracking v2 rollout\",\n  \"type\": \"standard\",\n  \"default_value\": null,\n  \"enabled\": false\n}\n---\n== [env-392b8c5125090f7f]\norder_tracking_v2   standard   off     -           new\n== [env-8335d99945adc246]\norder_tracking_v2   standard   off     -           new",
           "isError": false,
           "ms": 3007
         }

@@ -43,10 +43,10 @@
   "ms": 8642,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith api api/v1/environments/VnCusw67yvrcfeNTTFtQsJ/experiment-metrics/ --json --jq '.results[] | {id,name,aggregation,direction,definition}' 2>&1 | head -50",
-    "flagsmith api api/v1/environments/VnCusw67yvrcfeNTTFtQsJ/experiment-metrics/ 2>&1 | head -50",
-    "flagsmith api api/v1/environments/VnCusw67yvrcfeNTTFtQsJ/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"trial_started\",\"description\":\"Whether the trial_started event occurred at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"trial_started\"}}\nJSON",
-    "flagsmith api api/v1/environments/VnCusw67yvrcfeNTTFtQsJ/experiment-metrics/68/ 2>&1"
+    "flagsmith api api/v1/environments/[env-08b3f5cca7e42b1f]/experiment-metrics/ --json --jq '.results[] | {id,name,aggregation,direction,definition}' 2>&1 | head -50",
+    "flagsmith api api/v1/environments/[env-08b3f5cca7e42b1f]/experiment-metrics/ 2>&1 | head -50",
+    "flagsmith api api/v1/environments/[env-08b3f5cca7e42b1f]/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"trial_started\",\"description\":\"Whether the trial_started event occurred at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"trial_started\"}}\nJSON",
+    "flagsmith api api/v1/environments/[env-08b3f5cca7e42b1f]/experiment-metrics/68/ 2>&1"
   ],
   "transcript": [
     {
@@ -79,7 +79,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/VnCusw67yvrcfeNTTFtQsJ/experiment-metrics/ --json --jq '.results[] | {id,name,aggregation,direction,definition}' 2>&1 | head -50"
+            "command": "flagsmith api api/v1/environments/[env-08b3f5cca7e42b1f]/experiment-metrics/ --json --jq '.results[] | {id,name,aggregation,direction,definition}' 2>&1 | head -50"
           },
           "output": "(no output)",
           "isError": false,
@@ -102,7 +102,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/VnCusw67yvrcfeNTTFtQsJ/experiment-metrics/ 2>&1 | head -50"
+            "command": "flagsmith api api/v1/environments/[env-08b3f5cca7e42b1f]/experiment-metrics/ 2>&1 | head -50"
           },
           "output": "{\"count\":0,\"next\":null,\"previous\":null,\"results\":[]}",
           "isError": false,
@@ -125,7 +125,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/VnCusw67yvrcfeNTTFtQsJ/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"trial_started\",\"description\":\"Whether the trial_started event occurred at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"trial_started\"}}\nJSON"
+            "command": "flagsmith api api/v1/environments/[env-08b3f5cca7e42b1f]/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"trial_started\",\"description\":\"Whether the trial_started event occurred at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"trial_started\"}}\nJSON"
           },
           "output": "{\"id\":68,\"name\":\"trial_started\",\"description\":\"Whether the trial_started event occurred at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"trial_started\"},\"experiments\":[],\"created_at\":\"2026-11-27T20:33:14.777942Z\",\"updated_at\":\"2026-11-27T20:33:14.777950Z\"}",
           "isError": false,
@@ -148,7 +148,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/VnCusw67yvrcfeNTTFtQsJ/experiment-metrics/68/ 2>&1"
+            "command": "flagsmith api api/v1/environments/[env-08b3f5cca7e42b1f]/experiment-metrics/68/ 2>&1"
           },
           "output": "{\"id\":68,\"name\":\"trial_started\",\"description\":\"Whether the trial_started event occurred at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"event\":\"trial_started\",\"version\":1},\"experiments\":[],\"created_at\":\"2026-11-27T20:33:14.777942Z\",\"updated_at\":\"2026-11-27T20:33:14.777950Z\"}",
           "isError": false,

@@ -35,7 +35,7 @@
     "cat /skills/flagsmith-ops/SKILL.md; echo ----; flagsmith --help",
     "flagsmith api \"api/v1/projects/64/tags/\" --jq '.results[]? // . | {id,label}' ; echo ---; flagsmith feature list --json | jq '.[] | {id,name,tags,is_archived}' | head -200",
     "flagsmith api \"api/v1/projects/64/features/?page_size=100\" --jq '.results[] | {id,name,tags,is_archived}'",
-    "flagsmith feature list --json | jq '.[] | select(.name==\"guest_checkout\")'; flagsmith flag get guest_checkout -e GtQxkEkQphPexRhxpVg2Kv --json --jq '{enabled,value}'",
+    "flagsmith feature list --json | jq '.[] | select(.name==\"guest_checkout\")'; flagsmith flag get guest_checkout -e [env-9055501d94ae1f2f] --json --jq '{enabled,value}'",
     "flagsmith feature update guest_checkout --archive --yes; echo \"exit=$?\"; flagsmith api \"api/v1/projects/64/features/?page_size=100\" --jq '.results[] | {id,name,is_archived,tags}'"
   ],
   "transcript": [
@@ -115,7 +115,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith feature list --json | jq '.[] | select(.name==\"guest_checkout\")'; flagsmith flag get guest_checkout -e GtQxkEkQphPexRhxpVg2Kv --json --jq '{enabled,value}'"
+            "command": "flagsmith feature list --json | jq '.[] | select(.name==\"guest_checkout\")'; flagsmith flag get guest_checkout -e [env-9055501d94ae1f2f] --json --jq '{enabled,value}'"
           },
           "output": "{\n  \"id\": 245,\n  \"name\": \"guest_checkout\",\n  \"type\": \"standard\",\n  \"default_value\": \"beta_copy\",\n  \"enabled\": false\n}\n{\"enabled\":false,\"value\":\"beta_copy\"}",
           "isError": false,

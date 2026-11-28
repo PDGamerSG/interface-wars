@@ -40,7 +40,7 @@
     "list_project_features {\"project_pk\":153,\"search\":\"promo_banner\",\"environment\":305}",
     "list_project_segments {\"project_pk\":153,\"q\":\"power_users\"}",
     "list_feature_segments {\"environment\":305,\"feature\":595}",
-    "create_segment_override {\"environment\":305,\"environment_api_key\":\"ZdeGM3xV9s8NmygBNGaTY4\",\"feature\":595,\"feature_pk\":595,\"enabled\":true,\"feature_segment\":{\"segment\":65},\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"eu_west\"}}",
+    "create_segment_override {\"environment\":305,\"environment_api_key\":\"[env-ff878803bfb6ed33]\",\"feature\":595,\"feature_pk\":595,\"enabled\":true,\"feature_segment\":{\"segment\":65},\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"eu_west\"}}",
     "list_feature_segments {\"environment\":305,\"feature\":595}",
     "list_project_features {\"project_pk\":153,\"search\":\"promo_banner\",\"environment\":305}"
   ],
@@ -112,7 +112,7 @@
           "name": "create_segment_override",
           "input": {
             "environment": 305,
-            "environment_api_key": "ZdeGM3xV9s8NmygBNGaTY4",
+            "environment_api_key": "[env-ff878803bfb6ed33]",
             "feature": 595,
             "feature_pk": 595,
             "enabled": true,

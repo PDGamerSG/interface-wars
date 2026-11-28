@@ -38,14 +38,14 @@
   "ms": 36347,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help | head -50",
-    "P=Y7rKQtCjBcj9BVL8q4fFrs; D=6yNvmU7NAEc32ZyKAUvbp6\nfor E in $D $P; do echo \"== $E\"; flagsmith flag get apple_pay -e $E --json --jq '{enabled,value,segment_overrides}'; done\nflagsmith segment list --json --jq '.[] | select(.name==\"mobile_app_users\") | {id,name}' 2>&1 | head",
-    "P=Y7rKQtCjBcj9BVL8q4fFrs; D=6yNvmU7NAEc32ZyKAUvbp6\nfor E in $D $P; do echo \"== $E\"; flagsmith api \"api/v1/environments/$E/featurestates/?feature=$(flagsmith feature list --json --jq '.[]|select(.name==\"apple_pay\")|.id')\" --jq '.results[] | {id, segment: .feature_segment, enabled, value: .feature_state_value}' 2>&1; done",
-    "P=Y7rKQtCjBcj9BVL8q4fFrs; D=6yNvmU7NAEc32ZyKAUvbp6\nfor E in $D $P; do echo \"== $E\"; flagsmith flag get apple_pay -e $E --json | jq -c '.segment_overrides'; done\nflagsmith flag get apple_pay -e $P --json | jq -c 'keys'",
-    "P=Y7rKQtCjBcj9BVL8q4fFrs; D=6yNvmU7NAEc32ZyKAUvbp6\nfor E in $D $P; do echo \"== $E\"; flagsmith api \"api/v1/environments/$E/featurestates/?feature=$(flagsmith feature list --json --jq '.[]|select(.name==\"apple_pay\")|.id')\" --jq '.results[] | {id, feature_segment, enabled, value: .feature_state_value}' 2>&1; done",
-    "P=Y7rKQtCjBcj9BVL8q4fFrs; D=6yNvmU7NAEc32ZyKAUvbp6\nFID=$(flagsmith feature list --json --jq '.[]|select(.name==\"apple_pay\")|.id'); echo \"fid=$FID\"\nfor E in $D $P; do echo \"== $E\"; flagsmith api \"api/v1/environments/$E/featurestates/?feature=$FID\" | jq -c '.results[] | {id, feature_segment, enabled, v: .feature_state_value}'; done",
+    "P=[env-f05ec498bb9a9993]; D=[env-82dfa38f4f5822a9]\nfor E in $D $P; do echo \"== $E\"; flagsmith flag get apple_pay -e $E --json --jq '{enabled,value,segment_overrides}'; done\nflagsmith segment list --json --jq '.[] | select(.name==\"mobile_app_users\") | {id,name}' 2>&1 | head",
+    "P=[env-f05ec498bb9a9993]; D=[env-82dfa38f4f5822a9]\nfor E in $D $P; do echo \"== $E\"; flagsmith api \"api/v1/environments/$E/featurestates/?feature=$(flagsmith feature list --json --jq '.[]|select(.name==\"apple_pay\")|.id')\" --jq '.results[] | {id, segment: .feature_segment, enabled, value: .feature_state_value}' 2>&1; done",
+    "P=[env-f05ec498bb9a9993]; D=[env-82dfa38f4f5822a9]\nfor E in $D $P; do echo \"== $E\"; flagsmith flag get apple_pay -e $E --json | jq -c '.segment_overrides'; done\nflagsmith flag get apple_pay -e $P --json | jq -c 'keys'",
+    "P=[env-f05ec498bb9a9993]; D=[env-82dfa38f4f5822a9]\nfor E in $D $P; do echo \"== $E\"; flagsmith api \"api/v1/environments/$E/featurestates/?feature=$(flagsmith feature list --json --jq '.[]|select(.name==\"apple_pay\")|.id')\" --jq '.results[] | {id, feature_segment, enabled, value: .feature_state_value}' 2>&1; done",
+    "P=[env-f05ec498bb9a9993]; D=[env-82dfa38f4f5822a9]\nFID=$(flagsmith feature list --json --jq '.[]|select(.name==\"apple_pay\")|.id'); echo \"fid=$FID\"\nfor E in $D $P; do echo \"== $E\"; flagsmith api \"api/v1/environments/$E/featurestates/?feature=$FID\" | jq -c '.results[] | {id, feature_segment, enabled, v: .feature_state_value}'; done",
     "FID=817; for E in 416 417; do echo \"== $E\"; flagsmith api \"api/v1/environments/$E/featurestates/?feature=$FID\" | jq -c '.results[] | {id, feature_segment, enabled}' ; flagsmith api \"api/v1/features/featurestates/?feature=$FID&environment=$E\" 2>/dev/null | jq -c '.results[]? | {id, feature_segment, enabled}'; done; flagsmith flag get --help | head -30",
-    "P=Y7rKQtCjBcj9BVL8q4fFrs; D=6yNvmU7NAEc32ZyKAUvbp6\nfor E in $D $P; do echo \"== $E\"; flagsmith flag get apple_pay -e $E --segment mobile_app_users --json 2>&1 | head -c 600; echo; done\nflagsmith segment list --json | jq -c '.[] | select(.id==76 or .id==77 or .id==90) | {id,name}'",
-    "P=Y7rKQtCjBcj9BVL8q4fFrs; D=6yNvmU7NAEc32ZyKAUvbp6\nflagsmith flag delete apple_pay -e $P --segment mobile_app_users --yes; echo \"exit=$?\"\necho \"== PROD after\"; flagsmith flag get apple_pay -e $P --json | jq -c '{enabled,value,segment_overrides}'\necho \"== DEV after\"; flagsmith flag get apple_pay -e $D --json | jq -c '{enabled,value,segment_overrides}'; flagsmith flag get apple_pay -e $D --segment mobile_app_users --json | jq -c '{segment:.segment.name,enabled,value}'"
+    "P=[env-f05ec498bb9a9993]; D=[env-82dfa38f4f5822a9]\nfor E in $D $P; do echo \"== $E\"; flagsmith flag get apple_pay -e $E --segment mobile_app_users --json 2>&1 | head -c 600; echo; done\nflagsmith segment list --json | jq -c '.[] | select(.id==76 or .id==77 or .id==90) | {id,name}'",
+    "P=[env-f05ec498bb9a9993]; D=[env-82dfa38f4f5822a9]\nflagsmith flag delete apple_pay -e $P --segment mobile_app_users --yes; echo \"exit=$?\"\necho \"== PROD after\"; flagsmith flag get apple_pay -e $P --json | jq -c '{enabled,value,segment_overrides}'\necho \"== DEV after\"; flagsmith flag get apple_pay -e $D --json | jq -c '{enabled,value,segment_overrides}'; flagsmith flag get apple_pay -e $D --segment mobile_app_users --json | jq -c '{segment:.segment.name,enabled,value}'"
   ],
   "transcript": [
     {
@@ -78,9 +78,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=Y7rKQtCjBcj9BVL8q4fFrs; D=6yNvmU7NAEc32ZyKAUvbp6\nfor E in $D $P; do echo \"== $E\"; flagsmith flag get apple_pay -e $E --json --jq '{enabled,value,segment_overrides}'; done\nflagsmith segment list --json --jq '.[] | select(.name==\"mobile_app_users\") | {id,name}' 2>&1 | head"
+            "command": "P=[env-f05ec498bb9a9993]; D=[env-82dfa38f4f5822a9]\nfor E in $D $P; do echo \"== $E\"; flagsmith flag get apple_pay -e $E --json --jq '{enabled,value,segment_overrides}'; done\nflagsmith segment list --json --jq '.[] | select(.name==\"mobile_app_users\") | {id,name}' 2>&1 | head"
           },
-          "output": "== 6yNvmU7NAEc32ZyKAUvbp6\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}\n== Y7rKQtCjBcj9BVL8q4fFrs\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}\n{\"id\":90,\"name\":\"mobile_app_users\"}",
+          "output": "== [env-82dfa38f4f5822a9]\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}\n== [env-f05ec498bb9a9993]\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}\n{\"id\":90,\"name\":\"mobile_app_users\"}",
           "isError": false,
           "ms": 1593
         }
@@ -101,9 +101,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=Y7rKQtCjBcj9BVL8q4fFrs; D=6yNvmU7NAEc32ZyKAUvbp6\nfor E in $D $P; do echo \"== $E\"; flagsmith api \"api/v1/environments/$E/featurestates/?feature=$(flagsmith feature list --json --jq '.[]|select(.name==\"apple_pay\")|.id')\" --jq '.results[] | {id, segment: .feature_segment, enabled, value: .feature_state_value}' 2>&1; done"
+            "command": "P=[env-f05ec498bb9a9993]; D=[env-82dfa38f4f5822a9]\nfor E in $D $P; do echo \"== $E\"; flagsmith api \"api/v1/environments/$E/featurestates/?feature=$(flagsmith feature list --json --jq '.[]|select(.name==\"apple_pay\")|.id')\" --jq '.results[] | {id, segment: .feature_segment, enabled, value: .feature_state_value}' 2>&1; done"
           },
-          "output": "== 6yNvmU7NAEc32ZyKAUvbp6\n{\"enabled\":false,\"id\":1707,\"segment\":null,\"value\":\"base\"}\n== Y7rKQtCjBcj9BVL8q4fFrs\n{\"enabled\":false,\"id\":1708,\"segment\":null,\"value\":\"base\"}",
+          "output": "== [env-82dfa38f4f5822a9]\n{\"enabled\":false,\"id\":1707,\"segment\":null,\"value\":\"base\"}\n== [env-f05ec498bb9a9993]\n{\"enabled\":false,\"id\":1708,\"segment\":null,\"value\":\"base\"}",
           "isError": false,
           "ms": 1490
         }
@@ -124,9 +124,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=Y7rKQtCjBcj9BVL8q4fFrs; D=6yNvmU7NAEc32ZyKAUvbp6\nfor E in $D $P; do echo \"== $E\"; flagsmith flag get apple_pay -e $E --json | jq -c '.segment_overrides'; done\nflagsmith flag get apple_pay -e $P --json | jq -c 'keys'"
+            "command": "P=[env-f05ec498bb9a9993]; D=[env-82dfa38f4f5822a9]\nfor E in $D $P; do echo \"== $E\"; flagsmith flag get apple_pay -e $E --json | jq -c '.segment_overrides'; done\nflagsmith flag get apple_pay -e $P --json | jq -c 'keys'"
           },
-          "output": "== 6yNvmU7NAEc32ZyKAUvbp6\n1\n== Y7rKQtCjBcj9BVL8q4fFrs\n1\n[\"code_references\",\"description\",\"enabled\",\"feature\",\"identity_overrides\",\"lifecycle_stage\",\"segment_overrides\",\"type\",\"value\"]",
+          "output": "== [env-82dfa38f4f5822a9]\n1\n== [env-f05ec498bb9a9993]\n1\n[\"code_references\",\"description\",\"enabled\",\"feature\",\"identity_overrides\",\"lifecycle_stage\",\"segment_overrides\",\"type\",\"value\"]",
           "isError": false,
           "ms": 1741
         }
@@ -147,9 +147,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=Y7rKQtCjBcj9BVL8q4fFrs; D=6yNvmU7NAEc32ZyKAUvbp6\nfor E in $D $P; do echo \"== $E\"; flagsmith api \"api/v1/environments/$E/featurestates/?feature=$(flagsmith feature list --json --jq '.[]|select(.name==\"apple_pay\")|.id')\" --jq '.results[] | {id, feature_segment, enabled, value: .feature_state_value}' 2>&1; done"
+            "command": "P=[env-f05ec498bb9a9993]; D=[env-82dfa38f4f5822a9]\nfor E in $D $P; do echo \"== $E\"; flagsmith api \"api/v1/environments/$E/featurestates/?feature=$(flagsmith feature list --json --jq '.[]|select(.name==\"apple_pay\")|.id')\" --jq '.results[] | {id, feature_segment, enabled, value: .feature_state_value}' 2>&1; done"
           },
-          "output": "== 6yNvmU7NAEc32ZyKAUvbp6\n{\"enabled\":false,\"feature_segment\":null,\"id\":1707,\"value\":\"base\"}\n== Y7rKQtCjBcj9BVL8q4fFrs\n{\"enabled\":false,\"feature_segment\":null,\"id\":1708,\"value\":\"base\"}",
+          "output": "== [env-82dfa38f4f5822a9]\n{\"enabled\":false,\"feature_segment\":null,\"id\":1707,\"value\":\"base\"}\n== [env-f05ec498bb9a9993]\n{\"enabled\":false,\"feature_segment\":null,\"id\":1708,\"value\":\"base\"}",
           "isError": false,
           "ms": 1097
         }
@@ -170,9 +170,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=Y7rKQtCjBcj9BVL8q4fFrs; D=6yNvmU7NAEc32ZyKAUvbp6\nFID=$(flagsmith feature list --json --jq '.[]|select(.name==\"apple_pay\")|.id'); echo \"fid=$FID\"\nfor E in $D $P; do echo \"== $E\"; flagsmith api \"api/v1/environments/$E/featurestates/?feature=$FID\" | jq -c '.results[] | {id, feature_segment, enabled, v: .feature_state_value}'; done"
+            "command": "P=[env-f05ec498bb9a9993]; D=[env-82dfa38f4f5822a9]\nFID=$(flagsmith feature list --json --jq '.[]|select(.name==\"apple_pay\")|.id'); echo \"fid=$FID\"\nfor E in $D $P; do echo \"== $E\"; flagsmith api \"api/v1/environments/$E/featurestates/?feature=$FID\" | jq -c '.results[] | {id, feature_segment, enabled, v: .feature_state_value}'; done"
           },
-          "output": "fid=817\n== 6yNvmU7NAEc32ZyKAUvbp6\n{\"id\":1707,\"feature_segment\":null,\"enabled\":false,\"v\":\"base\"}\n== Y7rKQtCjBcj9BVL8q4fFrs\n{\"id\":1708,\"feature_segment\":null,\"enabled\":false,\"v\":\"base\"}",
+          "output": "fid=817\n== [env-82dfa38f4f5822a9]\n{\"id\":1707,\"feature_segment\":null,\"enabled\":false,\"v\":\"base\"}\n== [env-f05ec498bb9a9993]\n{\"id\":1708,\"feature_segment\":null,\"enabled\":false,\"v\":\"base\"}",
           "isError": false,
           "ms": 855
         }
@@ -216,9 +216,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=Y7rKQtCjBcj9BVL8q4fFrs; D=6yNvmU7NAEc32ZyKAUvbp6\nfor E in $D $P; do echo \"== $E\"; flagsmith flag get apple_pay -e $E --segment mobile_app_users --json 2>&1 | head -c 600; echo; done\nflagsmith segment list --json | jq -c '.[] | select(.id==76 or .id==77 or .id==90) | {id,name}'"
+            "command": "P=[env-f05ec498bb9a9993]; D=[env-82dfa38f4f5822a9]\nfor E in $D $P; do echo \"== $E\"; flagsmith flag get apple_pay -e $E --segment mobile_app_users --json 2>&1 | head -c 600; echo; done\nflagsmith segment list --json | jq -c '.[] | select(.id==76 or .id==77 or .id==90) | {id,name}'"
           },
-          "output": "== 6yNvmU7NAEc32ZyKAUvbp6\n{\n  \"feature\": \"apple_pay\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 90,\n    \"name\": \"mobile_app_users\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"segment_copy\"\n}\n\n== Y7rKQtCjBcj9BVL8q4fFrs\n{\n  \"feature\": \"apple_pay\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 90,\n    \"name\": \"mobile_app_users\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"segment_copy\"\n}\n\n{\"id\":90,\"name\":\"mobile_app_users\"}",
+          "output": "== [env-82dfa38f4f5822a9]\n{\n  \"feature\": \"apple_pay\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 90,\n    \"name\": \"mobile_app_users\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"segment_copy\"\n}\n\n== [env-f05ec498bb9a9993]\n{\n  \"feature\": \"apple_pay\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 90,\n    \"name\": \"mobile_app_users\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"segment_copy\"\n}\n\n{\"id\":90,\"name\":\"mobile_app_users\"}",
           "isError": false,
           "ms": 2785
         }
@@ -239,9 +239,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=Y7rKQtCjBcj9BVL8q4fFrs; D=6yNvmU7NAEc32ZyKAUvbp6\nflagsmith flag delete apple_pay -e $P --segment mobile_app_users --yes; echo \"exit=$?\"\necho \"== PROD after\"; flagsmith flag get apple_pay -e $P --json | jq -c '{enabled,value,segment_overrides}'\necho \"== DEV after\"; flagsmith flag get apple_pay -e $D --json | jq -c '{enabled,value,segment_overrides}'; flagsmith flag get apple_pay -e $D --segment mobile_app_users --json | jq -c '{segment:.segment.name,enabled,value}'"
+            "command": "P=[env-f05ec498bb9a9993]; D=[env-82dfa38f4f5822a9]\nflagsmith flag delete apple_pay -e $P --segment mobile_app_users --yes; echo \"exit=$?\"\necho \"== PROD after\"; flagsmith flag get apple_pay -e $P --json | jq -c '{enabled,value,segment_overrides}'\necho \"== DEV after\"; flagsmith flag get apple_pay -e $D --json | jq -c '{enabled,value,segment_overrides}'; flagsmith flag get apple_pay -e $D --segment mobile_app_users --json | jq -c '{segment:.segment.name,enabled,value}'"
           },
-          "output": "exit=0\n== PROD after\n{\"enabled\":false,\"value\":\"base\",\"segment_overrides\":0}\n== DEV after\n{\"enabled\":false,\"value\":\"base\",\"segment_overrides\":1}\n{\"segment\":\"mobile_app_users\",\"enabled\":true,\"value\":\"segment_copy\"}\n\n[stderr]\n✓ Deleted apple_pay override for segment mobile_app_users (90) in environment Production (Y7rKQtCjBcj9BVL8q4fFrs)",
+          "output": "exit=0\n== PROD after\n{\"enabled\":false,\"value\":\"base\",\"segment_overrides\":0}\n== DEV after\n{\"enabled\":false,\"value\":\"base\",\"segment_overrides\":1}\n{\"segment\":\"mobile_app_users\",\"enabled\":true,\"value\":\"segment_copy\"}\n\n[stderr]\n✓ Deleted apple_pay override for segment mobile_app_users (90) in environment Production ([env-f05ec498bb9a9993])",
           "isError": false,
           "ms": 3636
         }

@@ -31,7 +31,7 @@
     "list_project_features {\"project_pk\":287,\"environment\":573,\"search\":\"wishlist_sync_copy\"}",
     "list_project_environments {\"id\":287}",
     "list_feature_multivariate_options {\"feature_pk\":1112,\"project_pk\":\"287\"}",
-    "update_environment_feature_state {\"id__path\":2313,\"environment_api_key\":\"bmKnxrLmvpE5fbt98KZP8t\",\"feature\":1112,\"enabled\":true,\"feature_state_value\":\"Sign up\",\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":91,\"percentage_allocation\":80}]}",
+    "update_environment_feature_state {\"id__path\":2313,\"environment_api_key\":\"[env-41a93e5f9e4a63a2]\",\"feature\":1112,\"enabled\":true,\"feature_state_value\":\"Sign up\",\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":91,\"percentage_allocation\":80}]}",
     "get_feature_flag {\"id\":1112,\"project_pk\":287}",
     "update_feature_state {\"id__path\":2313,\"environment\":573,\"feature\":1112,\"enabled\":true,\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"Sign up\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":91,\"percentage_allocation\":80}]}"
   ],
@@ -70,7 +70,7 @@
           "input": {
             "id": 287
           },
-          "output": "{\"result\":[{\"id\":572,\"uuid\":\"a125186c-2d5f-4ba4-ac84-c2e65a5980ca\",\"name\":\"Development\",\"api_key\":\"FGNBCRumyVFH5deCQb4BTL\",\"description\":null,\"project\":287,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false},{\"id\":573,\"uuid\":\"db6b9299-86b3-4ee3-a415-a32669a3ac0f\",\"name\":\"Production\",\"api_key\":\"bmKnxrLmvpE5fbt98KZP8t\",\"description\":null,\"project\":287,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false}]}",
+          "output": "{\"result\":[{\"id\":572,\"uuid\":\"a125186c-2d5f-4ba4-ac84-c2e65a5980ca\",\"name\":\"Development\",\"api_key\":\"[env-8b851cda5874e847]\",\"description\":null,\"project\":287,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false},{\"id\":573,\"uuid\":\"db6b9299-86b3-4ee3-a415-a32669a3ac0f\",\"name\":\"Production\",\"api_key\":\"[env-41a93e5f9e4a63a2]\",\"description\":null,\"project\":287,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false}]}",
           "isError": false,
           "ms": 306
         },
@@ -102,7 +102,7 @@
           "name": "update_environment_feature_state",
           "input": {
             "id__path": 2313,
-            "environment_api_key": "bmKnxrLmvpE5fbt98KZP8t",
+            "environment_api_key": "[env-41a93e5f9e4a63a2]",
             "feature": 1112,
             "enabled": true,
             "feature_state_value": "Sign up",

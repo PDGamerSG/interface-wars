@@ -38,8 +38,8 @@
   "ms": 9198,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "cd /tmp; flagsmith flag get dark_mode -e awscyMjKdp5ybscgkV2xDy --json; echo ---; flagsmith flag get dark_mode -e hatmhyQYdsLWbAqLrPLQ3Y --json",
-    "cd /tmp; flagsmith flag update dark_mode -e hatmhyQYdsLWbAqLrPLQ3Y --enable --value \"rounded\" --yes && flagsmith flag get dark_mode -e hatmhyQYdsLWbAqLrPLQ3Y --json --jq '{enabled,value,segment_overrides}'; echo ---; flagsmith flag get dark_mode -e awscyMjKdp5ybscgkV2xDy --json --jq '{enabled,value,segment_overrides}'"
+    "cd /tmp; flagsmith flag get dark_mode -e [env-f6f322aca1dc5e42] --json; echo ---; flagsmith flag get dark_mode -e [env-42ba95ac695015f9] --json",
+    "cd /tmp; flagsmith flag update dark_mode -e [env-42ba95ac695015f9] --enable --value \"rounded\" --yes && flagsmith flag get dark_mode -e [env-42ba95ac695015f9] --json --jq '{enabled,value,segment_overrides}'; echo ---; flagsmith flag get dark_mode -e [env-f6f322aca1dc5e42] --json --jq '{enabled,value,segment_overrides}'"
   ],
   "transcript": [
     {
@@ -72,7 +72,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith flag get dark_mode -e awscyMjKdp5ybscgkV2xDy --json; echo ---; flagsmith flag get dark_mode -e hatmhyQYdsLWbAqLrPLQ3Y --json"
+            "command": "cd /tmp; flagsmith flag get dark_mode -e [env-f6f322aca1dc5e42] --json; echo ---; flagsmith flag get dark_mode -e [env-42ba95ac695015f9] --json"
           },
           "output": "{\n  \"feature\": \"dark_mode\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"rounded\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\n---\n{\n  \"feature\": \"dark_mode\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": false,\n  \"value\": \"v2\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}",
           "isError": false,
@@ -95,9 +95,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith flag update dark_mode -e hatmhyQYdsLWbAqLrPLQ3Y --enable --value \"rounded\" --yes && flagsmith flag get dark_mode -e hatmhyQYdsLWbAqLrPLQ3Y --json --jq '{enabled,value,segment_overrides}'; echo ---; flagsmith flag get dark_mode -e awscyMjKdp5ybscgkV2xDy --json --jq '{enabled,value,segment_overrides}'"
+            "command": "cd /tmp; flagsmith flag update dark_mode -e [env-42ba95ac695015f9] --enable --value \"rounded\" --yes && flagsmith flag get dark_mode -e [env-42ba95ac695015f9] --json --jq '{enabled,value,segment_overrides}'; echo ---; flagsmith flag get dark_mode -e [env-f6f322aca1dc5e42] --json --jq '{enabled,value,segment_overrides}'"
           },
-          "output": "Feature              dark_mode\nDescription          \nType                 standard\nState                on\nValue                rounded\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"segment_overrides\":0,\"value\":\"rounded\"}\n---\n{\"enabled\":true,\"segment_overrides\":0,\"value\":\"rounded\"}\n\n[stderr]\n✓ Set dark_mode to \"rounded\" in environment Production (hatmhyQYdsLWbAqLrPLQ3Y)\n✓ Enabled dark_mode in environment Production (hatmhyQYdsLWbAqLrPLQ3Y)",
+          "output": "Feature              dark_mode\nDescription          \nType                 standard\nState                on\nValue                rounded\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"segment_overrides\":0,\"value\":\"rounded\"}\n---\n{\"enabled\":true,\"segment_overrides\":0,\"value\":\"rounded\"}\n\n[stderr]\n✓ Set dark_mode to \"rounded\" in environment Production ([env-42ba95ac695015f9])\n✓ Enabled dark_mode in environment Production ([env-42ba95ac695015f9])",
           "isError": false,
           "ms": 1921
         }

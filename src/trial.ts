@@ -9,6 +9,7 @@ import { runAgent, MODEL, EFFORT, type AgentResult } from './agent/loop.ts';
 import { dryRunAgent, DRY_RUN } from './agent/dryrun.ts';
 import type { ArmName, Arm } from './arms/types.ts';
 import { RUNS } from './lab/config.ts';
+import { localCredentials, redactCredentials } from './evidence/redact.ts';
 
 export type TrialRecord = {
   trialId: string;
@@ -77,8 +78,11 @@ export async function runTrial(opts: { run: string; index: number; trialId: stri
     };
     const dir = join(RUNS, opts.run, 'trials');
     mkdirSync(dir, { recursive: true });
-    writeFileSync(join(dir, `${opts.trialId}.json`), JSON.stringify(record, null, 2));
-    return record;
+    const safeRecord = redactCredentials(record, [
+      ...localCredentials(), sandbox.apiKey, sandbox.env.Development.key, sandbox.env.Production.key,
+    ]);
+    writeFileSync(join(dir, `${opts.trialId}.json`), JSON.stringify(safeRecord, null, 2));
+    return safeRecord;
   } finally {
     await arm?.close();
     await destroySandbox(sandbox);

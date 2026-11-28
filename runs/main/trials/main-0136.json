@@ -29,7 +29,7 @@
     }
   ],
   "outcome": "done",
-  "finalText": "DONE: Created experiment metric \"add_to_cart\" (id 47) in Production (environment S9QejmWJxyUK62xN3EcYn8), with aggregation \"occurrence\" on event \"add_to_cart_clicked\" and direction \"up\" (higher is better). Read-back confirmed; no other changes made.",
+  "finalText": "DONE: Created experiment metric \"add_to_cart\" (id 47) in Production (environment [env-5a11216cce2e1ae4]), with aggregation \"occurrence\" on event \"add_to_cart_clicked\" and direction \"up\" (higher is better). Read-back confirmed; no other changes made.",
   "costUsd": 0.001153,
   "usage": {
     "input": 12,
@@ -43,9 +43,9 @@
   "ms": 27815,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; echo ----; flagsmith --help",
-    "cd /tmp; flagsmith api api/v1/environments/S9QejmWJxyUK62xN3EcYn8/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}' 2>&1 | head -50",
-    "cd /tmp; flagsmith api api/v1/environments/S9QejmWJxyUK62xN3EcYn8/experiment-metrics/ 2>&1 | head -c 2000; echo; flagsmith config 2>&1 | head -20",
-    "cd /tmp; flagsmith api api/v1/environments/S9QejmWJxyUK62xN3EcYn8/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"add_to_cart\",\"description\":\"Whether the add_to_cart_clicked event occurred at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"add_to_cart_clicked\"}}\nJSON\necho; echo ---; flagsmith api api/v1/environments/S9QejmWJxyUK62xN3EcYn8/experiment-metrics/ 2>&1 | jq '.results[] | {id,name,description,aggregation,direction,definition}'"
+    "cd /tmp; flagsmith api api/v1/environments/[env-5a11216cce2e1ae4]/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}' 2>&1 | head -50",
+    "cd /tmp; flagsmith api api/v1/environments/[env-5a11216cce2e1ae4]/experiment-metrics/ 2>&1 | head -c 2000; echo; flagsmith config 2>&1 | head -20",
+    "cd /tmp; flagsmith api api/v1/environments/[env-5a11216cce2e1ae4]/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"add_to_cart\",\"description\":\"Whether the add_to_cart_clicked event occurred at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"add_to_cart_clicked\"}}\nJSON\necho; echo ---; flagsmith api api/v1/environments/[env-5a11216cce2e1ae4]/experiment-metrics/ 2>&1 | jq '.results[] | {id,name,description,aggregation,direction,definition}'"
   ],
   "transcript": [
     {
@@ -73,12 +73,12 @@
     },
     {
       "turn": 2,
-      "text": "Before creating anything, I'll check whether a metric with this name already exists in Production (environment key S9QejmWJxyUK62xN3EcYn8).",
+      "text": "Before creating anything, I'll check whether a metric with this name already exists in Production (environment key [env-5a11216cce2e1ae4]).",
       "calls": [
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith api api/v1/environments/S9QejmWJxyUK62xN3EcYn8/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}' 2>&1 | head -50"
+            "command": "cd /tmp; flagsmith api api/v1/environments/[env-5a11216cce2e1ae4]/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}' 2>&1 | head -50"
           },
           "output": "(no output)",
           "isError": false,
@@ -101,7 +101,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith api api/v1/environments/S9QejmWJxyUK62xN3EcYn8/experiment-metrics/ 2>&1 | head -c 2000; echo; flagsmith config 2>&1 | head -20"
+            "command": "cd /tmp; flagsmith api api/v1/environments/[env-5a11216cce2e1ae4]/experiment-metrics/ 2>&1 | head -c 2000; echo; flagsmith config 2>&1 | head -20"
           },
           "output": "{\"count\":0,\"next\":null,\"previous\":null,\"results\":[]}\nConfig file    -                                  default\nProject        138                                env\nOrganisation   138                                env\nEnvironment    -                                  default\nAPI            http://host.docker.internal:8300   env\nSDK API        http://host.docker.internal:8300   default",
           "isError": false,
@@ -124,7 +124,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith api api/v1/environments/S9QejmWJxyUK62xN3EcYn8/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"add_to_cart\",\"description\":\"Whether the add_to_cart_clicked event occurred at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"add_to_cart_clicked\"}}\nJSON\necho; echo ---; flagsmith api api/v1/environments/S9QejmWJxyUK62xN3EcYn8/experiment-metrics/ 2>&1 | jq '.results[] | {id,name,description,aggregation,direction,definition}'"
+            "command": "cd /tmp; flagsmith api api/v1/environments/[env-5a11216cce2e1ae4]/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"add_to_cart\",\"description\":\"Whether the add_to_cart_clicked event occurred at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"add_to_cart_clicked\"}}\nJSON\necho; echo ---; flagsmith api api/v1/environments/[env-5a11216cce2e1ae4]/experiment-metrics/ 2>&1 | jq '.results[] | {id,name,description,aggregation,direction,definition}'"
           },
           "output": "{\"id\":47,\"name\":\"add_to_cart\",\"description\":\"Whether the add_to_cart_clicked event occurred at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"add_to_cart_clicked\"},\"experiments\":[],\"created_at\":\"2026-11-27T20:27:25.945973Z\",\"updated_at\":\"2026-11-27T20:27:25.945986Z\"}\n---\n{\n  \"id\": 47,\n  \"name\": \"add_to_cart\",\n  \"description\": \"Whether the add_to_cart_clicked event occurred at least once per user\",\n  \"aggregation\": \"occurrence\",\n  \"direction\": \"up\",\n  \"definition\": {\n    \"event\": \"add_to_cart_clicked\",\n    \"version\": 1\n  }\n}",
           "isError": false,
@@ -142,7 +142,7 @@
     },
     {
       "turn": 5,
-      "text": "DONE: Created experiment metric \"add_to_cart\" (id 47) in Production (environment S9QejmWJxyUK62xN3EcYn8), with aggregation \"occurrence\" on event \"add_to_cart_clicked\" and direction \"up\" (higher is better). Read-back confirmed; no other changes made.",
+      "text": "DONE: Created experiment metric \"add_to_cart\" (id 47) in Production (environment [env-5a11216cce2e1ae4]), with aggregation \"occurrence\" on event \"add_to_cart_clicked\" and direction \"up\" (higher is better). Read-back confirmed; no other changes made.",
       "calls": [],
       "usage": {
         "input": 2,

@@ -29,7 +29,7 @@
     }
   ],
   "outcome": "done",
-  "finalText": "DONE: created experiment metric \"signup_completed\" (id 84) in Production (env key 6wRjgf8wzTVHsvuDhr7QNT) with occurrence aggregation on event \"signup_completed\", direction up (higher is better); read-back confirmed.",
+  "finalText": "DONE: created experiment metric \"signup_completed\" (id 84) in Production (env key [env-b864f4c659379fb4]) with occurrence aggregation on event \"signup_completed\", direction up (higher is better); read-back confirmed.",
   "costUsd": 0.001178,
   "usage": {
     "input": 12,
@@ -43,9 +43,9 @@
   "ms": 10367,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "cd /tmp; flagsmith api api/v1/environments/6wRjgf8wzTVHsvuDhr7QNT/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'",
-    "cd /tmp; flagsmith api api/v1/environments/6wRjgf8wzTVHsvuDhr7QNT/experiment-metrics/ | head -c 1500; echo; flagsmith api api/v1/environments/6wRjgf8wzTVHsvuDhr7QNT/experiment-metrics/ --json --jq '.' | head -c 1500",
-    "cd /tmp; flagsmith api api/v1/environments/6wRjgf8wzTVHsvuDhr7QNT/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"signup_completed\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"signup_completed\"}}\nJSON\necho \"---\"; flagsmith api api/v1/environments/6wRjgf8wzTVHsvuDhr7QNT/experiment-metrics/ --json --jq '.results[] | {id,name,aggregation,direction,definition}'"
+    "cd /tmp; flagsmith api api/v1/environments/[env-b864f4c659379fb4]/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'",
+    "cd /tmp; flagsmith api api/v1/environments/[env-b864f4c659379fb4]/experiment-metrics/ | head -c 1500; echo; flagsmith api api/v1/environments/[env-b864f4c659379fb4]/experiment-metrics/ --json --jq '.' | head -c 1500",
+    "cd /tmp; flagsmith api api/v1/environments/[env-b864f4c659379fb4]/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"signup_completed\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"signup_completed\"}}\nJSON\necho \"---\"; flagsmith api api/v1/environments/[env-b864f4c659379fb4]/experiment-metrics/ --json --jq '.results[] | {id,name,aggregation,direction,definition}'"
   ],
   "transcript": [
     {
@@ -73,12 +73,12 @@
     },
     {
       "turn": 2,
-      "text": "Before creating anything, I'll check whether a metric with this name already exists in Production (env id 547, key 6wRjgf8wzTVHsvuDhr7QNT).",
+      "text": "Before creating anything, I'll check whether a metric with this name already exists in Production (env id 547, key [env-b864f4c659379fb4]).",
       "calls": [
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith api api/v1/environments/6wRjgf8wzTVHsvuDhr7QNT/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'"
+            "command": "cd /tmp; flagsmith api api/v1/environments/[env-b864f4c659379fb4]/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'"
           },
           "output": "(no output)",
           "isError": false,
@@ -101,7 +101,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith api api/v1/environments/6wRjgf8wzTVHsvuDhr7QNT/experiment-metrics/ | head -c 1500; echo; flagsmith api api/v1/environments/6wRjgf8wzTVHsvuDhr7QNT/experiment-metrics/ --json --jq '.' | head -c 1500"
+            "command": "cd /tmp; flagsmith api api/v1/environments/[env-b864f4c659379fb4]/experiment-metrics/ | head -c 1500; echo; flagsmith api api/v1/environments/[env-b864f4c659379fb4]/experiment-metrics/ --json --jq '.' | head -c 1500"
           },
           "output": "{\"count\":0,\"next\":null,\"previous\":null,\"results\":[]}\n{\"count\":0,\"next\":null,\"previous\":null,\"results\":[]}",
           "isError": false,
@@ -124,7 +124,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith api api/v1/environments/6wRjgf8wzTVHsvuDhr7QNT/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"signup_completed\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"signup_completed\"}}\nJSON\necho \"---\"; flagsmith api api/v1/environments/6wRjgf8wzTVHsvuDhr7QNT/experiment-metrics/ --json --jq '.results[] | {id,name,aggregation,direction,definition}'"
+            "command": "cd /tmp; flagsmith api api/v1/environments/[env-b864f4c659379fb4]/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"signup_completed\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"signup_completed\"}}\nJSON\necho \"---\"; flagsmith api api/v1/environments/[env-b864f4c659379fb4]/experiment-metrics/ --json --jq '.results[] | {id,name,aggregation,direction,definition}'"
           },
           "output": "{\"id\":84,\"name\":\"signup_completed\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"signup_completed\"},\"experiments\":[],\"created_at\":\"2026-11-27T20:10:46.484886Z\",\"updated_at\":\"2026-11-27T20:10:46.484891Z\"}---\n{\"aggregation\":\"occurrence\",\"definition\":{\"event\":\"signup_completed\",\"version\":1},\"direction\":\"up\",\"id\":84,\"name\":\"signup_completed\"}",
           "isError": false,
@@ -142,7 +142,7 @@
     },
     {
       "turn": 5,
-      "text": "DONE: created experiment metric \"signup_completed\" (id 84) in Production (env key 6wRjgf8wzTVHsvuDhr7QNT) with occurrence aggregation on event \"signup_completed\", direction up (higher is better); read-back confirmed.",
+      "text": "DONE: created experiment metric \"signup_completed\" (id 84) in Production (env key [env-b864f4c659379fb4]) with occurrence aggregation on event \"signup_completed\", direction up (higher is better); read-back confirmed.",
       "calls": [],
       "usage": {
         "input": 2,

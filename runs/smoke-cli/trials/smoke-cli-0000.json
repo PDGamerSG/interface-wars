@@ -65,7 +65,7 @@
     "flagsmith --help; echo; flagsmith feature --help 2>&1 | head -50",
     "flagsmith feature create --help; echo; flagsmith config; echo; flagsmith feature list --json 2>&1 | head -c 1500",
     "flagsmith feature create loyalty_points --description \"Gates the loyalty points rollout\" && echo ---- && flagsmith feature get loyalty_points 2>&1 | head -40",
-    "flagsmith environment --help | head -20; echo; flagsmith flag --help | head -20; echo; for e in X3g22VPAyZvqZwJRZ5SNyc AoTPgL5NK38GGHnf2KpU5Z; do echo \"== $e\"; flagsmith -e $e flag list --json 2>&1 | jq -r '.[] | select(.feature.name==\"loyalty_points\" or .name==\"loyalty_points\") | .' 2>/dev/null || flagsmith -e $e flag list 2>&1 | grep -i loyalty; done",
+    "flagsmith environment --help | head -20; echo; flagsmith flag --help | head -20; echo; for e in [env-d104aa5394fcab09] [env-5197b3ce4855498c]; do echo \"== $e\"; flagsmith -e $e flag list --json 2>&1 | jq -r '.[] | select(.feature.name==\"loyalty_points\" or .name==\"loyalty_points\") | .' 2>/dev/null || flagsmith -e $e flag list 2>&1 | grep -i loyalty; done",
     "flagsmith environment list 2>&1"
   ],
   "transcript": [
@@ -145,9 +145,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith environment --help | head -20; echo; flagsmith flag --help | head -20; echo; for e in X3g22VPAyZvqZwJRZ5SNyc AoTPgL5NK38GGHnf2KpU5Z; do echo \"== $e\"; flagsmith -e $e flag list --json 2>&1 | jq -r '.[] | select(.feature.name==\"loyalty_points\" or .name==\"loyalty_points\") | .' 2>/dev/null || flagsmith -e $e flag list 2>&1 | grep -i loyalty; done"
+            "command": "flagsmith environment --help | head -20; echo; flagsmith flag --help | head -20; echo; for e in [env-d104aa5394fcab09] [env-5197b3ce4855498c]; do echo \"== $e\"; flagsmith -e $e flag list --json 2>&1 | jq -r '.[] | select(.feature.name==\"loyalty_points\" or .name==\"loyalty_points\") | .' 2>/dev/null || flagsmith -e $e flag list 2>&1 | grep -i loyalty; done"
           },
-          "output": "Manage environments in the current project\n\nUsage:\n  flagsmith environment [command] [flags]\n\nAliases:\n  environment, env\n\nAvailable Commands:\n  clone       Clone an environment into a new one\n  create      Create an environment (mints a client-side key)\n  delete      Delete an environment\n  document    Output the environment document (JSON for local SDK evaluation)\n  get         Show an environment\n  key         Manage an environment's server-side SDK keys\n  list        List environments in the current project\n  update      Update an environment\n\nFlags:\n  -h, --help   help for environment\n\nInspect feature flags in the current environment\n\nUsage:\n  flagsmith flag [command] [flags]\n\nAvailable Commands:\n  delete      Delete a flag's segment override in the current environment\n  disable     Disable a flag (shorthand for `flag update --disable`)\n  enable      Enable a flag (shorthand for `flag update --enable`)\n  get         Show a single flag's state in the current environment\n  list        List every flag in the current environment\n  reorder     Re-permute a feature's segment override priorities\n  update      Change a flag's state in the current environment\n\nFlags:\n  -h, --help   help for flag\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n\n== X3g22VPAyZvqZwJRZ5SNyc\nloyalty_points   standard   off     -         new\n== AoTPgL5NK38GGHnf2KpU5Z\nloyalty_points   standard   off     -         new",
+          "output": "Manage environments in the current project\n\nUsage:\n  flagsmith environment [command] [flags]\n\nAliases:\n  environment, env\n\nAvailable Commands:\n  clone       Clone an environment into a new one\n  create      Create an environment (mints a client-side key)\n  delete      Delete an environment\n  document    Output the environment document (JSON for local SDK evaluation)\n  get         Show an environment\n  key         Manage an environment's server-side SDK keys\n  list        List environments in the current project\n  update      Update an environment\n\nFlags:\n  -h, --help   help for environment\n\nInspect feature flags in the current environment\n\nUsage:\n  flagsmith flag [command] [flags]\n\nAvailable Commands:\n  delete      Delete a flag's segment override in the current environment\n  disable     Disable a flag (shorthand for `flag update --disable`)\n  enable      Enable a flag (shorthand for `flag update --enable`)\n  get         Show a single flag's state in the current environment\n  list        List every flag in the current environment\n  reorder     Re-permute a feature's segment override priorities\n  update      Change a flag's state in the current environment\n\nFlags:\n  -h, --help   help for flag\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n\n== [env-d104aa5394fcab09]\nloyalty_points   standard   off     -         new\n== [env-5197b3ce4855498c]\nloyalty_points   standard   off     -         new",
           "isError": false,
           "ms": 2801
         }
@@ -170,7 +170,7 @@
           "input": {
             "command": "flagsmith environment list 2>&1"
           },
-          "output": "NAME          KEY                      DESCRIPTION\nDevelopment   X3g22VPAyZvqZwJRZ5SNyc   \nProduction    AoTPgL5NK38GGHnf2KpU5Z   \n\n2 environments",
+          "output": "NAME          KEY                      DESCRIPTION\nDevelopment   [env-d104aa5394fcab09]   \nProduction    [env-5197b3ce4855498c]   \n\n2 environments",
           "isError": false,
           "ms": 418
         }

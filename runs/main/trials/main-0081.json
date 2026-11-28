@@ -33,7 +33,7 @@
   "ms": 8781,
   "commands": [
     "list_project_features {\"project_pk\":83,\"environment\":165,\"search\":\"wishlist_sync\"}",
-    "update_environment_feature_state {\"id__path\":670,\"id\":670,\"environment_api_key\":\"Fct3nVfYwnjNizcatHsgLV\",\"environment\":165,\"feature\":320,\"enabled\":true,\"feature_state_value\":\"max_10\"}",
+    "update_environment_feature_state {\"id__path\":670,\"id\":670,\"environment_api_key\":\"[env-84dd52e405986a8f]\",\"environment\":165,\"feature\":320,\"enabled\":true,\"feature_state_value\":\"max_10\"}",
     "list_project_features {\"project_pk\":83,\"environment\":164,\"search\":\"wishlist_sync\"}",
     "list_project_features {\"project_pk\":83,\"environment\":165,\"search\":\"wishlist_sync\"}"
   ],
@@ -72,7 +72,7 @@
           "input": {
             "id__path": 670,
             "id": 670,
-            "environment_api_key": "Fct3nVfYwnjNizcatHsgLV",
+            "environment_api_key": "[env-84dd52e405986a8f]",
             "environment": 165,
             "feature": 320,
             "enabled": true,

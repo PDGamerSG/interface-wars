@@ -36,7 +36,7 @@
     "flagsmith flags list --help 2>&1 | head -40; echo ----; flagsmith flags list 2>&1 | head -100",
     "flagsmith feature list --help 2>&1 | head -30; echo ----; flagsmith feature list --json 2>&1 | jq -c '.[] | {id,name,tags,is_archived}' 2>&1 | head -100",
     "flagsmith api \"api/v1/projects/32/tags/\" 2>&1 | jq . ; echo ----; flagsmith api \"api/v1/projects/32/features/?page_size=100\" 2>&1 | jq -c '.results[] | {id,name,tags,is_archived}'",
-    "flagsmith feature get --help 2>&1 | head -5; flagsmith flag get store_locator -e 69UoRZ2RU48FNWNdrR3P8v --json --jq '{enabled,value}' ; flagsmith api \"api/v1/projects/32/features/119/\" | jq '{id,name,is_archived,tags}'",
+    "flagsmith feature get --help 2>&1 | head -5; flagsmith flag get store_locator -e [env-fba08b2ea9db1c2d] --json --jq '{enabled,value}' ; flagsmith api \"api/v1/projects/32/features/119/\" | jq '{id,name,is_archived,tags}'",
     "flagsmith feature update store_locator --archive --yes 2>&1; echo ----; flagsmith api \"api/v1/projects/32/features/119/\" | jq '{id,name,is_archived,tags}'; flagsmith feature list --include-archived --json | jq -c '.[] | select(.name==\"store_locator\")'"
   ],
   "transcript": [
@@ -125,7 +125,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith feature get --help 2>&1 | head -5; flagsmith flag get store_locator -e 69UoRZ2RU48FNWNdrR3P8v --json --jq '{enabled,value}' ; flagsmith api \"api/v1/projects/32/features/119/\" | jq '{id,name,is_archived,tags}'"
+            "command": "flagsmith feature get --help 2>&1 | head -5; flagsmith flag get store_locator -e [env-fba08b2ea9db1c2d] --json --jq '{enabled,value}' ; flagsmith api \"api/v1/projects/32/features/119/\" | jq '{id,name,is_archived,tags}'"
           },
           "output": "Show a feature and its variants\n\nUsage:\n  flagsmith feature get <feature> [flags]\n\n{\"enabled\":false,\"value\":\"grid\"}\n{\n  \"id\": 119,\n  \"name\": \"store_locator\",\n  \"is_archived\": false,\n  \"tags\": [\n    3\n  ]\n}",
           "isError": false,

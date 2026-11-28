@@ -5,7 +5,8 @@ import { DatabaseSync } from 'node:sqlite';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { RUNS, readLab } from '../lab/config.ts';
+import { RUNS } from '../lab/config.ts';
+import { localCredentials, redactCredentials } from './redact.ts';
 import type { TrialRecord } from '../trial.ts';
 
 type EvidenceCall = { name: string; input: unknown; output: string; isError: boolean; ms: number };
@@ -13,50 +14,14 @@ type EvidenceTurn = { turn: number; text: string; calls: EvidenceCall[]; usage: 
 
 const SCHEMA = readFileSync(fileURLToPath(new URL('./schema.sql', import.meta.url)), 'utf8');
 const DEFAULT_OUTPUT = join(RUNS, 'main', 'evidence.sqlite');
-const REDACTED = '[REDACTED]';
 
 function sha256(value: string | Buffer) {
   return createHash('sha256').update(value).digest('hex');
 }
 
-function collectLocalSecrets() {
-  const values: string[] = [];
-  try {
-    const lab = readLab() as any;
-    const visit = (value: unknown, key = '') => {
-      if (typeof value === 'string' && value.length >= 12 && key !== 'email') values.push(value);
-      else if (value && typeof value === 'object') Object.entries(value).forEach(([k, v]) => visit(v, k));
-    };
-    visit(lab);
-  } catch {
-    // A fresh checkout can build the index without the local lab file.
-  }
-  return [...new Set(values)].sort((a, b) => b.length - a.length);
-}
-
-const SECRET_FIELD = /(api[_ -]?key|access[_ -]?token|authorization|password|secret|credential|environment[_ -]?key|server[_ -]?key|master[_ -]?key)/i;
-const AUTH_PATTERN = /(Api-Key|Authorization|X-Environment-Key|Token)\s*[:=]?\s*[A-Za-z0-9._~+/=-]{8,}/gi;
-const ENV_PATTERN = /(FLAGSMITH_API_KEY_[A-Za-z0-9_]+\s*=\s*)\S+/gi;
-const JSON_SECRET_PATTERN = /("?(?:api[_ -]?key|access[_ -]?token|authorization|password|secret|environment[_ -]?key|server[_ -]?key|master[_ -]?key)"?\s*:\s*")[^"}]+("?)/gi;
-
-export function redact(value: unknown, key = '', secrets = collectLocalSecrets()): unknown {
-  if (typeof value === 'string') {
-    if (SECRET_FIELD.test(key)) return REDACTED;
-    let output = value;
-    for (const secret of secrets) output = output.split(secret).join(REDACTED);
-    output = output.replace(AUTH_PATTERN, (match) => match.replace(/[A-Za-z0-9._~+/=-]{8,}$/i, REDACTED));
-    output = output.replace(ENV_PATTERN, (_match, prefix = '') => `${prefix}${REDACTED}`);
-    output = output.replace(/sk-ant-[A-Za-z0-9_-]{10,}/gi, REDACTED);
-    output = output.replace(JSON_SECRET_PATTERN, (_match, prefix = '', suffix = '') => `${prefix}${REDACTED}${suffix}`);
-    return output;
-  }
-  if (Array.isArray(value)) return value.map((item) => redact(item, key, secrets));
-  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, redact(v, k, secrets)]));
-  return value;
-}
-
-function json(value: unknown) {
-  return JSON.stringify(redact(value));
+// Retain the field-aware helper for callers inspecting one evidence value.
+export function redact(value: unknown, key = '', secrets = localCredentials()): unknown {
+  return redactCredentials({ [key]: value }, secrets)[key];
 }
 
 function trialFiles(run: string) {
@@ -82,19 +47,20 @@ export function buildEvidence(run = 'main', output = join(RUNS, run, 'evidence.s
   const insertCall = db.prepare(`INSERT INTO calls (trial_id, turn_index, call_index, name, input_json, output, is_error, ms, source_pointer) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`);
   const insertChange = db.prepare(`INSERT INTO changes (trial_id, change_index, path, before_json, after_json, source_pointer) VALUES (?, ?, ?, ?, ?, ?)`);
   const insertReason = db.prepare(`INSERT INTO reasons (trial_id, reason_index, reason, source_pointer) VALUES (?, ?, ?, ?)`);
+  const secrets = localCredentials();
   for (const { file, path } of files) {
     const raw = readFileSync(path);
-    const trial = JSON.parse(raw.toString()) as TrialRecord;
+    const trial = redactCredentials(JSON.parse(raw.toString()) as TrialRecord, secrets);
     const source = `runs/${run}/trials/${file}`;
     const digest = sha256(raw);
-    insertTrial.run(trial.trialId, source, digest, trial.index, trial.arm, trial.template, trial.family, Number(trial.heldOut), Number(trial.correct), trial.outcome, String(redact(trial.finalText)), trial.costUsd, trial.toolCalls, trial.toolErrors, trial.turns, trial.ms, trial.startedAt);
+    insertTrial.run(trial.trialId, source, digest, trial.index, trial.arm, trial.template, trial.family, Number(trial.heldOut), Number(trial.correct), trial.outcome, trial.finalText, trial.costUsd, trial.toolCalls, trial.toolErrors, trial.turns, trial.ms, trial.startedAt);
     for (const [turnIndex, turn] of (trial.transcript as EvidenceTurn[]).entries()) {
-      insertTurn.run(trial.trialId, turnIndex, String(redact(turn.text)), json(turn.usage), turn.costUsd, turn.stopReason, `/transcript/${turnIndex}`);
+      insertTurn.run(trial.trialId, turnIndex, turn.text, JSON.stringify(turn.usage), turn.costUsd, turn.stopReason, `/transcript/${turnIndex}`);
       for (const [callIndex, call] of turn.calls.entries()) {
-        insertCall.run(trial.trialId, turnIndex, callIndex, call.name, json(call.input), String(redact(call.output)), Number(call.isError), call.ms, `/transcript/${turnIndex}/calls/${callIndex}`);
+        insertCall.run(trial.trialId, turnIndex, callIndex, call.name, JSON.stringify(call.input), call.output, Number(call.isError), call.ms, `/transcript/${turnIndex}/calls/${callIndex}`);
       }
     }
-    for (const [changeIndex, change] of trial.changes.entries()) insertChange.run(trial.trialId, changeIndex, change.path, json(change.before), json(change.after), `/changes/${changeIndex}`);
+    for (const [changeIndex, change] of trial.changes.entries()) insertChange.run(trial.trialId, changeIndex, change.path, JSON.stringify(change.before), JSON.stringify(change.after), `/changes/${changeIndex}`);
     for (const [reasonIndex, reason] of trial.reasons.entries()) insertReason.run(trial.trialId, reasonIndex, reason, `/reasons/${reasonIndex}`);
   }
   db.close();

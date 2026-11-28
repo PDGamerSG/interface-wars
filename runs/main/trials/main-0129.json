@@ -33,7 +33,7 @@
   "ms": 14612,
   "commands": [
     "list_project_features {\"project_pk\":131,\"search\":\"bulk_discounts\",\"environment\":261}",
-    "update_environment_feature_state {\"id__path\":1066,\"environment_api_key\":\"6xrvRoF2tsYVioaBiFPiVD\",\"feature\":509,\"id\":1066,\"environment\":261,\"enabled\":true,\"feature_state_value\":\"max_10\"}",
+    "update_environment_feature_state {\"id__path\":1066,\"environment_api_key\":\"[env-f7c72fea1e8a74b1]\",\"feature\":509,\"id\":1066,\"environment\":261,\"enabled\":true,\"feature_state_value\":\"max_10\"}",
     "list_project_features {\"project_pk\":131,\"search\":\"bulk_discounts\",\"environment\":260}",
     "list_project_features {\"project_pk\":131,\"search\":\"bulk_discounts\",\"environment\":261}"
   ],
@@ -71,7 +71,7 @@
           "name": "update_environment_feature_state",
           "input": {
             "id__path": 1066,
-            "environment_api_key": "6xrvRoF2tsYVioaBiFPiVD",
+            "environment_api_key": "[env-f7c72fea1e8a74b1]",
             "feature": 509,
             "id": 1066,
             "environment": 261,

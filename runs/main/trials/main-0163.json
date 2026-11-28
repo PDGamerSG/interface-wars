@@ -19,7 +19,7 @@
     }
   ],
   "outcome": "done",
-  "finalText": "DONE: `size_guide` is now disabled in Production (S8Va5P5kU9FSmv2FNjAxDr). Read-back confirms enabled=false, and its value \"grid\" was left unchanged. No other flags or environments were touched.",
+  "finalText": "DONE: `size_guide` is now disabled in Production ([env-1521bb954d28dd64]). Read-back confirms enabled=false, and its value \"grid\" was left unchanged. No other flags or environments were touched.",
   "costUsd": 0.000948,
   "usage": {
     "input": 10,
@@ -33,8 +33,8 @@
   "ms": 7717,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; echo ---; flagsmith --help",
-    "flagsmith config; echo ---; flagsmith flag get size_guide -e S8Va5P5kU9FSmv2FNjAxDr --json --jq '{enabled,value,variants}'",
-    "flagsmith flag update size_guide -e S8Va5P5kU9FSmv2FNjAxDr --disable --yes && echo \"--- read-back:\" && flagsmith flag get size_guide -e S8Va5P5kU9FSmv2FNjAxDr --json --jq '{enabled,value}'"
+    "flagsmith config; echo ---; flagsmith flag get size_guide -e [env-1521bb954d28dd64] --json --jq '{enabled,value,variants}'",
+    "flagsmith flag update size_guide -e [env-1521bb954d28dd64] --disable --yes && echo \"--- read-back:\" && flagsmith flag get size_guide -e [env-1521bb954d28dd64] --json --jq '{enabled,value}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith config; echo ---; flagsmith flag get size_guide -e S8Va5P5kU9FSmv2FNjAxDr --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith config; echo ---; flagsmith flag get size_guide -e [env-1521bb954d28dd64] --json --jq '{enabled,value,variants}'"
           },
           "output": "Config file    -                                  default\nProject        165                                env\nOrganisation   165                                env\nEnvironment    -                                  default\nAPI            http://host.docker.internal:8300   env\nSDK API        http://host.docker.internal:8300   default\n---\n{\"enabled\":true,\"value\":\"grid\",\"variants\":null}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update size_guide -e S8Va5P5kU9FSmv2FNjAxDr --disable --yes && echo \"--- read-back:\" && flagsmith flag get size_guide -e S8Va5P5kU9FSmv2FNjAxDr --json --jq '{enabled,value}'"
+            "command": "flagsmith flag update size_guide -e [env-1521bb954d28dd64] --disable --yes && echo \"--- read-back:\" && flagsmith flag get size_guide -e [env-1521bb954d28dd64] --json --jq '{enabled,value}'"
           },
-          "output": "Feature              size_guide\nDescription          \nType                 standard\nState                off\nValue                grid\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n--- read-back:\n{\"enabled\":false,\"value\":\"grid\"}\n\n[stderr]\n✓ Disabled size_guide in environment Production (S8Va5P5kU9FSmv2FNjAxDr)",
+          "output": "Feature              size_guide\nDescription          \nType                 standard\nState                off\nValue                grid\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n--- read-back:\n{\"enabled\":false,\"value\":\"grid\"}\n\n[stderr]\n✓ Disabled size_guide in environment Production ([env-1521bb954d28dd64])",
           "isError": false,
           "ms": 1573
         }
@@ -108,7 +108,7 @@
     },
     {
       "turn": 4,
-      "text": "DONE: `size_guide` is now disabled in Production (S8Va5P5kU9FSmv2FNjAxDr). Read-back confirms enabled=false, and its value \"grid\" was left unchanged. No other flags or environments were touched.",
+      "text": "DONE: `size_guide` is now disabled in Production ([env-1521bb954d28dd64]). Read-back confirms enabled=false, and its value \"grid\" was left unchanged. No other flags or environments were touched.",
       "calls": [],
       "usage": {
         "input": 2,

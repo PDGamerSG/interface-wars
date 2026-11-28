@@ -63,14 +63,14 @@
   "ms": 22194,
   "commands": [
     "list_project_features {\"project_pk\":275,\"search\":\"wishlist_sync_copy\",\"environment\":549}",
-    "list_metrics {\"environment_api_key\":\"75qFhznxi2Y6hqKoFbnBk5\",\"q\":\"checkout_completed\"}",
-    "list_metrics {\"environment_api_key\":\"75qFhznxi2Y6hqKoFbnBk5\",\"q\":\"refund_requested\"}",
-    "list_experiments {\"environment_api_key\":\"75qFhznxi2Y6hqKoFbnBk5\",\"q\":\"wishlist_sync_copy\"}",
+    "list_metrics {\"environment_api_key\":\"[env-68f46345182c2daf]\",\"q\":\"checkout_completed\"}",
+    "list_metrics {\"environment_api_key\":\"[env-68f46345182c2daf]\",\"q\":\"refund_requested\"}",
+    "list_experiments {\"environment_api_key\":\"[env-68f46345182c2daf]\",\"q\":\"wishlist_sync_copy\"}",
     "list_feature_multivariate_options {\"feature_pk\":1064,\"project_pk\":\"275\"}",
-    "get_experiment_exposures {\"environment_api_key\":\"75qFhznxi2Y6hqKoFbnBk5\",\"experiment_id\":1}",
-    "create_experiment {\"environment_api_key\":\"75qFhznxi2Y6hqKoFbnBk5\",\"feature\":1064,\"name\":\"wishlist_sync_copy test\",\"hypothesis\":\"\\\"Pay securely\\\" increases checkout completed versus \\\"Checkout\\\".\",\"status\":\"created\",\"metrics\":[{\"metric\":\"checkout_completed\",\"expected_direction\":\"increase\"},{\"metric\":\"refund_requested\",\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":false,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":88,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
-    "create_experiment {\"environment_api_key\":\"75qFhznxi2Y6hqKoFbnBk5\",\"feature\":1064,\"name\":\"wishlist_sync_copy test\",\"hypothesis\":\"\\\"Pay securely\\\" increases checkout completed versus \\\"Checkout\\\".\",\"status\":\"created\",\"metrics\":[{\"metric\":81,\"expected_direction\":\"increase\"},{\"metric\":82,\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":false,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":88,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
-    "get_experiment {\"environment_api_key\":\"75qFhznxi2Y6hqKoFbnBk5\",\"experiment_id\":48}"
+    "get_experiment_exposures {\"environment_api_key\":\"[env-68f46345182c2daf]\",\"experiment_id\":1}",
+    "create_experiment {\"environment_api_key\":\"[env-68f46345182c2daf]\",\"feature\":1064,\"name\":\"wishlist_sync_copy test\",\"hypothesis\":\"\\\"Pay securely\\\" increases checkout completed versus \\\"Checkout\\\".\",\"status\":\"created\",\"metrics\":[{\"metric\":\"checkout_completed\",\"expected_direction\":\"increase\"},{\"metric\":\"refund_requested\",\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":false,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":88,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
+    "create_experiment {\"environment_api_key\":\"[env-68f46345182c2daf]\",\"feature\":1064,\"name\":\"wishlist_sync_copy test\",\"hypothesis\":\"\\\"Pay securely\\\" increases checkout completed versus \\\"Checkout\\\".\",\"status\":\"created\",\"metrics\":[{\"metric\":81,\"expected_direction\":\"increase\"},{\"metric\":82,\"expected_direction\":\"not_increase\"}],\"experiment_rollout\":{\"enabled\":false,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":88,\"percentage_allocation\":50}],\"rollout_percentage\":100}}",
+    "get_experiment {\"environment_api_key\":\"[env-68f46345182c2daf]\",\"experiment_id\":48}"
   ],
   "transcript": [
     {
@@ -91,7 +91,7 @@
         {
           "name": "list_metrics",
           "input": {
-            "environment_api_key": "75qFhznxi2Y6hqKoFbnBk5",
+            "environment_api_key": "[env-68f46345182c2daf]",
             "q": "checkout_completed"
           },
           "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":81,\"name\":\"checkout_completed\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"event\":\"checkout_completed\",\"version\":1},\"experiments\":[],\"created_at\":\"2026-11-27T20:10:41.391430Z\",\"updated_at\":\"2026-11-27T20:10:41.391439Z\"}]}",
@@ -101,7 +101,7 @@
         {
           "name": "list_metrics",
           "input": {
-            "environment_api_key": "75qFhznxi2Y6hqKoFbnBk5",
+            "environment_api_key": "[env-68f46345182c2daf]",
             "q": "refund_requested"
           },
           "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":82,\"name\":\"refund_requested\",\"description\":\"\",\"aggregation\":\"occurrence\",\"direction\":\"down\",\"definition\":{\"event\":\"refund_requested\",\"version\":1},\"experiments\":[],\"created_at\":\"2026-11-27T20:10:41.406605Z\",\"updated_at\":\"2026-11-27T20:10:41.406613Z\"}]}",
@@ -111,7 +111,7 @@
         {
           "name": "list_experiments",
           "input": {
-            "environment_api_key": "75qFhznxi2Y6hqKoFbnBk5",
+            "environment_api_key": "[env-68f46345182c2daf]",
             "q": "wishlist_sync_copy"
           },
           "output": "{\"count\":0,\"next\":null,\"previous\":null,\"results\":[],\"status_counts\":{\"created\":0,\"running\":0,\"paused\":0,\"completed\":0}}",
@@ -145,7 +145,7 @@
         {
           "name": "get_experiment_exposures",
           "input": {
-            "environment_api_key": "75qFhznxi2Y6hqKoFbnBk5",
+            "environment_api_key": "[env-68f46345182c2daf]",
             "experiment_id": 1
           },
           "output": "Error calling tool 'get_experiment_exposures': HTTP error 404: Not Found - {'detail': 'No Experiment matches the given query.'}",
@@ -169,7 +169,7 @@
         {
           "name": "create_experiment",
           "input": {
-            "environment_api_key": "75qFhznxi2Y6hqKoFbnBk5",
+            "environment_api_key": "[env-68f46345182c2daf]",
             "feature": 1064,
             "name": "wishlist_sync_copy test",
             "hypothesis": "\"Pay securely\" increases checkout completed versus \"Checkout\".",
@@ -220,7 +220,7 @@
         {
           "name": "create_experiment",
           "input": {
-            "environment_api_key": "75qFhznxi2Y6hqKoFbnBk5",
+            "environment_api_key": "[env-68f46345182c2daf]",
             "feature": 1064,
             "name": "wishlist_sync_copy test",
             "hypothesis": "\"Pay securely\" increases checkout completed versus \"Checkout\".",
@@ -271,7 +271,7 @@
         {
           "name": "get_experiment",
           "input": {
-            "environment_api_key": "75qFhznxi2Y6hqKoFbnBk5",
+            "environment_api_key": "[env-68f46345182c2daf]",
             "experiment_id": 48
           },
           "output": "{\"id\":48,\"feature\":{\"id\":1064,\"name\":\"wishlist_sync_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"id\":88,\"uuid\":\"c7b71ec9-2e80-4dd8-b9e6-0f227f18ca38\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Pay securely\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"wishlist_sync_copy test\",\"hypothesis\":\"\\\"Pay securely\\\" increases checkout completed versus \\\"Checkout\\\".\",\"status\":\"created\",\"metrics\":[{\"id\":62,\"metric\":81,\"metric_name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:11:00.631210Z\"},{\"id\":63,\"metric\":82,\"metric_name\":\"refund_requested\",\"aggregation\":\"occurrence\",\"direction\":\"down\",\"expected_direction\":\"not_increase\",\"created_at\":\"2026-11-27T20:11:00.631219Z\"}],\"experiment_rollout\":{\"enabled\":false,\"rollout_percentage\":100.0,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":88,\"percentage_allocation\":50.0}],\"audience\":{\"match\":\"any\",\"segments\":[]}},\"created_at\":\"2026-11-27T20:11:00.630401Z\",\"updated_at\":\"2026-11-27T20:11:00.648549Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",

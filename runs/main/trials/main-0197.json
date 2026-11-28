@@ -33,8 +33,8 @@
   "ms": 11931,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "cd /tmp; flagsmith flag get bulk_discounts_copy -e bVvtPazY9LZeHUWFZFpdaL --json --jq '{enabled,value,variants}'; echo ---; flagsmith feature variant list bulk_discounts_copy --json; echo ---; flagsmith flag get bulk_discounts_copy -e higAHCBRi6HsCQXoLifAjF --json --jq '{enabled,value,variants}'",
-    "cd /tmp; flagsmith flag update bulk_discounts_copy -e bVvtPazY9LZeHUWFZFpdaL --weight 75=80 --yes && flagsmith flag get bulk_discounts_copy -e bVvtPazY9LZeHUWFZFpdaL --json --jq '{enabled,value,variants}'; echo ---; flagsmith flag get bulk_discounts_copy -e higAHCBRi6HsCQXoLifAjF --json --jq '{enabled,value,variants}'"
+    "cd /tmp; flagsmith flag get bulk_discounts_copy -e [env-59da4dd423a636f0] --json --jq '{enabled,value,variants}'; echo ---; flagsmith feature variant list bulk_discounts_copy --json; echo ---; flagsmith flag get bulk_discounts_copy -e [env-d9500126026ff789] --json --jq '{enabled,value,variants}'",
+    "cd /tmp; flagsmith flag update bulk_discounts_copy -e [env-59da4dd423a636f0] --weight 75=80 --yes && flagsmith flag get bulk_discounts_copy -e [env-59da4dd423a636f0] --json --jq '{enabled,value,variants}'; echo ---; flagsmith flag get bulk_discounts_copy -e [env-d9500126026ff789] --json --jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith flag get bulk_discounts_copy -e bVvtPazY9LZeHUWFZFpdaL --json --jq '{enabled,value,variants}'; echo ---; flagsmith feature variant list bulk_discounts_copy --json; echo ---; flagsmith flag get bulk_discounts_copy -e higAHCBRi6HsCQXoLifAjF --json --jq '{enabled,value,variants}'"
+            "command": "cd /tmp; flagsmith flag get bulk_discounts_copy -e [env-59da4dd423a636f0] --json --jq '{enabled,value,variants}'; echo ---; flagsmith feature variant list bulk_discounts_copy --json; echo ---; flagsmith flag get bulk_discounts_copy -e [env-d9500126026ff789] --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"enabled\":true,\"value\":\"Start free trial\",\"variants\":[{\"id\":75,\"key\":\"b\",\"value\":\"Try it free\",\"weight\":50}]}\n---\n[\n  {\n    \"id\": 75,\n    \"value\": \"Try it free\",\n    \"weight\": 50,\n    \"key\": \"b\"\n  }\n]\n---\n{\"enabled\":true,\"value\":\"Start free trial\",\"variants\":[{\"id\":75,\"key\":\"b\",\"value\":\"Try it free\",\"weight\":50}]}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith flag update bulk_discounts_copy -e bVvtPazY9LZeHUWFZFpdaL --weight 75=80 --yes && flagsmith flag get bulk_discounts_copy -e bVvtPazY9LZeHUWFZFpdaL --json --jq '{enabled,value,variants}'; echo ---; flagsmith flag get bulk_discounts_copy -e higAHCBRi6HsCQXoLifAjF --json --jq '{enabled,value,variants}'"
+            "command": "cd /tmp; flagsmith flag update bulk_discounts_copy -e [env-59da4dd423a636f0] --weight 75=80 --yes && flagsmith flag get bulk_discounts_copy -e [env-59da4dd423a636f0] --json --jq '{enabled,value,variants}'; echo ---; flagsmith flag get bulk_discounts_copy -e [env-d9500126026ff789] --json --jq '{enabled,value,variants}'"
           },
-          "output": "Feature              bulk_discounts_copy\nDescription          \nType                 multivariate\nState                on\nValue                Start free trial\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n\nVariants\n  VALUE        WEIGHT  KEY  ID\n  Try it free  80%     b    75\n{\"enabled\":true,\"value\":\"Start free trial\",\"variants\":[{\"id\":75,\"key\":\"b\",\"value\":\"Try it free\",\"weight\":80}]}\n---\n{\"enabled\":true,\"value\":\"Start free trial\",\"variants\":[{\"id\":75,\"key\":\"b\",\"value\":\"Try it free\",\"weight\":50}]}\n\n[stderr]\n✓ Set bulk_discounts_copy weights to 75=80 in environment Production (bVvtPazY9LZeHUWFZFpdaL)",
+          "output": "Feature              bulk_discounts_copy\nDescription          \nType                 multivariate\nState                on\nValue                Start free trial\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n\nVariants\n  VALUE        WEIGHT  KEY  ID\n  Try it free  80%     b    75\n{\"enabled\":true,\"value\":\"Start free trial\",\"variants\":[{\"id\":75,\"key\":\"b\",\"value\":\"Try it free\",\"weight\":80}]}\n---\n{\"enabled\":true,\"value\":\"Start free trial\",\"variants\":[{\"id\":75,\"key\":\"b\",\"value\":\"Try it free\",\"weight\":50}]}\n\n[stderr]\n✓ Set bulk_discounts_copy weights to 75=80 in environment Production ([env-59da4dd423a636f0])",
           "isError": false,
           "ms": 3358
         }

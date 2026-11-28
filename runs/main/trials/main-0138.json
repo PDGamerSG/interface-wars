@@ -28,11 +28,11 @@
   "turns": 6,
   "ms": 58781,
   "commands": [
-    "list_experiments {\"environment_api_key\":\"P4GoJMG3gBhyneTnj6PxUv\",\"q\":\"apple_pay_copy\"}",
-    "get_experiment {\"environment_api_key\":\"P4GoJMG3gBhyneTnj6PxUv\",\"experiment_id\":26}",
-    "update_experiment {\"environment_api_key\":\"P4GoJMG3gBhyneTnj6PxUv\",\"experiment_id\":26,\"feature\":543,\"hypothesis\":\"Create account wins\",\"name\":\"apple_pay_copy test\",\"status\":\"running\",\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":55,\"percentage_allocation\":50}],\"audience\":{\"match\":\"any\",\"segment_ids\":[]}},\"metrics\":[{\"metric\":45,\"expected_direction\":\"increase\"}],\"updated_at\":\"2026-11-27T20:27:12.990146Z\"}",
-    "update_experiment {\"environment_api_key\":\"P4GoJMG3gBhyneTnj6PxUv\",\"experiment_id\":26,\"feature\":543,\"hypothesis\":\"Create account wins\",\"name\":\"apple_pay_copy test\",\"status\":\"running\"}",
-    "get_experiment {\"environment_api_key\":\"P4GoJMG3gBhyneTnj6PxUv\",\"experiment_id\":26}"
+    "list_experiments {\"environment_api_key\":\"[env-aff72a1a3a4db93b]\",\"q\":\"apple_pay_copy\"}",
+    "get_experiment {\"environment_api_key\":\"[env-aff72a1a3a4db93b]\",\"experiment_id\":26}",
+    "update_experiment {\"environment_api_key\":\"[env-aff72a1a3a4db93b]\",\"experiment_id\":26,\"feature\":543,\"hypothesis\":\"Create account wins\",\"name\":\"apple_pay_copy test\",\"status\":\"running\",\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":55,\"percentage_allocation\":50}],\"audience\":{\"match\":\"any\",\"segment_ids\":[]}},\"metrics\":[{\"metric\":45,\"expected_direction\":\"increase\"}],\"updated_at\":\"2026-11-27T20:27:12.990146Z\"}",
+    "update_experiment {\"environment_api_key\":\"[env-aff72a1a3a4db93b]\",\"experiment_id\":26,\"feature\":543,\"hypothesis\":\"Create account wins\",\"name\":\"apple_pay_copy test\",\"status\":\"running\"}",
+    "get_experiment {\"environment_api_key\":\"[env-aff72a1a3a4db93b]\",\"experiment_id\":26}"
   ],
   "transcript": [
     {
@@ -42,7 +42,7 @@
         {
           "name": "list_experiments",
           "input": {
-            "environment_api_key": "P4GoJMG3gBhyneTnj6PxUv",
+            "environment_api_key": "[env-aff72a1a3a4db93b]",
             "q": "apple_pay_copy"
           },
           "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":26,\"feature\":{\"id\":543,\"name\":\"apple_pay_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"id\":55,\"uuid\":\"bd35de41-81ef-4f1e-9aa3-5e1dea921394\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Create account\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"apple_pay_copy test\",\"hypothesis\":\"Create account wins\",\"status\":\"created\",\"metrics\":[{\"id\":36,\"metric\":45,\"metric_name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:27:12.974964Z\"}],\"created_at\":\"2026-11-27T20:27:12.974419Z\",\"updated_at\":\"2026-11-27T20:27:12.990146Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}],\"status_counts\":{\"created\":1,\"running\":0,\"paused\":0,\"completed\":0}}",
@@ -66,7 +66,7 @@
         {
           "name": "get_experiment",
           "input": {
-            "environment_api_key": "P4GoJMG3gBhyneTnj6PxUv",
+            "environment_api_key": "[env-aff72a1a3a4db93b]",
             "experiment_id": 26
           },
           "output": "{\"id\":26,\"feature\":{\"id\":543,\"name\":\"apple_pay_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"id\":55,\"uuid\":\"bd35de41-81ef-4f1e-9aa3-5e1dea921394\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Create account\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"apple_pay_copy test\",\"hypothesis\":\"Create account wins\",\"status\":\"created\",\"metrics\":[{\"id\":36,\"metric\":45,\"metric_name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:27:12.974964Z\"}],\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100.0,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":55,\"percentage_allocation\":50.0}],\"audience\":{\"match\":\"any\",\"segments\":[]}},\"created_at\":\"2026-11-27T20:27:12.974419Z\",\"updated_at\":\"2026-11-27T20:27:12.990146Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
@@ -90,7 +90,7 @@
         {
           "name": "update_experiment",
           "input": {
-            "environment_api_key": "P4GoJMG3gBhyneTnj6PxUv",
+            "environment_api_key": "[env-aff72a1a3a4db93b]",
             "experiment_id": 26,
             "feature": 543,
             "hypothesis": "Create account wins",
@@ -143,7 +143,7 @@
         {
           "name": "update_experiment",
           "input": {
-            "environment_api_key": "P4GoJMG3gBhyneTnj6PxUv",
+            "environment_api_key": "[env-aff72a1a3a4db93b]",
             "experiment_id": 26,
             "feature": 543,
             "hypothesis": "Create account wins",
@@ -171,7 +171,7 @@
         {
           "name": "get_experiment",
           "input": {
-            "environment_api_key": "P4GoJMG3gBhyneTnj6PxUv",
+            "environment_api_key": "[env-aff72a1a3a4db93b]",
             "experiment_id": 26
           },
           "output": "{\"id\":26,\"feature\":{\"id\":543,\"name\":\"apple_pay_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"id\":55,\"uuid\":\"bd35de41-81ef-4f1e-9aa3-5e1dea921394\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Create account\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"apple_pay_copy test\",\"hypothesis\":\"Create account wins\",\"status\":\"created\",\"metrics\":[{\"id\":36,\"metric\":45,\"metric_name\":\"add_to_cart\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:27:12.974964Z\"}],\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100.0,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Sign up\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":55,\"percentage_allocation\":50.0}],\"audience\":{\"match\":\"any\",\"segments\":[]}},\"created_at\":\"2026-11-27T20:27:12.974419Z\",\"updated_at\":\"2026-11-27T20:27:12.990146Z\",\"started_at\":null,\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",

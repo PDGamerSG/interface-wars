@@ -64,7 +64,7 @@
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; echo ---; flagsmith --help",
     "flagsmith config 2>&1 | head -20; flagsmith feature list --json --jq '.[].name' 2>&1 | grep -i apple; echo \"exit=$?\"; flagsmith feature create --help 2>&1 | head -30",
-    "flagsmith feature create apple_pay --description \"Gates the apple pay rollout\" --yes 2>&1; echo \"---\"; for k in dseV75zYARkfu5qVZsXfW6 cTPnbEN7Kj8gdHTy5bpMfd; do echo \"== $k\"; flagsmith flag get apple_pay -e $k --json --jq '{name,enabled,value}' 2>&1; done",
+    "flagsmith feature create apple_pay --description \"Gates the apple pay rollout\" --yes 2>&1; echo \"---\"; for k in [env-bca563aeb3eda1ee] [env-9f8c14f12508085d]; do echo \"== $k\"; flagsmith flag get apple_pay -e $k --json --jq '{name,enabled,value}' 2>&1; done",
     "flagsmith feature list --json --jq '.[] | select(.name==\"apple_pay\") | {id,name,description}' 2>&1"
   ],
   "transcript": [
@@ -121,9 +121,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith feature create apple_pay --description \"Gates the apple pay rollout\" --yes 2>&1; echo \"---\"; for k in dseV75zYARkfu5qVZsXfW6 cTPnbEN7Kj8gdHTy5bpMfd; do echo \"== $k\"; flagsmith flag get apple_pay -e $k --json --jq '{name,enabled,value}' 2>&1; done"
+            "command": "flagsmith feature create apple_pay --description \"Gates the apple pay rollout\" --yes 2>&1; echo \"---\"; for k in [env-bca563aeb3eda1ee] [env-9f8c14f12508085d]; do echo \"== $k\"; flagsmith flag get apple_pay -e $k --json --jq '{name,enabled,value}' 2>&1; done"
           },
-          "output": "✓ Created feature apple_pay (1029)\nFeature         apple_pay (1029)\nDescription     Gates the apple pay rollout\nType            standard\nDefault value   -\nEnabled         false\n---\n== dseV75zYARkfu5qVZsXfW6\n{\"enabled\":false,\"name\":null,\"value\":null}\n== cTPnbEN7Kj8gdHTy5bpMfd\n{\"enabled\":false,\"name\":null,\"value\":null}",
+          "output": "✓ Created feature apple_pay (1029)\nFeature         apple_pay (1029)\nDescription     Gates the apple pay rollout\nType            standard\nDefault value   -\nEnabled         false\n---\n== [env-bca563aeb3eda1ee]\n{\"enabled\":false,\"name\":null,\"value\":null}\n== [env-9f8c14f12508085d]\n{\"enabled\":false,\"name\":null,\"value\":null}",
           "isError": false,
           "ms": 1763
         }

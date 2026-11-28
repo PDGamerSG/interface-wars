@@ -33,7 +33,7 @@
   "ms": 9859,
   "commands": [
     "list_project_features {\"project_pk\":195,\"search\":\"smart_reorder\",\"environment\":389}",
-    "update_environment_feature_state {\"id__path\":1593,\"environment_api_key\":\"EbAPeF2KCYTLHerthS9Gzr\",\"feature\":761,\"enabled\":true,\"feature_state_value\":\"v2\",\"id\":1593,\"environment\":389}",
+    "update_environment_feature_state {\"id__path\":1593,\"environment_api_key\":\"[env-ad8a5530e3a386c6]\",\"feature\":761,\"enabled\":true,\"feature_state_value\":\"v2\",\"id\":1593,\"environment\":389}",
     "list_project_features {\"project_pk\":195,\"search\":\"smart_reorder\",\"environment\":388}",
     "list_project_features {\"project_pk\":195,\"search\":\"smart_reorder\",\"environment\":389}"
   ],
@@ -71,7 +71,7 @@
           "name": "update_environment_feature_state",
           "input": {
             "id__path": 1593,
-            "environment_api_key": "EbAPeF2KCYTLHerthS9Gzr",
+            "environment_api_key": "[env-ad8a5530e3a386c6]",
             "feature": 761,
             "enabled": true,
             "feature_state_value": "v2",

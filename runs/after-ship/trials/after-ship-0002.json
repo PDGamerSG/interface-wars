@@ -33,8 +33,8 @@
   "ms": 6749,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; echo ----; flagsmith --help",
-    "flagsmith flag get loyalty_points -e WNCEWi8NM4uGzGb9YShTwm --json --jq '{enabled,value,variants}'",
-    "flagsmith flag update loyalty_points -e WNCEWi8NM4uGzGb9YShTwm --value \"grid\" --yes && flagsmith flag get loyalty_points -e WNCEWi8NM4uGzGb9YShTwm --json --jq '{enabled,value,variants}'"
+    "flagsmith flag get loyalty_points -e [env-062985bf0345fba4] --json --jq '{enabled,value,variants}'",
+    "flagsmith flag update loyalty_points -e [env-062985bf0345fba4] --value \"grid\" --yes && flagsmith flag get loyalty_points -e [env-062985bf0345fba4] --json --jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get loyalty_points -e WNCEWi8NM4uGzGb9YShTwm --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith flag get loyalty_points -e [env-062985bf0345fba4] --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"enabled\":true,\"value\":\"tiered\",\"variants\":null}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update loyalty_points -e WNCEWi8NM4uGzGb9YShTwm --value \"grid\" --yes && flagsmith flag get loyalty_points -e WNCEWi8NM4uGzGb9YShTwm --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith flag update loyalty_points -e [env-062985bf0345fba4] --value \"grid\" --yes && flagsmith flag get loyalty_points -e [env-062985bf0345fba4] --json --jq '{enabled,value,variants}'"
           },
-          "output": "Feature              loyalty_points\nDescription          \nType                 standard\nState                on\nValue                grid\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"value\":\"grid\",\"variants\":null}\n\n[stderr]\n✓ Set loyalty_points to \"grid\" in environment Development (WNCEWi8NM4uGzGb9YShTwm)",
+          "output": "Feature              loyalty_points\nDescription          \nType                 standard\nState                on\nValue                grid\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"value\":\"grid\",\"variants\":null}\n\n[stderr]\n✓ Set loyalty_points to \"grid\" in environment Development ([env-062985bf0345fba4])",
           "isError": false,
           "ms": 1396
         }

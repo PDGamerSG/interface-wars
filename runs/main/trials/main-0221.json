@@ -34,9 +34,9 @@
   "commands": [
     "flagsmith --help; flagsmith --help 2>&1 | head -50",
     "flagsmith config; flagsmith feature --help; flagsmith flag --help; flagsmith environment --help",
-    "flagsmith flag list -e CtabwM8x3oGZ52oDwS2F2X --json | jq '.' | head -150",
-    "flagsmith flag disable --help; flagsmith environment get -e CtabwM8x3oGZ52oDwS2F2X 2>&1 | head -20",
-    "flagsmith flag disable size_guide -e CtabwM8x3oGZ52oDwS2F2X --yes; echo \"exit=$?\"; flagsmith flag list -e CtabwM8x3oGZ52oDwS2F2X --json | jq -c '.[] | {feature,enabled,value}'"
+    "flagsmith flag list -e [env-378a56bef80d0383] --json | jq '.' | head -150",
+    "flagsmith flag disable --help; flagsmith environment get -e [env-378a56bef80d0383] 2>&1 | head -20",
+    "flagsmith flag disable size_guide -e [env-378a56bef80d0383] --yes; echo \"exit=$?\"; flagsmith flag list -e [env-378a56bef80d0383] --json | jq -c '.[] | {feature,enabled,value}'"
   ],
   "transcript": [
     {
@@ -92,7 +92,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag list -e CtabwM8x3oGZ52oDwS2F2X --json | jq '.' | head -150"
+            "command": "flagsmith flag list -e [env-378a56bef80d0383] --json | jq '.' | head -150"
           },
           "output": "[\n  {\n    \"feature\": \"size_guide\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"maintenance\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"new_checkout\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": false,\n    \"value\": \"maintenance\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"promo_banner\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"compact\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"apple_pay\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"compact\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"store_locator\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"grid\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  },\n  {\n    \"feature\": \"loyalty_points\",\n    \"type\": \"standard\",\n    \"description\": \"\",\n    \"enabled\": true,\n    \"value\": \"max_10\",\n    \"segment_overrides\": 0,\n    \"identity_overrides\": 0,\n    \"code_references\": 0,\n    \"lifecycle_stage\": \"new\"\n  }\n]",
           "isError": false,
@@ -115,7 +115,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag disable --help; flagsmith environment get -e CtabwM8x3oGZ52oDwS2F2X 2>&1 | head -20"
+            "command": "flagsmith flag disable --help; flagsmith environment get -e [env-378a56bef80d0383] 2>&1 | head -20"
           },
           "output": "Disable a flag (shorthand for `flag update --disable`)\n\nUsage:\n  flagsmith flag disable <feature> [flags]\n\nExamples:\n  flagsmith flag disable onboarding\n  flagsmith flag disable onboarding --segment 12\n\nFlags:\n  -h, --help                help for disable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\nError: accepts 1 arg(s), received 0\nUsage:\n  flagsmith environment get <environment> [flags]\n\nExamples:\n  flagsmith environment get Production\n\nFlags:\n  -h, --help   help for get\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)",
           "isError": false,
@@ -138,9 +138,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag disable size_guide -e CtabwM8x3oGZ52oDwS2F2X --yes; echo \"exit=$?\"; flagsmith flag list -e CtabwM8x3oGZ52oDwS2F2X --json | jq -c '.[] | {feature,enabled,value}'"
+            "command": "flagsmith flag disable size_guide -e [env-378a56bef80d0383] --yes; echo \"exit=$?\"; flagsmith flag list -e [env-378a56bef80d0383] --json | jq -c '.[] | {feature,enabled,value}'"
           },
-          "output": "Feature              size_guide\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\nexit=0\n{\"feature\":\"size_guide\",\"enabled\":false,\"value\":\"maintenance\"}\n{\"feature\":\"new_checkout\",\"enabled\":false,\"value\":\"maintenance\"}\n{\"feature\":\"promo_banner\",\"enabled\":true,\"value\":\"compact\"}\n{\"feature\":\"apple_pay\",\"enabled\":true,\"value\":\"compact\"}\n{\"feature\":\"store_locator\",\"enabled\":true,\"value\":\"grid\"}\n{\"feature\":\"loyalty_points\",\"enabled\":true,\"value\":\"max_10\"}\n\n[stderr]\n✓ Disabled size_guide in environment Production (CtabwM8x3oGZ52oDwS2F2X)",
+          "output": "Feature              size_guide\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\nexit=0\n{\"feature\":\"size_guide\",\"enabled\":false,\"value\":\"maintenance\"}\n{\"feature\":\"new_checkout\",\"enabled\":false,\"value\":\"maintenance\"}\n{\"feature\":\"promo_banner\",\"enabled\":true,\"value\":\"compact\"}\n{\"feature\":\"apple_pay\",\"enabled\":true,\"value\":\"compact\"}\n{\"feature\":\"store_locator\",\"enabled\":true,\"value\":\"grid\"}\n{\"feature\":\"loyalty_points\",\"enabled\":true,\"value\":\"max_10\"}\n\n[stderr]\n✓ Disabled size_guide in environment Production ([env-378a56bef80d0383])",
           "isError": false,
           "ms": 1682
         }

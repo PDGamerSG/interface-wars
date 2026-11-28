@@ -29,7 +29,7 @@
     }
   ],
   "outcome": "done",
-  "finalText": "DONE: Created experiment metric \"checkout_completed\" (id 30) in Production (environment MPiA8V3EwcRLR42usycEMp). It uses the occurrence aggregation on event \"checkout_completed\" with direction \"up\" (higher is better). Read-back confirmed the values.",
+  "finalText": "DONE: Created experiment metric \"checkout_completed\" (id 30) in Production (environment [env-b07dff52446c2b23]). It uses the occurrence aggregation on event \"checkout_completed\" with direction \"up\" (higher is better). Read-back confirmed the values.",
   "costUsd": 0.001185,
   "usage": {
     "input": 14,
@@ -43,10 +43,10 @@
   "ms": 9808,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith api api/v1/environments/MPiA8V3EwcRLR42usycEMp/experiment-metrics/ --json --jq '.results[] | {id,name,aggregation,direction,definition}' 2>&1 | head -50",
-    "flagsmith api api/v1/environments/MPiA8V3EwcRLR42usycEMp/experiment-metrics/ 2>&1 | head -c 2000; echo; flagsmith api api/v1/environments/MPiA8V3EwcRLR42usycEMp/experiment-metrics/ --json 2>&1 | head -c 2000",
-    "flagsmith api api/v1/environments/MPiA8V3EwcRLR42usycEMp/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"checkout_completed\",\"description\":\"Whether the checkout_completed event happened at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"checkout_completed\"}}\nJSON",
-    "flagsmith api api/v1/environments/MPiA8V3EwcRLR42usycEMp/experiment-metrics/30/ --json --jq '{id,name,aggregation,direction,definition}' 2>&1"
+    "flagsmith api api/v1/environments/[env-b07dff52446c2b23]/experiment-metrics/ --json --jq '.results[] | {id,name,aggregation,direction,definition}' 2>&1 | head -50",
+    "flagsmith api api/v1/environments/[env-b07dff52446c2b23]/experiment-metrics/ 2>&1 | head -c 2000; echo; flagsmith api api/v1/environments/[env-b07dff52446c2b23]/experiment-metrics/ --json 2>&1 | head -c 2000",
+    "flagsmith api api/v1/environments/[env-b07dff52446c2b23]/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"checkout_completed\",\"description\":\"Whether the checkout_completed event happened at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"checkout_completed\"}}\nJSON",
+    "flagsmith api api/v1/environments/[env-b07dff52446c2b23]/experiment-metrics/30/ --json --jq '{id,name,aggregation,direction,definition}' 2>&1"
   ],
   "transcript": [
     {
@@ -79,7 +79,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/MPiA8V3EwcRLR42usycEMp/experiment-metrics/ --json --jq '.results[] | {id,name,aggregation,direction,definition}' 2>&1 | head -50"
+            "command": "flagsmith api api/v1/environments/[env-b07dff52446c2b23]/experiment-metrics/ --json --jq '.results[] | {id,name,aggregation,direction,definition}' 2>&1 | head -50"
           },
           "output": "(no output)",
           "isError": false,
@@ -102,7 +102,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/MPiA8V3EwcRLR42usycEMp/experiment-metrics/ 2>&1 | head -c 2000; echo; flagsmith api api/v1/environments/MPiA8V3EwcRLR42usycEMp/experiment-metrics/ --json 2>&1 | head -c 2000"
+            "command": "flagsmith api api/v1/environments/[env-b07dff52446c2b23]/experiment-metrics/ 2>&1 | head -c 2000; echo; flagsmith api api/v1/environments/[env-b07dff52446c2b23]/experiment-metrics/ --json 2>&1 | head -c 2000"
           },
           "output": "{\"count\":0,\"next\":null,\"previous\":null,\"results\":[]}\n{\"count\":0,\"next\":null,\"previous\":null,\"results\":[]}",
           "isError": false,
@@ -125,7 +125,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/MPiA8V3EwcRLR42usycEMp/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"checkout_completed\",\"description\":\"Whether the checkout_completed event happened at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"checkout_completed\"}}\nJSON"
+            "command": "flagsmith api api/v1/environments/[env-b07dff52446c2b23]/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"checkout_completed\",\"description\":\"Whether the checkout_completed event happened at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"checkout_completed\"}}\nJSON"
           },
           "output": "{\"id\":30,\"name\":\"checkout_completed\",\"description\":\"Whether the checkout_completed event happened at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"checkout_completed\"},\"experiments\":[],\"created_at\":\"2026-11-27T20:22:49.208249Z\",\"updated_at\":\"2026-11-27T20:22:49.208258Z\"}",
           "isError": false,
@@ -148,7 +148,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/MPiA8V3EwcRLR42usycEMp/experiment-metrics/30/ --json --jq '{id,name,aggregation,direction,definition}' 2>&1"
+            "command": "flagsmith api api/v1/environments/[env-b07dff52446c2b23]/experiment-metrics/30/ --json --jq '{id,name,aggregation,direction,definition}' 2>&1"
           },
           "output": "{\"aggregation\":\"occurrence\",\"definition\":{\"event\":\"checkout_completed\",\"version\":1},\"direction\":\"up\",\"id\":30,\"name\":\"checkout_completed\"}",
           "isError": false,
@@ -166,7 +166,7 @@
     },
     {
       "turn": 6,
-      "text": "DONE: Created experiment metric \"checkout_completed\" (id 30) in Production (environment MPiA8V3EwcRLR42usycEMp). It uses the occurrence aggregation on event \"checkout_completed\" with direction \"up\" (higher is better). Read-back confirmed the values.",
+      "text": "DONE: Created experiment metric \"checkout_completed\" (id 30) in Production (environment [env-b07dff52446c2b23]). It uses the occurrence aggregation on event \"checkout_completed\" with direction \"up\" (higher is better). Read-back confirmed the values.",
       "calls": [],
       "usage": {
         "input": 2,

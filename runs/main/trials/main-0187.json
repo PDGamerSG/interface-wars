@@ -53,9 +53,9 @@
   "ms": 25441,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith api api/v1/environments/ZcFULgA278D6Gc2hxRui8G/experiments/ --jq '.results[] | {id,name,status,feature}'",
-    "flagsmith api api/v1/environments/ZcFULgA278D6Gc2hxRui8G/experiments/35/ | jq '{status,rollout_decision,rollout_variant,feature,experiment_rollout,metrics}' ; flagsmith feature variant list smart_reorder_copy --json; flagsmith flag get smart_reorder_copy -e ZcFULgA278D6Gc2hxRui8G --json --jq '{enabled,value,variants}'",
-    "flagsmith api api/v1/environments/ZcFULgA278D6Gc2hxRui8G/experiments/35/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":74}\nJSON\necho ---; flagsmith api api/v1/environments/ZcFULgA278D6Gc2hxRui8G/experiments/35/ --jq '{status,rollout_decision,rollout_variant}'; flagsmith flag get smart_reorder_copy -e ZcFULgA278D6Gc2hxRui8G --json --jq '{enabled,value,variants}'"
+    "flagsmith api api/v1/environments/[env-e8b814db25889f29]/experiments/ --jq '.results[] | {id,name,status,feature}'",
+    "flagsmith api api/v1/environments/[env-e8b814db25889f29]/experiments/35/ | jq '{status,rollout_decision,rollout_variant,feature,experiment_rollout,metrics}' ; flagsmith feature variant list smart_reorder_copy --json; flagsmith flag get smart_reorder_copy -e [env-e8b814db25889f29] --json --jq '{enabled,value,variants}'",
+    "flagsmith api api/v1/environments/[env-e8b814db25889f29]/experiments/35/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":74}\nJSON\necho ---; flagsmith api api/v1/environments/[env-e8b814db25889f29]/experiments/35/ --jq '{status,rollout_decision,rollout_variant}'; flagsmith flag get smart_reorder_copy -e [env-e8b814db25889f29] --json --jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -88,7 +88,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/ZcFULgA278D6Gc2hxRui8G/experiments/ --jq '.results[] | {id,name,status,feature}'"
+            "command": "flagsmith api api/v1/environments/[env-e8b814db25889f29]/experiments/ --jq '.results[] | {id,name,status,feature}'"
           },
           "output": "{\"feature\":{\"id\":735,\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"boolean_value\":null,\"default_percentage_allocation\":0,\"id\":74,\"integer_value\":null,\"key\":\"b\",\"string_value\":\"Create account\",\"type\":\"unicode\",\"uuid\":\"ad1a0d9c-d406-48ca-b36a-5f58178eb8ab\"}],\"name\":\"smart_reorder_copy\",\"type\":\"MULTIVARIATE\"},\"id\":35,\"name\":\"smart_reorder_copy test\",\"status\":\"running\"}",
           "isError": false,
@@ -111,7 +111,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/ZcFULgA278D6Gc2hxRui8G/experiments/35/ | jq '{status,rollout_decision,rollout_variant,feature,experiment_rollout,metrics}' ; flagsmith feature variant list smart_reorder_copy --json; flagsmith flag get smart_reorder_copy -e ZcFULgA278D6Gc2hxRui8G --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith api api/v1/environments/[env-e8b814db25889f29]/experiments/35/ | jq '{status,rollout_decision,rollout_variant,feature,experiment_rollout,metrics}' ; flagsmith feature variant list smart_reorder_copy --json; flagsmith flag get smart_reorder_copy -e [env-e8b814db25889f29] --json --jq '{enabled,value,variants}'"
           },
           "output": "{\n  \"status\": \"running\",\n  \"rollout_decision\": null,\n  \"rollout_variant\": null,\n  \"feature\": {\n    \"id\": 735,\n    \"name\": \"smart_reorder_copy\",\n    \"type\": \"MULTIVARIATE\",\n    \"initial_value\": \"Sign up\",\n    \"multivariate_options\": [\n      {\n        \"id\": 74,\n        \"uuid\": \"ad1a0d9c-d406-48ca-b36a-5f58178eb8ab\",\n        \"type\": \"unicode\",\n        \"integer_value\": null,\n        \"string_value\": \"Create account\",\n        \"boolean_value\": null,\n        \"default_percentage_allocation\": 0.0,\n        \"key\": \"b\"\n      }\n    ]\n  },\n  \"experiment_rollout\": {\n    \"enabled\": true,\n    \"rollout_percentage\": 100.0,\n    \"feature_state_value\": {\n      \"type\": \"string\",\n      \"value\": \"Sign up\"\n    },\n    \"multivariate_feature_state_values\": [\n      {\n        \"multivariate_feature_option\": 74,\n        \"percentage_allocation\": 50.0\n      }\n    ],\n    \"audience\": {\n      \"match\": \"any\",\n      \"segments\": []\n    }\n  },\n  \"metrics\": [\n    {\n      \"id\": 47,\n      \"metric\": 60,\n      \"metric_name\": \"trial_started\",\n      \"aggregation\": \"occurrence\",\n      \"direction\": \"up\",\n      \"expected_direction\": \"increase\",\n      \"created_at\": \"2026-11-27T20:31:26.864632Z\"\n    }\n  ]\n}\n[\n  {\n    \"id\": 74,\n    \"value\": \"Create account\",\n    \"weight\": 0,\n    \"key\": \"b\"\n  }\n]\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":74,\"key\":\"b\",\"value\":\"Create account\",\"weight\":0}]}",
           "isError": false,
@@ -134,7 +134,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith api api/v1/environments/ZcFULgA278D6Gc2hxRui8G/experiments/35/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":74}\nJSON\necho ---; flagsmith api api/v1/environments/ZcFULgA278D6Gc2hxRui8G/experiments/35/ --jq '{status,rollout_decision,rollout_variant}'; flagsmith flag get smart_reorder_copy -e ZcFULgA278D6Gc2hxRui8G --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith api api/v1/environments/[env-e8b814db25889f29]/experiments/35/complete/ -X POST --input - <<'JSON'\n{\"rollout_decision\":\"variant\",\"rollout_variant\":74}\nJSON\necho ---; flagsmith api api/v1/environments/[env-e8b814db25889f29]/experiments/35/ --jq '{status,rollout_decision,rollout_variant}'; flagsmith flag get smart_reorder_copy -e [env-e8b814db25889f29] --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"id\":35,\"feature\":{\"id\":735,\"name\":\"smart_reorder_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Sign up\",\"multivariate_options\":[{\"id\":74,\"uuid\":\"ad1a0d9c-d406-48ca-b36a-5f58178eb8ab\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Create account\",\"boolean_value\":null,\"default_percentage_allocation\":100.0,\"key\":\"b\"}]},\"name\":\"smart_reorder_copy test\",\"hypothesis\":\"Create account wins\",\"status\":\"completed\",\"metrics\":[{\"id\":47,\"metric\":60,\"metric_name\":\"trial_started\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:31:26.864632Z\"}],\"created_at\":\"2026-11-27T20:31:26.863233Z\",\"updated_at\":\"2026-11-27T20:31:47.196237Z\",\"started_at\":\"2026-11-27T20:31:27.019153Z\",\"ended_at\":\"2026-11-27T20:31:47.061196Z\",\"rollout_decision\":\"variant\",\"rollout_variant\":74}---\n{\"rollout_decision\":\"variant\",\"rollout_variant\":74,\"status\":\"completed\"}\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":74,\"key\":\"b\",\"value\":\"Create account\",\"weight\":100}]}",
           "isError": false,

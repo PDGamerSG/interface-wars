@@ -30,11 +30,11 @@
   "turns": 5,
   "ms": 25069,
   "commands": [
-    "list_experiments {\"environment_api_key\":\"gH5fH84sqRZ3eapewjikAe\",\"q\":\"loyalty_points_copy\"}",
-    "get_experiment {\"environment_api_key\":\"gH5fH84sqRZ3eapewjikAe\",\"experiment_id\":50}",
-    "get_experiment_results {\"environment_api_key\":\"gH5fH84sqRZ3eapewjikAe\",\"experiment_id\":50}",
-    "update_experiment {\"environment_api_key\":\"gH5fH84sqRZ3eapewjikAe\",\"experiment_id\":50,\"feature\":1133,\"hypothesis\":\"Pay securely wins\",\"name\":\"loyalty_points_copy test\",\"status\":\"completed\",\"rollout_decision\":\"variant\",\"rollout_variant\":96,\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":96,\"percentage_allocation\":50}],\"audience\":{\"match\":\"any\",\"segment_ids\":[]}}}",
-    "update_experiment {\"environment_api_key\":\"gH5fH84sqRZ3eapewjikAe\",\"experiment_id\":50,\"feature\":1133,\"hypothesis\":\"Pay securely wins\",\"name\":\"loyalty_points_copy test\",\"status\":\"completed\",\"rollout_decision\":\"variant\",\"rollout_variant\":96}"
+    "list_experiments {\"environment_api_key\":\"[env-78aaf2bc7a9b961a]\",\"q\":\"loyalty_points_copy\"}",
+    "get_experiment {\"environment_api_key\":\"[env-78aaf2bc7a9b961a]\",\"experiment_id\":50}",
+    "get_experiment_results {\"environment_api_key\":\"[env-78aaf2bc7a9b961a]\",\"experiment_id\":50}",
+    "update_experiment {\"environment_api_key\":\"[env-78aaf2bc7a9b961a]\",\"experiment_id\":50,\"feature\":1133,\"hypothesis\":\"Pay securely wins\",\"name\":\"loyalty_points_copy test\",\"status\":\"completed\",\"rollout_decision\":\"variant\",\"rollout_variant\":96,\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":96,\"percentage_allocation\":50}],\"audience\":{\"match\":\"any\",\"segment_ids\":[]}}}",
+    "update_experiment {\"environment_api_key\":\"[env-78aaf2bc7a9b961a]\",\"experiment_id\":50,\"feature\":1133,\"hypothesis\":\"Pay securely wins\",\"name\":\"loyalty_points_copy test\",\"status\":\"completed\",\"rollout_decision\":\"variant\",\"rollout_variant\":96}"
   ],
   "transcript": [
     {
@@ -44,7 +44,7 @@
         {
           "name": "list_experiments",
           "input": {
-            "environment_api_key": "gH5fH84sqRZ3eapewjikAe",
+            "environment_api_key": "[env-78aaf2bc7a9b961a]",
             "q": "loyalty_points_copy"
           },
           "output": "{\"count\":1,\"next\":null,\"previous\":null,\"results\":[{\"id\":50,\"feature\":{\"id\":1133,\"name\":\"loyalty_points_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"id\":96,\"uuid\":\"e83e867c-e4d3-4a1b-ada5-59c6b5c7df38\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Pay securely\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"loyalty_points_copy test\",\"hypothesis\":\"Pay securely wins\",\"status\":\"running\",\"metrics\":[{\"id\":65,\"metric\":89,\"metric_name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:11:33.967564Z\"}],\"created_at\":\"2026-11-27T20:11:33.966944Z\",\"updated_at\":\"2026-11-27T20:11:34.047558Z\",\"started_at\":\"2026-11-27T20:11:34.046150Z\",\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}],\"status_counts\":{\"created\":0,\"running\":1,\"paused\":0,\"completed\":0}}",
@@ -68,7 +68,7 @@
         {
           "name": "get_experiment",
           "input": {
-            "environment_api_key": "gH5fH84sqRZ3eapewjikAe",
+            "environment_api_key": "[env-78aaf2bc7a9b961a]",
             "experiment_id": 50
           },
           "output": "{\"id\":50,\"feature\":{\"id\":1133,\"name\":\"loyalty_points_copy\",\"type\":\"MULTIVARIATE\",\"initial_value\":\"Checkout\",\"multivariate_options\":[{\"id\":96,\"uuid\":\"e83e867c-e4d3-4a1b-ada5-59c6b5c7df38\",\"type\":\"unicode\",\"integer_value\":null,\"string_value\":\"Pay securely\",\"boolean_value\":null,\"default_percentage_allocation\":0.0,\"key\":\"b\"}]},\"name\":\"loyalty_points_copy test\",\"hypothesis\":\"Pay securely wins\",\"status\":\"running\",\"metrics\":[{\"id\":65,\"metric\":89,\"metric_name\":\"checkout_completed\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"expected_direction\":\"increase\",\"created_at\":\"2026-11-27T20:11:33.967564Z\"}],\"experiment_rollout\":{\"enabled\":true,\"rollout_percentage\":100.0,\"feature_state_value\":{\"type\":\"string\",\"value\":\"Checkout\"},\"multivariate_feature_state_values\":[{\"multivariate_feature_option\":96,\"percentage_allocation\":50.0}],\"audience\":{\"match\":\"any\",\"segments\":[]}},\"created_at\":\"2026-11-27T20:11:33.966944Z\",\"updated_at\":\"2026-11-27T20:11:34.047558Z\",\"started_at\":\"2026-11-27T20:11:34.046150Z\",\"ended_at\":null,\"rollout_decision\":null,\"rollout_variant\":null}",
@@ -78,7 +78,7 @@
         {
           "name": "get_experiment_results",
           "input": {
-            "environment_api_key": "gH5fH84sqRZ3eapewjikAe",
+            "environment_api_key": "[env-78aaf2bc7a9b961a]",
             "experiment_id": 50
           },
           "output": "{\"results\":null}",
@@ -102,7 +102,7 @@
         {
           "name": "update_experiment",
           "input": {
-            "environment_api_key": "gH5fH84sqRZ3eapewjikAe",
+            "environment_api_key": "[env-78aaf2bc7a9b961a]",
             "experiment_id": 50,
             "feature": 1133,
             "hypothesis": "Pay securely wins",
@@ -150,7 +150,7 @@
         {
           "name": "update_experiment",
           "input": {
-            "environment_api_key": "gH5fH84sqRZ3eapewjikAe",
+            "environment_api_key": "[env-78aaf2bc7a9b961a]",
             "experiment_id": 50,
             "feature": 1133,
             "hypothesis": "Pay securely wins",

@@ -35,7 +35,7 @@
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
     "flagsmith api \"api/v1/projects/224/tags/\" --json | jq '.'; flagsmith feature list --json | jq '.[] | {id,name,tags,is_archived}'",
     "flagsmith api \"api/v1/projects/224/features/?page_size=100\" --json | jq '.results[] | {id,name,tags,is_archived}'",
-    "flagsmith feature update dark_mode --help | head -30; flagsmith flag get dark_mode -e a5krMmQ6msAvJxHFQvJ352 --json --jq '{enabled,value}'; flagsmith flag get dark_mode -e gCSWt34LTQBABW5gBMsErd --json --jq '{enabled,value}'",
+    "flagsmith feature update dark_mode --help | head -30; flagsmith flag get dark_mode -e [env-fb0b0e9fc2ddad1e] --json --jq '{enabled,value}'; flagsmith flag get dark_mode -e [env-9994253625e76970] --json --jq '{enabled,value}'",
     "flagsmith feature update dark_mode --archive --yes && flagsmith api \"api/v1/projects/224/features/?page_size=100\" --json | jq '.results[] | {id,name,tags,is_archived}'"
   ],
   "transcript": [
@@ -115,7 +115,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith feature update dark_mode --help | head -30; flagsmith flag get dark_mode -e a5krMmQ6msAvJxHFQvJ352 --json --jq '{enabled,value}'; flagsmith flag get dark_mode -e gCSWt34LTQBABW5gBMsErd --json --jq '{enabled,value}'"
+            "command": "flagsmith feature update dark_mode --help | head -30; flagsmith flag get dark_mode -e [env-fb0b0e9fc2ddad1e] --json --jq '{enabled,value}'; flagsmith flag get dark_mode -e [env-9994253625e76970] --json --jq '{enabled,value}'"
           },
           "output": "Update a feature's description or archive state\n\nUsage:\n  flagsmith feature update <feature> [flags]\n\nExamples:\n  flagsmith feature update onboarding --description \"Revised flow\"\n\n  # archive or restore a feature\n  flagsmith feature update onboarding --archive\n  flagsmith feature update onboarding --unarchive\n\nFlags:\n      --archive              archive the feature\n      --description string   feature description\n  -h, --help                 help for update\n      --unarchive            unarchive the feature\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n{\"enabled\":false,\"value\":\"rounded\"}\n{\"enabled\":false,\"value\":\"rounded\"}",
           "isError": false,

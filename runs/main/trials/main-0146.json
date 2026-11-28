@@ -33,8 +33,8 @@
   "ms": 16627,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith flag get promo_banner -e ckBFXCWeLSx7q465uw7Np3 --json --jq '{enabled,value,variants}'",
-    "flagsmith flag update promo_banner -e ckBFXCWeLSx7q465uw7Np3 --value \"tiered\" --yes && flagsmith flag get promo_banner -e ckBFXCWeLSx7q465uw7Np3 --json --jq '{enabled,value,variants}'"
+    "flagsmith flag get promo_banner -e [env-f06a0e8bb6c8ab74] --json --jq '{enabled,value,variants}'",
+    "flagsmith flag update promo_banner -e [env-f06a0e8bb6c8ab74] --value \"tiered\" --yes && flagsmith flag get promo_banner -e [env-f06a0e8bb6c8ab74] --json --jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get promo_banner -e ckBFXCWeLSx7q465uw7Np3 --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith flag get promo_banner -e [env-f06a0e8bb6c8ab74] --json --jq '{enabled,value,variants}'"
           },
           "output": "{\"enabled\":true,\"value\":\"grid\",\"variants\":null}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update promo_banner -e ckBFXCWeLSx7q465uw7Np3 --value \"tiered\" --yes && flagsmith flag get promo_banner -e ckBFXCWeLSx7q465uw7Np3 --json --jq '{enabled,value,variants}'"
+            "command": "flagsmith flag update promo_banner -e [env-f06a0e8bb6c8ab74] --value \"tiered\" --yes && flagsmith flag get promo_banner -e [env-f06a0e8bb6c8ab74] --json --jq '{enabled,value,variants}'"
           },
-          "output": "Feature              promo_banner\nDescription          \nType                 standard\nState                on\nValue                tiered\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"value\":\"tiered\",\"variants\":null}\n\n[stderr]\n✓ Set promo_banner to \"tiered\" in environment Development (ckBFXCWeLSx7q465uw7Np3)",
+          "output": "Feature              promo_banner\nDescription          \nType                 standard\nState                on\nValue                tiered\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"value\":\"tiered\",\"variants\":null}\n\n[stderr]\n✓ Set promo_banner to \"tiered\" in environment Development ([env-f06a0e8bb6c8ab74])",
           "isError": false,
           "ms": 1447
         }

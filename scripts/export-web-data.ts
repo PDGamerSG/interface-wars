@@ -4,7 +4,8 @@
 //   node scripts/export-web-data.ts [run] [--out web/public/data]
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { RUNS, ROOT, LAB_FILE } from '../src/lab/config.ts';
+import { RUNS, ROOT } from '../src/lab/config.ts';
+import { localCredentials, redactCredentials } from '../src/evidence/redact.ts';
 import { TEMPLATES } from '../src/jobs/catalog.ts';
 import type { TrialRecord } from '../src/trial.ts';
 
@@ -18,10 +19,12 @@ const readJson = (file: string) => JSON.parse(readFileSync(file, 'utf8'));
 const runDir = join(RUNS, run);
 if (!existsSync(join(runDir, 'readout.json'))) throw new Error(`No readout for ${run}. Run: node src/cli.ts readout ${run}`);
 
+const labSecrets = localCredentials();
+
 function loadRun(name: string): TrialRecord[] {
   const dir = join(RUNS, name, 'trials');
   if (!existsSync(dir)) return [];
-  return readdirSync(dir).filter((f) => f.endsWith('.json')).sort().map((f) => readJson(join(dir, f)));
+  return readdirSync(dir).filter((f) => f.endsWith('.json')).sort().map((f) => redactCredentials(readJson(join(dir, f)), labSecrets));
 }
 
 // One row per trial: everything the tables, grids and filters need, nothing heavy.
@@ -89,17 +92,14 @@ const meta = {
   afterShip: { trials: afterShip.length, byArm: summarise(afterShip), rows: afterShip.map(row) },
 };
 
-// Secrets that must never be published: every string value in the lab file (tokens, keys, password), plus
-// credential-shaped strings. The lab admin's email is a fictional .test address that Flagsmith returns as the
-// owner of every flag, so it is not treated as a secret.
-const lab = existsSync(LAB_FILE) ? readJson(LAB_FILE) : {};
-const labSecrets: string[] = [];
-(function collect(v: unknown, key = '') {
-  if (typeof v === 'string' && v.length >= 12 && key !== 'email') labSecrets.push(v);
-  else if (v && typeof v === 'object') Object.entries(v).forEach(([k, x]) => collect(x, k));
-})(lab);
-if (process.env.ANTHROPIC_API_KEY) labSecrets.push(process.env.ANTHROPIC_API_KEY);
-const PATTERNS = [/sk-ant-[A-Za-z0-9_-]{10,}/, /Api-Key [A-Za-z0-9]{12,}/, /FLAGSMITH_API_KEY_[A-Za-z0-9_]+=\S{8,}/, /Token [0-9a-f]{40}/];
+const PATTERNS = [
+  /sk-ant-[A-Za-z0-9_-]{10,}/,
+  /Api-Key [A-Za-z0-9]{12,}/,
+  /FLAGSMITH_API_KEY_[A-Za-z0-9_]+=\S{8,}/,
+  /Token [0-9a-f]{40}/,
+  /"(?:environment_api_key|api_key|server_key|master_key)"\s*:\s*"(?!\[env-|\[REDACTED\])[^"]+"/i,
+  /(?<![A-Za-z0-9])ser\.[2-9A-HJ-NP-Za-km-z]{22}(?![A-Za-z0-9])/,
+];
 
 const files = new Map<string, string>();
 files.set('meta.json', JSON.stringify(meta));

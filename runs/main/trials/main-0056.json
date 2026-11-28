@@ -43,9 +43,9 @@
   "ms": 10580,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "cd /tmp; flagsmith api api/v1/environments/P9xbC3p6DpYDqYW5qrBTpY/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'",
-    "cd /tmp; flagsmith api api/v1/environments/P9xbC3p6DpYDqYW5qrBTpY/experiment-metrics/ | head -c 1000",
-    "cd /tmp; flagsmith api api/v1/environments/P9xbC3p6DpYDqYW5qrBTpY/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"signup_completed\",\"description\":\"Whether the signup_completed event occurred at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"signup_completed\"}}\nJSON\necho \"---\"; flagsmith api api/v1/environments/P9xbC3p6DpYDqYW5qrBTpY/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'"
+    "cd /tmp; flagsmith api api/v1/environments/[env-15359c3af84cec5d]/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'",
+    "cd /tmp; flagsmith api api/v1/environments/[env-15359c3af84cec5d]/experiment-metrics/ | head -c 1000",
+    "cd /tmp; flagsmith api api/v1/environments/[env-15359c3af84cec5d]/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"signup_completed\",\"description\":\"Whether the signup_completed event occurred at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"signup_completed\"}}\nJSON\necho \"---\"; flagsmith api api/v1/environments/[env-15359c3af84cec5d]/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'"
   ],
   "transcript": [
     {
@@ -78,7 +78,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith api api/v1/environments/P9xbC3p6DpYDqYW5qrBTpY/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'"
+            "command": "cd /tmp; flagsmith api api/v1/environments/[env-15359c3af84cec5d]/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'"
           },
           "output": "(no output)",
           "isError": false,
@@ -101,7 +101,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith api api/v1/environments/P9xbC3p6DpYDqYW5qrBTpY/experiment-metrics/ | head -c 1000"
+            "command": "cd /tmp; flagsmith api api/v1/environments/[env-15359c3af84cec5d]/experiment-metrics/ | head -c 1000"
           },
           "output": "{\"count\":0,\"next\":null,\"previous\":null,\"results\":[]}",
           "isError": false,
@@ -124,7 +124,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith api api/v1/environments/P9xbC3p6DpYDqYW5qrBTpY/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"signup_completed\",\"description\":\"Whether the signup_completed event occurred at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"signup_completed\"}}\nJSON\necho \"---\"; flagsmith api api/v1/environments/P9xbC3p6DpYDqYW5qrBTpY/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'"
+            "command": "cd /tmp; flagsmith api api/v1/environments/[env-15359c3af84cec5d]/experiment-metrics/ -X POST --input - <<'JSON'\n{\"name\":\"signup_completed\",\"description\":\"Whether the signup_completed event occurred at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"signup_completed\"}}\nJSON\necho \"---\"; flagsmith api api/v1/environments/[env-15359c3af84cec5d]/experiment-metrics/ --jq '.results[] | {id,name,aggregation,direction,definition}'"
           },
           "output": "{\"id\":19,\"name\":\"signup_completed\",\"description\":\"Whether the signup_completed event occurred at least once per user\",\"aggregation\":\"occurrence\",\"direction\":\"up\",\"definition\":{\"version\":1,\"event\":\"signup_completed\"},\"experiments\":[],\"created_at\":\"2026-11-27T20:20:36.434665Z\",\"updated_at\":\"2026-11-27T20:20:36.434677Z\"}---\n{\"aggregation\":\"occurrence\",\"definition\":{\"event\":\"signup_completed\",\"version\":1},\"direction\":\"up\",\"id\":19,\"name\":\"signup_completed\"}",
           "isError": false,

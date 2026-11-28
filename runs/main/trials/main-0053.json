@@ -33,8 +33,8 @@
   "ms": 13939,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "P=2KqpaXtcVFJhnxFDW9oETw; flagsmith flag get search_v2_copy -e $P --json; echo ---; flagsmith feature variant list search_v2_copy --json; echo ---; D=JLDbVUbr2um7YBpTcZfmeS; flagsmith flag get search_v2_copy -e $D --json --jq '{enabled,value,variants}'",
-    "P=2KqpaXtcVFJhnxFDW9oETw; flagsmith flag update search_v2_copy -e $P --weight 21=80 --yes && flagsmith flag get search_v2_copy -e $P --json --jq '{enabled,value,variants}'; echo ---; flagsmith flag get search_v2_copy -e JLDbVUbr2um7YBpTcZfmeS --json --jq '{enabled,value,variants}'"
+    "P=[env-5552af0618bbdcc9]; flagsmith flag get search_v2_copy -e $P --json; echo ---; flagsmith feature variant list search_v2_copy --json; echo ---; D=[env-758c25e6851f814c]; flagsmith flag get search_v2_copy -e $D --json --jq '{enabled,value,variants}'",
+    "P=[env-5552af0618bbdcc9]; flagsmith flag update search_v2_copy -e $P --weight 21=80 --yes && flagsmith flag get search_v2_copy -e $P --json --jq '{enabled,value,variants}'; echo ---; flagsmith flag get search_v2_copy -e [env-758c25e6851f814c] --json --jq '{enabled,value,variants}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=2KqpaXtcVFJhnxFDW9oETw; flagsmith flag get search_v2_copy -e $P --json; echo ---; flagsmith feature variant list search_v2_copy --json; echo ---; D=JLDbVUbr2um7YBpTcZfmeS; flagsmith flag get search_v2_copy -e $D --json --jq '{enabled,value,variants}'"
+            "command": "P=[env-5552af0618bbdcc9]; flagsmith flag get search_v2_copy -e $P --json; echo ---; flagsmith feature variant list search_v2_copy --json; echo ---; D=[env-758c25e6851f814c]; flagsmith flag get search_v2_copy -e $D --json --jq '{enabled,value,variants}'"
           },
           "output": "{\n  \"feature\": \"search_v2_copy\",\n  \"type\": \"multivariate\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"Sign up\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\",\n  \"variants\": [\n    {\n      \"id\": 21,\n      \"value\": \"Create account\",\n      \"weight\": 50,\n      \"key\": \"b\"\n    }\n  ]\n}\n---\n[\n  {\n    \"id\": 21,\n    \"value\": \"Create account\",\n    \"weight\": 50,\n    \"key\": \"b\"\n  }\n]\n---\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":21,\"key\":\"b\",\"value\":\"Create account\",\"weight\":50}]}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "P=2KqpaXtcVFJhnxFDW9oETw; flagsmith flag update search_v2_copy -e $P --weight 21=80 --yes && flagsmith flag get search_v2_copy -e $P --json --jq '{enabled,value,variants}'; echo ---; flagsmith flag get search_v2_copy -e JLDbVUbr2um7YBpTcZfmeS --json --jq '{enabled,value,variants}'"
+            "command": "P=[env-5552af0618bbdcc9]; flagsmith flag update search_v2_copy -e $P --weight 21=80 --yes && flagsmith flag get search_v2_copy -e $P --json --jq '{enabled,value,variants}'; echo ---; flagsmith flag get search_v2_copy -e [env-758c25e6851f814c] --json --jq '{enabled,value,variants}'"
           },
-          "output": "Feature              search_v2_copy\nDescription          \nType                 multivariate\nState                on\nValue                Sign up\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n\nVariants\n  VALUE           WEIGHT  KEY  ID\n  Create account  80%     b    21\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":21,\"key\":\"b\",\"value\":\"Create account\",\"weight\":80}]}\n---\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":21,\"key\":\"b\",\"value\":\"Create account\",\"weight\":50}]}\n\n[stderr]\n✓ Set search_v2_copy weights to 21=80 in environment Production (2KqpaXtcVFJhnxFDW9oETw)",
+          "output": "Feature              search_v2_copy\nDescription          \nType                 multivariate\nState                on\nValue                Sign up\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n\nVariants\n  VALUE           WEIGHT  KEY  ID\n  Create account  80%     b    21\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":21,\"key\":\"b\",\"value\":\"Create account\",\"weight\":80}]}\n---\n{\"enabled\":true,\"value\":\"Sign up\",\"variants\":[{\"id\":21,\"key\":\"b\",\"value\":\"Create account\",\"weight\":50}]}\n\n[stderr]\n✓ Set search_v2_copy weights to 21=80 in environment Production ([env-5552af0618bbdcc9])",
           "isError": false,
           "ms": 3861
         }

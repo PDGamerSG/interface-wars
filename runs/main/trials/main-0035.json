@@ -19,7 +19,7 @@
     }
   ],
   "outcome": "done",
-  "finalText": "DONE: `new_checkout` is now off in Production (HA98oGBdMyV27rr9BVp8Fb). Read-back confirms `enabled: false`; its value (v2), segment overrides and the Development environment were not changed.",
+  "finalText": "DONE: `new_checkout` is now off in Production ([env-d6e2dce3770be038]). Read-back confirms `enabled: false`; its value (v2), segment overrides and the Development environment were not changed.",
   "costUsd": 0.000879,
   "usage": {
     "input": 10,
@@ -33,8 +33,8 @@
   "ms": 9378,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith flag get new_checkout -e HA98oGBdMyV27rr9BVp8Fb --json --jq '{enabled,value,variants,segment_overrides}'",
-    "flagsmith flag update new_checkout -e HA98oGBdMyV27rr9BVp8Fb --disable --yes && flagsmith flag get new_checkout -e HA98oGBdMyV27rr9BVp8Fb --json --jq '{enabled,value,variants,segment_overrides}'"
+    "flagsmith flag get new_checkout -e [env-d6e2dce3770be038] --json --jq '{enabled,value,variants,segment_overrides}'",
+    "flagsmith flag update new_checkout -e [env-d6e2dce3770be038] --disable --yes && flagsmith flag get new_checkout -e [env-d6e2dce3770be038] --json --jq '{enabled,value,variants,segment_overrides}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get new_checkout -e HA98oGBdMyV27rr9BVp8Fb --json --jq '{enabled,value,variants,segment_overrides}'"
+            "command": "flagsmith flag get new_checkout -e [env-d6e2dce3770be038] --json --jq '{enabled,value,variants,segment_overrides}'"
           },
           "output": "{\"enabled\":true,\"segment_overrides\":0,\"value\":\"v2\",\"variants\":null}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update new_checkout -e HA98oGBdMyV27rr9BVp8Fb --disable --yes && flagsmith flag get new_checkout -e HA98oGBdMyV27rr9BVp8Fb --json --jq '{enabled,value,variants,segment_overrides}'"
+            "command": "flagsmith flag update new_checkout -e [env-d6e2dce3770be038] --disable --yes && flagsmith flag get new_checkout -e [env-d6e2dce3770be038] --json --jq '{enabled,value,variants,segment_overrides}'"
           },
-          "output": "Feature              new_checkout\nDescription          \nType                 standard\nState                off\nValue                v2\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"v2\",\"variants\":null}\n\n[stderr]\n✓ Disabled new_checkout in environment Production (HA98oGBdMyV27rr9BVp8Fb)",
+          "output": "Feature              new_checkout\nDescription          \nType                 standard\nState                off\nValue                v2\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"v2\",\"variants\":null}\n\n[stderr]\n✓ Disabled new_checkout in environment Production ([env-d6e2dce3770be038])",
           "isError": false,
           "ms": 1643
         }
@@ -108,7 +108,7 @@
     },
     {
       "turn": 4,
-      "text": "DONE: `new_checkout` is now off in Production (HA98oGBdMyV27rr9BVp8Fb). Read-back confirms `enabled: false`; its value (v2), segment overrides and the Development environment were not changed.",
+      "text": "DONE: `new_checkout` is now off in Production ([env-d6e2dce3770be038]). Read-back confirms `enabled: false`; its value (v2), segment overrides and the Development environment were not changed.",
       "calls": [],
       "usage": {
         "input": 2,

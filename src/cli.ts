@@ -4,7 +4,7 @@ import { createInterface } from 'node:readline/promises';
 import { randomUUID } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { bootstrap } from './lab/bootstrap.ts';
+import { bootstrap, publicLabIds } from './lab/bootstrap.ts';
 import { loadEnvFile, readLab, RUNS, FLAGSMITH_URL } from './lab/config.ts';
 import { setupExperiment, startExperiment, experimentState, completeExperiment, FLAG } from './experiment/control.ts';
 import { ensureOpsFlags, setTrialsEnabled } from './experiment/ops.ts';
@@ -74,7 +74,7 @@ async function which() {
 
 switch (command) {
   case 'lab:bootstrap':
-    console.log(JSON.stringify((await bootstrap()).control, null, 2));
+    console.log(JSON.stringify(publicLabIds(await bootstrap()), null, 2));
     break;
   case 'experiment:setup':
     console.log(JSON.stringify(await setupExperiment(), null, 2));

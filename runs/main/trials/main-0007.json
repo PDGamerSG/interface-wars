@@ -41,7 +41,7 @@
     "list_project_segments {\"project_pk\":9,\"q\":\"internal_staff\"}",
     "list_feature_segments {\"environment\":17,\"feature\":28}",
     "list_project_environments {\"id\":9}",
-    "create_segment_override {\"environment\":17,\"environment_api_key\":\"4hJ2mcFQaEqqVeEQPKGgAV\",\"feature\":28,\"feature_pk\":28,\"enabled\":true,\"feature_segment\":{\"segment\":2},\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"blue\"}}",
+    "create_segment_override {\"environment\":17,\"environment_api_key\":\"[env-4406853eea830a29]\",\"feature\":28,\"feature_pk\":28,\"enabled\":true,\"feature_segment\":{\"segment\":2},\"feature_state_value\":{\"type\":\"unicode\",\"string_value\":\"blue\"}}",
     "list_feature_segments {\"environment\":17,\"feature\":28}",
     "list_project_features {\"project_pk\":9,\"environment\":17,\"search\":\"store_locator\"}"
   ],
@@ -100,7 +100,7 @@
           "input": {
             "id": 9
           },
-          "output": "{\"result\":[{\"id\":16,\"uuid\":\"960167a7-63b4-4687-9034-4e566df6ca0f\",\"name\":\"Development\",\"api_key\":\"NfgAW8VWtbPWbm6KCoezNu\",\"description\":null,\"project\":9,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false},{\"id\":17,\"uuid\":\"92f0421d-49c6-4c70-9b25-3179a4743106\",\"name\":\"Production\",\"api_key\":\"4hJ2mcFQaEqqVeEQPKGgAV\",\"description\":null,\"project\":9,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false}]}",
+          "output": "{\"result\":[{\"id\":16,\"uuid\":\"960167a7-63b4-4687-9034-4e566df6ca0f\",\"name\":\"Development\",\"api_key\":\"[env-292b917e23f9c88b]\",\"description\":null,\"project\":9,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false},{\"id\":17,\"uuid\":\"92f0421d-49c6-4c70-9b25-3179a4743106\",\"name\":\"Production\",\"api_key\":\"[env-4406853eea830a29]\",\"description\":null,\"project\":9,\"minimum_change_request_approvals\":null,\"allow_client_traits\":true,\"banner_text\":null,\"banner_colour\":null,\"hide_disabled_flags\":null,\"use_mv_v2_evaluation\":true,\"use_identity_composite_key_for_hashing\":true,\"hide_sensitive_data\":false,\"use_v2_feature_versioning\":false,\"use_identity_overrides_in_local_eval\":true,\"is_creating\":false}]}",
           "isError": false,
           "ms": 259
         }
@@ -122,7 +122,7 @@
           "name": "create_segment_override",
           "input": {
             "environment": 17,
-            "environment_api_key": "4hJ2mcFQaEqqVeEQPKGgAV",
+            "environment_api_key": "[env-4406853eea830a29]",
             "feature": 28,
             "feature_pk": 28,
             "enabled": true,

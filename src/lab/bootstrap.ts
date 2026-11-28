@@ -62,7 +62,11 @@ export async function bootstrap(): Promise<Lab> {
   return lab;
 }
 
+export function publicLabIds(lab: Lab) {
+  const { organisationId, projectId, environmentId } = lab.control;
+  return { organisationId, projectId, environmentId };
+}
+
 if (import.meta.main) {
-  const lab = await bootstrap();
-  console.log(JSON.stringify({ organisation: lab.control.organisationId, project: lab.control.projectId, environment: lab.control.environmentKey }, null, 2));
+  console.log(JSON.stringify(publicLabIds(await bootstrap()), null, 2));
 }

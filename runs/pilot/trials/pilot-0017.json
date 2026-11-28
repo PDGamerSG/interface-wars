@@ -33,8 +33,8 @@
   "ms": 8998,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; echo ----; flagsmith --help",
-    "cd /tmp; flagsmith config; echo ---; flagsmith flag get order_tracking_v2 -e 9862oeLixn6EACPEiHhstK --json --jq '{enabled,value,variants,segment_overrides}'; echo ---; flagsmith flag get order_tracking_v2 -e AX7scf9achjbuu8j4DNnxg --json --jq '{enabled,value,variants,segment_overrides}'",
-    "cd /tmp; flagsmith flag update order_tracking_v2 -e 9862oeLixn6EACPEiHhstK --enable --yes; echo ---; flagsmith flag get order_tracking_v2 -e 9862oeLixn6EACPEiHhstK --json --jq '{enabled,value,segment_overrides}'; echo ---; flagsmith flag get order_tracking_v2 -e AX7scf9achjbuu8j4DNnxg --json --jq '{enabled,value,segment_overrides}'"
+    "cd /tmp; flagsmith config; echo ---; flagsmith flag get order_tracking_v2 -e [env-9ea0196df5b1721b] --json --jq '{enabled,value,variants,segment_overrides}'; echo ---; flagsmith flag get order_tracking_v2 -e [env-95d3d7a62ec8d23b] --json --jq '{enabled,value,variants,segment_overrides}'",
+    "cd /tmp; flagsmith flag update order_tracking_v2 -e [env-9ea0196df5b1721b] --enable --yes; echo ---; flagsmith flag get order_tracking_v2 -e [env-9ea0196df5b1721b] --json --jq '{enabled,value,segment_overrides}'; echo ---; flagsmith flag get order_tracking_v2 -e [env-95d3d7a62ec8d23b] --json --jq '{enabled,value,segment_overrides}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith config; echo ---; flagsmith flag get order_tracking_v2 -e 9862oeLixn6EACPEiHhstK --json --jq '{enabled,value,variants,segment_overrides}'; echo ---; flagsmith flag get order_tracking_v2 -e AX7scf9achjbuu8j4DNnxg --json --jq '{enabled,value,variants,segment_overrides}'"
+            "command": "cd /tmp; flagsmith config; echo ---; flagsmith flag get order_tracking_v2 -e [env-9ea0196df5b1721b] --json --jq '{enabled,value,variants,segment_overrides}'; echo ---; flagsmith flag get order_tracking_v2 -e [env-95d3d7a62ec8d23b] --json --jq '{enabled,value,variants,segment_overrides}'"
           },
           "output": "Config file    -                                  default\nProject        283                                env\nOrganisation   283                                env\nEnvironment    -                                  default\nAPI            http://host.docker.internal:8300   env\nSDK API        http://host.docker.internal:8300   default\n---\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"rounded\",\"variants\":null}\n---\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"rounded\",\"variants\":null}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith flag update order_tracking_v2 -e 9862oeLixn6EACPEiHhstK --enable --yes; echo ---; flagsmith flag get order_tracking_v2 -e 9862oeLixn6EACPEiHhstK --json --jq '{enabled,value,segment_overrides}'; echo ---; flagsmith flag get order_tracking_v2 -e AX7scf9achjbuu8j4DNnxg --json --jq '{enabled,value,segment_overrides}'"
+            "command": "cd /tmp; flagsmith flag update order_tracking_v2 -e [env-9ea0196df5b1721b] --enable --yes; echo ---; flagsmith flag get order_tracking_v2 -e [env-9ea0196df5b1721b] --json --jq '{enabled,value,segment_overrides}'; echo ---; flagsmith flag get order_tracking_v2 -e [env-95d3d7a62ec8d23b] --json --jq '{enabled,value,segment_overrides}'"
           },
-          "output": "Feature              order_tracking_v2\nDescription          \nType                 standard\nState                on\nValue                rounded\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\n{\"enabled\":true,\"segment_overrides\":0,\"value\":\"rounded\"}\n---\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"rounded\"}\n\n[stderr]\n✓ Enabled order_tracking_v2 in environment Production (9862oeLixn6EACPEiHhstK)",
+          "output": "Feature              order_tracking_v2\nDescription          \nType                 standard\nState                on\nValue                rounded\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\n{\"enabled\":true,\"segment_overrides\":0,\"value\":\"rounded\"}\n---\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"rounded\"}\n\n[stderr]\n✓ Enabled order_tracking_v2 in environment Production ([env-9ea0196df5b1721b])",
           "isError": false,
           "ms": 2094
         }

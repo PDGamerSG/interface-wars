@@ -33,8 +33,8 @@
   "ms": 6825,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; echo ---; flagsmith --help",
-    "flagsmith flag get size_guide -e VnshEraW6efZqqad5wS8w5 --json --jq '{enabled,value,type}'",
-    "flagsmith flag update size_guide -e VnshEraW6efZqqad5wS8w5 --value \"beta_copy\" --yes && flagsmith flag get size_guide -e VnshEraW6efZqqad5wS8w5 --json --jq '{enabled,value,type}'"
+    "flagsmith flag get size_guide -e [env-fc1aef14cc0cdaf6] --json --jq '{enabled,value,type}'",
+    "flagsmith flag update size_guide -e [env-fc1aef14cc0cdaf6] --value \"beta_copy\" --yes && flagsmith flag get size_guide -e [env-fc1aef14cc0cdaf6] --json --jq '{enabled,value,type}'"
   ],
   "transcript": [
     {
@@ -67,7 +67,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get size_guide -e VnshEraW6efZqqad5wS8w5 --json --jq '{enabled,value,type}'"
+            "command": "flagsmith flag get size_guide -e [env-fc1aef14cc0cdaf6] --json --jq '{enabled,value,type}'"
           },
           "output": "{\"enabled\":true,\"type\":\"standard\",\"value\":\"eu_west\"}",
           "isError": false,
@@ -90,9 +90,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update size_guide -e VnshEraW6efZqqad5wS8w5 --value \"beta_copy\" --yes && flagsmith flag get size_guide -e VnshEraW6efZqqad5wS8w5 --json --jq '{enabled,value,type}'"
+            "command": "flagsmith flag update size_guide -e [env-fc1aef14cc0cdaf6] --value \"beta_copy\" --yes && flagsmith flag get size_guide -e [env-fc1aef14cc0cdaf6] --json --jq '{enabled,value,type}'"
           },
-          "output": "Feature              size_guide\nDescription          \nType                 standard\nState                on\nValue                beta_copy\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"type\":\"standard\",\"value\":\"beta_copy\"}\n\n[stderr]\n✓ Set size_guide to \"beta_copy\" in environment Development (VnshEraW6efZqqad5wS8w5)",
+          "output": "Feature              size_guide\nDescription          \nType                 standard\nState                on\nValue                beta_copy\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":true,\"type\":\"standard\",\"value\":\"beta_copy\"}\n\n[stderr]\n✓ Set size_guide to \"beta_copy\" in environment Development ([env-fc1aef14cc0cdaf6])",
           "isError": false,
           "ms": 1520
         }

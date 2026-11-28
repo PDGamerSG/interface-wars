@@ -33,9 +33,9 @@
   "ms": 11786,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "cd /tmp; flagsmith flag list -e kTfdYTxLZzph3M8GDTLBqY --json --jq '.[] | select(.value==\"maintenance\") | {feature,enabled,value}'; echo ---; flagsmith flag list -e kTfdYTxLZzph3M8GDTLBqY --json --jq '.[] | select(.enabled==true) | {feature,value}'",
-    "cd /tmp; flagsmith flag get bulk_discounts -e kTfdYTxLZzph3M8GDTLBqY --json --jq '{enabled,value,segment_overrides}'",
-    "cd /tmp; flagsmith flag update bulk_discounts -e kTfdYTxLZzph3M8GDTLBqY --disable --yes && flagsmith flag get bulk_discounts -e kTfdYTxLZzph3M8GDTLBqY --json --jq '{enabled,value,segment_overrides}'; flagsmith flag list -e kTfdYTxLZzph3M8GDTLBqY --json --jq '[.[] | select(.enabled==true) | .feature]'"
+    "cd /tmp; flagsmith flag list -e [env-0c18067195b17bc6] --json --jq '.[] | select(.value==\"maintenance\") | {feature,enabled,value}'; echo ---; flagsmith flag list -e [env-0c18067195b17bc6] --json --jq '.[] | select(.enabled==true) | {feature,value}'",
+    "cd /tmp; flagsmith flag get bulk_discounts -e [env-0c18067195b17bc6] --json --jq '{enabled,value,segment_overrides}'",
+    "cd /tmp; flagsmith flag update bulk_discounts -e [env-0c18067195b17bc6] --disable --yes && flagsmith flag get bulk_discounts -e [env-0c18067195b17bc6] --json --jq '{enabled,value,segment_overrides}'; flagsmith flag list -e [env-0c18067195b17bc6] --json --jq '[.[] | select(.enabled==true) | .feature]'"
   ],
   "transcript": [
     {
@@ -68,7 +68,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith flag list -e kTfdYTxLZzph3M8GDTLBqY --json --jq '.[] | select(.value==\"maintenance\") | {feature,enabled,value}'; echo ---; flagsmith flag list -e kTfdYTxLZzph3M8GDTLBqY --json --jq '.[] | select(.enabled==true) | {feature,value}'"
+            "command": "cd /tmp; flagsmith flag list -e [env-0c18067195b17bc6] --json --jq '.[] | select(.value==\"maintenance\") | {feature,enabled,value}'; echo ---; flagsmith flag list -e [env-0c18067195b17bc6] --json --jq '.[] | select(.enabled==true) | {feature,value}'"
           },
           "output": "{\"enabled\":true,\"feature\":\"bulk_discounts\",\"value\":\"maintenance\"}\n{\"enabled\":false,\"feature\":\"order_tracking_v2\",\"value\":\"maintenance\"}\n---\n{\"feature\":\"bulk_discounts\",\"value\":\"maintenance\"}\n{\"feature\":\"dark_mode\",\"value\":\"rounded\"}\n{\"feature\":\"price_alerts\",\"value\":\"compact\"}\n{\"feature\":\"promo_banner\",\"value\":\"grid\"}\n{\"feature\":\"search_v2\",\"value\":\"grid\"}",
           "isError": false,
@@ -91,7 +91,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith flag get bulk_discounts -e kTfdYTxLZzph3M8GDTLBqY --json --jq '{enabled,value,segment_overrides}'"
+            "command": "cd /tmp; flagsmith flag get bulk_discounts -e [env-0c18067195b17bc6] --json --jq '{enabled,value,segment_overrides}'"
           },
           "output": "{\"enabled\":true,\"segment_overrides\":0,\"value\":\"maintenance\"}",
           "isError": false,
@@ -114,9 +114,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "cd /tmp; flagsmith flag update bulk_discounts -e kTfdYTxLZzph3M8GDTLBqY --disable --yes && flagsmith flag get bulk_discounts -e kTfdYTxLZzph3M8GDTLBqY --json --jq '{enabled,value,segment_overrides}'; flagsmith flag list -e kTfdYTxLZzph3M8GDTLBqY --json --jq '[.[] | select(.enabled==true) | .feature]'"
+            "command": "cd /tmp; flagsmith flag update bulk_discounts -e [env-0c18067195b17bc6] --disable --yes && flagsmith flag get bulk_discounts -e [env-0c18067195b17bc6] --json --jq '{enabled,value,segment_overrides}'; flagsmith flag list -e [env-0c18067195b17bc6] --json --jq '[.[] | select(.enabled==true) | .feature]'"
           },
-          "output": "Feature              bulk_discounts\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"maintenance\"}\n[\"dark_mode\",\"price_alerts\",\"promo_banner\",\"search_v2\"]\n\n[stderr]\n✓ Disabled bulk_discounts in environment Production (kTfdYTxLZzph3M8GDTLBqY)",
+          "output": "Feature              bulk_discounts\nDescription          \nType                 standard\nState                off\nValue                maintenance\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"maintenance\"}\n[\"dark_mode\",\"price_alerts\",\"promo_banner\",\"search_v2\"]\n\n[stderr]\n✓ Disabled bulk_discounts in environment Production ([env-0c18067195b17bc6])",
           "isError": false,
           "ms": 1986
         }

@@ -65,7 +65,7 @@
     "flagsmith --help; echo ---; flagsmith feature --help 2>&1 | head -50",
     "flagsmith feature create --help; echo ---; flagsmith config; echo ---; flagsmith feature list --json 2>&1 | head -c 1500; echo; flagsmith flag --help | head -30",
     "flagsmith feature create apple_pay --description \"Gates the apple pay rollout\" 2>&1; echo \"rc=$?\"; echo ---; flagsmith environment list 2>&1 | head -20",
-    "for k in CaQTVFtBqrWfKcwWcXxZsD 4G9wGmBxnB8VpHYnL9qJzj; do echo \"== $k\"; flagsmith -e $k flag get apple_pay 2>&1; done"
+    "for k in [env-1310085a268563a6] [env-f0655aefe83b038c]; do echo \"== $k\"; flagsmith -e $k flag get apple_pay 2>&1; done"
   ],
   "transcript": [
     {
@@ -123,7 +123,7 @@
           "input": {
             "command": "flagsmith feature create apple_pay --description \"Gates the apple pay rollout\" 2>&1; echo \"rc=$?\"; echo ---; flagsmith environment list 2>&1 | head -20"
           },
-          "output": "✓ Created feature apple_pay (328)\nFeature         apple_pay (328)\nDescription     Gates the apple pay rollout\nType            standard\nDefault value   -\nEnabled         false\nrc=0\n---\nNAME          KEY                      DESCRIPTION\nDevelopment   CaQTVFtBqrWfKcwWcXxZsD   \nProduction    4G9wGmBxnB8VpHYnL9qJzj   \n\n2 environments",
+          "output": "✓ Created feature apple_pay (328)\nFeature         apple_pay (328)\nDescription     Gates the apple pay rollout\nType            standard\nDefault value   -\nEnabled         false\nrc=0\n---\nNAME          KEY                      DESCRIPTION\nDevelopment   [env-1310085a268563a6]   \nProduction    [env-f0655aefe83b038c]   \n\n2 environments",
           "isError": false,
           "ms": 688
         }
@@ -144,9 +144,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "for k in CaQTVFtBqrWfKcwWcXxZsD 4G9wGmBxnB8VpHYnL9qJzj; do echo \"== $k\"; flagsmith -e $k flag get apple_pay 2>&1; done"
+            "command": "for k in [env-1310085a268563a6] [env-f0655aefe83b038c]; do echo \"== $k\"; flagsmith -e $k flag get apple_pay 2>&1; done"
           },
-          "output": "== CaQTVFtBqrWfKcwWcXxZsD\nFeature              apple_pay\nDescription          Gates the apple pay rollout\nType                 standard\nState                off\nValue                -\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n== 4G9wGmBxnB8VpHYnL9qJzj\nFeature              apple_pay\nDescription          Gates the apple pay rollout\nType                 standard\nState                off\nValue                -\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
+          "output": "== [env-1310085a268563a6]\nFeature              apple_pay\nDescription          Gates the apple pay rollout\nType                 standard\nState                off\nValue                -\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n== [env-f0655aefe83b038c]\nFeature              apple_pay\nDescription          Gates the apple pay rollout\nType                 standard\nState                off\nValue                -\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
           "isError": false,
           "ms": 1857
         }

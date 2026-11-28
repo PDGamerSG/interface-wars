@@ -33,7 +33,7 @@
   "ms": 8477,
   "commands": [
     "list_project_features {\"project_pk\":115,\"environment\":229,\"search\":\"bulk_discounts\"}",
-    "update_environment_feature_state {\"id__path\":928,\"id\":928,\"environment_api_key\":\"MDJ4xbfJUtH9aBucv2E7ao\",\"feature\":444,\"enabled\":true,\"feature_state_value\":\"fast_lane\",\"environment\":229}",
+    "update_environment_feature_state {\"id__path\":928,\"id\":928,\"environment_api_key\":\"[env-76f9a02aa182c3b3]\",\"feature\":444,\"enabled\":true,\"feature_state_value\":\"fast_lane\",\"environment\":229}",
     "list_project_features {\"project_pk\":115,\"environment\":228,\"search\":\"bulk_discounts\"}",
     "list_project_features {\"project_pk\":115,\"environment\":229,\"search\":\"bulk_discounts\"}"
   ],
@@ -72,7 +72,7 @@
           "input": {
             "id__path": 928,
             "id": 928,
-            "environment_api_key": "MDJ4xbfJUtH9aBucv2E7ao",
+            "environment_api_key": "[env-76f9a02aa182c3b3]",
             "feature": 444,
             "enabled": true,
             "feature_state_value": "fast_lane",

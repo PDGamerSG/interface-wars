@@ -36,7 +36,7 @@
     "flagsmith api \"api/v1/projects/240/tags/\" --jq '.results[]? // .[]? | {id,label}' 2>&1 | head -50; echo ---; flagsmith feature list --json 2>&1 | jq '.[0] | keys' ",
     "flagsmith feature list --json | jq -c '.[] | {id,name,tags}' | head -100; echo ---; flagsmith feature list --json | jq -c '.[0]'",
     "flagsmith api \"api/v1/projects/240/features/?tags=29\" --jq '.results[]? | {id,name,tags,is_archived}' 2>&1; echo ---; flagsmith api \"api/v1/projects/240/features/\" --jq '.results[] | {id,name,tags,is_archived}' 2>&1",
-    "flagsmith feature update --help | head -30; flagsmith flag get promo_banner -e D6KMiekMQD8B6FmhFf8TAS --json --jq '{enabled,value}'; flagsmith flag get promo_banner -e KbAUKz3LRYi5GV8Acv5jRm --json --jq '{enabled,value}'",
+    "flagsmith feature update --help | head -30; flagsmith flag get promo_banner -e [env-a04109164c0a4471] --json --jq '{enabled,value}'; flagsmith flag get promo_banner -e [env-82b51ac7b71372f5] --json --jq '{enabled,value}'",
     "flagsmith feature update promo_banner --archive --yes && flagsmith api \"api/v1/projects/240/features/?tags=29\" --jq '.results[]? | {id,name,is_archived}'; flagsmith api \"api/v1/projects/240/features/938/\" --jq '{id,name,is_archived}'; flagsmith api \"api/v1/projects/240/features/\" --jq '.results[] | {id,name,is_archived}'"
   ],
   "transcript": [
@@ -139,7 +139,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith feature update --help | head -30; flagsmith flag get promo_banner -e D6KMiekMQD8B6FmhFf8TAS --json --jq '{enabled,value}'; flagsmith flag get promo_banner -e KbAUKz3LRYi5GV8Acv5jRm --json --jq '{enabled,value}'"
+            "command": "flagsmith feature update --help | head -30; flagsmith flag get promo_banner -e [env-a04109164c0a4471] --json --jq '{enabled,value}'; flagsmith flag get promo_banner -e [env-82b51ac7b71372f5] --json --jq '{enabled,value}'"
           },
           "output": "Update a feature's description or archive state\n\nUsage:\n  flagsmith feature update <feature> [flags]\n\nExamples:\n  flagsmith feature update onboarding --description \"Revised flow\"\n\n  # archive or restore a feature\n  flagsmith feature update onboarding --archive\n  flagsmith feature update onboarding --unarchive\n\nFlags:\n      --archive              archive the feature\n      --description string   feature description\n  -h, --help                 help for update\n      --unarchive            unarchive the feature\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n{\"enabled\":false,\"value\":\"compact\"}\n{\"enabled\":false,\"value\":\"compact\"}",
           "isError": false,

@@ -39,7 +39,7 @@
   "commands": [
     "list_project_features {\"project_pk\":110,\"environment\":218,\"search\":\"smart_reorder\"}",
     "list_project_features {\"project_pk\":110,\"environment\":219,\"search\":\"smart_reorder\"}",
-    "update_environment_feature_state {\"id__path\":885,\"id\":885,\"environment_api_key\":\"Tsqs4BH4tdBgmZ6uAuntWP\",\"feature\":423,\"environment\":219,\"enabled\":true,\"feature_state_value\":\"v2\"}",
+    "update_environment_feature_state {\"id__path\":885,\"id\":885,\"environment_api_key\":\"[env-0e79adcbe63b4a8d]\",\"feature\":423,\"environment\":219,\"enabled\":true,\"feature_state_value\":\"v2\"}",
     "list_project_features {\"project_pk\":110,\"environment\":219,\"search\":\"smart_reorder\"}"
   ],
   "transcript": [
@@ -88,7 +88,7 @@
           "input": {
             "id__path": 885,
             "id": 885,
-            "environment_api_key": "Tsqs4BH4tdBgmZ6uAuntWP",
+            "environment_api_key": "[env-0e79adcbe63b4a8d]",
             "feature": 423,
             "environment": 219,
             "enabled": true,

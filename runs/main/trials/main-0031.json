@@ -38,14 +38,14 @@
   "ms": 41886,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "for e in HMcAXQhBXp6oF88eaEBixt EHnPGohfwqdNxvQQTJSUJ3; do echo \"== $e\"; flagsmith flag get store_locator -e $e --json --jq '{enabled,value,segment_overrides}'; done",
-    "for e in HMcAXQhBXp6oF88eaEBixt EHnPGohfwqdNxvQQTJSUJ3; do echo \"== $e\"; flagsmith flag get store_locator -e $e --json --jq '.segment_overrides'; done; flagsmith segment list --json --jq '.[] | select(.name==\"beta_testers\") | {id,name}' 2>&1 | head",
-    "flagsmith feature list --json --jq '.[] | select(.name==\"store_locator\") | {id,name}'; for e in HMcAXQhBXp6oF88eaEBixt EHnPGohfwqdNxvQQTJSUJ3; do echo \"== $e\"; flagsmith flag list -e $e --json --jq '.[] | select(.feature.name==\"store_locator\") | .segment_overrides' 2>/dev/null | head -c 800; echo; done",
-    "for e in HMcAXQhBXp6oF88eaEBixt EHnPGohfwqdNxvQQTJSUJ3; do echo \"== $e\"; flagsmith api \"api/v1/environments/$([ $e = HMcAXQhBXp6oF88eaEBixt ] && echo 64 || echo 65)/featurestates/?feature=120\" --jq '.results[] | {id,enabled,value:.feature_state_value,segment:.feature_segment}' 2>&1; done",
-    "flagsmith flag get store_locator -e EHnPGohfwqdNxvQQTJSUJ3 --help | head -30; flagsmith flag get store_locator -e EHnPGohfwqdNxvQQTJSUJ3 --json",
-    "for e in HMcAXQhBXp6oF88eaEBixt EHnPGohfwqdNxvQQTJSUJ3; do echo \"== $e\"; flagsmith flag get store_locator -e $e --segment beta_testers 2>&1; flagsmith flag get store_locator -e $e --segment 15 --json 2>&1; done",
-    "flagsmith flag delete store_locator -e EHnPGohfwqdNxvQQTJSUJ3 --segment beta_testers --yes 2>&1",
-    "for e in HMcAXQhBXp6oF88eaEBixt EHnPGohfwqdNxvQQTJSUJ3; do echo \"== $e\"; flagsmith flag get store_locator -e $e --json --jq '{enabled,value,segment_overrides}'; flagsmith flag get store_locator -e $e --segment beta_testers --json 2>&1 | head -c 300; echo; done"
+    "for e in [env-46436b1b56b35808] [env-9c521f54ac5ffde0]; do echo \"== $e\"; flagsmith flag get store_locator -e $e --json --jq '{enabled,value,segment_overrides}'; done",
+    "for e in [env-46436b1b56b35808] [env-9c521f54ac5ffde0]; do echo \"== $e\"; flagsmith flag get store_locator -e $e --json --jq '.segment_overrides'; done; flagsmith segment list --json --jq '.[] | select(.name==\"beta_testers\") | {id,name}' 2>&1 | head",
+    "flagsmith feature list --json --jq '.[] | select(.name==\"store_locator\") | {id,name}'; for e in [env-46436b1b56b35808] [env-9c521f54ac5ffde0]; do echo \"== $e\"; flagsmith flag list -e $e --json --jq '.[] | select(.feature.name==\"store_locator\") | .segment_overrides' 2>/dev/null | head -c 800; echo; done",
+    "for e in [env-46436b1b56b35808] [env-9c521f54ac5ffde0]; do echo \"== $e\"; flagsmith api \"api/v1/environments/$([ $e = [env-46436b1b56b35808] ] && echo 64 || echo 65)/featurestates/?feature=120\" --jq '.results[] | {id,enabled,value:.feature_state_value,segment:.feature_segment}' 2>&1; done",
+    "flagsmith flag get store_locator -e [env-9c521f54ac5ffde0] --help | head -30; flagsmith flag get store_locator -e [env-9c521f54ac5ffde0] --json",
+    "for e in [env-46436b1b56b35808] [env-9c521f54ac5ffde0]; do echo \"== $e\"; flagsmith flag get store_locator -e $e --segment beta_testers 2>&1; flagsmith flag get store_locator -e $e --segment 15 --json 2>&1; done",
+    "flagsmith flag delete store_locator -e [env-9c521f54ac5ffde0] --segment beta_testers --yes 2>&1",
+    "for e in [env-46436b1b56b35808] [env-9c521f54ac5ffde0]; do echo \"== $e\"; flagsmith flag get store_locator -e $e --json --jq '{enabled,value,segment_overrides}'; flagsmith flag get store_locator -e $e --segment beta_testers --json 2>&1 | head -c 300; echo; done"
   ],
   "transcript": [
     {
@@ -78,9 +78,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "for e in HMcAXQhBXp6oF88eaEBixt EHnPGohfwqdNxvQQTJSUJ3; do echo \"== $e\"; flagsmith flag get store_locator -e $e --json --jq '{enabled,value,segment_overrides}'; done"
+            "command": "for e in [env-46436b1b56b35808] [env-9c521f54ac5ffde0]; do echo \"== $e\"; flagsmith flag get store_locator -e $e --json --jq '{enabled,value,segment_overrides}'; done"
           },
-          "output": "== HMcAXQhBXp6oF88eaEBixt\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}\n== EHnPGohfwqdNxvQQTJSUJ3\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}",
+          "output": "== [env-46436b1b56b35808]\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}\n== [env-9c521f54ac5ffde0]\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}",
           "isError": false,
           "ms": 1549
         }
@@ -101,9 +101,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "for e in HMcAXQhBXp6oF88eaEBixt EHnPGohfwqdNxvQQTJSUJ3; do echo \"== $e\"; flagsmith flag get store_locator -e $e --json --jq '.segment_overrides'; done; flagsmith segment list --json --jq '.[] | select(.name==\"beta_testers\") | {id,name}' 2>&1 | head"
+            "command": "for e in [env-46436b1b56b35808] [env-9c521f54ac5ffde0]; do echo \"== $e\"; flagsmith flag get store_locator -e $e --json --jq '.segment_overrides'; done; flagsmith segment list --json --jq '.[] | select(.name==\"beta_testers\") | {id,name}' 2>&1 | head"
           },
-          "output": "== HMcAXQhBXp6oF88eaEBixt\n1\n== EHnPGohfwqdNxvQQTJSUJ3\n1\n{\"id\":15,\"name\":\"beta_testers\"}",
+          "output": "== [env-46436b1b56b35808]\n1\n== [env-9c521f54ac5ffde0]\n1\n{\"id\":15,\"name\":\"beta_testers\"}",
           "isError": false,
           "ms": 2213
         }
@@ -124,9 +124,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith feature list --json --jq '.[] | select(.name==\"store_locator\") | {id,name}'; for e in HMcAXQhBXp6oF88eaEBixt EHnPGohfwqdNxvQQTJSUJ3; do echo \"== $e\"; flagsmith flag list -e $e --json --jq '.[] | select(.feature.name==\"store_locator\") | .segment_overrides' 2>/dev/null | head -c 800; echo; done"
+            "command": "flagsmith feature list --json --jq '.[] | select(.name==\"store_locator\") | {id,name}'; for e in [env-46436b1b56b35808] [env-9c521f54ac5ffde0]; do echo \"== $e\"; flagsmith flag list -e $e --json --jq '.[] | select(.feature.name==\"store_locator\") | .segment_overrides' 2>/dev/null | head -c 800; echo; done"
           },
-          "output": "{\"id\":120,\"name\":\"store_locator\"}\n== HMcAXQhBXp6oF88eaEBixt\n\n== EHnPGohfwqdNxvQQTJSUJ3",
+          "output": "{\"id\":120,\"name\":\"store_locator\"}\n== [env-46436b1b56b35808]\n\n== [env-9c521f54ac5ffde0]",
           "isError": false,
           "ms": 2349
         }
@@ -147,9 +147,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "for e in HMcAXQhBXp6oF88eaEBixt EHnPGohfwqdNxvQQTJSUJ3; do echo \"== $e\"; flagsmith api \"api/v1/environments/$([ $e = HMcAXQhBXp6oF88eaEBixt ] && echo 64 || echo 65)/featurestates/?feature=120\" --jq '.results[] | {id,enabled,value:.feature_state_value,segment:.feature_segment}' 2>&1; done"
+            "command": "for e in [env-46436b1b56b35808] [env-9c521f54ac5ffde0]; do echo \"== $e\"; flagsmith api \"api/v1/environments/$([ $e = [env-46436b1b56b35808] ] && echo 64 || echo 65)/featurestates/?feature=120\" --jq '.results[] | {id,enabled,value:.feature_state_value,segment:.feature_segment}' 2>&1; done"
           },
-          "output": "== HMcAXQhBXp6oF88eaEBixt\n{\"detail\":\"You do not have permission to perform this action.\"}\nError: GET http://host.docker.internal:8300/api/v1/environments/64/featurestates/?feature=120 returned 403 Forbidden\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\n== EHnPGohfwqdNxvQQTJSUJ3\n{\"detail\":\"You do not have permission to perform this action.\"}\nError: GET http://host.docker.internal:8300/api/v1/environments/65/featurestates/?feature=120 returned 403 Forbidden\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\n[exit code 1]",
+          "output": "== [env-46436b1b56b35808]\n{\"detail\":\"You do not have permission to perform this action.\"}\nError: GET http://host.docker.internal:8300/api/v1/environments/64/featurestates/?feature=120 returned 403 Forbidden\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\n== [env-9c521f54ac5ffde0]\n{\"detail\":\"You do not have permission to perform this action.\"}\nError: GET http://host.docker.internal:8300/api/v1/environments/65/featurestates/?feature=120 returned 403 Forbidden\nThink this shouldn't happen? Tell us: https://github.com/Flagsmith/flagsmith-cli/issues/new\n[exit code 1]",
           "isError": true,
           "ms": 680
         }
@@ -170,7 +170,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get store_locator -e EHnPGohfwqdNxvQQTJSUJ3 --help | head -30; flagsmith flag get store_locator -e EHnPGohfwqdNxvQQTJSUJ3 --json"
+            "command": "flagsmith flag get store_locator -e [env-9c521f54ac5ffde0] --help | head -30; flagsmith flag get store_locator -e [env-9c521f54ac5ffde0] --json"
           },
           "output": "Show a single flag's state in the current environment\n\nUsage:\n  flagsmith flag get <feature> [flags]\n\nExamples:\n  flagsmith flag get onboarding\n\n  # a segment or identity override\n  flagsmith flag get onboarding --segment 12\n  flagsmith flag get onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for get\n  -i, --identifier string   show the override for this identity\n      --segment string      show the override for this segment (id or name)\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n{\n  \"feature\": \"store_locator\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": false,\n  \"value\": \"base\",\n  \"segment_overrides\": 1,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}",
           "isError": false,
@@ -193,9 +193,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "for e in HMcAXQhBXp6oF88eaEBixt EHnPGohfwqdNxvQQTJSUJ3; do echo \"== $e\"; flagsmith flag get store_locator -e $e --segment beta_testers 2>&1; flagsmith flag get store_locator -e $e --segment 15 --json 2>&1; done"
+            "command": "for e in [env-46436b1b56b35808] [env-9c521f54ac5ffde0]; do echo \"== $e\"; flagsmith flag get store_locator -e $e --segment beta_testers 2>&1; flagsmith flag get store_locator -e $e --segment 15 --json 2>&1; done"
           },
-          "output": "== HMcAXQhBXp6oF88eaEBixt\nFeature    store_locator\nType       standard\nSegment    beta_testers (15)\nPriority   0\nState      on\nValue      segment_copy\n{\n  \"feature\": \"store_locator\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 15,\n    \"name\": \"beta_testers\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"segment_copy\"\n}\n== EHnPGohfwqdNxvQQTJSUJ3\nFeature    store_locator\nType       standard\nSegment    beta_testers (15)\nPriority   0\nState      on\nValue      segment_copy\n{\n  \"feature\": \"store_locator\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 15,\n    \"name\": \"beta_testers\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"segment_copy\"\n}",
+          "output": "== [env-46436b1b56b35808]\nFeature    store_locator\nType       standard\nSegment    beta_testers (15)\nPriority   0\nState      on\nValue      segment_copy\n{\n  \"feature\": \"store_locator\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 15,\n    \"name\": \"beta_testers\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"segment_copy\"\n}\n== [env-9c521f54ac5ffde0]\nFeature    store_locator\nType       standard\nSegment    beta_testers (15)\nPriority   0\nState      on\nValue      segment_copy\n{\n  \"feature\": \"store_locator\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 15,\n    \"name\": \"beta_testers\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"segment_copy\"\n}",
           "isError": false,
           "ms": 4329
         }
@@ -216,9 +216,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag delete store_locator -e EHnPGohfwqdNxvQQTJSUJ3 --segment beta_testers --yes 2>&1"
+            "command": "flagsmith flag delete store_locator -e [env-9c521f54ac5ffde0] --segment beta_testers --yes 2>&1"
           },
-          "output": "✓ Deleted store_locator override for segment beta_testers (15) in environment Production (EHnPGohfwqdNxvQQTJSUJ3)",
+          "output": "✓ Deleted store_locator override for segment beta_testers (15) in environment Production ([env-9c521f54ac5ffde0])",
           "isError": false,
           "ms": 4348
         }
@@ -239,9 +239,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "for e in HMcAXQhBXp6oF88eaEBixt EHnPGohfwqdNxvQQTJSUJ3; do echo \"== $e\"; flagsmith flag get store_locator -e $e --json --jq '{enabled,value,segment_overrides}'; flagsmith flag get store_locator -e $e --segment beta_testers --json 2>&1 | head -c 300; echo; done"
+            "command": "for e in [env-46436b1b56b35808] [env-9c521f54ac5ffde0]; do echo \"== $e\"; flagsmith flag get store_locator -e $e --json --jq '{enabled,value,segment_overrides}'; flagsmith flag get store_locator -e $e --segment beta_testers --json 2>&1 | head -c 300; echo; done"
           },
-          "output": "== HMcAXQhBXp6oF88eaEBixt\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}\n{\n  \"feature\": \"store_locator\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 15,\n    \"name\": \"beta_testers\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"segment_copy\"\n}\n\n== EHnPGohfwqdNxvQQTJSUJ3\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"base\"}\nError: \"store_locator\" has no override for segment 15 in Production (EHnPGohfwqdNxvQQTJSUJ3)",
+          "output": "== [env-46436b1b56b35808]\n{\"enabled\":false,\"segment_overrides\":1,\"value\":\"base\"}\n{\n  \"feature\": \"store_locator\",\n  \"type\": \"standard\",\n  \"segment\": {\n    \"id\": 15,\n    \"name\": \"beta_testers\"\n  },\n  \"priority\": 0,\n  \"enabled\": true,\n  \"value\": \"segment_copy\"\n}\n\n== [env-9c521f54ac5ffde0]\n{\"enabled\":false,\"segment_overrides\":0,\"value\":\"base\"}\nError: \"store_locator\" has no override for segment 15 in Production ([env-9c521f54ac5ffde0])",
           "isError": false,
           "ms": 5501
         }

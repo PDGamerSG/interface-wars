@@ -19,7 +19,7 @@
     }
   ],
   "outcome": "done",
-  "finalText": "DONE: `smart_reorder` is now on in Production (AYLZwDY9eCqv43jakg2u56), and Development (edhBUBchzymdJsbFBGib7v) is still off, with its value and overrides unchanged.",
+  "finalText": "DONE: `smart_reorder` is now on in Production ([env-347f29e2e1901581]), and Development ([env-9b37818ce32d5f1c]) is still off, with its value and overrides unchanged.",
   "costUsd": 0.001621,
   "usage": {
     "input": 16,
@@ -34,10 +34,10 @@
   "commands": [
     "flagsmith --help; echo ---; flagsmith features --help 2>&1 | head -50",
     "flagsmith feature --help; echo ---; flagsmith feature list --help 2>&1; echo ---; flagsmith feature update --help 2>&1; echo ---; flagsmith flag --help",
-    "flagsmith flag get --help | head -20; echo ---; flagsmith -e AYLZwDY9eCqv43jakg2u56 flag get smart_reorder; echo ---; flagsmith -e edhBUBchzymdJsbFBGib7v flag get smart_reorder",
+    "flagsmith flag get --help | head -20; echo ---; flagsmith -e [env-347f29e2e1901581] flag get smart_reorder; echo ---; flagsmith -e [env-9b37818ce32d5f1c] flag get smart_reorder",
     "flagsmith environment --help | head -20; flagsmith environment list 2>&1; echo ---; flagsmith config 2>&1",
-    "flagsmith flag enable --help | head -12; echo ---; flagsmith -e AYLZwDY9eCqv43jakg2u56 flag enable smart_reorder && echo ---- && flagsmith -e AYLZwDY9eCqv43jakg2u56 flag get smart_reorder && echo ---- DEV && flagsmith -e edhBUBchzymdJsbFBGib7v flag get smart_reorder",
-    "flagsmith -e AYLZwDY9eCqv43jakg2u56 flag enable smart_reorder --yes && echo ---- PROD && flagsmith -e AYLZwDY9eCqv43jakg2u56 flag get smart_reorder && echo ---- DEV && flagsmith -e edhBUBchzymdJsbFBGib7v flag get smart_reorder"
+    "flagsmith flag enable --help | head -12; echo ---; flagsmith -e [env-347f29e2e1901581] flag enable smart_reorder && echo ---- && flagsmith -e [env-347f29e2e1901581] flag get smart_reorder && echo ---- DEV && flagsmith -e [env-9b37818ce32d5f1c] flag get smart_reorder",
+    "flagsmith -e [env-347f29e2e1901581] flag enable smart_reorder --yes && echo ---- PROD && flagsmith -e [env-347f29e2e1901581] flag get smart_reorder && echo ---- DEV && flagsmith -e [env-9b37818ce32d5f1c] flag get smart_reorder"
   ],
   "transcript": [
     {
@@ -93,7 +93,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get --help | head -20; echo ---; flagsmith -e AYLZwDY9eCqv43jakg2u56 flag get smart_reorder; echo ---; flagsmith -e edhBUBchzymdJsbFBGib7v flag get smart_reorder"
+            "command": "flagsmith flag get --help | head -20; echo ---; flagsmith -e [env-347f29e2e1901581] flag get smart_reorder; echo ---; flagsmith -e [env-9b37818ce32d5f1c] flag get smart_reorder"
           },
           "output": "Show a single flag's state in the current environment\n\nUsage:\n  flagsmith flag get <feature> [flags]\n\nExamples:\n  flagsmith flag get onboarding\n\n  # a segment or identity override\n  flagsmith flag get onboarding --segment 12\n  flagsmith flag get onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for get\n  -i, --identifier string   show the override for this identity\n      --segment string      show the override for this segment (id or name)\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n---\nFeature              smart_reorder\nDescription          \nType                 standard\nState                off\nValue                grid\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\nFeature              smart_reorder\nDescription          \nType                 standard\nState                off\nValue                grid\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
           "isError": false,
@@ -118,7 +118,7 @@
           "input": {
             "command": "flagsmith environment --help | head -20; flagsmith environment list 2>&1; echo ---; flagsmith config 2>&1"
           },
-          "output": "Manage environments in the current project\n\nUsage:\n  flagsmith environment [command] [flags]\n\nAliases:\n  environment, env\n\nAvailable Commands:\n  clone       Clone an environment into a new one\n  create      Create an environment (mints a client-side key)\n  delete      Delete an environment\n  document    Output the environment document (JSON for local SDK evaluation)\n  get         Show an environment\n  key         Manage an environment's server-side SDK keys\n  list        List environments in the current project\n  update      Update an environment\n\nFlags:\n  -h, --help   help for environment\nNAME          KEY                      DESCRIPTION\nDevelopment   edhBUBchzymdJsbFBGib7v   \nProduction    AYLZwDY9eCqv43jakg2u56   \n\n2 environments\n---\nConfig file    -                                  default\nProject        227                                env\nOrganisation   227                                env\nEnvironment    -                                  default\nAPI            http://host.docker.internal:8300   env\nSDK API        http://host.docker.internal:8300   default",
+          "output": "Manage environments in the current project\n\nUsage:\n  flagsmith environment [command] [flags]\n\nAliases:\n  environment, env\n\nAvailable Commands:\n  clone       Clone an environment into a new one\n  create      Create an environment (mints a client-side key)\n  delete      Delete an environment\n  document    Output the environment document (JSON for local SDK evaluation)\n  get         Show an environment\n  key         Manage an environment's server-side SDK keys\n  list        List environments in the current project\n  update      Update an environment\n\nFlags:\n  -h, --help   help for environment\nNAME          KEY                      DESCRIPTION\nDevelopment   [env-9b37818ce32d5f1c]   \nProduction    [env-347f29e2e1901581]   \n\n2 environments\n---\nConfig file    -                                  default\nProject        227                                env\nOrganisation   227                                env\nEnvironment    -                                  default\nAPI            http://host.docker.internal:8300   env\nSDK API        http://host.docker.internal:8300   default",
           "isError": false,
           "ms": 406
         }
@@ -134,14 +134,14 @@
     },
     {
       "turn": 5,
-      "text": "The keys match: `AYLZwDY9eCqv43jakg2u56` is Production and `edhBUBchzymdJsbFBGib7v` is Development. Now I'll enable the flag in Production only.",
+      "text": "The keys match: `[env-347f29e2e1901581]` is Production and `[env-9b37818ce32d5f1c]` is Development. Now I'll enable the flag in Production only.",
       "calls": [
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag enable --help | head -12; echo ---; flagsmith -e AYLZwDY9eCqv43jakg2u56 flag enable smart_reorder && echo ---- && flagsmith -e AYLZwDY9eCqv43jakg2u56 flag get smart_reorder && echo ---- DEV && flagsmith -e edhBUBchzymdJsbFBGib7v flag get smart_reorder"
+            "command": "flagsmith flag enable --help | head -12; echo ---; flagsmith -e [env-347f29e2e1901581] flag enable smart_reorder && echo ---- && flagsmith -e [env-347f29e2e1901581] flag get smart_reorder && echo ---- DEV && flagsmith -e [env-9b37818ce32d5f1c] flag get smart_reorder"
           },
-          "output": "Enable a flag (shorthand for `flag update --enable`)\n\nUsage:\n  flagsmith flag enable <feature> [flags]\n\nExamples:\n  flagsmith flag enable onboarding\n\n  # target a segment or identity override\n  flagsmith flag enable onboarding --segment 12\n  flagsmith flag enable onboarding --identifier user-123\n\n---\n\n[stderr]\nError: pass --yes to confirm \"Update smart_reorder in environment Production (AYLZwDY9eCqv43jakg2u56)?\" without an interactive terminal\nUsage:\n  flagsmith flag enable <feature> [flags]\n\nExamples:\n  flagsmith flag enable onboarding\n\n  # target a segment or identity override\n  flagsmith flag enable onboarding --segment 12\n  flagsmith flag enable onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for enable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n[exit code 2]",
+          "output": "Enable a flag (shorthand for `flag update --enable`)\n\nUsage:\n  flagsmith flag enable <feature> [flags]\n\nExamples:\n  flagsmith flag enable onboarding\n\n  # target a segment or identity override\n  flagsmith flag enable onboarding --segment 12\n  flagsmith flag enable onboarding --identifier user-123\n\n---\n\n[stderr]\nError: pass --yes to confirm \"Update smart_reorder in environment Production ([env-347f29e2e1901581])?\" without an interactive terminal\nUsage:\n  flagsmith flag enable <feature> [flags]\n\nExamples:\n  flagsmith flag enable onboarding\n\n  # target a segment or identity override\n  flagsmith flag enable onboarding --segment 12\n  flagsmith flag enable onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for enable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n[exit code 2]",
           "isError": true,
           "ms": 600
         }
@@ -157,14 +157,14 @@
     },
     {
       "turn": 6,
-      "text": "The CLI asked for confirmation, which the non-interactive shell can't give. The prompt names the exact target (Production, `AYLZwDY9eCqv43jakg2u56`), so I'll rerun with `--yes`.",
+      "text": "The CLI asked for confirmation, which the non-interactive shell can't give. The prompt names the exact target (Production, `[env-347f29e2e1901581]`), so I'll rerun with `--yes`.",
       "calls": [
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith -e AYLZwDY9eCqv43jakg2u56 flag enable smart_reorder --yes && echo ---- PROD && flagsmith -e AYLZwDY9eCqv43jakg2u56 flag get smart_reorder && echo ---- DEV && flagsmith -e edhBUBchzymdJsbFBGib7v flag get smart_reorder"
+            "command": "flagsmith -e [env-347f29e2e1901581] flag enable smart_reorder --yes && echo ---- PROD && flagsmith -e [env-347f29e2e1901581] flag get smart_reorder && echo ---- DEV && flagsmith -e [env-9b37818ce32d5f1c] flag get smart_reorder"
           },
-          "output": "Feature              smart_reorder\nDescription          \nType                 standard\nState                on\nValue                grid\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---- PROD\nFeature              smart_reorder\nDescription          \nType                 standard\nState                on\nValue                grid\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---- DEV\nFeature              smart_reorder\nDescription          \nType                 standard\nState                off\nValue                grid\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n\n[stderr]\n✓ Enabled smart_reorder in environment Production (AYLZwDY9eCqv43jakg2u56)",
+          "output": "Feature              smart_reorder\nDescription          \nType                 standard\nState                on\nValue                grid\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---- PROD\nFeature              smart_reorder\nDescription          \nType                 standard\nState                on\nValue                grid\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---- DEV\nFeature              smart_reorder\nDescription          \nType                 standard\nState                off\nValue                grid\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n\n[stderr]\n✓ Enabled smart_reorder in environment Production ([env-347f29e2e1901581])",
           "isError": false,
           "ms": 2716
         }
@@ -180,7 +180,7 @@
     },
     {
       "turn": 7,
-      "text": "DONE: `smart_reorder` is now on in Production (AYLZwDY9eCqv43jakg2u56), and Development (edhBUBchzymdJsbFBGib7v) is still off, with its value and overrides unchanged.",
+      "text": "DONE: `smart_reorder` is now on in Production ([env-347f29e2e1901581]), and Development ([env-9b37818ce32d5f1c]) is still off, with its value and overrides unchanged.",
       "calls": [],
       "usage": {
         "input": 2,

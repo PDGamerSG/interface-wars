@@ -19,7 +19,7 @@
     }
   ],
   "outcome": "done",
-  "finalText": "DONE: `order_tracking_v2` is now on in Production (VPpcUD8XMWFuAUuNXFfLNG), and Development is unchanged (still off, with no overrides).",
+  "finalText": "DONE: `order_tracking_v2` is now on in Production ([env-074e5e534882edef]), and Development is unchanged (still off, with no overrides).",
   "costUsd": 0.001842,
   "usage": {
     "input": 16,
@@ -35,9 +35,9 @@
     "flagsmith --help; echo ---; flagsmith features --help 2>&1 | head -50",
     "flagsmith feature --help; echo ---; flagsmith feature list --help 2>&1 | head -40; echo ---; flagsmith environment --help; flagsmith feature update --help 2>&1 | head -60",
     "flagsmith flag --help; flagsmith flag list --help 2>&1 | sed -n 1,25p; echo ---; flagsmith flag set --help 2>&1 | sed -n 1,40p",
-    "cat flagsmith.json 2>/dev/null; flagsmith config 2>&1; echo ---; flagsmith flag get --help 2>&1 | sed -n 1,12p; echo ---; for e in gDUHnNrJVKefR56zXhLByK VPpcUD8XMWFuAUuNXFfLNG; do echo \"== env $e\"; flagsmith -e $e flag get order_tracking_v2 2>&1; done",
-    "flagsmith -e VPpcUD8XMWFuAUuNXFfLNG flag enable order_tracking_v2 2>&1; echo ---; for e in gDUHnNrJVKefR56zXhLByK VPpcUD8XMWFuAUuNXFfLNG; do echo \"== env $e\"; flagsmith -e $e flag get order_tracking_v2 2>&1; done",
-    "flagsmith -e VPpcUD8XMWFuAUuNXFfLNG flag enable order_tracking_v2 --yes 2>&1; echo ---; for e in gDUHnNrJVKefR56zXhLByK VPpcUD8XMWFuAUuNXFfLNG; do echo \"== env $e\"; flagsmith -e $e flag get order_tracking_v2 2>&1; done"
+    "cat flagsmith.json 2>/dev/null; flagsmith config 2>&1; echo ---; flagsmith flag get --help 2>&1 | sed -n 1,12p; echo ---; for e in [env-18d2e43356f11664] [env-074e5e534882edef]; do echo \"== env $e\"; flagsmith -e $e flag get order_tracking_v2 2>&1; done",
+    "flagsmith -e [env-074e5e534882edef] flag enable order_tracking_v2 2>&1; echo ---; for e in [env-18d2e43356f11664] [env-074e5e534882edef]; do echo \"== env $e\"; flagsmith -e $e flag get order_tracking_v2 2>&1; done",
+    "flagsmith -e [env-074e5e534882edef] flag enable order_tracking_v2 --yes 2>&1; echo ---; for e in [env-18d2e43356f11664] [env-074e5e534882edef]; do echo \"== env $e\"; flagsmith -e $e flag get order_tracking_v2 2>&1; done"
   ],
   "transcript": [
     {
@@ -116,9 +116,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "cat flagsmith.json 2>/dev/null; flagsmith config 2>&1; echo ---; flagsmith flag get --help 2>&1 | sed -n 1,12p; echo ---; for e in gDUHnNrJVKefR56zXhLByK VPpcUD8XMWFuAUuNXFfLNG; do echo \"== env $e\"; flagsmith -e $e flag get order_tracking_v2 2>&1; done"
+            "command": "cat flagsmith.json 2>/dev/null; flagsmith config 2>&1; echo ---; flagsmith flag get --help 2>&1 | sed -n 1,12p; echo ---; for e in [env-18d2e43356f11664] [env-074e5e534882edef]; do echo \"== env $e\"; flagsmith -e $e flag get order_tracking_v2 2>&1; done"
           },
-          "output": "Config file    -                                  default\nProject        6                                  env\nOrganisation   5                                  env\nEnvironment    -                                  default\nAPI            http://host.docker.internal:8300   env\nSDK API        http://host.docker.internal:8300   default\n---\nShow a single flag's state in the current environment\n\nUsage:\n  flagsmith flag get <feature> [flags]\n\nExamples:\n  flagsmith flag get onboarding\n\n  # a segment or identity override\n  flagsmith flag get onboarding --segment 12\n  flagsmith flag get onboarding --identifier user-123\n\n---\n== env gDUHnNrJVKefR56zXhLByK\nFeature              order_tracking_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n== env VPpcUD8XMWFuAUuNXFfLNG\nFeature              order_tracking_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
+          "output": "Config file    -                                  default\nProject        6                                  env\nOrganisation   5                                  env\nEnvironment    -                                  default\nAPI            http://host.docker.internal:8300   env\nSDK API        http://host.docker.internal:8300   default\n---\nShow a single flag's state in the current environment\n\nUsage:\n  flagsmith flag get <feature> [flags]\n\nExamples:\n  flagsmith flag get onboarding\n\n  # a segment or identity override\n  flagsmith flag get onboarding --segment 12\n  flagsmith flag get onboarding --identifier user-123\n\n---\n== env [env-18d2e43356f11664]\nFeature              order_tracking_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n== env [env-074e5e534882edef]\nFeature              order_tracking_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
           "isError": false,
           "ms": 1182
         }
@@ -139,9 +139,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith -e VPpcUD8XMWFuAUuNXFfLNG flag enable order_tracking_v2 2>&1; echo ---; for e in gDUHnNrJVKefR56zXhLByK VPpcUD8XMWFuAUuNXFfLNG; do echo \"== env $e\"; flagsmith -e $e flag get order_tracking_v2 2>&1; done"
+            "command": "flagsmith -e [env-074e5e534882edef] flag enable order_tracking_v2 2>&1; echo ---; for e in [env-18d2e43356f11664] [env-074e5e534882edef]; do echo \"== env $e\"; flagsmith -e $e flag get order_tracking_v2 2>&1; done"
           },
-          "output": "Error: pass --yes to confirm \"Update order_tracking_v2 in environment Production (VPpcUD8XMWFuAUuNXFfLNG)?\" without an interactive terminal\nUsage:\n  flagsmith flag enable <feature> [flags]\n\nExamples:\n  flagsmith flag enable onboarding\n\n  # target a segment or identity override\n  flagsmith flag enable onboarding --segment 12\n  flagsmith flag enable onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for enable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n---\n== env gDUHnNrJVKefR56zXhLByK\nFeature              order_tracking_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n== env VPpcUD8XMWFuAUuNXFfLNG\nFeature              order_tracking_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
+          "output": "Error: pass --yes to confirm \"Update order_tracking_v2 in environment Production ([env-074e5e534882edef])?\" without an interactive terminal\nUsage:\n  flagsmith flag enable <feature> [flags]\n\nExamples:\n  flagsmith flag enable onboarding\n\n  # target a segment or identity override\n  flagsmith flag enable onboarding --segment 12\n  flagsmith flag enable onboarding --identifier user-123\n\nFlags:\n  -h, --help                help for enable\n  -i, --identifier string   target this identity's override instead of the environment default\n      --segment string      target this segment's override (id or name) instead of the environment default\n\nGlobal Flags:\n      --api-url string        Flagsmith API base URL (env: FLAGSMITH_API_URL) (default \"https://api.flagsmith.com\")\n  -c, --config-path string    path to flagsmith.json (env: FLAGSMITH_CONFIG_PATH)\n  -e, --environment string    environment as its client-side SDK key (env: FLAGSMITH_ENVIRONMENT)\n      --jq string             filter JSON output through a jq expression (implies --json)\n      --json                  output JSON instead of human-readable text (env: FLAGSMITH_JSON_OUTPUT)\n      --no-input              never prompt or open a browser; fail if required input is missing (env: FLAGSMITH_NO_INPUT)\n      --organisation string   organisation ID or name (env: FLAGSMITH_ORGANISATION)\n  -p, --project string        project ID or name (env: FLAGSMITH_PROJECT)\n      --sdk-api-url string    SDK API base URL for flag evaluation (env: FLAGSMITH_SDK_API_URL)\n      --yes                   answer confirmations affirmatively\n---\n== env [env-18d2e43356f11664]\nFeature              order_tracking_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n== env [env-074e5e534882edef]\nFeature              order_tracking_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
           "isError": false,
           "ms": 2325
         }
@@ -162,9 +162,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith -e VPpcUD8XMWFuAUuNXFfLNG flag enable order_tracking_v2 --yes 2>&1; echo ---; for e in gDUHnNrJVKefR56zXhLByK VPpcUD8XMWFuAUuNXFfLNG; do echo \"== env $e\"; flagsmith -e $e flag get order_tracking_v2 2>&1; done"
+            "command": "flagsmith -e [env-074e5e534882edef] flag enable order_tracking_v2 --yes 2>&1; echo ---; for e in [env-18d2e43356f11664] [env-074e5e534882edef]; do echo \"== env $e\"; flagsmith -e $e flag get order_tracking_v2 2>&1; done"
           },
-          "output": "✓ Enabled order_tracking_v2 in environment Production (VPpcUD8XMWFuAUuNXFfLNG)\nFeature              order_tracking_v2\nDescription          \nType                 standard\nState                on\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\n== env gDUHnNrJVKefR56zXhLByK\nFeature              order_tracking_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n== env VPpcUD8XMWFuAUuNXFfLNG\nFeature              order_tracking_v2\nDescription          \nType                 standard\nState                on\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
+          "output": "✓ Enabled order_tracking_v2 in environment Production ([env-074e5e534882edef])\nFeature              order_tracking_v2\nDescription          \nType                 standard\nState                on\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\n== env [env-18d2e43356f11664]\nFeature              order_tracking_v2\nDescription          \nType                 standard\nState                off\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n== env [env-074e5e534882edef]\nFeature              order_tracking_v2\nDescription          \nType                 standard\nState                on\nValue                blue\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new",
           "isError": false,
           "ms": 2493
         }
@@ -180,7 +180,7 @@
     },
     {
       "turn": 7,
-      "text": "DONE: `order_tracking_v2` is now on in Production (VPpcUD8XMWFuAUuNXFfLNG), and Development is unchanged (still off, with no overrides).",
+      "text": "DONE: `order_tracking_v2` is now on in Production ([env-074e5e534882edef]), and Development is unchanged (still off, with no overrides).",
       "calls": [],
       "usage": {
         "input": 2,

@@ -33,7 +33,7 @@
   "ms": 8409,
   "commands": [
     "list_project_features {\"project_pk\":229,\"environment\":457,\"search\":\"guest_checkout\"}",
-    "update_environment_feature_state {\"id__path\":1872,\"environment_api_key\":\"Na68L7Z4zPs8XXXe5hB7mR\",\"feature\":894,\"enabled\":false,\"feature_state_value\":\"eu_west\",\"environment\":457}",
+    "update_environment_feature_state {\"id__path\":1872,\"environment_api_key\":\"[env-797888b2786de3cb]\",\"feature\":894,\"enabled\":false,\"feature_state_value\":\"eu_west\",\"environment\":457}",
     "list_project_features {\"project_pk\":229,\"environment\":457,\"search\":\"guest_checkout\"}"
   ],
   "transcript": [
@@ -70,7 +70,7 @@
           "name": "update_environment_feature_state",
           "input": {
             "id__path": 1872,
-            "environment_api_key": "Na68L7Z4zPs8XXXe5hB7mR",
+            "environment_api_key": "[env-797888b2786de3cb]",
             "feature": 894,
             "enabled": false,
             "feature_state_value": "eu_west",

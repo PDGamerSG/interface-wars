@@ -38,8 +38,8 @@
   "ms": 11703,
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
-    "flagsmith flag get new_checkout -e BnDJa7LM24ia6XDxzrr3fZ --json; echo ---; flagsmith flag get new_checkout -e JYyQe7T4c7YrYqBwLMkhYs --json",
-    "flagsmith flag update new_checkout -e JYyQe7T4c7YrYqBwLMkhYs --enable --value \"v2\" --yes && echo --- && flagsmith flag get new_checkout -e JYyQe7T4c7YrYqBwLMkhYs --json --jq '{enabled,value,segment_overrides,identity_overrides}'; echo ---; flagsmith flag get new_checkout -e BnDJa7LM24ia6XDxzrr3fZ --json --jq '{enabled,value}'"
+    "flagsmith flag get new_checkout -e [env-4c2a4082c7b9599a] --json; echo ---; flagsmith flag get new_checkout -e [env-76a3d6993ecbabc9] --json",
+    "flagsmith flag update new_checkout -e [env-76a3d6993ecbabc9] --enable --value \"v2\" --yes && echo --- && flagsmith flag get new_checkout -e [env-76a3d6993ecbabc9] --json --jq '{enabled,value,segment_overrides,identity_overrides}'; echo ---; flagsmith flag get new_checkout -e [env-4c2a4082c7b9599a] --json --jq '{enabled,value}'"
   ],
   "transcript": [
     {
@@ -72,7 +72,7 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag get new_checkout -e BnDJa7LM24ia6XDxzrr3fZ --json; echo ---; flagsmith flag get new_checkout -e JYyQe7T4c7YrYqBwLMkhYs --json"
+            "command": "flagsmith flag get new_checkout -e [env-4c2a4082c7b9599a] --json; echo ---; flagsmith flag get new_checkout -e [env-76a3d6993ecbabc9] --json"
           },
           "output": "{\n  \"feature\": \"new_checkout\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": true,\n  \"value\": \"v2\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}\n---\n{\n  \"feature\": \"new_checkout\",\n  \"type\": \"standard\",\n  \"description\": \"\",\n  \"enabled\": false,\n  \"value\": \"tiered\",\n  \"segment_overrides\": 0,\n  \"identity_overrides\": 0,\n  \"code_references\": 0,\n  \"lifecycle_stage\": \"new\"\n}",
           "isError": false,
@@ -95,9 +95,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith flag update new_checkout -e JYyQe7T4c7YrYqBwLMkhYs --enable --value \"v2\" --yes && echo --- && flagsmith flag get new_checkout -e JYyQe7T4c7YrYqBwLMkhYs --json --jq '{enabled,value,segment_overrides,identity_overrides}'; echo ---; flagsmith flag get new_checkout -e BnDJa7LM24ia6XDxzrr3fZ --json --jq '{enabled,value}'"
+            "command": "flagsmith flag update new_checkout -e [env-76a3d6993ecbabc9] --enable --value \"v2\" --yes && echo --- && flagsmith flag get new_checkout -e [env-76a3d6993ecbabc9] --json --jq '{enabled,value,segment_overrides,identity_overrides}'; echo ---; flagsmith flag get new_checkout -e [env-4c2a4082c7b9599a] --json --jq '{enabled,value}'"
           },
-          "output": "Feature              new_checkout\nDescription          \nType                 standard\nState                on\nValue                v2\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\n{\"enabled\":true,\"identity_overrides\":0,\"segment_overrides\":0,\"value\":\"v2\"}\n---\n{\"enabled\":true,\"value\":\"v2\"}\n\n[stderr]\n✓ Set new_checkout to \"v2\" in environment Production (JYyQe7T4c7YrYqBwLMkhYs)\n✓ Enabled new_checkout in environment Production (JYyQe7T4c7YrYqBwLMkhYs)",
+          "output": "Feature              new_checkout\nDescription          \nType                 standard\nState                on\nValue                v2\nSegment overrides    0\nIdentity overrides   0\nCode references      0\nLifecycle stage      new\n---\n{\"enabled\":true,\"identity_overrides\":0,\"segment_overrides\":0,\"value\":\"v2\"}\n---\n{\"enabled\":true,\"value\":\"v2\"}\n\n[stderr]\n✓ Set new_checkout to \"v2\" in environment Production ([env-76a3d6993ecbabc9])\n✓ Enabled new_checkout in environment Production ([env-76a3d6993ecbabc9])",
           "isError": false,
           "ms": 2536
         }

@@ -104,7 +104,7 @@
   "commands": [
     "cat /skills/flagsmith-ops/SKILL.md; flagsmith --help",
     "flagsmith feature list --json --jq '.[] | select(.name==\"apple_pay_copy\") | .name'; flagsmith feature create --help | head -40",
-    "flagsmith feature create apple_pay_copy --value \"Checkout\" --enabled --variants '[{\"value\":\"Pay securely\",\"weight\":50},{\"value\":\"Complete order\",\"weight\":50}]' --yes && echo ---- && flagsmith feature variant list apple_pay_copy --json; for e in LuaAGYKgNj86uZisq4YP3M X9AURZxvZYWNpzwRNahwVq; do echo \"== $e\"; flagsmith flag get apple_pay_copy -e $e --json --jq '{enabled,value,variants}'; done"
+    "flagsmith feature create apple_pay_copy --value \"Checkout\" --enabled --variants '[{\"value\":\"Pay securely\",\"weight\":50},{\"value\":\"Complete order\",\"weight\":50}]' --yes && echo ---- && flagsmith feature variant list apple_pay_copy --json; for e in [env-bd12ce3ad79c7038] [env-7136c0ea0e8b09ae]; do echo \"== $e\"; flagsmith flag get apple_pay_copy -e $e --json --jq '{enabled,value,variants}'; done"
   ],
   "transcript": [
     {
@@ -160,9 +160,9 @@
         {
           "name": "bash",
           "input": {
-            "command": "flagsmith feature create apple_pay_copy --value \"Checkout\" --enabled --variants '[{\"value\":\"Pay securely\",\"weight\":50},{\"value\":\"Complete order\",\"weight\":50}]' --yes && echo ---- && flagsmith feature variant list apple_pay_copy --json; for e in LuaAGYKgNj86uZisq4YP3M X9AURZxvZYWNpzwRNahwVq; do echo \"== $e\"; flagsmith flag get apple_pay_copy -e $e --json --jq '{enabled,value,variants}'; done"
+            "command": "flagsmith feature create apple_pay_copy --value \"Checkout\" --enabled --variants '[{\"value\":\"Pay securely\",\"weight\":50},{\"value\":\"Complete order\",\"weight\":50}]' --yes && echo ---- && flagsmith feature variant list apple_pay_copy --json; for e in [env-bd12ce3ad79c7038] [env-7136c0ea0e8b09ae]; do echo \"== $e\"; flagsmith flag get apple_pay_copy -e $e --json --jq '{enabled,value,variants}'; done"
           },
-          "output": "Feature         apple_pay_copy (158)\nDescription     \nType            multivariate\nDefault value   Checkout\nEnabled         true\n\nVariants\n  VALUE           WEIGHT  KEY  ID\n  Pay securely    50%          16\n  Complete order  50%          17\n----\n[\n  {\n    \"id\": 16,\n    \"value\": \"Pay securely\",\n    \"weight\": 50\n  },\n  {\n    \"id\": 17,\n    \"value\": \"Complete order\",\n    \"weight\": 50\n  }\n]\n== LuaAGYKgNj86uZisq4YP3M\n{\"enabled\":true,\"value\":\"Checkout\",\"variants\":[{\"id\":16,\"value\":\"Pay securely\",\"weight\":50},{\"id\":17,\"value\":\"Complete order\",\"weight\":50}]}\n== X9AURZxvZYWNpzwRNahwVq\n{\"enabled\":true,\"value\":\"Checkout\",\"variants\":[{\"id\":16,\"value\":\"Pay securely\",\"weight\":50},{\"id\":17,\"value\":\"Complete order\",\"weight\":50}]}\n\n[stderr]\n✓ Created feature apple_pay_copy (158)",
+          "output": "Feature         apple_pay_copy (158)\nDescription     \nType            multivariate\nDefault value   Checkout\nEnabled         true\n\nVariants\n  VALUE           WEIGHT  KEY  ID\n  Pay securely    50%          16\n  Complete order  50%          17\n----\n[\n  {\n    \"id\": 16,\n    \"value\": \"Pay securely\",\n    \"weight\": 50\n  },\n  {\n    \"id\": 17,\n    \"value\": \"Complete order\",\n    \"weight\": 50\n  }\n]\n== [env-bd12ce3ad79c7038]\n{\"enabled\":true,\"value\":\"Checkout\",\"variants\":[{\"id\":16,\"value\":\"Pay securely\",\"weight\":50},{\"id\":17,\"value\":\"Complete order\",\"weight\":50}]}\n== [env-7136c0ea0e8b09ae]\n{\"enabled\":true,\"value\":\"Checkout\",\"variants\":[{\"id\":16,\"value\":\"Pay securely\",\"weight\":50},{\"id\":17,\"value\":\"Complete order\",\"weight\":50}]}\n\n[stderr]\n✓ Created feature apple_pay_copy (158)",
           "isError": false,
           "ms": 4810
         }
