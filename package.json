@@ -22,6 +22,7 @@
     "readout": "node src/cli.ts readout",
     "ship": "node src/cli.ts ship",
     "which": "node src/cli.ts which",
+    "matched": "node src/matched/run.ts",
     "plan": "node src/cli.ts plan",
     "demo": "node scripts/demo.ts",
     "release": "node skills/flagsmith-release-gate/scripts/release.ts",

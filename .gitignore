@@ -10,4 +10,6 @@ runs/main.local.log
 .impeccable/questions/
 runs/*/readout.offline.*
 runs/*/evidence.sqlite
+runs/mcp-guidance-v1-dry/
+runs/mcp-guidance-v1/*.local.json
 judge-site/dist/
