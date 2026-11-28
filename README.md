@@ -9,6 +9,16 @@ collected the outcomes and served the human-approved winner to later sessions. [
 Built for the WeMakeDevs x Flagsmith Toggle Wars hackathon, Track 01 "Test Something Real". The Agent Skill in
 `skills/flagsmith-ops/` is also a Track 04 deliverable.
 
+**Two-minute tour**
+
+- See the result: [interfacewars.pallabdas.me](https://interfacewars.pallabdas.me/), or [Results](#results) below.
+- Replay the recorded experiment with no API key, Docker or network: `npm ci && npm run demo`.
+- Check the decision: [pre-registration](prereg/PREREGISTRATION.md), [readout](runs/main/readout.md),
+  [human approval](runs/main/approval.json) and the [six post-ship agents](runs/after-ship/trials/).
+- See how Flagsmith ran it: [How we used Flagsmith](#how-we-used-flagsmith).
+- See what went back upstream: [Flagsmith findings and their PRs and issues](docs/FLAGSMITH_FINDINGS.md#upstream-status).
+- Use the skill: [`skills/flagsmith-ops/SKILL.md`](skills/flagsmith-ops/SKILL.md).
+
 ## Results
 
 <!-- RESULTS:START -->
