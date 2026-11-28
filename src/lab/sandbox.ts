@@ -206,6 +206,10 @@ export async function snapshot(s: Sandbox): Promise<Snapshot> {
         const p = `env.${envName}.override.${fs.feature.name}.${seg.name}`;
         out[`${p}.enabled`] = fs.enabled;
         out[`${p}.value`] = fs.feature_state_value === null || fs.feature_state_value === undefined ? null : String(fs.feature_state_value);
+        for (const mv of fs.multivariate_feature_state_values ?? []) {
+          const option = mv.multivariate_feature_option?.value ?? mv.multivariate_feature_option?.string_value ?? String(mv.multivariate_feature_option);
+          out[`${p}.split.${option}`] = Number(mv.percentage_allocation);
+        }
       }
     }
     const metrics = await a.list(`/api/v1/environments/${s.env[envName].key}/experiment-metrics/`);

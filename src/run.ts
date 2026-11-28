@@ -28,6 +28,9 @@ const pilot = flag('pilot');
 const forcedArm = opt('arm') as ArmName | undefined;
 const templateFilter = opt('template');
 const followFlag = flag('follow-flag');
+const grader = opt('grader', process.env.IW_GRADER ?? 'registered-v1')!;
+if (!['registered-v1', 'strict-draft-v1'].includes(grader)) throw new Error(`Unknown grader ${grader}`);
+process.env.IW_GRADER = grader;
 
 if (process.env.IW_DRY_RUN !== '1' && !process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
   console.error('Set ANTHROPIC_API_KEY in .env first.');

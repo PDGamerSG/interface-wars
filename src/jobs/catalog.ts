@@ -292,6 +292,10 @@ export const TEMPLATES: Template[] = [
             { name: p, event: pe, aggregation: 'occurrence', direction: 'up' },
             { name: g, event: ge, aggregation: 'occurrence', direction: 'down' },
           ],
+          experiments: [{ name: x, feature: f, hypothesis: h, metrics: [
+            { name: p, expected_direction: 'increase' },
+            { name: g, expected_direction: 'not_increase' },
+          ] }],
         },
         check: (a) => [
           ...is(a[`env.Production.experiment.${x}.feature`], f, 'experiment flag'),

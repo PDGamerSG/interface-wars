@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { diff } from '../src/lab/sandbox.ts';
 import { jobFor, TEMPLATES, Rng, grade } from '../src/jobs/catalog.ts';
+import { strictGrade } from '../src/jobs/strict.ts';
 import type { TrialRecord } from '../src/trial.ts';
 
 test('diff reports added, removed and changed paths, sorted, and ignores equal values', () => {
@@ -58,6 +59,30 @@ test('scope prefixes do not leak into names that share a prefix', () => {
   assert.ok(name, job.task);
   assert.equal(job.allowed(`segment.${name}.rules`), true);
   assert.equal(job.allowed(`segment.${name}_copy.rules`), false);
+});
+
+test('strict draft grading requires the requested experiment safety contract', () => {
+  const job = jobFor(9, 'strict-draft-fixture');
+  const experiment = job.seed.experiments![0];
+  const feature = job.seed.features.find((item) => item.name === experiment.feature)!;
+  const variation = feature.variants![0].value;
+  const control = feature.value!;
+  const base = `env.Production.experiment.${experiment.name}`;
+  const rollout = `env.Production.override.${feature.name}.experiment-42-rollout`;
+  const after = {
+    [`${base}.feature`]: feature.name,
+    [`${base}.status`]: 'created',
+    [`${base}.hypothesis`]: experiment.hypothesis,
+    [`${base}.metric.${experiment.metrics[0].name}`]: experiment.metrics[0].expected_direction,
+    [`${base}.metric.${experiment.metrics[1].name}`]: experiment.metrics[1].expected_direction,
+    [`${rollout}.enabled`]: false,
+    [`${rollout}.value`]: control,
+    [`${rollout}.split.${variation}`]: 50,
+  };
+  assert.equal(strictGrade(job, {}, after, Object.entries(after).map(([path, value]) => ({ path, before: null, after: value }))).correct, true);
+  assert.match(strictGrade(job, {}, { ...after, [`${rollout}.enabled`]: true }, []).reasons.join('; '), /disabled/);
+  assert.match(strictGrade(job, {}, { ...after, [`${rollout}.split.${variation}`]: 60 }, []).reasons.join('; '), /half/);
+  assert.match(strictGrade(job, {}, { ...after, [`${base}.hypothesis`]: 'different' }, []).reasons.join('; '), /hypothesis/);
 });
 
 test('every recorded trial re-grades to the same collateral from its stored changes', () => {
