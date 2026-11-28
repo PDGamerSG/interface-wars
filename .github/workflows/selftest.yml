@@ -72,6 +72,7 @@ jobs:
           git diff --exit-code -- runs/main/readout.json runs/main/readout.md
           node scripts/sensitivity.ts | diff -u runs/main/sensitivity.md -
           node scripts/export-web-data.ts main --out "$RUNNER_TEMP/web-data"
+          diff -ru web/public/data "$RUNNER_TEMP/web-data"
 
       - name: Flagsmith logs on failure
         if: failure()
